@@ -524,7 +524,7 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES COM RELAY CLOUD & TEMPO REAL -->
+          <!-- MODERAÇÃO DE INTERAÇÕES COM TOKEN PÚBLICO INTEGRADO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -777,9 +777,11 @@
     }
 
     async function syncAndFetchLatestData() {
-      // 1. Puxa interações públicas do Relay Cloud (tempo real de clientes)
+      // 1. Puxa interações públicas do Relay Cloud (token anônimo embutido)
       try {
-        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), { headers: { 'X-Master-Key': '$2a$10$C8qT93.W0m3Gq8x...'} });
+        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), {
+          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8' }
+        });
         if(relayRes.ok) {
           const relayJson = await relayRes.json();
           if(relayJson.record) {
@@ -864,7 +866,7 @@
     }
 
     // =========================================
-    // ENVIO DE INTERAÇÃO DO CLIENTE (VIA RELAY CLOUD)
+    // ENVIO PÚBLICO COM TOKEN EMBUTIDO (SEM CONFIGURAÇÃO DO CLIENTE)
     // =========================================
     async function publicPushToRelay(newItem, type) {
       try {
