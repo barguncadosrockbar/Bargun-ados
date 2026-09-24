@@ -17,7 +17,6 @@
 
     :root {
       --bg-dark: #050505;
-      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -77,7 +76,7 @@
     .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* =========================================
-       3. RÁDIO E CABEÇALHO
+       3. RÁDIO E CABEÇALHO (Logotipo 100% Alinhado)
        ========================================= */
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -94,8 +93,8 @@
     .promo-banner { background: #0a0000; color: #fff; padding: 8px; text-align: center; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--c-red); }
     .promo-banner span { color: var(--c-yellow); border: 1px solid var(--c-yellow); padding: 1px 4px; border-radius: 3px; cursor: pointer; }
 
-    header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
-    .logo-img { max-width: 180px; width: 100%; border-radius: 50%; box-shadow: 0 0 25px rgba(233,30,99,0.6); border: 2px solid rgba(255,255,255,0.2); animation: floatLogo 4s ease-in-out infinite; cursor: crosshair;}
+    header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+    .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.6); border: 2px solid rgba(255,255,255,0.2); animation: floatLogo 4s ease-in-out infinite; cursor: crosshair; display: block; margin: 0 auto; }
     @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); border-color: var(--c-yellow); box-shadow: 0 0 35px rgba(0,188,212,0.8); } }
 
     /* =========================================
@@ -160,7 +159,7 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING UNIFICADAS (Com Instagram visível)
+       8. LISTAS DE RANKING UNIFICADAS
        ========================================= */
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
     .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
@@ -339,11 +338,11 @@
       <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
     </div>
 
-    header>
+    <header>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO (Sem o botão ADM superior) -->
+    <!-- NAVEGAÇÃO -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -396,7 +395,7 @@
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
-      <!-- RANKINGS UNIFICADOS (COM CACHACEIROS CORRIGIDO) -->
+      <!-- RANKINGS UNIFICADOS -->
       <section id="rankings" class="tab-pane">
         <h2 class="section-title">Mural de Honra & Rankings</h2>
         
@@ -524,7 +523,7 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) COM ATUALIZAÇÃO EM TEMPO REAL -->
+          <!-- MODERAÇÃO DE INTERAÇÕES COM ATUALIZAÇÃO EM TEMPO REAL -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -757,14 +756,14 @@
       await syncAndFetchLatestData();
       renderApp();
       
-      // Atualização automática em tempo real para o ADM a cada 5 segundos
+      // Sincronização automática a cada 4 segundos para o ADM ver os pedidos chegando sem F5
       setInterval(async () => {
         await syncAndFetchLatestData();
         const modContent = document.getElementById('adm-moderation');
         if(modContent && modContent.style.display === "block") {
           renderModerationLists();
         }
-      }, 5000);
+      }, 4000);
     }
 
     async function syncAndFetchLatestData() {
@@ -793,7 +792,7 @@
     }
 
     // =========================================
-    // SALVAMENTO NO GITHUB VIA API (TEMPO REAL)
+    // SALVAMENTO NO GITHUB COM SUPORTE A CRIAÇÃO DE ARQUIVO
     // =========================================
     async function saveChanges() {
       renderApp(); 
@@ -811,7 +810,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização em tempo real (Bargunçados)", content: contentBase64 };
+        const body = { message: "Sincronização em tempo real (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         await fetch(url, {
@@ -832,7 +831,7 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE COM MENSAGEM DE AVISO
+    // INTERAÇÃO DO CLIENTE (COM AVISO DE AGUARDAR)
     // =========================================
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
@@ -1005,7 +1004,7 @@
           </div>`;
       });
 
-      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL PARA ARCADE E CACHACEIROS)
+      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -1129,7 +1128,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO (Com Notificação Pulsante)
+    // ADMIN ACORDEÃO E MODERAÇÃO
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
