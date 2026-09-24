@@ -756,8 +756,15 @@
         document.getElementById('gh-repo').value = githubConfig.repo;
         document.getElementById('gh-token').value = githubConfig.token;
       }
+      
       await syncAndFetchLatestData();
       renderApp();
+      
+      // Restaura sessão do ADM se já estava logado antes de atualizar a página
+      if(localStorage.getItem('brg_adm_logged') === 'true') {
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+      }
       
       // Sincronização automática em tempo real a cada 3 segundos
       setInterval(async () => {
@@ -857,7 +864,7 @@
     }
 
     // =========================================
-    // ENVIO DE INTERAÇÃO DO CLIENTE (MÉTODO 100% PÚBLICO E SEGURO)
+    // ENVIO DE INTERAÇÃO DO CLIENTE (VIA RELAY CLOUD)
     // =========================================
     async function publicPushToRelay(newItem, type) {
       try {
@@ -1503,7 +1510,7 @@
     }
 
     // =========================================
-    // LOGIN MANUAL BLINDADO COM BASE64
+    // LOGIN MANUAL BLINDADO COM SESSÃO PERSISTENTE
     // =========================================
     function processSecureLogin() {
       const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
@@ -1518,6 +1525,7 @@
       const realPass = b64Decode(ENCODED_PASS);
 
       if (emailInput === realEmail && passInput === realPass) {
+        localStorage.setItem('brg_adm_logged', 'true'); // SESSÃO SALVA (NÃO DESLOGA AO ATUALIZAR)
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
         
