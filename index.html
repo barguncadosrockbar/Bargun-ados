@@ -17,7 +17,6 @@
 
     :root {
       --bg-dark: #050505;
-      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -322,7 +321,7 @@
 
     <!-- NAVEGAÇÃO -->
     <div class="nav-container">
-      <nav class="nav-tabs">
+      <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
         <button class="tab-btn" onclick="switchTab('bebidas')">Bebidas</button>
         <button class="tab-btn" onclick="switchTab('porcoes')">Porções</button>
@@ -336,7 +335,7 @@
       </nav>
     </div>
 
-    <main>
+    <main id="dynamic-tab-panes">
       
       <!-- INÍCIO DINÂMICO -->
       <section id="inicio" class="tab-pane active">
@@ -422,14 +421,13 @@
         </div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR COM SEGURANÇA BASE64 E SENHA -->
+      <!-- ÁREA DO ADMINISTRADOR -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
           <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e a Senha da Diretoria.</p>
-          
           <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
           <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
@@ -443,7 +441,7 @@
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações e fotos apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
             <div class="admin-card">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
@@ -452,6 +450,28 @@
               <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
               <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
             </div>
+          </div>
+
+          <!-- NOVO: CRIADOR DE ABAS DINÂMICAS -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar Novas Abas</button>
+          <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="new-tab-id" placeholder="ID (ex: eventos, vip)">
+                <input type="text" class="admin-input" id="new-tab-name" placeholder="Nome Exibição (ex: Eventos)">
+              </div>
+              <input type="text" class="admin-input" id="new-tab-title" placeholder="Título da Seção (ex: PRÓXIMOS EVENTOS)" style="margin-top: 8px;">
+              <textarea class="admin-textarea" id="new-tab-desc" rows="2" placeholder="Texto descritivo da nova aba..." style="margin-top: 8px;"></textarea>
+              <div class="file-upload-wrapper" style="margin-top: 8px;">
+                <span>📷 Foto Opcional para a Aba</span>
+                <input type="file" id="new-tab-img-file" accept="image/*">
+              </div>
+              <button class="action-btn" onclick="createNewCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
+            </div>
+            
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">Abas Personalizadas Criadas</h5>
+            <div id="admin-custom-tabs-list"></div>
           </div>
 
           <!-- ADM INICIO -->
@@ -576,8 +596,7 @@
 
   <script>
     // =========================================
-    // BLINDADOR DE TEXTOS E SEGURANÇA OCULTA (Base64)
-    // O e-mail e senha ficam ilegíveis no inspecionar elemento
+    // BLINDADOR DE TEXTOS & SEGURANÇA BASE64
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
@@ -592,7 +611,7 @@
     }
 
     // =========================================
-    // ARQUITETURA DE BANCO DE DADOS GLOBAL COM UPLOAD GITHUB
+    // BANCO DE DADOS GLOBAL COM SUPORTE A ABAS DINÂMICAS
     // =========================================
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
@@ -631,7 +650,8 @@
       team: defaultTeam,
       arcade: defaultArcade,
       cachaceiros: defaultCachaceiros,
-      flyer: defaultFlyer
+      flyer: defaultFlyer,
+      customTabs: [] // Abas criadas pelo ADM
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -708,7 +728,7 @@
     }
 
     // =========================================
-    // RENDERIZAÇÃO DOM CLIENTE
+    // RENDERIZAÇÃO DOM CLIENTE (COM ABAS CUSTOMIZADAS)
     // =========================================
     function renderApp() {
       const cHome = appData.home;
@@ -718,6 +738,7 @@
       const cArcade = appData.arcade;
       const cCach = appData.cachaceiros;
       const cFlyer = appData.flyer;
+      const cCustomTabs = appData.customTabs || [];
 
       // HOME
       document.getElementById('h-title').innerText = cHome.title;
@@ -837,7 +858,42 @@
         </div>`;
       }).join('');
 
+      // RENDERIZAR ABAS CUSTOMIZADAS (Menu + Seções)
+      renderCustomTabs(cCustomTabs);
+
       renderAdminLists();
+    }
+
+    function renderCustomTabs(tabs) {
+      const navContainer = document.getElementById('dynamic-nav-tabs');
+      const mainContainer = document.getElementById('dynamic-tab-panes');
+
+      // Remove abas dinâmicas antigas do DOM antes de recriar
+      document.querySelectorAll('.custom-tab-btn').forEach(el => el.remove());
+      document.querySelectorAll('.custom-tab-pane').forEach(el => el.remove());
+
+      tabs.forEach(tab => {
+        // Cria o Botão no Menu
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn custom-tab-btn';
+        btn.setAttribute('onclick', `switchTab('${tab.id}')`);
+        btn.innerText = tab.name;
+        // Insere antes do botão ADM
+        navContainer.insertBefore(btn, navContainer.lastElementChild);
+
+        // Cria a Seção no Main
+        const section = document.createElement('section');
+        section.id = tab.id;
+        section.className = 'tab-pane custom-tab-pane';
+        section.innerHTML = `
+          <h2 class="section-title">${tab.title}</h2>
+          <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
+            ${tab.img ? `<img src="${tab.img}" style="width:100%; max-height:300px; object-fit:cover; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);">` : ''}
+            <p style="color:#ddd; font-size:1.1rem; line-height:1.6; white-space: pre-wrap;">${tab.desc}</p>
+          </div>
+        `;
+        mainContainer.appendChild(section);
+      });
     }
 
     function createCard(item) {
@@ -867,6 +923,39 @@
       }
     }
 
+    let tempNewTabImg = '';
+    document.getElementById('new-tab-img-file').addEventListener('change', e => {
+      handleImageUpload(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da nova aba carregada!'); });
+    });
+
+    function createNewCustomTab() {
+      const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
+      const name = document.getElementById('new-tab-name').value.trim();
+      const title = document.getElementById('new-tab-title').value.trim();
+      const desc = document.getElementById('new-tab-desc').value.trim();
+
+      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da nova aba.");
+      
+      if(!appData.customTabs) appData.customTabs = [];
+      appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
+      
+      document.getElementById('new-tab-id').value = '';
+      document.getElementById('new-tab-name').value = '';
+      document.getElementById('new-tab-title').value = '';
+      document.getElementById('new-tab-desc').value = '';
+      tempNewTabImg = '';
+
+      saveChanges();
+      alert("Nova aba criada com sucesso!");
+    }
+
+    function removeCustomTab(id) {
+      if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
+        appData.customTabs = appData.customTabs.filter(t => t.id !== id);
+        saveChanges();
+      }
+    }
+
     function renderAdminLists() {
       document.getElementById('adm-h-title').value = appData.home.title;
       document.getElementById('adm-h-desc1').value = appData.home.desc1;
@@ -875,6 +964,24 @@
       document.getElementById('adm-h-promo1').value = appData.home.promo1;
       document.getElementById('adm-h-promo2').value = appData.home.promo2;
       document.getElementById('adm-h-promo3').value = appData.home.promo3;
+
+      // Listar Abas Customizadas no ADM para gerenciamento
+      const customTabsList = document.getElementById('admin-custom-tabs-list');
+      if(customTabsList) {
+        const tabs = appData.customTabs || [];
+        if(tabs.length === 0) {
+          customTabsList.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhuma aba personalizada criada ainda.</p>';
+        } else {
+          customTabsList.innerHTML = tabs.map(t => `
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <div class="admin-card-row">
+                <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
+                <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar Aba</button>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
 
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
@@ -998,7 +1105,7 @@
     }
 
     // =========================================
-    // LOGIN MANUAL BLINDADO COM BASE64 (SEM VAZAR NO F12)
+    // LOGIN MANUAL BLINDADO COM BASE64
     // =========================================
     function processSecureLogin() {
       const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
@@ -1009,7 +1116,6 @@
         return;
       }
 
-      // Descodifica os dados ocultos do Base64
       const realEmail = b64Decode(ENCODED_EMAIL).toLowerCase();
       const realPass = b64Decode(ENCODED_PASS);
 
@@ -1031,7 +1137,7 @@
       }
     }
 
-    // COMPRESSOR DE IMAGENS INTELIGENTE
+    // COMPRESSOR DE IMAGENS
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
