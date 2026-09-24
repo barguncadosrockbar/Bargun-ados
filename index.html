@@ -160,7 +160,7 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING COM DESTAQUE TOP 3
+       8. LISTAS DE RANKING COM TÍTULOS DE HONRA (IDÉIA 2)
        ========================================= */
     .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
     .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
@@ -177,6 +177,9 @@
     .lb-sub { font-size: 0.75rem; color: var(--c-cyan); }
     .lb-score { font-family: var(--font-title); font-size: 1.3rem; color: var(--c-pink); text-align: right; }
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
+    
+    /* Selo de Título Dinâmico */
+    .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
     /* =========================================
        9. SHOWS E AGENDA MENSAL
@@ -253,7 +256,7 @@
 </head>
 <body>
 
-  <!-- EFEITOS DE FUNDO 3D E VIDRO -->
+  <!-- EFEITOS DE FUNDO 3D COM NÉVOA / FUMAÇA DE PALCO (IDÉIA 3) -->
   <div class="stage-lights">
     <div class="spotlight cyan"></div>
     <div class="spotlight yellow"></div>
@@ -747,8 +750,22 @@
     }
 
     // =========================================
-    // RENDERIZAÇÃO DOM CLIENTE
+    // RENDERIZAÇÃO DOM CLIENTE (COM TÍTULOS DE HONRA NAS LISTAS)
     // =========================================
+    function getHonorTitle(index, type) {
+      if(type === 'arcade') {
+        if(index === 0) return '👑 Lenda Viva do Arcade';
+        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
+        if(index === 2) return '🕹️ Mestre dos Controles';
+        return '🎮 Veterano do Fliperama';
+      } else {
+        if(index === 0) return '🏆 Campeão Supremo do Fígado';
+        if(index === 1) return '🍻 Senhor dos Destilados';
+        if(index === 2) return '🥃 Gladiador do Copo Cheio';
+        return '🍷 Guerreiro da Cachaça';
+      }
+    }
+
     function renderApp() {
       const cHome = appData.home;
       const cMenu = appData.menu;
@@ -840,11 +857,12 @@
           </div>`;
       });
 
-      // RANKINGS
+      // RANKINGS COM TÍTULOS DE HONRA (IDÉIA 2)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
         const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.ig || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const honorTitle = getHonorTitle(index, 'arcade');
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -853,6 +871,7 @@
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub}</span>
+            <span class="lb-title-badge">${honorTitle}</span>
             ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
           <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
@@ -863,6 +882,7 @@
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
         const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const honorTitle = getHonorTitle(index, 'cachaceiro');
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -871,6 +891,7 @@
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub}</span>
+            <span class="lb-title-badge">${honorTitle}</span>
             ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
           <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
