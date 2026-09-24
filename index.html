@@ -9,10 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <!-- Firebase SDK Universal -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-
   <style>
     /* =========================================
        1. RESET E VARIÁVEIS (Mobile-First)
@@ -611,28 +607,13 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Firebase Realtime Firestore.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Vanilla JS & LocalSync (GitHub Pages).</p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
   </div>
 
   <script>
-    // =========================================
-    // CONFIGURAÇÃO FIREBASE CLOUD (TEMPO REAL ABSOLUTO)
-    // =========================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyD-barguncados-mock-key-realtime-v2",
-      authDomain: "barguncados-rock.firebaseapp.com",
-      projectId: "barguncados-rock"
-    };
-    
-    // Inicialização segura em modo simulado/público ou nativo compat
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
-    const db = firebase.firestore();
-
     function escapeHTML(str) {
       if (!str) return '';
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -675,7 +656,7 @@
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
     const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
 
-    let appData = {
+    let appData = JSON.parse(localStorage.getItem('brg_local_db')) || {
       home: defaultHome,
       menu: defaultMenu,
       agenda: defaultAgenda,
@@ -701,17 +682,7 @@
         document.getElementById('gh-token').value = githubConfig.token;
       }
       
-      // Escuta em tempo real absoluta via Firestore (Cloud)
-      db.collection("barguncados_live").doc("state").onSnapshot((doc) => {
-        if (doc.exists) {
-          const remote = doc.data();
-          if(remote) {
-            appData = { ...appData, ...remote };
-            renderApp();
-          }
-        }
-      });
-
+      await syncWithGitHub();
       renderApp();
       
       if(localStorage.getItem('brg_adm_logged') === 'true') {
@@ -720,16 +691,34 @@
       }
     }
 
-    async function saveCloudState() {
+    function persistLocal() {
+      localStorage.setItem('brg_local_db', JSON.stringify(appData));
       renderApp();
-      try {
-        await db.collection("barguncados_live").doc("state").set(appData, { merge: true });
-      } catch(e) {}
+    }
 
-      // Sincroniza com GitHub opcional
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
+    async function syncWithGitHub() {
+      const user = githubConfig.user || 'barguncadosrockbar';
+      const repo = githubConfig.repo || 'Bargun-ados';
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/data.json?t=` + new Date().getTime());
+        if(res.ok) {
+          const remote = await res.json();
+          // Preserva pendentes locais se houver
+          appData = { ...remote, pendingSongs: appData.pendingSongs || remote.pendingSongs || [], pendingMessages: appData.pendingMessages || remote.pendingMessages || [] };
+          persistLocal();
+        }
+      } catch(e) {}
+    }
+
+    async function saveChanges() {
+      persistLocal(); 
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        alert("✅ Salvo localmente! Para enviar ao GitHub, configure seu token na aba Banco de Dados.");
+        return;
+      }
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+
       try {
         let sha = null;
         const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
@@ -738,14 +727,21 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização ADM", content: contentBase64 };
+        const body = { message: "Atualização via Painel ADM", content: contentBase64 };
         if (sha) body.sha = sha;
-        await fetch(url, {
+
+        const putRes = await fetch(url, {
           method: 'PUT',
           headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-      } catch (e) {}
+
+        if(putRes.ok) {
+          alert("✅ Salvo e sincronizado com o GitHub com sucesso!");
+        }
+      } catch (e) {
+        alert("Salvo localmente com sucesso!");
+      }
     }
 
     function saveGitHubConfig() {
@@ -758,9 +754,9 @@
     }
 
     // =========================================
-    // CLIENTE ENVIA PEDIDO (GRAVAÇÃO INSTANTÂNEA NA NUVEM)
+    // INTERAÇÕES DE CLIENTES (DIRETO NO DISPOSITIVO / WHATSAPP BACKUP)
     // =========================================
-    async function submitUserSong() {
+    function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
       if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
@@ -777,12 +773,17 @@
       
       if(!appData.pendingSongs) appData.pendingSongs = [];
       appData.pendingSongs.push(newItem);
-      
-      await saveCloudState();
-      alert("✅ Pedido enviado com sucesso! Aguarde a aprovação.");
+      persistLocal();
+
+      // Redireciona opcionalmente para o WhatsApp do bar para garantir entrega imediata ao DJ se preferir
+      if(confirm("✅ Pedido cadastrado na fila do painel! Deseja enviar também direto no WhatsApp do DJ para tocar mais rápido?")) {
+        window.open(`https://wa.me/5511959427214?text=${encodeURIComponent(`🎵 PEDIDO DE SOM\nInstagram: ${newItem.ig}\nMúsica: ${newItem.text}`)}`, '_blank');
+      } else {
+        alert("✅ Pedido enviado para a fila do ADM!");
+      }
     }
 
-    async function submitUserMessage() {
+    function submitUserMessage() {
       const ig = document.getElementById('user-msg-ig').value.trim();
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
@@ -799,9 +800,9 @@
       
       if(!appData.pendingMessages) appData.pendingMessages = [];
       appData.pendingMessages.push(newItem);
-      
-      await saveCloudState();
-      alert("✅ Recado enviado com sucesso! Aguarde a aprovação.");
+      persistLocal();
+
+      alert("✅ Recado enviado para a moderação do ADM!");
     }
 
     // =========================================
@@ -1107,36 +1108,36 @@
       }
     }
 
-    async function approveSong(id) {
+    function approveSong(id) {
       const item = appData.pendingSongs.find(s => s.id === id);
       if(item) {
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        await saveCloudState();
-        alert("Pedido de som aprovado e publicado no site!");
+        saveChanges();
+        alert("Pedido aprovado e publicado no site!");
       }
     }
 
-    async function rejectSong(id) {
+    function rejectSong(id) {
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      await saveCloudState();
+      saveChanges();
     }
 
-    async function approveMsg(id) {
+    function approveMsg(id) {
       const item = appData.pendingMessages.find(m => m.id === id);
       if(item) {
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        await saveCloudState();
+        saveChanges();
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
-    async function rejectMsg(id) {
+    function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      await saveCloudState();
+      saveChanges();
     }
 
     let tempNewTabImg = '';
@@ -1144,7 +1145,7 @@
       handleImageUpload(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba carregada!'); });
     });
 
-    async function saveCustomTab() {
+    function saveCustomTab() {
       const originalId = document.getElementById('edit-tab-original-id').value;
       const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
       const name = document.getElementById('new-tab-name').value.trim();
@@ -1166,7 +1167,7 @@
         alert("Nova aba criada com sucesso!");
       }
       resetCustomTabForm();
-      await saveCloudState();
+      saveChanges();
     }
 
     function editCustomTab(id) {
@@ -1199,10 +1200,10 @@
       document.getElementById('custom-tab-cancel-btn').style.display = "none";
     }
 
-    async function removeCustomTab(id) {
+    function removeCustomTab(id) {
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
         appData.customTabs = appData.customTabs.filter(t => t.id !== id);
-        await saveCloudState();
+        saveChanges();
       }
     }
 
@@ -1414,16 +1415,16 @@
     document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada!'); }); });
     document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado!'); }); });
 
-    async function updateHomeImg(input) { handleImageUpload(input.files[0], async res => { appData.home.img = res; await saveCloudState(); alert('Banner Inicial Atualizado!'); }); }
-    async function updateFlyerMain(input) { handleImageUpload(input.files[0], async res => { appData.flyer.img = res; await saveCloudState(); alert('Flyer Destaque Atualizado!'); }); }
+    function updateHomeImg(input) { handleImageUpload(input.files[0], res => { appData.home.img = res; saveChanges(); alert('Banner Inicial Atualizado!'); }); }
+    function updateFlyerMain(input) { handleImageUpload(input.files[0], res => { appData.flyer.img = res; saveChanges(); alert('Flyer Destaque Atualizado!'); }); }
     
-    async function updateItemImg(id, input) { handleImageUpload(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveCloudState(); alert('Imagem salva!'); } }); }
-    async function updateAgendaImg(id, input) { handleImageUpload(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveCloudState(); alert('Mini Flyer atualizado!'); } }); }
-    async function updateTeamImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
-    async function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
-    async function updateArcadeImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
+    function updateItemImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Imagem salva!'); } }); }
+    function updateAgendaImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Mini Flyer atualizado!'); } }); }
+    function updateTeamImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar atualizado!'); } }); }
+    function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar atualizado!'); } }); }
+    function updateArcadeImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar atualizado!'); } }); }
 
-    async function saveHomeData() {
+    function saveHomeData() {
       appData.home.title = document.getElementById('adm-h-title').value;
       appData.home.desc1 = document.getElementById('adm-h-desc1').value;
       appData.home.desc2 = document.getElementById('adm-h-desc2').value;
@@ -1431,42 +1432,42 @@
       appData.home.promo1 = document.getElementById('adm-h-promo1').value;
       appData.home.promo2 = document.getElementById('adm-h-promo2').value;
       appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      await saveCloudState(); alert('Dados do Início Salvos!');
+      saveChanges(); alert('Dados do Início Salvos!');
     }
 
-    async function saveItemData(id) {
+    function saveItemData(id) {
        const item = appData.menu.find(i => i.id === id);
        if(item) {
           item.name = document.getElementById(`name-${id}`).value;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          await saveCloudState(); alert('Produto Salvo!');
+          saveChanges(); alert('Produto Salvo!');
        }
     }
 
-    async function saveAgendaData(id) {
+    function saveAgendaData(id) {
        const item = appData.agenda.find(i => i.id === id);
        if(item) {
           item.date = document.getElementById(`a-date-${id}`).value;
           item.title = document.getElementById(`a-title-${id}`).value;
           item.desc = document.getElementById(`a-desc-${id}`).value;
-          await saveCloudState(); alert('Evento Salvo!');
+          saveChanges(); alert('Evento Salvo!');
        }
     }
 
-    async function saveTeamData(id) {
+    function saveTeamData(id) {
        const t = appData.team.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
           t.role = document.getElementById(`trole-${id}`).value;
           t.ig = document.getElementById(`tig-${id}`).value;
           t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveCloudState(); alert('Membro salvo!');
+          saveChanges(); alert('Membro salvo!');
        }
     }
 
-    async function saveArcadeData(id) {
+    function saveArcadeData(id) {
        const t = appData.arcade.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`arc-name-${id}`).value;
@@ -1475,11 +1476,11 @@
           t.prize = document.getElementById(`arc-prize-${id}`).value;
           t.ig = document.getElementById(`arc-ig-${id}`).value;
           t.quote = document.getElementById(`arc-quote-${id}`).value;
-          await saveCloudState(); alert('Jogador salvo!');
+          saveChanges(); alert('Jogador salvo!');
        }
     }
 
-    async function saveCachaceiroData(id) {
+    function saveCachaceiroData(id) {
        const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
@@ -1487,11 +1488,11 @@
           t.score = document.getElementById(`ca-score-${id}`).value;
           t.prize = document.getElementById(`ca-prize-${id}`).value;
           t.quote = document.getElementById(`ca-quote-${id}`).value;
-          await saveCloudState(); alert('Cachaceiro salvo!');
+          saveChanges(); alert('Cachaceiro salvo!');
        }
     }
 
-    async function addMenuItem() {
+    function addMenuItem() {
       const name = document.getElementById('new-item-name').value;
       const price = document.getElementById('new-item-price').value;
       if(!name || !price) return alert("Preencha nome e preço.");
@@ -1500,26 +1501,26 @@
         name: name, short: document.getElementById('new-item-short').value,
         full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
       });
-      await saveCloudState(); alert('Produto Adicionado ao Cardápio!');
+      saveChanges(); alert('Produto Adicionado ao Cardápio!');
     }
 
-    async function addAgendaItem() {
+    function addAgendaItem() {
       const title = document.getElementById('new-ev-title').value;
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
       appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
-      await saveCloudState(); alert('Evento Adicionado!');
+      saveChanges(); alert('Evento Adicionado!');
     }
 
-    async function removeMenuItem(id) { if(confirm('Apagar item?')) { appData.menu = appData.menu.filter(i => i.id !== id); await saveCloudState(); } }
-    async function removeAgendaItem(id) { if(confirm('Apagar evento?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); await saveCloudState(); } }
+    function removeMenuItem(id) { if(confirm('Apagar item?')) { appData.menu = appData.menu.filter(i => i.id !== id); saveChanges(); } }
+    function removeAgendaItem(id) { if(confirm('Apagar evento?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); saveChanges(); } }
 
-    async function saveFlyerData() {
+    function saveFlyerData() {
       appData.flyer.tag = document.getElementById('adm-f-tag').value;
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
       appData.flyer.desc = document.getElementById('adm-f-desc').value;
-      await saveCloudState(); alert("Dados do Destaque Salvos!");
+      saveChanges(); alert("Dados do Destaque Salvos!");
     }
 
     function openMenuModalObj(name, desc, price, img) {
