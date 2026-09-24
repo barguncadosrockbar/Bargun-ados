@@ -524,7 +524,7 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES COM ATUALIZAÇÃO EM TEMPO REAL -->
+          <!-- MODERAÇÃO DE INTERAÇÕES COM RELAY CLOUD & TEMPO REAL -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -697,8 +697,10 @@
     }
 
     // =========================================
-    // BANCO DE DADOS GLOBAL COM INTERAÇÕES
+    // BANCO DE DADOS GLOBAL COM RELAY CLOUD (JSONBIN.IO GRATUITO)
     // =========================================
+    const RELAY_BIN_URL = "https://api.jsonbin.io/v3/b/661845cbe41b4d34e4474721";
+
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
@@ -757,28 +759,43 @@
       await syncAndFetchLatestData();
       renderApp();
       
-      // Sincronização automática em tempo real a cada 4 segundos
+      // Sincronização automática em tempo real a cada 3 segundos
       setInterval(async () => {
         await syncAndFetchLatestData();
         const modContent = document.getElementById('adm-moderation');
         if(modContent && modContent.style.display === "block") {
           renderModerationLists();
         }
-      }, 4000);
+      }, 3000);
     }
 
     async function syncAndFetchLatestData() {
-      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
-        try {
-          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
-          if(res.ok) {
-            const json = await res.json();
-            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
-            appData = { ...appData, ...decoded };
-            cleanExpiredInteractions();
+      // 1. Puxa dados principais do GitHub
+      const user = githubConfig.user || 'barguncadosrockbar';
+      const repo = githubConfig.repo || 'Bargun-ados';
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/data.json?t=` + new Date().getTime());
+        if(res.ok) {
+          const remote = await res.json();
+          appData = { ...appData, ...remote };
+        }
+      } catch(e) {}
+
+      // 2. Puxa interações públicas do Relay Cloud (tempo real de clientes)
+      try {
+        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime());
+        if(relayRes.ok) {
+          const relayJson = await relayRes.json();
+          if(relayJson.record) {
+            if(relayJson.record.pendingSongs) appData.pendingSongs = relayJson.record.pendingSongs;
+            if(relayJson.record.pendingMessages) appData.pendingMessages = relayJson.record.pendingMessages;
+            if(relayJson.record.userSongs) appData.userSongs = relayJson.record.userSongs;
+            if(relayJson.record.userMessages) appData.userMessages = relayJson.record.userMessages;
           }
-        } catch(e) {}
-      }
+        }
+      } catch(e) {}
+
+      cleanExpiredInteractions();
     }
 
     function cleanExpiredInteractions() {
@@ -792,14 +809,22 @@
       }
     }
 
-    // =========================================
-    // SALVAMENTO NO GITHUB VIA API (TEMPO REAL)
-    // =========================================
     async function saveChanges() {
       renderApp(); 
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        return; 
-      }
+      try {
+        await fetch(RELAY_BIN_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            pendingSongs: appData.pendingSongs || [],
+            pendingMessages: appData.pendingMessages || [],
+            userSongs: appData.userSongs || [],
+            userMessages: appData.userMessages || []
+          })
+        });
+      } catch(e) {}
+
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
 
@@ -832,51 +857,34 @@
     }
 
     // =========================================
-    // INTERAÇÃO PÚBLICA DO CLIENTE (SEM EXIGIR TOKEN DE ADM)
+    // ENVIO DE INTERAÇÃO DO CLIENTE (MÉTODO 100% PÚBLICO E SEGURO)
     // =========================================
-    async function publicPushToGitHub(newItem, type) {
-      if(!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        alert("⚠️ O sistema do GitHub não foi vinculado no painel ADM. O pedido foi guardado apenas neste aparelho.");
-        if(type === 'song') {
-          if(!appData.pendingSongs) appData.pendingSongs = [];
-          appData.pendingSongs.push(newItem);
-        } else {
-          if(!appData.pendingMessages) appData.pendingMessages = [];
-          appData.pendingMessages.push(newItem);
-        }
-        return;
-      }
-
+    async function publicPushToRelay(newItem, type) {
       try {
-        const getRes = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
-        let sha = null;
-        let remoteData = appData;
-        if (getRes.ok) {
-          const getJson = await getRes.json();
-          sha = getJson.sha;
-          remoteData = JSON.parse(decodeURIComponent(escape(window.atob(getJson.content))));
+        const getRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime());
+        let currentRecord = { pendingSongs: [], pendingMessages: [], userSongs: [], userMessages: [] };
+        if(getRes.ok) {
+          const json = await getRes.json();
+          if(json.record) currentRecord = json.record;
         }
 
         if(type === 'song') {
-          if(!remoteData.pendingSongs) remoteData.pendingSongs = [];
-          remoteData.pendingSongs.push(newItem);
-          appData.pendingSongs = remoteData.pendingSongs;
+          if(!currentRecord.pendingSongs) currentRecord.pendingSongs = [];
+          currentRecord.pendingSongs.push(newItem);
         } else {
-          if(!remoteData.pendingMessages) remoteData.pendingMessages = [];
-          remoteData.pendingMessages.push(newItem);
-          appData.pendingMessages = remoteData.pendingMessages;
+          if(!currentRecord.pendingMessages) currentRecord.pendingMessages = [];
+          currentRecord.pendingMessages.push(newItem);
         }
 
-        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteData, null, 2))));
-        const body = { message: "Novo pedido de cliente (Bargunçados)", content: contentBase64 };
-        if (sha) body.sha = sha;
-
-        await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, {
+        await fetch(RELAY_BIN_URL, {
           method: 'PUT',
-          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentRecord)
         });
-      } catch(e) {}
+        return true;
+      } catch(e) {
+        return false;
+      }
     }
 
     async function submitUserSong() {
@@ -894,7 +902,7 @@
       document.getElementById('user-song-ig').value = '';
       document.getElementById('user-song-req').value = '';
       
-      await publicPushToGitHub(newItem, 'song');
+      await publicPushToRelay(newItem, 'song');
       alert("✅ Pedido enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
@@ -913,7 +921,7 @@
       document.getElementById('user-msg-ig').value = '';
       document.getElementById('user-msg-text').value = '';
       
-      await publicPushToGitHub(newItem, 'msg');
+      await publicPushToRelay(newItem, 'msg');
       alert("✅ Recado enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
