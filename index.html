@@ -320,7 +320,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO -->
+    <!-- NAVEGAÇÃO (Sem Sticky - Rola junto com a página) -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -332,6 +332,7 @@
         <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
         <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
         <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
+        <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
         <button class="tab-btn" onclick="switchTab('admin')" style="color: var(--c-red); font-weight: bold; border-color: var(--c-red);">⚙️ ADM</button>
       </nav>
     </div>
@@ -422,6 +423,21 @@
         </div>
       </section>
 
+      <!-- COMO CHEGAR (NOVA ABA NATIVA PEDIDA) -->
+      <section id="como-chegar" class="tab-pane">
+        <h2 class="section-title">Como Chegar</h2>
+        <div class="glass-panel contact-card">
+          <h3 style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 10px;">📍 NOSSO ENDEREÇO</h3>
+          <p style="color: #fff; font-size: 1.1rem; margin-bottom: 20px; font-weight: 600;">Rua Assis Abude, 197 - Pimentas<br>Guarulhos - SP</p>
+          <p style="color: #ccc; margin-bottom: 25px; font-size: 0.95rem;">Clique no botão abaixo para traçar a rota direto no seu GPS do celular:</p>
+          <a href="https://maps.google.com/?q=Rua+Assis+Abude+197+Guarulhos+SP" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, #4285F4, #34A853); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🗺️ ABRIR NO GOOGLE MAPS</a>
+          
+          <div class="map-container" style="margin-top: 25px;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.136585125484!2d-46.3887!3d-23.4332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce614120cfd4bf%3A0x8e8331da29d1a8e2!2sR.%20Assis%20Abude%2C%20197%20-%20Pimentas%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1650000000000!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
       <!-- ÁREA DO ADMINISTRADOR -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
@@ -453,7 +469,7 @@
             </div>
           </div>
 
-          <!-- CRIADOR DE ABAS DINÂMICAS COM OPÇÃO DE EDITAR -->
+          <!-- CRIADOR / EDITOR DE ABAS DINÂMICAS -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
           <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
@@ -879,7 +895,9 @@
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
         btn.innerText = tab.name;
-        navContainer.insertBefore(btn, navContainer.lastElementChild);
+        // Insere antes do botão Como Chegar
+        const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
+        navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
         const section = document.createElement('section');
         section.id = tab.id;
@@ -939,7 +957,6 @@
       if(!appData.customTabs) appData.customTabs = [];
 
       if(originalId) {
-        // Modo Edição
         const tab = appData.customTabs.find(t => t.id === originalId);
         if(tab) {
           tab.id = id;
@@ -950,7 +967,6 @@
         }
         alert("Aba atualizada com sucesso!");
       } else {
-        // Modo Criação
         appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
         alert("Nova aba criada com sucesso!");
       }
@@ -973,7 +989,6 @@
       document.getElementById('custom-tab-submit-btn').innerText = "💾 Salvar Alterações da Aba";
       document.getElementById('custom-tab-cancel-btn').style.display = "inline-block";
       
-      // Abre o acordeão se estiver fechado
       document.getElementById('adm-new-tab').style.display = "block";
       document.getElementById('adm-new-tab').previousElementSibling.classList.add("active");
     }
