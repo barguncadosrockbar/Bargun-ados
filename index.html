@@ -17,6 +17,7 @@
 
     :root {
       --bg-dark: #050505;
+      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -76,7 +77,7 @@
     .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
     /* =========================================
-       3. RÁDIO E CABEÇALHO (Logotipo 100% Alinhado)
+       3. RÁDIO E CABEÇALHO
        ========================================= */
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -698,7 +699,7 @@
     // =========================================
     // BANCO DE DADOS GLOBAL COM INTERAÇÕES
     // =========================================
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -756,7 +757,7 @@
       await syncAndFetchLatestData();
       renderApp();
       
-      // Sincronização automática a cada 4 segundos para o ADM ver os pedidos chegando sem F5
+      // Sincronização automática em tempo real a cada 4 segundos
       setInterval(async () => {
         await syncAndFetchLatestData();
         const modContent = document.getElementById('adm-moderation');
@@ -792,7 +793,7 @@
     }
 
     // =========================================
-    // SALVAMENTO NO GITHUB COM SUPORTE A CRIAÇÃO DE ARQUIVO
+    // SALVAMENTO NO GITHUB (COM SUPORTE PÚBLICO E CACHE BYPASS)
     // =========================================
     async function saveChanges() {
       renderApp(); 
@@ -810,7 +811,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Sincronização em tempo real (Bargunçados)", content: contentBase64 };
+        const body = { message: "Atualização em tempo real (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         await fetch(url, {
@@ -831,27 +832,74 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (COM AVISO DE AGUARDAR)
+    // INTERAÇÃO DO CLIENTE (ENVIO PÚBLICO DIRETO AO GITHUB)
     // =========================================
+    async function publicPushToGitHub(newItem, type) {
+      if(!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        // Fallback local se o GitHub não estiver vinculado no ADM
+        if(type === 'song') {
+          if(!appData.pendingSongs) appData.pendingSongs = [];
+          appData.pendingSongs.push(newItem);
+        } else {
+          if(!appData.pendingMessages) appData.pendingMessages = [];
+          appData.pendingMessages.push(newItem);
+        }
+        return true;
+      }
+
+      try {
+        // Puxa a versão mais atual da nuvem
+        const getRes = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
+        let sha = null;
+        let remoteData = appData;
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+          remoteData = JSON.parse(decodeURIComponent(escape(window.atob(getJson.content))));
+        }
+
+        if(type === 'song') {
+          if(!remoteData.pendingSongs) remoteData.pendingSongs = [];
+          remoteData.pendingSongs.push(newItem);
+          appData.pendingSongs = remoteData.pendingSongs;
+        } else {
+          if(!remoteData.pendingMessages) remoteData.pendingMessages = [];
+          remoteData.pendingMessages.push(newItem);
+          appData.pendingMessages = remoteData.pendingMessages;
+        }
+
+        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(remoteData, null, 2))));
+        const body = { message: "Novo pedido de cliente (Bargunçados)", content: contentBase64 };
+        if (sha) body.sha = sha;
+
+        const putRes = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        return putRes.ok;
+      } catch(e) {
+        return false;
+      }
+    }
+
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
       if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
       
-      await syncAndFetchLatestData();
-
-      if(!appData.pendingSongs) appData.pendingSongs = [];
-      appData.pendingSongs.push({
+      const newItem = {
         id: Date.now(),
         ig: ig.startsWith('@') ? ig : '@' + ig,
         text: req,
         timestamp: Date.now()
-      });
+      };
 
       document.getElementById('user-song-ig').value = '';
       document.getElementById('user-song-req').value = '';
       
-      await saveChanges();
+      await publicPushToGitHub(newItem, 'song');
       alert("✅ Pedido enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
@@ -860,20 +908,17 @@
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
       
-      await syncAndFetchLatestData();
-
-      if(!appData.pendingMessages) appData.pendingMessages = [];
-      appData.pendingMessages.push({
+      const newItem = {
         id: Date.now(),
         ig: ig.startsWith('@') ? ig : '@' + ig,
         text: text,
         timestamp: Date.now()
-      });
+      };
 
       document.getElementById('user-msg-ig').value = '';
       document.getElementById('user-msg-text').value = '';
       
-      await saveChanges();
+      await publicPushToGitHub(newItem, 'msg');
       alert("✅ Recado enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
@@ -1128,7 +1173,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO
+    // ADMIN ACORDEÃO E MODERAÇÃO EM TEMPO REAL
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
