@@ -160,8 +160,13 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING COM TÍTULOS DE HONRA
+       8. LISTAS DE RANKING UNIFICADAS & TÍTULOS
        ========================================= */
+    .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+    .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+    .rank-switch-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .rank-switch-btn.active { background: rgba(0, 188, 212, 0.2); border-color: var(--c-cyan); color: #fff; box-shadow: 0 0 15px rgba(0,188,212,0.3); }
+
     .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
     .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
     .lb-item.clickable:hover { background: rgba(233,30,99,0.1); border-color: var(--c-pink); cursor: pointer; transform: translateX(5px); }
@@ -341,8 +346,7 @@
         <button class="tab-btn" onclick="switchTab('bebidas')">Bebidas</button>
         <button class="tab-btn" onclick="switchTab('porcoes')">Porções</button>
         <button class="tab-btn" onclick="switchTab('shows')">Agenda</button>
-        <button class="tab-btn" onclick="switchTab('fliperama')">Arcade</button>
-        <button class="tab-btn" onclick="switchTab('bebedores')">Rankings</button>
+        <button class="tab-btn" onclick="switchTab('rankings')">Rankings 🏆</button>
         <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
         <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
         <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
@@ -389,19 +393,28 @@
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
-      <!-- FLIPERAMA DINÂMICO -->
-      <section id="fliperama" class="tab-pane">
-        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
-        <h2 class="section-title" style="font-size: 1.6rem; color: var(--c-yellow);">🏆 ARCADE RANKING TOP 10</h2>
-        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes para ver a provocação!)</p>
-        <div class="leaderboard-list" id="dynamic-arcade-list"></div>
-      </section>
+      <!-- RANKINGS UNIFICADOS (Arcade + Cachaceiros com Botão de Alternância) -->
+      <section id="rankings" class="tab-pane">
+        <h2 class="section-title">Mural de Honra & Rankings</h2>
+        
+        <!-- Botões para alternar entre Arcade e Cachaceiros -->
+        <div class="rankings-switch">
+          <button class="rank-switch-btn active" id="btn-switch-arcade" onclick="switchRankingView('arcade')">🕹️ Arcade Top 10</button>
+          <button class="rank-switch-btn" id="btn-switch-cachaceiros" onclick="switchRankingView('cachaceiros')">🍻 Cachaceiros Top 10</button>
+        </div>
 
-      <!-- CACHACEIROS DINÂMICO -->
-      <section id="bebedores" class="tab-pane">
-        <h2 class="section-title" style="font-size: 1.6rem; color: var(--c-pink);">🍻 TOP 10 CACHACEIROS</h2>
-        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes para ver o recado!)</p>
-        <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
+        <!-- Visão Arcade -->
+        <div id="rankings-view-arcade">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação!)</p>
+          <div class="leaderboard-list" id="dynamic-arcade-list"></div>
+        </div>
+
+        <!-- Visão Cachaceiros -->
+        <div id="rankings-view-cachaceiros" style="display: none;">
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado!)</p>
+          <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
+        </div>
       </section>
 
       <!-- SHOWS / AGENDA -->
@@ -453,11 +466,10 @@
         </div>
       </section>
 
-      <!-- INTERAÇÃO CLIENTES (Mural de Recados & O que quer ouvir) -->
+      <!-- INTERAÇÃO CLIENTES (Mural & Pedir Som) -->
       <section id="interaja" class="tab-pane">
         <h2 class="section-title">Mural & Pedidos de Som</h2>
         
-        <!-- Caixa para Pedir Som -->
         <div class="glass-panel interaction-box">
           <h3>🎸 O que você quer ouvir hoje?</h3>
           <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Mande sua banda ou música favorita para o DJ tocar na casa!</p>
@@ -466,7 +478,6 @@
           <button class="action-btn" onclick="submitUserSong()" style="background:var(--c-yellow); color:#000; width:100%;">Enviar Pedido de Som 🎵</button>
         </div>
 
-        <!-- Caixa para Deixar Recado -->
         <div class="glass-panel interaction-box" style="border-color: var(--c-pink);">
           <h3 style="color: var(--c-pink);">💬 Mural de Recados da Galera</h3>
           <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Deixe um recado, salve para a resenha ou mande um salve para o bar!</p>
@@ -475,7 +486,6 @@
           <button class="action-btn" onclick="submitUserMessage()" style="background:var(--c-pink); color:#fff; width:100%;">Publicar no Mural ⚡</button>
         </div>
 
-        <!-- Mural Público Atualizado -->
         <h3 style="font-family: var(--font-title); font-size: 1.6rem; color: #fff; margin: 2rem 0 1rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">🎵 PEDIDOS DE SOM APROVADOS</h3>
         <div id="public-songs-feed"></div>
 
@@ -726,10 +736,10 @@
       cachaceiros: defaultCachaceiros,
       flyer: defaultFlyer,
       customTabs: [],
-      userSongs: [],       // Pedidos de som aprovados
-      pendingSongs: [],    // Pedidos de som pendentes de moderação
-      userMessages: [],    // Recados aprovados
-      pendingMessages: []  // Recados pendentes de moderação
+      userSongs: [],
+      pendingSongs: [],
+      userMessages: [],
+      pendingMessages: []
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -747,13 +757,12 @@
         if(response.ok) {
           const remoteData = await response.json();
           appData = { ...appData, ...remoteData };
-          cleanExpiredInteractions(); // Limpa itens com mais de 16h
+          cleanExpiredInteractions();
         }
       } catch(e) {}
       renderApp();
     }
 
-    // Limpa recados e músicas após 16 horas
     function cleanExpiredInteractions() {
       const now = Date.now();
       const sixteenHours = 16 * 60 * 60 * 1000;
@@ -771,7 +780,7 @@
     async function saveChanges() {
       renderApp(); 
       if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        return; // Salva localmente sem alertar em interações de clientes
+        return; 
       }
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
@@ -784,7 +793,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização via Painel ADM / Interação Cliente", content: contentBase64 };
+        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         await fetch(url, {
@@ -805,9 +814,9 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (Envio para moderação)
+    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO IMEDIATA)
     // =========================================
-    function submitUserSong() {
+    async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
       if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
@@ -822,11 +831,12 @@
 
       document.getElementById('user-song-ig').value = '';
       document.getElementById('user-song-req').value = '';
+      
+      await saveChanges();
       alert("🎵 Pedido enviado para a moderação da casa! Em breve vai rolar no som.");
-      saveChanges();
     }
 
-    function submitUserMessage() {
+    async function submitUserMessage() {
       const ig = document.getElementById('user-msg-ig').value.trim();
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
@@ -841,24 +851,30 @@
 
       document.getElementById('user-msg-ig').value = '';
       document.getElementById('user-msg-text').value = '';
+      
+      await saveChanges();
       alert("⚡ Recado enviado para moderação! Assim que aprovado, aparecerá no mural.");
-      saveChanges();
     }
 
     // =========================================
     // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
-    function getHonorTitle(index, type) {
-      if(type === 'arcade') {
-        if(index === 0) return '👑 Lenda Viva do Arcade';
-        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
-        if(index === 2) return '🕹️ Mestre dos Controles';
-        return '🎮 Veterano do Fliperama';
+    function switchRankingView(view) {
+      const btnArcade = document.getElementById('btn-switch-arcade');
+      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
+      const viewArcade = document.getElementById('rankings-view-arcade');
+      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
+
+      if(view === 'arcade') {
+        btnArcade.classList.add('active');
+        btnCachaceiros.classList.remove('active');
+        viewArcade.style.display = 'block';
+        viewCachaceiros.style.display = 'none';
       } else {
-        if(index === 0) return '🏆 Campeão Supremo do Fígado';
-        if(index === 1) return '🍻 Senhor dos Destilados';
-        if(index === 2) return '🥃 Gladiador do Copo Cheio';
-        return '🍷 Guerreiro da Cachaça';
+        btnCachaceiros.classList.add('active');
+        btnArcade.classList.remove('active');
+        viewCachaceiros.style.display = 'block';
+        viewArcade.style.display = 'none';
       }
     }
 
@@ -883,7 +899,7 @@
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
 
-      // MENU (Com correção de aspas e pop-up)
+      // MENU
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
       drinksContainer.innerHTML = ''; portionsContainer.innerHTML = '';
@@ -953,7 +969,7 @@
           </div>`;
       });
 
-      // RANKINGS
+      // RANKINGS UNIFICADOS
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -994,12 +1010,8 @@
         </div>`;
       }).join('');
 
-      // RENDERIZAR MURAL E PEDIDOS PÚBLICOS
       renderPublicInteractions();
-
-      // RENDERIZAR ABAS CUSTOMIZADAS
       renderCustomTabs(cCustomTabs);
-
       renderAdminLists();
     }
 
@@ -1047,8 +1059,8 @@
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
         btn.innerText = tab.name;
-        const interajaBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('interaja'));
-        navContainer.insertBefore(btn, interajaBtn || navContainer.lastElementChild);
+        const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
+        navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
         const section = document.createElement('section');
         section.id = tab.id;
@@ -1079,7 +1091,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO DE INTERAÇÕES
+    // ADMIN ACORDEÃO E MODERAÇÃO
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
@@ -1132,39 +1144,39 @@
       }
     }
 
-    function approveSong(id) {
+    async function approveSong(id) {
       const item = appData.pendingSongs.find(s => s.id === id);
       if(item) {
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        saveChanges();
+        await saveChanges();
         renderModerationLists();
         alert("Pedido de som aprovado e publicado no site!");
       }
     }
 
-    function rejectSong(id) {
+    async function rejectSong(id) {
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      saveChanges();
+      await saveChanges();
       renderModerationLists();
     }
 
-    function approveMsg(id) {
+    async function approveMsg(id) {
       const item = appData.pendingMessages.find(m => m.id === id);
       if(item) {
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        saveChanges();
+        await saveChanges();
         renderModerationLists();
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
-    function rejectMsg(id) {
+    async function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      saveChanges();
+      await saveChanges();
       renderModerationLists();
     }
 
@@ -1666,7 +1678,7 @@
     document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
     // =========================================
-    // CANVAS SPARKS LEVE & NÉVOA DE PALCO (IDÉIA 3)
+    // CANVAS SPARKS LEVE
     // =========================================
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
