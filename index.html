@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BARGUNÇADOS ROCK BAR | Pub, Arcade & Metal</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -78,10 +79,7 @@
     /* =========================================
        3. RÁDIO E CABEÇALHO
        ========================================= */
-    .radio-player-bar {
-      border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan);
-      display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px;
-    }
+    .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
     .radio-cover { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-pink); animation: spinRecord 4s linear infinite paused; }
     @keyframes spinRecord { to { transform: rotate(360deg); } }
@@ -105,11 +103,7 @@
        ========================================= */
     .nav-container { background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
-    .tab-btn {
-      flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); 
-      font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; 
-      border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase;
-    }
+    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
     .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.2); border-color: var(--c-pink); box-shadow: inset 0 0 10px rgba(233,30,99,0.3); }
 
@@ -198,28 +192,18 @@
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* =========================================
-       10. DIRETORIA, PROMOTERS E CONTATO
+       10. DIRETORIA E CONTATO (Com Efeitos)
        ========================================= */
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
-    
-    /* Efeitos de Destaque na Diretoria */
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; transition: all 0.4s ease; border-top: 2px solid transparent;}
     .dir-card:hover { transform: translateY(-8px); border-top-color: var(--card-color, var(--c-cyan)); box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.05); z-index: 5;}
-    
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: all 0.4s ease;}
     .dir-card:hover .dir-img { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 25px var(--card-color, var(--c-cyan)); }
-    
     .dir-name { font-family: var(--font-title); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px;}
     .dir-role { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
     .dir-desc { color: #aaa; font-size: 0.95rem; line-height: 1.5; margin-top: 15px; }
 
-    /* Botão Instagram Destaque */
-    .ig-button {
-      display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink));
-      padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); 
-      text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px;
-      transition: all 0.3s ease; margin: 10px 0 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
+    .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; transition: all 0.3s ease; margin: 10px 0 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .ig-button span { color: #fff; font-family: var(--font-body); font-weight: bold; font-size: 0.85rem; letter-spacing: 0;}
     .ig-button:hover { background: var(--card-color, var(--c-pink)); color: #000 !important; box-shadow: 0 0 20px var(--card-color, var(--c-pink)); transform: scale(1.05); }
     .ig-button:hover span { color: #000 !important; }
@@ -232,36 +216,28 @@
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
 
     /* =========================================
-       11. PAINEL DE ADMINISTRAÇÃO ACORDEÃO
+       11. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
        ========================================= */
     .admin-login-box { text-align: center; padding: 40px 15px; }
     
-    .admin-accordion-btn {
-      background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; 
-      border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; 
-      border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
+    .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
-    
-    .admin-accordion-content {
-      padding: 20px; display: none; background: rgba(0,0,0,0.6); 
-      border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; 
-      margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
+    .admin-accordion-content { padding: 20px; display: none; background: rgba(0,0,0,0.6); border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; position: relative;}
     .admin-card-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .admin-input { flex: 1; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); min-width: 120px; }
     .admin-textarea { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); resize: vertical; }
-    
     .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: #333; padding: 8px 15px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; flex: 1; border: 1px solid #555;}
     .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-    
     .action-btn { background: var(--c-cyan); color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s;}
     .action-btn:hover { filter: brightness(1.2); }
     .del-btn { background: var(--c-red); color: #fff;}
+
+    /* Status de Conexão GitHub ADM */
+    .gh-status { padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 0.9rem; }
+    .gh-status.offline { background: rgba(255,0,0,0.1); border: 1px solid var(--c-red); color: var(--c-red); }
+    .gh-status.online { background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; }
 
     footer { background: rgba(5,5,8,0.6); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -424,7 +400,7 @@
         <div id="dynamic-agenda-list" class="agenda-mini-grid"></div>
       </section>
 
-      <!-- DIRETORIA DINÂMICA (Com Destaques de Redes Sociais e Efeitos) -->
+      <!-- DIRETORIA DINÂMICA -->
       <section id="diretoria" class="tab-pane">
         <h2 class="section-title">A Diretoria</h2>
         <div class="dir-grid" id="dynamic-dir-list"></div>
@@ -447,30 +423,41 @@
         </div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR TOTAL MANUAL EM BLOCOS EXPANSÍVEIS (ACORDEÃO) -->
+      <!-- ÁREA DO ADMINISTRADOR COM INTEGRAÇÃO GITHUB (Headless CMS) -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail Administrativo para liberar o painel.</p>
-          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Digite o E-mail Autorizado" autocomplete="off">
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira as credenciais para acessar o painel de edição do site.</p>
+          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
           <button class="btn-fire" onclick="processManualLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
         </div>
 
         <div id="admin-dashboard" style="display: none;">
           
-          <div style="background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-weight: bold;">
-            Acesso Liberado: Painel de Controle Ativo
+          <!-- NOVO: CONFIGURAÇÃO DO GITHUB PARA SALVAR DIRETO NO REPOSITÓRIO -->
+          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
+          <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
+            <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
+                <input type="text" class="admin-input" id="gh-repo" placeholder="Repositório (ex: Bargun-ados)">
+              </div>
+              <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
+              <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
+            </div>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Nota: Ao vincular, todos os botões de "Salvar" nos painéis abaixo farão upload automático do arquivo data.json direto no seu GitHub!</p>
           </div>
 
           <!-- ADM INICIO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
           <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card">
-              
-              <h5 style="color:#fff; margin-top:5px; margin-bottom: 5px;">Frase do Topo (Letreiro)</h5>
+              <h5 style="color:#fff; margin-top:5px; margin-bottom: 5px;">Frase do Topo (Letreiro Caveira)</h5>
               <input type="text" class="admin-input" id="adm-h-promo-banner" placeholder="SÓ ROCK, CERVEJA E CACHAÇA" style="margin-bottom: 15px; border-color: var(--c-yellow);">
 
               <div class="file-upload-wrapper">
@@ -504,8 +491,8 @@
                 <input type="text" class="admin-input" id="adm-f-title" placeholder="Nome da Banda">
                 <input type="text" class="admin-input" id="adm-f-sub" placeholder="Subtítulo">
               </div>
-              <textarea class="admin-textarea" id="adm-f-desc" rows="2" placeholder="Descrição"></textarea>
-              <button class="action-btn" onclick="saveFlyerData()" style="margin-top: 5px;">💾 Salvar Dados Destaque</button>
+              <textarea class="admin-textarea" id="adm-f-desc" rows="2" placeholder="Descrição" style="margin-top:10px;"></textarea>
+              <button class="action-btn" onclick="saveFlyerData()" style="margin-top: 10px;">💾 Salvar Dados Destaque</button>
             </div>
 
             <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Adicionar Mini Flyer</h5>
@@ -531,7 +518,6 @@
           <!-- ADM CARDÁPIO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-cardapio')">🍔 Gerenciar Cardápio</button>
           <div id="adm-cardapio" class="admin-accordion-content" style="border-color: var(--c-pink);">
-            
             <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Novo Item</h5>
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
@@ -555,12 +541,12 @@
               </div>
             </div>
 
-            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Itens no Cardápio (Quadradinhos)</h5>
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Itens no Cardápio</h5>
             <div id="admin-menu-list"></div>
           </div>
 
           <!-- ADM DIRETORIA -->
-          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-equipe')">👔 Gerenciar Equipe (Diretores & Promoters)</button>
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-equipe')">👔 Gerenciar Equipe</button>
           <div id="adm-equipe" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div id="admin-team-list"></div>
           </div>
@@ -585,7 +571,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace;">Otimizado via Vanilla JS. ADM Dinâmico com Storage Nativo.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace;">Otimizado via Vanilla JS. Sistema Headless (GitHub API).</p>
     </footer>
 
   </div>
@@ -600,22 +586,11 @@
     }
 
     // =========================================
-    // BANCO DE DADOS LOCAL COMPLETO (Versão _v4)
+    // ARQUITETURA DE BANCO DE DADOS GLOBAL
     // =========================================
     
-    // HOME DATA
-    const defaultHome = {
-      promoBannerText: "SÓ ROCK, CERVEJA E CACHAÇA",
-      title: "SOM PESADO & BEBIDA TRINCANDO",
-      desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.",
-      desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.",
-      promoTitle: "🔥 DIVERSÃO GARANTIDA",
-      promo1: "🎸 Agenda de Shows Coberta o Mês Todo",
-      promo2: "🕹️ Fliperama Arcades Liberados",
-      promo3: "🍻 Bebidas Baratas & Porções Brutas",
-      img: ""
-    };
-
+    // Dados Padrões Iniciais
+    const defaultHome = { promoBannerText: "SÓ ROCK, CERVEJA E CACHAÇA", title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -630,54 +605,169 @@
       { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
       { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
     ];
-
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
       { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
-
     const defaultTeam = [
       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
       { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
       { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
       { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
     ];
-
     const defaultArcade = Array.from({length: 10}, (_, i) => ({
       id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', 
       quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff'
     }));
-
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({
       id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', 
       quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff'
     }));
+    const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
 
-    let currentHome = JSON.parse(localStorage.getItem('brg_home_v4')) || defaultHome;
-    let currentMenu = JSON.parse(localStorage.getItem('brg_menu_v4')) || defaultMenu;
-    let currentAgenda = JSON.parse(localStorage.getItem('brg_agenda_v4')) || defaultAgenda;
-    let currentTeam = JSON.parse(localStorage.getItem('brg_team_v4')) || defaultTeam;
-    let currentArcade = JSON.parse(localStorage.getItem('brg_arcade_v4')) || defaultArcade;
-    let currentCachaceiros = JSON.parse(localStorage.getItem('brg_cachaceiros_v4')) || defaultCachaceiros;
-    let currentFlyer = JSON.parse(localStorage.getItem('brg_flyer_v4')) || { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
+    // Estrutura Principal Global
+    let appData = {
+      home: defaultHome,
+      menu: defaultMenu,
+      agenda: defaultAgenda,
+      team: defaultTeam,
+      arcade: defaultArcade,
+      cachaceiros: defaultCachaceiros,
+      flyer: defaultFlyer
+    };
+
+    // Configuração do GitHub local
+    let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
+
+    // =========================================
+    // BOOT & FETCH (Busca os dados do GitHub se existirem)
+    // =========================================
+    async function initApp() {
+      // Atualiza o Status Visual no ADM se as credenciais existirem
+      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+        document.getElementById('gh-status').className = 'gh-status online';
+        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅ (As alterações irão direto para o ar)';
+        document.getElementById('gh-user').value = githubConfig.user;
+        document.getElementById('gh-repo').value = githubConfig.repo;
+        document.getElementById('gh-token').value = githubConfig.token;
+      }
+
+      try {
+        // Tenta buscar o arquivo de dados público (Bypass cache com timestamp)
+        const response = await fetch('data.json?t=' + new Date().getTime());
+        if(response.ok) {
+          const remoteData = await response.json();
+          // Mescla os dados para evitar quebra caso faltem arrays
+          appData = { ...appData, ...remoteData };
+          console.log("Dados carregados do Servidor (data.json).");
+        } else {
+          console.log("data.json não encontrado. Rodando com dados padrão.");
+        }
+      } catch(e) {
+        console.log("Erro de conexão ao buscar data.json. Rodando com dados padrão.");
+      }
+      renderApp();
+    }
+
+    // =========================================
+    // SALVAMENTO NO GITHUB VIA API
+    // =========================================
+    async function saveChanges() {
+      // 1. Atualiza visualmente na mesma hora
+      renderApp();
+
+      // 2. Se não tem token, salva apenas no LocalStorage como Fallback e avisa
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        alert("⚠️ Dados salvos APENAS LOCALMENTE no seu navegador porque o GitHub não está configurado na aba 'Banco de Dados'.");
+        return;
+      }
+
+      // 3. Processo de Salvar no GitHub
+      const path = 'data.json';
+      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+
+      // Aviso de Carregamento
+      const btnToReset = document.activeElement;
+      const originalText = btnToReset.innerText;
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = '⏳ Salvando Nuvem...';
+
+      try {
+        // Passo A: Pegar o SHA do arquivo atual (se existir)
+        let sha = null;
+        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+        }
+
+        // Função segura para converter Strings (mesmo com acentos) em Base64
+        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+        
+        // Passo B: Montar Payload
+        const body = {
+          message: "Atualização via Painel ADM (Bargunçados)",
+          content: contentBase64
+        };
+        if (sha) body.sha = sha;
+
+        // Passo C: Enviar (PUT)
+        const putRes = await fetch(url, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (putRes.ok) {
+          alert("✅ SUCESSO ABSOLUTO! O site foi atualizado no GitHub. (Recarregue a página daqui a 1 minuto para ver as mudanças online).");
+        } else {
+          const err = await putRes.json();
+          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message + "\n\nVerifique se o Token tem permissão de 'repo' e se o nome do repositório está idêntico.");
+        }
+      } catch (e) {
+        alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB.");
+      }
+
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = originalText;
+    }
+
+    function saveGitHubConfig() {
+      githubConfig.user = document.getElementById('gh-user').value.trim();
+      githubConfig.repo = document.getElementById('gh-repo').value.trim();
+      githubConfig.token = document.getElementById('gh-token').value.trim();
+      localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
+      alert("Credenciais Vinculadas! O Painel agora está conectado ao seu Repositório.");
+      initApp(); // Reload status
+    }
 
     // =========================================
     // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
     function renderApp() {
+      // Atalhos
+      const cHome = appData.home;
+      const cMenu = appData.menu;
+      const cAgenda = appData.agenda;
+      const cTeam = appData.team;
+      const cArcade = appData.arcade;
+      const cCach = appData.cachaceiros;
+      const cFlyer = appData.flyer;
+
       // HOME CLIENTE
-      document.getElementById('view-top-promo-banner').innerText = currentHome.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
-      document.getElementById('h-title').innerText = currentHome.title;
-      document.getElementById('h-desc1').innerText = currentHome.desc1;
-      document.getElementById('h-desc2').innerText = currentHome.desc2;
-      document.getElementById('h-promo-title').innerText = currentHome.promoTitle;
-      document.getElementById('h-promo1').innerText = currentHome.promo1;
-      document.getElementById('h-promo2').innerText = currentHome.promo2;
-      document.getElementById('h-promo3').innerText = currentHome.promo3;
-      if(currentHome.img) {
+      document.getElementById('view-top-promo-banner').innerText = cHome.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
+      document.getElementById('h-title').innerText = cHome.title;
+      document.getElementById('h-desc1').innerText = cHome.desc1;
+      document.getElementById('h-desc2').innerText = cHome.desc2;
+      document.getElementById('h-promo-title').innerText = cHome.promoTitle;
+      document.getElementById('h-promo1').innerText = cHome.promo1;
+      document.getElementById('h-promo2').innerText = cHome.promo2;
+      document.getElementById('h-promo3').innerText = cHome.promo3;
+      if(cHome.img) {
          document.getElementById('home-img').style.display = 'block';
-         document.getElementById('home-img').src = currentHome.img;
+         document.getElementById('home-img').src = cHome.img;
       } else {
          document.getElementById('home-img').style.display = 'none';
       }
@@ -690,23 +780,23 @@
       const catHTML = { drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL</div><div class="menu-grid">', portion: '<div class="menu-grid">' };
       
       let drinksStr = catHTML.drink;
-      currentMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
+      cMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
       drinksStr += catHTML.beer;
-      currentMenu.filter(i => i.type === 'beer').forEach(i => drinksStr += createCard(i));
+      cMenu.filter(i => i.type === 'beer').forEach(i => drinksStr += createCard(i));
       drinksStr += catHTML.noalcohol;
-      currentMenu.filter(i => i.type === 'noalcohol').forEach(i => drinksStr += createCard(i));
+      cMenu.filter(i => i.type === 'noalcohol').forEach(i => drinksStr += createCard(i));
       drinksStr += '</div>';
       drinksContainer.innerHTML = drinksStr;
 
       let portionsStr = catHTML.portion;
-      currentMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
+      cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
       portionsStr += '</div>';
       portionsContainer.innerHTML = portionsStr;
 
       // AGENDA MENSAL CLIENTE
       const agendaList = document.getElementById('dynamic-agenda-list');
       agendaList.innerHTML = '';
-      currentAgenda.forEach(ev => {
+      cAgenda.forEach(ev => {
         const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
         agendaList.innerHTML += `
           <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openEventModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}')">
@@ -718,18 +808,18 @@
       });
 
       // FLYER PRINCIPAL
-      document.getElementById('featured-flyer-img').src = currentFlyer.img;
-      document.getElementById('adm-f-tag').value = currentFlyer.tag;
-      document.getElementById('adm-f-title').value = currentFlyer.title;
-      document.getElementById('adm-f-sub').value = currentFlyer.sub;
-      document.getElementById('adm-f-desc').value = currentFlyer.desc;
+      document.getElementById('featured-flyer-img').src = cFlyer.img;
+      document.getElementById('adm-f-tag').value = cFlyer.tag;
+      document.getElementById('adm-f-title').value = cFlyer.title;
+      document.getElementById('adm-f-sub').value = cFlyer.sub;
+      document.getElementById('adm-f-desc').value = cFlyer.desc;
 
-      // DIRETORIA E PROMOTERS CLIENTE (Textos completos & Efeitos Adicionados)
+      // DIRETORIA E PROMOTERS CLIENTE (Com os textos detalhados)
       const dirContainer = document.getElementById('dynamic-dir-list');
       const proContainer = document.getElementById('dynamic-pro-list');
       dirContainer.innerHTML = ''; proContainer.innerHTML = '';
       
-      currentTeam.filter(t => t.type === 'dir').forEach(t => {
+      cTeam.filter(t => t.type === 'dir').forEach(t => {
         let cColor = 'var(--c-pink)';
         if(t.id === 'dir2') cColor = 'var(--c-cyan)';
         if(t.id === 'dir3') cColor = 'var(--c-yellow)';
@@ -744,10 +834,10 @@
           </div>`;
       });
       
-      currentTeam.filter(t => t.type === 'pro').forEach(t => {
+      cTeam.filter(t => t.type === 'pro').forEach(t => {
         proContainer.innerHTML += `
           <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px;" onerror="fallbackImg(this)">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
             <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
             <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
             <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
@@ -756,7 +846,7 @@
       });
 
       // RANKINGS CLIENTE (TOP 1, 2, E 3 FUNCIONANDO COM MENSAGEM)
-      document.getElementById('dynamic-arcade-list').innerHTML = currentArcade.map((i, index) => {
+      document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
         const safeName = escapeHTML(i.name);
@@ -778,7 +868,7 @@
         </div>`;
       }).join('');
 
-      document.getElementById('dynamic-cachaceiros-list').innerHTML = currentCachaceiros.map((i, index) => {
+      document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
         const safeName = escapeHTML(i.name);
@@ -831,10 +921,20 @@
     }
 
     function renderAdminLists() {
+      // Home Admin Pre-fill
+      document.getElementById('adm-h-promo-banner').value = appData.home.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
+      document.getElementById('adm-h-title').value = appData.home.title;
+      document.getElementById('adm-h-desc1').value = appData.home.desc1;
+      document.getElementById('adm-h-desc2').value = appData.home.desc2;
+      document.getElementById('adm-h-promo-title').value = appData.home.promoTitle;
+      document.getElementById('adm-h-promo1').value = appData.home.promo1;
+      document.getElementById('adm-h-promo2').value = appData.home.promo2;
+      document.getElementById('adm-h-promo3').value = appData.home.promo3;
+
       // Menu Admin
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
-        menuList.innerHTML = currentMenu.map(i => `
+        menuList.innerHTML = appData.menu.map(i => `
           <div class="admin-card">
             <div class="admin-card-row">
                 <input type="text" class="admin-input" id="name-${i.id}" value="${i.name}">
@@ -859,7 +959,7 @@
       // Agenda Admin
       const agendaList = document.getElementById('admin-agenda-list');
       if(agendaList) {
-        agendaList.innerHTML = currentAgenda.map(i => `
+        agendaList.innerHTML = appData.agenda.map(i => `
           <div class="admin-card">
             <div class="admin-card-row">
               <input type="text" class="admin-input" id="a-date-${i.id}" value="${i.date}" style="max-width:80px;">
@@ -881,7 +981,7 @@
       // Equipe Admin
       const teamList = document.getElementById('admin-team-list');
       if(teamList) {
-        teamList.innerHTML = currentTeam.map(t => `
+        teamList.innerHTML = appData.team.map(t => `
           <div class="admin-card">
             <strong style="color:var(--c-cyan);">${t.name} (${t.type.toUpperCase()})</strong>
             <div class="admin-card-row">
@@ -904,7 +1004,7 @@
       // Arcade Admin
       const arcList = document.getElementById('admin-arcade-list');
       if(arcList) {
-        arcList.innerHTML = currentArcade.map(i => `
+        arcList.innerHTML = appData.arcade.map(i => `
           <div class="admin-card" style="border-color:var(--c-purple);">
             <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
             <div class="admin-card-row">
@@ -933,7 +1033,7 @@
       // Cachaceiros Admin
       const cachList = document.getElementById('admin-cachaceiros-list');
       if(cachList) {
-        cachList.innerHTML = currentCachaceiros.map(i => `
+        cachList.innerHTML = appData.cachaceiros.map(i => `
           <div class="admin-card" style="border-color:#ff9800;">
             <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
             <div class="admin-card-row">
@@ -958,7 +1058,7 @@
     }
 
     // =========================================
-    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL
+    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL (UPLOADS & SALVAR)
     // =========================================
     function processManualLogin() {
       const email = document.getElementById('manual-email-input').value.trim();
@@ -966,80 +1066,112 @@
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
         document.getElementById('manual-email-input').value = '';
+        
+        // Puxa infos pro form flyer
+        document.getElementById('adm-f-tag').value = appData.flyer.tag;
+        document.getElementById('adm-f-title').value = appData.flyer.title;
+        document.getElementById('adm-f-sub').value = appData.flyer.sub;
+        document.getElementById('adm-f-desc').value = appData.flyer.desc;
+        
         alert('Acesso Concedido. Bem-vindo ao painel da Diretoria!');
       } else {
         alert('Acesso Negado. E-mail não autorizado ou incorreto.');
       }
     }
 
+    // COMPRESSOR DE IMAGENS (Evita travar o LocalStorage e o GitHub)
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
-      reader.onloadend = function() { callback(reader.result); }
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800; // Tamanho super otimizado
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Comprime para JPEG (Menos peso = Mais estabilidade)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          callback(dataUrl);
+        }
+        img.src = e.target.result;
+      }
       reader.readAsDataURL(file);
     }
 
     let tempNewItemImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
     
-    document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada!'); }); });
-    document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado!'); }); });
+    document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada e otimizada!'); }); });
+    document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado e otimizado!'); }); });
 
-    function updateHomeImg(input) { handleImageUpload(input.files[0], res => { currentHome.img = res; saveToStorage(); alert('Banner Inicial Atualizado!'); }); }
-    function updateFlyerMain(input) { handleImageUpload(input.files[0], res => { currentFlyer.img = res; saveToStorage(); alert('Flyer Destaque Atualizado!'); }); }
+    function updateHomeImg(input) { handleImageUpload(input.files[0], res => { appData.home.img = res; saveChanges(); alert('Banner Inicial Atualizado!'); }); }
+    function updateFlyerMain(input) { handleImageUpload(input.files[0], res => { appData.flyer.img = res; saveChanges(); alert('Flyer Destaque Atualizado!'); }); }
     
-    function updateItemImg(id, input) { handleImageUpload(input.files[0], res => { const item = currentMenu.find(i => i.id === id); if(item) { item.img = res; saveToStorage(); alert('Imagem do produto salva!'); } }); }
-    function updateAgendaImg(id, input) { handleImageUpload(input.files[0], res => { const item = currentAgenda.find(i => i.id === id); if(item) { item.img = res; saveToStorage(); alert('Mini Flyer atualizado!'); } }); }
-    function updateTeamImg(id, input) { handleImageUpload(input.files[0], res => { const t = currentTeam.find(i => i.id === id); if(t) { t.img = res; saveToStorage(); alert('Avatar atualizado!'); } }); }
-    function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], res => { const t = currentCachaceiros.find(i => i.id === id); if(t) { t.img = res; saveToStorage(); alert('Avatar atualizado!'); } }); }
-    function updateArcadeImg(id, input) { handleImageUpload(input.files[0], res => { const t = currentArcade.find(i => i.id === id); if(t) { t.img = res; saveToStorage(); alert('Avatar Arcade atualizado!'); } }); }
+    function updateItemImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Imagem do produto salva!'); } }); }
+    function updateAgendaImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Mini Flyer atualizado!'); } }); }
+    function updateTeamImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar da equipe atualizado!'); } }); }
+    function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar do cliente atualizado!'); } }); }
+    function updateArcadeImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar Arcade atualizado!'); } }); }
 
     function saveHomeData() {
-      currentHome.promoBannerText = document.getElementById('adm-h-promo-banner').value;
-      currentHome.title = document.getElementById('adm-h-title').value;
-      currentHome.desc1 = document.getElementById('adm-h-desc1').value;
-      currentHome.desc2 = document.getElementById('adm-h-desc2').value;
-      currentHome.promoTitle = document.getElementById('adm-h-promo-title').value;
-      currentHome.promo1 = document.getElementById('adm-h-promo1').value;
-      currentHome.promo2 = document.getElementById('adm-h-promo2').value;
-      currentHome.promo3 = document.getElementById('adm-h-promo3').value;
-      saveToStorage(); alert('Dados do Início Salvos!');
+      appData.home.promoBannerText = document.getElementById('adm-h-promo-banner').value;
+      appData.home.title = document.getElementById('adm-h-title').value;
+      appData.home.desc1 = document.getElementById('adm-h-desc1').value;
+      appData.home.desc2 = document.getElementById('adm-h-desc2').value;
+      appData.home.promoTitle = document.getElementById('adm-h-promo-title').value;
+      appData.home.promo1 = document.getElementById('adm-h-promo1').value;
+      appData.home.promo2 = document.getElementById('adm-h-promo2').value;
+      appData.home.promo3 = document.getElementById('adm-h-promo3').value;
+      saveChanges(); alert('Dados do Início Salvos!');
     }
 
     function saveItemData(id) {
-       const item = currentMenu.find(i => i.id === id);
+       const item = appData.menu.find(i => i.id === id);
        if(item) {
           item.name = document.getElementById(`name-${id}`).value;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          saveToStorage(); alert('Produto Salvo!');
+          saveChanges(); alert('Produto Salvo!');
        }
     }
 
     function saveAgendaData(id) {
-       const item = currentAgenda.find(i => i.id === id);
+       const item = appData.agenda.find(i => i.id === id);
        if(item) {
           item.date = document.getElementById(`a-date-${id}`).value;
           item.title = document.getElementById(`a-title-${id}`).value;
           item.desc = document.getElementById(`a-desc-${id}`).value;
-          saveToStorage(); alert('Evento Salvo!');
+          saveChanges(); alert('Evento Salvo!');
        }
     }
 
     function saveTeamData(id) {
-       const t = currentTeam.find(i => i.id === id);
+       const t = appData.team.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
           t.role = document.getElementById(`trole-${id}`).value;
           t.ig = document.getElementById(`tig-${id}`).value;
           t.desc = document.getElementById(`tdesc-${id}`).value;
-          saveToStorage(); alert('Membro salvo!');
+          saveChanges(); alert('Membro salvo!');
        }
     }
 
     function saveArcadeData(id) {
-       const t = currentArcade.find(i => i.id === id);
+       const t = appData.arcade.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`arc-name-${id}`).value;
           t.sub = document.getElementById(`arc-sub-${id}`).value;
@@ -1047,19 +1179,19 @@
           t.prize = document.getElementById(`arc-prize-${id}`).value;
           t.ig = document.getElementById(`arc-ig-${id}`).value;
           t.quote = document.getElementById(`arc-quote-${id}`).value;
-          saveToStorage(); alert('Jogador salvo!');
+          saveChanges(); alert('Jogador salvo!');
        }
     }
 
     function saveCachaceiroData(id) {
-       const t = currentCachaceiros.find(i => i.id === id);
+       const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
           t.sub = document.getElementById(`ca-sub-${id}`).value;
           t.score = document.getElementById(`ca-score-${id}`).value;
           t.prize = document.getElementById(`ca-prize-${id}`).value;
           t.quote = document.getElementById(`ca-quote-${id}`).value;
-          saveToStorage(); alert('Cachaceiro salvo!');
+          saveChanges(); alert('Cachaceiro salvo!');
        }
     }
 
@@ -1067,42 +1199,102 @@
       const name = document.getElementById('new-item-name').value;
       const price = document.getElementById('new-item-price').value;
       if(!name || !price) return alert("Preencha nome e preço.");
-      currentMenu.push({
+      appData.menu.push({
         id: Date.now(), type: document.getElementById('new-item-type').value,
         name: name, short: document.getElementById('new-item-short').value,
         full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
       });
-      saveToStorage(); alert('Produto Adicionado ao Cardápio!');
+      saveChanges(); alert('Produto Adicionado ao Cardápio!');
     }
 
     function addAgendaItem() {
       const title = document.getElementById('new-ev-title').value;
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
-      currentAgenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
-      saveToStorage(); alert('Evento Adicionado!');
+      appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
+      saveChanges(); alert('Evento Adicionado!');
     }
 
-    function removeMenuItem(id) { if(confirm('Apagar item do cardápio?')) { currentMenu = currentMenu.filter(i => i.id !== id); saveToStorage(); } }
-    function removeAgendaItem(id) { if(confirm('Apagar evento da agenda?')) { currentAgenda = currentAgenda.filter(i => i.id !== id); saveToStorage(); } }
+    function removeMenuItem(id) { if(confirm('Apagar item do cardápio?')) { appData.menu = appData.menu.filter(i => i.id !== id); saveChanges(); } }
+    function removeAgendaItem(id) { if(confirm('Apagar evento da agenda?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); saveChanges(); } }
 
     function saveFlyerData() {
-      currentFlyer.tag = document.getElementById('adm-f-tag').value;
-      currentFlyer.title = document.getElementById('adm-f-title').value;
-      currentFlyer.sub = document.getElementById('adm-f-sub').value;
-      currentFlyer.desc = document.getElementById('adm-f-desc').value;
-      saveToStorage(); alert("Dados do Destaque Salvos!");
+      appData.flyer.tag = document.getElementById('adm-f-tag').value;
+      appData.flyer.title = document.getElementById('adm-f-title').value;
+      appData.flyer.sub = document.getElementById('adm-f-sub').value;
+      appData.flyer.desc = document.getElementById('adm-f-desc').value;
+      saveChanges(); alert("Dados do Destaque Salvos!");
     }
 
-    function saveToStorage() {
-      localStorage.setItem('brg_home_v3', JSON.stringify(currentHome));
-      localStorage.setItem('brg_menu_v3', JSON.stringify(currentMenu));
-      localStorage.setItem('brg_agenda_v3', JSON.stringify(currentAgenda));
-      localStorage.setItem('brg_team_v3', JSON.stringify(currentTeam));
-      localStorage.setItem('brg_arcade_v3', JSON.stringify(currentArcade));
-      localStorage.setItem('brg_cachaceiros_v3', JSON.stringify(currentCachaceiros));
-      localStorage.setItem('brg_flyer_v3', JSON.stringify(currentFlyer));
-      renderApp();
+    function saveGitHubConfig() {
+      githubConfig.user = document.getElementById('gh-user').value.trim();
+      githubConfig.repo = document.getElementById('gh-repo').value.trim();
+      githubConfig.token = document.getElementById('gh-token').value.trim();
+      localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
+      alert("Credenciais Vinculadas! O Painel agora está conectado ao seu Repositório.");
+      initApp(); // Recarrega o status visual
+    }
+
+    // =========================================
+    // INTEGRAÇÃO GITHUB API (O CORAÇÃO DO BACKEND)
+    // =========================================
+    async function saveChanges() {
+      // 1. Atualiza visualmente na tela do ADM e salva local por segurança
+      renderApp(); 
+      localStorage.setItem('brg_home_v5', JSON.stringify(appData.home));
+      localStorage.setItem('brg_menu_v5', JSON.stringify(appData.menu));
+      localStorage.setItem('brg_agenda_v5', JSON.stringify(appData.agenda));
+      localStorage.setItem('brg_team_v5', JSON.stringify(appData.team));
+      localStorage.setItem('brg_arcade_v5', JSON.stringify(appData.arcade));
+      localStorage.setItem('brg_cachaceiros_v5', JSON.stringify(appData.cachaceiros));
+      localStorage.setItem('brg_flyer_v5', JSON.stringify(appData.flyer));
+
+      // 2. Se não tem credenciais do Github configuradas, avisa e para aqui.
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        console.log("GitHub não configurado. Salvo apenas no navegador.");
+        return;
+      }
+
+      // 3. Processo de Salvar no GitHub (data.json)
+      const path = 'data.json';
+      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+
+      const btnToReset = document.activeElement;
+      const originalText = btnToReset.innerText;
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = '⏳ Salvando Servidor...';
+
+      try {
+        let sha = null;
+        // Pega o SHA do arquivo atual pra poder sobrescrever
+        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+        }
+
+        // Converte os dados (usando encodeURIComponent para não bugar acentos no btoa)
+        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+        
+        const body = { message: "Atualização de Conteúdo (Painel ADM Bargunçados)", content: contentBase64 };
+        if (sha) body.sha = sha;
+
+        const putRes = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (putRes.ok) {
+          alert("✅ SUCESSO! O site foi atualizado no GitHub. Recarregue a página daqui a 1 minuto para ver online.");
+        } else {
+          const err = await putRes.json();
+          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message);
+        }
+      } catch (e) {
+        alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB.");
+      }
+
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = originalText;
     }
 
     // =========================================
@@ -1117,11 +1309,11 @@
     }
 
     function openAgendaModal(type) {
-      document.getElementById('e-tag').innerText = currentFlyer.tag;
-      document.getElementById('e-title').innerText = currentFlyer.title;
-      document.getElementById('e-sub').innerText = currentFlyer.sub;
-      document.getElementById('e-desc').innerText = currentFlyer.desc;
-      document.getElementById('eventModalImg').src = currentFlyer.img;
+      document.getElementById('e-tag').innerText = appData.flyer.tag;
+      document.getElementById('e-title').innerText = appData.flyer.title;
+      document.getElementById('e-sub').innerText = appData.flyer.sub;
+      document.getElementById('e-desc').innerText = appData.flyer.desc;
+      document.getElementById('eventModalImg').src = appData.flyer.img;
       document.getElementById('eventModal').style.display = 'flex';
     }
 
@@ -1206,10 +1398,10 @@
       document.getElementById('skull-btn').innerText = "⚔️";
       document.getElementById('skull-btn2').innerText = "⚔️";
     }
-    document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio, café e magia de Soul Wizard."));
+    document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
     // =========================================
-    // CANVAS SPARKS LEVE
+    // CANVAS SPARKS LEVE E INICIALIZAÇÃO
     // =========================================
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
@@ -1242,8 +1434,8 @@
     }
     animateEmbers();
 
-    // Inicializa a UI com os dados Locais
-    renderApp();
+    // Inicializa a aplicação (Busca do GitHub ou Local)
+    initApp();
   </script>
 </body>
 </html>
