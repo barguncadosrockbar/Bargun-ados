@@ -320,7 +320,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO (Sem Sticky - Rola junto com a página) -->
+    <!-- NAVEGAÇÃO (Rola junto com a página) -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -423,7 +423,7 @@
         </div>
       </section>
 
-      <!-- COMO CHEGAR (NOVA ABA NATIVA PEDIDA) -->
+      <!-- COMO CHEGAR -->
       <section id="como-chegar" class="tab-pane">
         <h2 class="section-title">Como Chegar</h2>
         <div class="glass-panel contact-card">
@@ -469,7 +469,7 @@
             </div>
           </div>
 
-          <!-- CRIADOR / EDITOR DE ABAS DINÂMICAS -->
+          <!-- CRIAR / EDITAR ABAS -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
           <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
@@ -619,7 +619,7 @@
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
-      return str.toString().replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
     const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; // diegotouru666@gmail.com
@@ -895,7 +895,6 @@
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
         btn.innerText = tab.name;
-        // Insere antes do botão Como Chegar
         const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
         navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
@@ -916,11 +915,13 @@
     function createCard(item) {
       const sName = escapeHTML(item.name);
       const sFull = escapeHTML(item.full);
+      const sShort = escapeHTML(item.short);
+      const sPrice = escapeHTML(item.price);
       return `
-        <div class="product-card glass-panel" onclick="openMenuModalObj('${sName}', '${sFull}', '${item.price}', '${item.img}')">
+        <div class="product-card glass-panel" onclick="openMenuModalObj('${sName}', '${sFull}', '${sPrice}', '${item.img}')">
           <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
           <h4 class="m-title">${item.name}</h4>
-          <p class="m-short">${item.short}</p>
+          <p class="m-short">${sShort}</p>
           <div class="menu-price">R$ ${item.price}</div>
         </div>`;
     }
