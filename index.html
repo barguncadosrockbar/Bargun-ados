@@ -697,7 +697,7 @@
     }
 
     // =========================================
-    // BANCO DE DADOS GLOBAL COM RELAY CLOUD (JSONBIN.IO GRATUITO)
+    // BANCO DE DADOS GLOBAL COM RELAY CLOUD (JSONBIN.IO)
     // =========================================
     const RELAY_BIN_URL = "https://api.jsonbin.io/v3/b/661845cbe41b4d34e4474721";
 
@@ -718,7 +718,7 @@
     ];
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
     const defaultTeam = [
@@ -760,7 +760,7 @@
       await syncAndFetchLatestData();
       renderApp();
       
-      // Restaura sessão do ADM se já estava logado antes de atualizar a página
+      // Restaura sessão do ADM se já estava logado (Não desloga ao atualizar)
       if(localStorage.getItem('brg_adm_logged') === 'true') {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
@@ -777,18 +777,7 @@
     }
 
     async function syncAndFetchLatestData() {
-      // 1. Puxa dados principais do GitHub
-      const user = githubConfig.user || 'barguncadosrockbar';
-      const repo = githubConfig.repo || 'Bargun-ados';
-      try {
-        const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/data.json?t=` + new Date().getTime());
-        if(res.ok) {
-          const remote = await res.json();
-          appData = { ...appData, ...remote };
-        }
-      } catch(e) {}
-
-      // 2. Puxa interações públicas do Relay Cloud (tempo real de clientes)
+      // 1. Puxa interações públicas do Relay Cloud (tempo real de clientes)
       try {
         const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime());
         if(relayRes.ok) {
@@ -799,6 +788,17 @@
             if(relayJson.record.userSongs) appData.userSongs = relayJson.record.userSongs;
             if(relayJson.record.userMessages) appData.userMessages = relayJson.record.userMessages;
           }
+        }
+      } catch(e) {}
+
+      // 2. Puxa dados principais do GitHub
+      const user = githubConfig.user || 'barguncadosrockbar';
+      const repo = githubConfig.repo || 'Bargun-ados';
+      try {
+        const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/data.json?t=` + new Date().getTime());
+        if(res.ok) {
+          const remote = await res.json();
+          appData = { ...appData, ...remote };
         }
       } catch(e) {}
 
@@ -878,9 +878,11 @@
         if(type === 'song') {
           if(!currentRecord.pendingSongs) currentRecord.pendingSongs = [];
           currentRecord.pendingSongs.push(newItem);
+          appData.pendingSongs = currentRecord.pendingSongs;
         } else {
           if(!currentRecord.pendingMessages) currentRecord.pendingMessages = [];
           currentRecord.pendingMessages.push(newItem);
+          appData.pendingMessages = currentRecord.pendingMessages;
         }
 
         await fetch(RELAY_BIN_URL, {
@@ -1525,7 +1527,7 @@
       const realPass = b64Decode(ENCODED_PASS);
 
       if (emailInput === realEmail && passInput === realPass) {
-        localStorage.setItem('brg_adm_logged', 'true'); // SESSÃO SALVA (NÃO DESLOGA AO ATUALIZAR)
+        localStorage.setItem('brg_adm_logged', 'true');
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
         
