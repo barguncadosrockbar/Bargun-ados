@@ -40,9 +40,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--c-red); border-radius: 4px; }
 
-    /* =========================================
-       2. FUNDO MARCA D'ÁGUA E LUZES DE SHOW
-       ========================================= */
     .bg-watermark {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3;
       background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s");
@@ -64,7 +61,6 @@
 
     #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.9; }
 
-    /* EFEITO VIDRO FOSCO */
     .glass-panel {
       background: var(--glass-bg); backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%);
       border-top: 1px solid var(--glass-border-top); border-left: 1px solid var(--glass-border-top);
@@ -75,9 +71,6 @@
 
     .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* =========================================
-       3. RÁDIO E CABEÇALHO
-       ========================================= */
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
     .radio-cover { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-pink); animation: spinRecord 4s linear infinite paused; }
@@ -97,18 +90,12 @@
     .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.6); border: 2px solid rgba(255,255,255,0.2); animation: floatLogo 4s ease-in-out infinite; cursor: crosshair; display: block; margin: 0 auto; }
     @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); border-color: var(--c-yellow); box-shadow: 0 0 35px rgba(0,188,212,0.8); } }
 
-    /* =========================================
-       4. NAVEGAÇÃO
-       ========================================= */
     .nav-container { background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
     .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
     .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.2); border-color: var(--c-pink); box-shadow: inset 0 0 10px rgba(233,30,99,0.3); }
 
-    /* =========================================
-       5. TRANSIÇÃO 3D E ESTRUTURA PRINCIPAL
-       ========================================= */
     main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; perspective: 1200px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; animation: flipCube 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; transform-origin: top; }
@@ -121,9 +108,6 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(233,30,99,0.4); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.3); box-shadow: 0 6px 20px rgba(0,188,212,0.6); transform: scale(1.02); }
 
-    /* =========================================
-       6. CARDÁPIO (GRID 2x2 RIGOROSA)
-       ========================================= */
     .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
@@ -138,9 +122,6 @@
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; text-shadow: 0 0 10px rgba(0,188,212,0.3); }
 
-    /* =========================================
-       7. MODAIS
-       ========================================= */
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 15px; }
     .modal-content { background: rgba(15,15,20,0.95); border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 20px rgba(233,30,99,0.1); max-height: 90vh; overflow-y: auto; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -158,9 +139,6 @@
     #playerModalImg { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; }
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
-    /* =========================================
-       8. LISTAS DE RANKING UNIFICADAS
-       ========================================= */
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
     .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
     .rank-switch-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
@@ -183,9 +161,6 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    /* =========================================
-       9. SHOWS E AGENDA MENSAL
-       ========================================= */
     .featured-flyer-img { width: 100%; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: 0.3s; }
     .featured-flyer-img:hover { transform: scale(1.02); box-shadow: 0 10px 40px rgba(233,30,99,0.8); border-color: var(--c-pink); }
     .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
@@ -196,9 +171,6 @@
     .mf-date { background: var(--c-red); color: #fff; font-family: var(--font-title); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 5px; }
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* =========================================
-       10. DIRETORIA E CONTATO (Com Efeitos)
-       ========================================= */
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; transition: all 0.4s ease; border-top: 2px solid transparent;}
     .dir-card:hover { transform: translateY(-8px); border-top-color: var(--card-color, var(--c-cyan)); box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.05); z-index: 5;}
@@ -220,9 +192,6 @@
     .map-container { border: 1px solid var(--glass-border-top); border-radius: 12px; overflow: hidden; height: 250px; }
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
 
-    /* =========================================
-       11. INTERAÇÕES DE CLIENTES (Mural & Pedir Som)
-       ========================================= */
     .interaction-box { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: left; }
     .interaction-box h3 { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin-bottom: 10px; }
     .interaction-input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); }
@@ -233,15 +202,10 @@
     .feed-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
     .feed-time { font-size: 0.75rem; color: #888; position: absolute; right: 15px; top: 15px; }
 
-    /* Notificação ADM */
     .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; animation: pulseBadge 1.5s infinite; }
     @keyframes pulseBadge { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-    /* =========================================
-       12. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
-       ========================================= */
     .admin-login-box { text-align: center; padding: 40px 15px; }
-    
     .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
@@ -255,10 +219,6 @@
     .action-btn { background: var(--c-cyan); color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s;}
     .action-btn:hover { filter: brightness(1.2); }
     .del-btn { background: var(--c-red); color: #fff;}
-
-    .gh-status { padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 0.9rem; }
-    .gh-status.offline { background: rgba(255,0,0,0.1); border: 1px solid var(--c-red); color: var(--c-red); }
-    .gh-status.online { background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; }
 
     footer { background: rgba(5,5,8,0.6); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -655,9 +615,6 @@
   </div>
 
   <script>
-    // =========================================
-    // CONFIGURAÇÃO JSONBIN.IO COM SUA MASTER KEY
-    // =========================================
     const BIN_ID = "6ab5ac11ac6210605af28b20";
     const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
     const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -667,8 +624,8 @@
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; // diegotouru666@gmail.com
-    const ENCODED_PASS  = "ODEzNTAzNzg3MTY3Nw==";           // 8135037871677
+    const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; 
+    const ENCODED_PASS  = "ODEzNTAzNzg3MTY3Nw==";           
 
     function b64Decode(str) {
       return decodeURIComponent(escape(window.atob(str)));
@@ -738,8 +695,7 @@
         document.getElementById('admin-dashboard').style.display = 'block';
       }
 
-      // Sincronização automática em tempo real a cada 5 segundos
-      setInterval(fetchBinData, 5000);
+      setInterval(fetchBinData, 6000);
     }
 
     async function fetchBinData() {
@@ -769,27 +725,6 @@
           body: JSON.stringify(appData)
         });
       } catch(e) {}
-
-      // Sincroniza opcionalmente com o GitHub do ADM
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
-      const path = 'data.json';
-      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
-      try {
-        let sha = null;
-        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
-        if (getRes.ok) {
-          const getJson = await getRes.json();
-          sha = getJson.sha;
-        }
-        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização ADM", content: contentBase64 };
-        if (sha) body.sha = sha;
-        await fetch(url, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-      } catch (e) {}
     }
 
     function saveGitHubConfig() {
@@ -801,9 +736,6 @@
       initApp();
     }
 
-    // =========================================
-    // CLIENTE ENVIA PEDIDO (GRAVAÇÃO NA NUVEM DO JSONBIN)
-    // =========================================
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
@@ -819,7 +751,6 @@
       document.getElementById('user-song-ig').value = '';
       document.getElementById('user-song-req').value = '';
       
-      // Puxa o mais recente da nuvem, adiciona e salva
       try {
         const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
         if(res.ok) {
@@ -865,9 +796,6 @@
       alert("✅ Recado enviado para o mural do ADM!");
     }
 
-    // =========================================
-    // RENDERIZAÇÃO DOM CLIENTE
-    // =========================================
     function getHonorTitle(index, type) {
       if(type === 'arcade') {
         if(index === 0) return '👑 Lenda Viva do Arcade';
@@ -1612,7 +1540,7 @@
     function openPlayerModal(name, ig, quote, imgUrl) {
       document.getElementById('playerName').innerText = name;
       document.getElementById('playerIg').innerText = ig;
-      document.getElementById('playerIg'].href = "https://instagram.com/" + ig.replace('@','');
+      document.getElementById('playerIg').href = "https://instagram.com/" + ig.replace('@','');
       document.getElementById('playerQuote').innerText = `"${quote}"`;
       document.getElementById('playerModalImg').src = imgUrl;
       document.getElementById('playerModal').style.display = 'flex';
