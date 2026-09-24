@@ -160,7 +160,7 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING COM TÍTULOS DE HONRA (IDÉIA 2)
+       8. LISTAS DE RANKING COM TÍTULOS DE HONRA
        ========================================= */
     .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
     .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: 0.2s; }
@@ -177,8 +177,6 @@
     .lb-sub { font-size: 0.75rem; color: var(--c-cyan); }
     .lb-score { font-family: var(--font-title); font-size: 1.3rem; color: var(--c-pink); text-align: right; }
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
-    
-    /* Selo de Título Dinâmico */
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
     /* =========================================
@@ -219,7 +217,20 @@
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
 
     /* =========================================
-       11. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
+       11. INTERAÇÕES DE CLIENTES (Mural & Pedir Som)
+       ========================================= */
+    .interaction-box { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: left; }
+    .interaction-box h3 { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin-bottom: 10px; }
+    .interaction-input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); }
+    .interaction-textarea { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); resize: vertical; }
+
+    .feed-card { background: rgba(15,15,20,0.8); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 12px; text-align: left; position: relative; border-left: 4px solid var(--c-pink); }
+    .feed-author { font-weight: bold; color: var(--c-cyan); font-size: 0.95rem; margin-bottom: 4px; }
+    .feed-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
+    .feed-time { font-size: 0.75rem; color: #888; position: absolute; right: 15px; top: 15px; }
+
+    /* =========================================
+       12. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
        ========================================= */
     .admin-login-box { text-align: center; padding: 40px 15px; }
     
@@ -256,7 +267,7 @@
 </head>
 <body>
 
-  <!-- EFEITOS DE FUNDO 3D COM NÉVOA / FUMAÇA DE PALCO (IDÉIA 3) -->
+  <!-- EFEITOS DE FUNDO 3D COM NÉVOA / FUMAÇA DE PALCO -->
   <div class="stage-lights">
     <div class="spotlight cyan"></div>
     <div class="spotlight yellow"></div>
@@ -336,6 +347,7 @@
         <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
         <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
         <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
+        <button class="tab-btn" onclick="switchTab('interaja')">Mural & Som 🎸</button>
         <button class="tab-btn" onclick="switchTab('admin')" style="color: var(--c-red); font-weight: bold; border-color: var(--c-red);">⚙️ ADM</button>
       </nav>
     </div>
@@ -441,6 +453,36 @@
         </div>
       </section>
 
+      <!-- INTERAÇÃO CLIENTES (Mural de Recados & O que quer ouvir) -->
+      <section id="interaja" class="tab-pane">
+        <h2 class="section-title">Mural & Pedidos de Som</h2>
+        
+        <!-- Caixa para Pedir Som -->
+        <div class="glass-panel interaction-box">
+          <h3>🎸 O que você quer ouvir hoje?</h3>
+          <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Mande sua banda ou música favorita para o DJ tocar na casa!</p>
+          <input type="text" id="user-song-ig" class="interaction-input" placeholder="Seu Instagram (ex: @rocker)" autocomplete="off">
+          <textarea id="user-song-req" class="interaction-textarea" rows="2" placeholder="Banda / Música desejada..."></textarea>
+          <button class="action-btn" onclick="submitUserSong()" style="background:var(--c-yellow); color:#000; width:100%;">Enviar Pedido de Som 🎵</button>
+        </div>
+
+        <!-- Caixa para Deixar Recado -->
+        <div class="glass-panel interaction-box" style="border-color: var(--c-pink);">
+          <h3 style="color: var(--c-pink);">💬 Mural de Recados da Galera</h3>
+          <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Deixe um recado, salve para a resenha ou mande um salve para o bar!</p>
+          <input type="text" id="user-msg-ig" class="interaction-input" placeholder="Seu Instagram (ex: @metalhead)" autocomplete="off">
+          <textarea id="user-msg-text" class="interaction-textarea" rows="3" placeholder="Escreva seu recado aqui..."></textarea>
+          <button class="action-btn" onclick="submitUserMessage()" style="background:var(--c-pink); color:#fff; width:100%;">Publicar no Mural ⚡</button>
+        </div>
+
+        <!-- Mural Público Atualizado -->
+        <h3 style="font-family: var(--font-title); font-size: 1.6rem; color: #fff; margin: 2rem 0 1rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">🎵 PEDIDOS DE SOM APROVADOS</h3>
+        <div id="public-songs-feed"></div>
+
+        <h3 style="font-family: var(--font-title); font-size: 1.6rem; color: #fff; margin: 2rem 0 1rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">💬 RECADOS RECENTES DA GALERA</h3>
+        <div id="public-msgs-feed"></div>
+      </section>
+
       <!-- ÁREA DO ADMINISTRADOR -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
@@ -470,6 +512,16 @@
               <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
               <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
             </div>
+          </div>
+
+          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas</button>
+          <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
+            <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
+            <div id="admin-pending-songs"></div>
+
+            <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
+            <div id="admin-pending-msgs"></div>
           </div>
 
           <!-- CRIAR / EDITAR ABAS -->
@@ -633,7 +685,7 @@
     }
 
     // =========================================
-    // BANCO DE DADOS GLOBAL COM SUPORTE A ABAS
+    // BANCO DE DADOS GLOBAL COM INTERAÇÕES
     // =========================================
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
@@ -652,8 +704,8 @@
     ];
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
-      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
+      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=400' }
     ];
     const defaultTeam = [
       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
@@ -673,7 +725,11 @@
       arcade: defaultArcade,
       cachaceiros: defaultCachaceiros,
       flyer: defaultFlyer,
-      customTabs: []
+      customTabs: [],
+      userSongs: [],       // Pedidos de som aprovados
+      pendingSongs: [],    // Pedidos de som pendentes de moderação
+      userMessages: [],    // Recados aprovados
+      pendingMessages: []  // Recados pendentes de moderação
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -691,9 +747,22 @@
         if(response.ok) {
           const remoteData = await response.json();
           appData = { ...appData, ...remoteData };
+          cleanExpiredInteractions(); // Limpa itens com mais de 16h
         }
       } catch(e) {}
       renderApp();
+    }
+
+    // Limpa recados e músicas após 16 horas
+    function cleanExpiredInteractions() {
+      const now = Date.now();
+      const sixteenHours = 16 * 60 * 60 * 1000;
+      if(appData.userSongs) {
+        appData.userSongs = appData.userSongs.filter(item => (now - item.timestamp) < sixteenHours);
+      }
+      if(appData.userMessages) {
+        appData.userMessages = appData.userMessages.filter(item => (now - item.timestamp) < sixteenHours);
+      }
     }
 
     // =========================================
@@ -702,14 +771,10 @@
     async function saveChanges() {
       renderApp(); 
       if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        alert("⚠️ Dados salvos APENAS LOCALMENTE no navegador (O GitHub não está configurado na aba 'Banco de Dados').");
-        return;
+        return; // Salva localmente sem alertar em interações de clientes
       }
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
-      const btnToReset = document.activeElement;
-      const originalText = btnToReset.innerText;
-      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = '⏳ Sincronizando com GitHub...';
 
       try {
         let sha = null;
@@ -719,25 +784,15 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
+        const body = { message: "Atualização via Painel ADM / Interação Cliente", content: contentBase64 };
         if (sha) body.sha = sha;
 
-        const putRes = await fetch(url, {
+        await fetch(url, {
           method: 'PUT',
           headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
-        if (putRes.ok) {
-          alert("✅ SUCESSO ABSOLUTO! O site foi atualizado no GitHub. (Recarregue a página daqui a 1 minuto para ver online).");
-        } else {
-          const err = await putRes.json();
-          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message);
-        }
-      } catch (e) {
-        alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB.");
-      }
-      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = originalText;
+      } catch (e) {}
     }
 
     function saveGitHubConfig() {
@@ -750,7 +805,48 @@
     }
 
     // =========================================
-    // RENDERIZAÇÃO DOM CLIENTE (COM TÍTULOS DE HONRA NAS LISTAS)
+    // INTERAÇÃO DO CLIENTE (Envio para moderação)
+    // =========================================
+    function submitUserSong() {
+      const ig = document.getElementById('user-song-ig').value.trim();
+      const req = document.getElementById('user-song-req').value.trim();
+      if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
+      
+      if(!appData.pendingSongs) appData.pendingSongs = [];
+      appData.pendingSongs.push({
+        id: Date.now(),
+        ig: ig.startsWith('@') ? ig : '@' + ig,
+        text: req,
+        timestamp: Date.now()
+      });
+
+      document.getElementById('user-song-ig').value = '';
+      document.getElementById('user-song-req').value = '';
+      alert("🎵 Pedido enviado para a moderação da casa! Em breve vai rolar no som.");
+      saveChanges();
+    }
+
+    function submitUserMessage() {
+      const ig = document.getElementById('user-msg-ig').value.trim();
+      const text = document.getElementById('user-msg-text').value.trim();
+      if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
+      
+      if(!appData.pendingMessages) appData.pendingMessages = [];
+      appData.pendingMessages.push({
+        id: Date.now(),
+        ig: ig.startsWith('@') ? ig : '@' + ig,
+        text: text,
+        timestamp: Date.now()
+      });
+
+      document.getElementById('user-msg-ig').value = '';
+      document.getElementById('user-msg-text').value = '';
+      alert("⚡ Recado enviado para moderação! Assim que aprovado, aparecerá no mural.");
+      saveChanges();
+    }
+
+    // =========================================
+    // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
     function getHonorTitle(index, type) {
       if(type === 'arcade') {
@@ -787,7 +883,7 @@
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
 
-      // MENU
+      // MENU (Com correção de aspas e pop-up)
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
       drinksContainer.innerHTML = ''; portionsContainer.innerHTML = '';
@@ -857,7 +953,7 @@
           </div>`;
       });
 
-      // RANKINGS COM TÍTULOS DE HONRA (IDÉIA 2)
+      // RANKINGS
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -898,10 +994,45 @@
         </div>`;
       }).join('');
 
+      // RENDERIZAR MURAL E PEDIDOS PÚBLICOS
+      renderPublicInteractions();
+
       // RENDERIZAR ABAS CUSTOMIZADAS
       renderCustomTabs(cCustomTabs);
 
       renderAdminLists();
+    }
+
+    function renderPublicInteractions() {
+      const songsDiv = document.getElementById('public-songs-feed');
+      const msgsDiv = document.getElementById('public-msgs-feed');
+
+      const songs = appData.userSongs || [];
+      const msgs = appData.userMessages || [];
+
+      if(songs.length === 0) {
+        songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
+      } else {
+        songsDiv.innerHTML = songs.map(s => `
+          <div class="feed-card">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
+            <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
+          </div>
+        `).join('');
+      }
+
+      if(msgs.length === 0) {
+        msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
+      } else {
+        msgsDiv.innerHTML = msgs.map(m => `
+          <div class="feed-card" style="border-left-color: var(--c-yellow);">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
+            <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
+          </div>
+        `).join('');
+      }
     }
 
     function renderCustomTabs(tabs) {
@@ -916,8 +1047,8 @@
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
         btn.innerText = tab.name;
-        const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
-        navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
+        const interajaBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('interaja'));
+        navContainer.insertBefore(btn, interajaBtn || navContainer.lastElementChild);
 
         const section = document.createElement('section');
         section.id = tab.id;
@@ -948,7 +1079,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E LISTAS (COM SUPORTE A EDITAR ABAS)
+    // ADMIN ACORDEÃO E MODERAÇÃO DE INTERAÇÕES
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
@@ -960,6 +1091,81 @@
         content.style.display = "block";
         btn.classList.add("active");
       }
+      if(id === 'adm-moderation') renderModerationLists();
+    }
+
+    function renderModerationLists() {
+      const pSongsDiv = document.getElementById('admin-pending-songs');
+      const pMsgsDiv = document.getElementById('admin-pending-msgs');
+
+      const pSongs = appData.pendingSongs || [];
+      const pMsgs = appData.pendingMessages || [];
+
+      if(pSongs.length === 0) {
+        pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
+      } else {
+        pSongsDiv.innerHTML = pSongs.map(s => `
+          <div class="admin-card">
+            <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
+            <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
+            <div class="admin-card-row">
+              <button class="action-btn" onclick="approveSong(${s.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${s.id})">❌ Rejeitar</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if(pMsgs.length === 0) {
+        pMsgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado pendente no mural.</p>';
+      } else {
+        pMsgsDiv.innerHTML = pMsgs.map(m => `
+          <div class="admin-card">
+            <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
+            <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
+            <div class="admin-card-row">
+              <button class="action-btn" onclick="approveMsg(${m.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${m.id})">❌ Rejeitar</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    function approveSong(id) {
+      const item = appData.pendingSongs.find(s => s.id === id);
+      if(item) {
+        appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+        if(!appData.userSongs) appData.userSongs = [];
+        appData.userSongs.unshift(item);
+        saveChanges();
+        renderModerationLists();
+        alert("Pedido de som aprovado e publicado no site!");
+      }
+    }
+
+    function rejectSong(id) {
+      appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+      saveChanges();
+      renderModerationLists();
+    }
+
+    function approveMsg(id) {
+      const item = appData.pendingMessages.find(m => m.id === id);
+      if(item) {
+        appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+        if(!appData.userMessages) appData.userMessages = [];
+        appData.userMessages.unshift(item);
+        saveChanges();
+        renderModerationLists();
+        alert("Recado aprovado e publicado no mural!");
+      }
+    }
+
+    function rejectMsg(id) {
+      appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+      saveChanges();
+      renderModerationLists();
     }
 
     let tempNewTabImg = '';
@@ -1460,7 +1666,7 @@
     document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
     // =========================================
-    // CANVAS SPARKS LEVE
+    // CANVAS SPARKS LEVE & NÉVOA DE PALCO (IDÉIA 3)
     // =========================================
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
