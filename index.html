@@ -421,13 +421,13 @@
         </div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR COM SEGURANÇA BLINDADA (E-mail + Senha Criptografada) -->
+      <!-- ÁREA DO ADMINISTRADOR BLINDADA -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira suas credenciais administrativas de segurança.</p>
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira suas credenciais administrativas seguras.</p>
           
           <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
@@ -573,7 +573,6 @@
   <script>
     // =========================================
     // BLINDADOR DE TEXTOS E CRIPTOGRAFIA DE SENHA (SHA-256)
-    // A senha real 8135037871677 nunca fica escrita no código-fonte!
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
@@ -587,7 +586,7 @@
       return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Hash exato gerado da sua senha 8135037871677 para validação cega
+    // Hash exato gerado da sua senha 8135037871677
     const SECURE_PASS_HASH = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; 
     const AUTHORIZED_EMAIL = "diegotouru666@gmail.com";
 
@@ -612,8 +611,8 @@
       ],
       agenda: [
         { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-        { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
-        { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=400' }
+        { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
+        { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
       ],
       team: [
         { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
@@ -791,7 +790,7 @@
           </div>`;
       });
 
-      // RANKINGS (Com pop-up consertado)
+      // RANKINGS
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -859,7 +858,6 @@
     }
 
     function renderAdminLists() {
-      // Home Admin Pre-fill
       document.getElementById('adm-h-promo-banner').value = appData.home.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
       document.getElementById('adm-h-title').value = appData.home.title;
       document.getElementById('adm-h-desc1').value = appData.home.desc1;
@@ -869,7 +867,6 @@
       document.getElementById('adm-h-promo2').value = appData.home.promo2;
       document.getElementById('adm-h-promo3').value = appData.home.promo3;
 
-      // Menu Admin
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
         menuList.innerHTML = appData.menu.map(i => `
@@ -894,7 +891,6 @@
           </div>`).join('');
       }
       
-      // Agenda Admin
       const agendaList = document.getElementById('admin-agenda-list');
       if(agendaList) {
         agendaList.innerHTML = appData.agenda.map(i => `
@@ -916,7 +912,6 @@
           </div>`).join('');
       }
 
-      // Equipe Admin
       const teamList = document.getElementById('admin-team-list');
       if(teamList) {
         teamList.innerHTML = appData.team.map(t => `
@@ -939,7 +934,6 @@
           </div>`).join('');
       }
 
-      // Arcade Admin
       const arcList = document.getElementById('admin-arcade-list');
       if(arcList) {
         arcList.innerHTML = appData.arcade.map(i => `
@@ -951,7 +945,7 @@
             </div>
             <div class="admin-card-row" style="margin-top:5px;">
               <input type="text" class="admin-input" id="arc-score-${i.id}" value="${i.score}" placeholder="Score">
-              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${i.prize}" placeholder="Prêmio (vazio=sem prêmio)">
+              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${i.prize}" placeholder="Prêmio">
             </div>
             <div class="admin-card-row" style="margin-top:5px;">
               <input type="text" class="admin-input" id="arc-ig-${i.id}" value="${i.ig}" placeholder="Instagram (@)">
@@ -968,7 +962,6 @@
           </div>`).join('');
       }
 
-      // Cachaceiros Admin
       const cachList = document.getElementById('admin-cachaceiros-list');
       if(cachList) {
         cachList.innerHTML = appData.cachaceiros.map(i => `
@@ -980,7 +973,7 @@
             </div>
             <div class="admin-card-row" style="margin-top:5px;">
               <input type="text" class="admin-input" id="ca-sub-${i.id}" value="${i.sub}" placeholder="Instagram (@)">
-              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${i.prize}" placeholder="Prêmio (vazio=sem prêmio)">
+              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${i.prize}" placeholder="Prêmio">
             </div>
             <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${i.quote}</textarea>
             <div class="admin-card-row" style="margin-top:5px;">
@@ -996,7 +989,7 @@
     }
 
     // =========================================
-    // SEGURANÇA BLINDADA: LOGIN MANUAL COM HASH SHA-256
+    // LOGIN MANUAL BLINDADO COM SHA-256
     // =========================================
     async function processSecureLogin() {
       const emailInput = document.getElementById('manual-email-input').value.trim();
@@ -1007,7 +1000,6 @@
         return;
       }
 
-      // Converte a senha digitada em SHA-256 no momento do clique
       const hashedPass = await sha256(passInput);
 
       if (emailInput.toLowerCase() === AUTHORIZED_EMAIL.toLowerCase() && hashedPass === SECURE_PASS_HASH) {
@@ -1017,7 +1009,6 @@
         document.getElementById('manual-email-input').value = '';
         document.getElementById('manual-pass-input').value = '';
         
-        // Puxa infos pro form flyer
         document.getElementById('adm-f-tag').value = appData.flyer.tag;
         document.getElementById('adm-f-title').value = appData.flyer.title;
         document.getElementById('adm-f-sub').value = appData.flyer.sub;
@@ -1029,7 +1020,7 @@
       }
     }
 
-    // COMPRESSOR DE IMAGENS (Evita travar o GitHub)
+    // COMPRESSOR DE IMAGENS
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
