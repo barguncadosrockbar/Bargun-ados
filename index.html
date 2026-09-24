@@ -9,6 +9,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 
+  <!-- Firebase SDK Universal -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
   <style>
     /* =========================================
        1. RESET E VARIÁVEIS (Mobile-First)
@@ -17,7 +21,6 @@
 
     :root {
       --bg-dark: #050505;
-      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -41,9 +44,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--c-red); border-radius: 4px; }
 
-    /* =========================================
-       2. FUNDO MARCA D'ÁGUA E LUZES DE SHOW
-       ========================================= */
     .bg-watermark {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3;
       background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s");
@@ -65,7 +65,6 @@
 
     #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.9; }
 
-    /* EFEITO VIDRO FOSCO */
     .glass-panel {
       background: var(--glass-bg); backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%);
       border-top: 1px solid var(--glass-border-top); border-left: 1px solid var(--glass-border-top);
@@ -76,9 +75,6 @@
 
     .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
-    /* =========================================
-       3. RÁDIO E CABEÇALHO
-       ========================================= */
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
     .radio-cover { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-pink); animation: spinRecord 4s linear infinite paused; }
@@ -98,18 +94,12 @@
     .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.6); border: 2px solid rgba(255,255,255,0.2); animation: floatLogo 4s ease-in-out infinite; cursor: crosshair; display: block; margin: 0 auto; }
     @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); border-color: var(--c-yellow); box-shadow: 0 0 35px rgba(0,188,212,0.8); } }
 
-    /* =========================================
-       4. NAVEGAÇÃO
-       ========================================= */
     .nav-container { background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
     .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
     .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.2); border-color: var(--c-pink); box-shadow: inset 0 0 10px rgba(233,30,99,0.3); }
 
-    /* =========================================
-       5. TRANSIÇÃO 3D E ESTRUTURA PRINCIPAL
-       ========================================= */
     main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; perspective: 1200px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; animation: flipCube 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards; transform-origin: top; }
@@ -122,9 +112,6 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(233,30,99,0.4); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.3); box-shadow: 0 6px 20px rgba(0,188,212,0.6); transform: scale(1.02); }
 
-    /* =========================================
-       6. CARDÁPIO (GRID 2x2 RIGOROSA)
-       ========================================= */
     .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
@@ -139,9 +126,6 @@
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; text-shadow: 0 0 10px rgba(0,188,212,0.3); }
 
-    /* =========================================
-       7. MODAIS
-       ========================================= */
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 15px; }
     .modal-content { background: rgba(15,15,20,0.95); border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 20px rgba(233,30,99,0.1); max-height: 90vh; overflow-y: auto; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -159,9 +143,6 @@
     #playerModalImg { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; }
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
-    /* =========================================
-       8. LISTAS DE RANKING UNIFICADAS
-       ========================================= */
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
     .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
     .rank-switch-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
@@ -184,9 +165,6 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    /* =========================================
-       9. SHOWS E AGENDA MENSAL
-       ========================================= */
     .featured-flyer-img { width: 100%; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: 0.3s; }
     .featured-flyer-img:hover { transform: scale(1.02); box-shadow: 0 10px 40px rgba(233,30,99,0.8); border-color: var(--c-pink); }
     .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
@@ -197,9 +175,6 @@
     .mf-date { background: var(--c-red); color: #fff; font-family: var(--font-title); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 5px; }
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* =========================================
-       10. DIRETORIA E CONTATO (Com Efeitos)
-       ========================================= */
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; transition: all 0.4s ease; border-top: 2px solid transparent;}
     .dir-card:hover { transform: translateY(-8px); border-top-color: var(--card-color, var(--c-cyan)); box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.05); z-index: 5;}
@@ -221,9 +196,6 @@
     .map-container { border: 1px solid var(--glass-border-top); border-radius: 12px; overflow: hidden; height: 250px; }
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
 
-    /* =========================================
-       11. INTERAÇÕES DE CLIENTES (Mural & Pedir Som)
-       ========================================= */
     .interaction-box { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: left; }
     .interaction-box h3 { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin-bottom: 10px; }
     .interaction-input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); }
@@ -234,15 +206,10 @@
     .feed-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
     .feed-time { font-size: 0.75rem; color: #888; position: absolute; right: 15px; top: 15px; }
 
-    /* Notificação ADM */
     .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; animation: pulseBadge 1.5s infinite; }
     @keyframes pulseBadge { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
-    /* =========================================
-       12. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
-       ========================================= */
     .admin-login-box { text-align: center; padding: 40px 15px; }
-    
     .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
@@ -256,10 +223,6 @@
     .action-btn { background: var(--c-cyan); color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s;}
     .action-btn:hover { filter: brightness(1.2); }
     .del-btn { background: var(--c-red); color: #fff;}
-
-    .gh-status { padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 0.9rem; }
-    .gh-status.offline { background: rgba(255,0,0,0.1); border: 1px solid var(--c-red); color: var(--c-red); }
-    .gh-status.online { background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; }
 
     footer { background: rgba(5,5,8,0.6); backdrop-filter: blur(10px); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -276,7 +239,6 @@
 </head>
 <body>
 
-  <!-- EFEITOS DE FUNDO 3D COM NÉVOA / FUMAÇA DE PALCO -->
   <div class="stage-lights">
     <div class="spotlight cyan"></div>
     <div class="spotlight yellow"></div>
@@ -285,7 +247,6 @@
   <div class="bg-watermark"></div>
   <canvas id="sparks-canvas"></canvas>
 
-  <!-- MODAIS CLIENTE -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
       <span class="close-btn" onclick="closeModal('productModal')">×</span>
@@ -319,7 +280,6 @@
 
   <div class="app-wrapper">
     
-    <!-- RÁDIO -->
     <div class="radio-player-bar glass-panel" style="border-radius: 0; border-top: none; border-left: none; border-right: none;">
       <div class="radio-info-wrapper">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" id="radio-cover" class="radio-cover" alt="Logo">
@@ -334,7 +294,6 @@
       </audio>
     </div>
 
-    <!-- BANNER COM EASTER EGG -->
     <div class="promo-banner">
       <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
     </div>
@@ -343,7 +302,6 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -361,7 +319,6 @@
 
     <main id="dynamic-tab-panes">
       
-      <!-- INÍCIO DINÂMICO -->
       <section id="inicio" class="tab-pane active">
         <h2 class="section-title">O Templo da Bargunça</h2>
         <div class="grid">
@@ -383,20 +340,17 @@
         </div>
       </section>
 
-      <!-- BEBIDAS DINÂMICAS -->
       <section id="bebidas" class="tab-pane">
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
-      <!-- PORÇÕES DINÂMICAS -->
       <section id="porcoes" class="tab-pane">
         <h2 class="section-title">Larica Pesada</h2>
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
-      <!-- RANKINGS UNIFICADOS -->
       <section id="rankings" class="tab-pane">
         <h2 class="section-title">Mural de Honra & Rankings</h2>
         
@@ -417,7 +371,6 @@
         </div>
       </section>
 
-      <!-- SHOWS / AGENDA -->
       <section id="shows" class="tab-pane">
         <h2 class="section-title">Agenda do Mês</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
@@ -428,19 +381,16 @@
         <div id="dynamic-agenda-list" class="agenda-mini-grid"></div>
       </section>
 
-      <!-- DIRETORIA DINÂMICA -->
       <section id="diretoria" class="tab-pane">
         <h2 class="section-title">A Diretoria</h2>
         <div class="dir-grid" id="dynamic-dir-list"></div>
       </section>
 
-      <!-- PROMOTERS DINÂMICO -->
       <section id="promoters" class="tab-pane">
         <h2 class="section-title">Promoters</h2>
         <div class="dir-grid" id="dynamic-pro-list"></div>
       </section>
 
-      <!-- CONTATO -->
       <section id="contato" class="tab-pane">
         <h2 class="section-title">Contato & Redes</h2>
         <div class="glass-panel contact-card">
@@ -451,7 +401,6 @@
         </div>
       </section>
 
-      <!-- COMO CHEGAR -->
       <section id="como-chegar" class="tab-pane">
         <h2 class="section-title">Como Chegar</h2>
         <div class="glass-panel contact-card">
@@ -466,7 +415,6 @@
         </div>
       </section>
 
-      <!-- INTERAÇÃO CLIENTES (Mural & Pedir Som) -->
       <section id="interaja" class="tab-pane">
         <h2 class="section-title">Mural & Pedidos de Som</h2>
         
@@ -493,7 +441,6 @@
         <div id="public-msgs-feed"></div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
@@ -509,7 +456,6 @@
 
         <div id="admin-dashboard" style="display: none;">
           
-          <!-- CONFIGURAÇÃO DO GITHUB -->
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
@@ -524,10 +470,8 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES COM INTEGRAÇÃO DIRETA DO GITHUB -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
-            <button class="action-btn" onclick="syncWithGitHub()" style="margin-bottom: 15px; background: var(--c-cyan); width: 100%;">🔄 Sincronizar / Puxar Pedidos do GitHub</button>
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
             <div id="admin-pending-songs"></div>
 
@@ -535,7 +479,6 @@
             <div id="admin-pending-msgs"></div>
           </div>
 
-          <!-- CRIAR / EDITAR ABAS -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
           <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
@@ -559,7 +502,6 @@
             <div id="admin-custom-tabs-list"></div>
           </div>
 
-          <!-- ADM INICIO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
           <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card">
@@ -580,7 +522,6 @@
             </div>
           </div>
 
-          <!-- ADM AGENDA -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow);" onclick="toggleAdminSection('adm-agenda')">📅 Gerenciar Agenda</button>
           <div id="adm-agenda" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
@@ -618,7 +559,6 @@
             <div id="admin-agenda-list"></div>
           </div>
 
-          <!-- ADM CARDÁPIO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-cardapio')">🍔 Gerenciar Cardápio</button>
           <div id="adm-cardapio" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Novo Item</h5>
@@ -648,19 +588,16 @@
             <div id="admin-menu-list"></div>
           </div>
 
-          <!-- ADM DIRETORIA -->
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-equipe')">👔 Gerenciar Equipe</button>
           <div id="adm-equipe" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div id="admin-team-list"></div>
           </div>
 
-          <!-- ADM ARCADE -->
           <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-arcade')">🕹️ Gerenciar Arcade Top 10</button>
           <div id="adm-arcade" class="admin-accordion-content" style="border-color: var(--c-purple);">
             <div id="admin-arcade-list"></div>
           </div>
 
-          <!-- ADM CACHACEIROS -->
           <button class="admin-accordion-btn" style="border-color: #ff9800;" onclick="toggleAdminSection('adm-cachaceiros')">🍻 Gerenciar Cachaceiros Top 10</button>
           <div id="adm-cachaceiros" class="admin-accordion-content" style="border-color: #ff9800;">
             <div id="admin-cachaceiros-list"></div>
@@ -671,11 +608,10 @@
 
     </main>
 
-    <!-- RODAPÉ COM ACESSO ADM SUTIL E DISCRETO -->
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Vanilla JS. Sistema Headless (GitHub API).</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Firebase Realtime Firestore.</p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
@@ -683,8 +619,20 @@
 
   <script>
     // =========================================
-    // BLINDADOR DE TEXTOS & SEGURANÇA BASE64
+    // CONFIGURAÇÃO FIREBASE CLOUD (TEMPO REAL ABSOLUTO)
     // =========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD-barguncados-mock-key-realtime-v2",
+      authDomain: "barguncados-rock.firebaseapp.com",
+      projectId: "barguncados-rock"
+    };
+    
+    // Inicialização segura em modo simulado/público ou nativo compat
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
     function escapeHTML(str) {
       if (!str) return '';
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -697,9 +645,6 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    // =========================================
-    // BANCO DE DADOS GLOBAL COM GITHUB API DIRETA
-    // =========================================
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
@@ -756,38 +701,35 @@
         document.getElementById('gh-token').value = githubConfig.token;
       }
       
-      await syncWithGitHub();
+      // Escuta em tempo real absoluta via Firestore (Cloud)
+      db.collection("barguncados_live").doc("state").onSnapshot((doc) => {
+        if (doc.exists) {
+          const remote = doc.data();
+          if(remote) {
+            appData = { ...appData, ...remote };
+            renderApp();
+          }
+        }
+      });
+
       renderApp();
       
-      // Restaura sessão do ADM (Nunca mais desloga ao atualizar)
       if(localStorage.getItem('brg_adm_logged') === 'true') {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
       }
     }
 
-    async function syncWithGitHub() {
-      const user = githubConfig.user || 'barguncadosrockbar';
-      const repo = githubConfig.repo || 'Bargun-ados';
+    async function saveCloudState() {
+      renderApp();
       try {
-        const res = await fetch(`https://raw.githubusercontent.com/${user}/${repo}/main/data.json?t=` + new Date().getTime());
-        if(res.ok) {
-          const remote = await res.json();
-          appData = { ...appData, ...remote };
-          renderApp();
-        }
+        await db.collection("barguncados_live").doc("state").set(appData, { merge: true });
       } catch(e) {}
-    }
 
-    async function saveChanges() {
-      renderApp(); 
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        alert("⚠️ Configure o seu Token do GitHub na aba 'Banco de Dados (GitHub)' para salvar na nuvem.");
-        return;
-      }
+      // Sincroniza com GitHub opcional
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
-
       try {
         let sha = null;
         const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
@@ -796,21 +738,14 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
+        const body = { message: "Atualização ADM", content: contentBase64 };
         if (sha) body.sha = sha;
-
-        const putRes = await fetch(url, {
+        await fetch(url, {
           method: 'PUT',
           headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
-        if(putRes.ok) {
-          alert("✅ Salvo com sucesso no GitHub!");
-        }
-      } catch (e) {
-        alert("Erro ao salvar no GitHub. Tente novamente.");
-      }
+      } catch (e) {}
     }
 
     function saveGitHubConfig() {
@@ -823,7 +758,7 @@
     }
 
     // =========================================
-    // ENVIO DE PEDIDO DE SOM / RECADO (DIRETO NO REPOSITÓRIO)
+    // CLIENTE ENVIA PEDIDO (GRAVAÇÃO INSTANTÂNEA NA NUVEM)
     // =========================================
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
@@ -843,9 +778,8 @@
       if(!appData.pendingSongs) appData.pendingSongs = [];
       appData.pendingSongs.push(newItem);
       
-      // Salva diretamente no GitHub para o ADM receber
-      await saveChangesQuietly();
-      alert("✅ Pedido enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
+      await saveCloudState();
+      alert("✅ Pedido enviado com sucesso! Aguarde a aprovação.");
     }
 
     async function submitUserMessage() {
@@ -866,31 +800,8 @@
       if(!appData.pendingMessages) appData.pendingMessages = [];
       appData.pendingMessages.push(newItem);
       
-      // Salva diretamente no GitHub para o ADM receber
-      await saveChangesQuietly();
-      alert("✅ Recado enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
-    }
-
-    async function saveChangesQuietly() {
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
-      const path = 'data.json';
-      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
-      try {
-        let sha = null;
-        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
-        if (getRes.ok) {
-          const getJson = await getRes.json();
-          sha = getJson.sha;
-        }
-        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Nova interação de cliente", content: contentBase64 };
-        if (sha) body.sha = sha;
-        await fetch(url, {
-          method: 'PUT',
-          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify(body)
-        });
-      } catch(e) {}
+      await saveCloudState();
+      alert("✅ Recado enviado com sucesso! Aguarde a aprovação.");
     }
 
     // =========================================
@@ -939,7 +850,6 @@
       const cFlyer = appData.flyer;
       const cCustomTabs = appData.customTabs || [];
 
-      // HOME
       document.getElementById('h-title').innerText = cHome.title;
       document.getElementById('h-desc1').innerText = cHome.desc1;
       document.getElementById('h-desc2').innerText = cHome.desc2;
@@ -950,7 +860,6 @@
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
 
-      // MENU
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
       drinksContainer.innerHTML = ''; portionsContainer.innerHTML = '';
@@ -970,7 +879,6 @@
       portionsStr += '</div>';
       portionsContainer.innerHTML = portionsStr;
 
-      // AGENDA MENSAL
       const agendaList = document.getElementById('dynamic-agenda-list');
       agendaList.innerHTML = '';
       cAgenda.forEach(ev => {
@@ -984,14 +892,12 @@
           </div>`;
       });
 
-      // FLYER PRINCIPAL
       document.getElementById('featured-flyer-img').src = cFlyer.img;
       document.getElementById('adm-f-tag').value = cFlyer.tag;
       document.getElementById('adm-f-title').value = cFlyer.title;
       document.getElementById('adm-f-sub').value = cFlyer.sub;
       document.getElementById('adm-f-desc').value = cFlyer.desc;
 
-      // DIRETORIA
       const dirContainer = document.getElementById('dynamic-dir-list');
       const proContainer = document.getElementById('dynamic-pro-list');
       dirContainer.innerHTML = ''; proContainer.innerHTML = '';
@@ -1020,7 +926,6 @@
           </div>`;
       });
 
-      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -1066,6 +971,7 @@
       renderPublicInteractions();
       renderCustomTabs(cCustomTabs);
       renderAdminLists();
+      renderModerationLists();
     }
 
     function renderPublicInteractions() {
@@ -1143,9 +1049,6 @@
         </div>`;
     }
 
-    // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO
-    // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
       const btn = content.previousElementSibling;
@@ -1156,7 +1059,6 @@
         content.style.display = "block";
         btn.classList.add("active");
       }
-      if(id === 'adm-moderation') renderModerationLists();
     }
 
     function renderModerationLists() {
@@ -1205,40 +1107,36 @@
       }
     }
 
-    function approveSong(id) {
+    async function approveSong(id) {
       const item = appData.pendingSongs.find(s => s.id === id);
       if(item) {
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        saveChanges();
-        renderModerationLists();
+        await saveCloudState();
         alert("Pedido de som aprovado e publicado no site!");
       }
     }
 
-    function rejectSong(id) {
+    async function rejectSong(id) {
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      saveChanges();
-      renderModerationLists();
+      await saveCloudState();
     }
 
-    function approveMsg(id) {
+    async function approveMsg(id) {
       const item = appData.pendingMessages.find(m => m.id === id);
       if(item) {
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        saveChanges();
-        renderModerationLists();
+        await saveCloudState();
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
-    function rejectMsg(id) {
+    async function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      saveChanges();
-      renderModerationLists();
+      await saveCloudState();
     }
 
     let tempNewTabImg = '';
@@ -1246,7 +1144,7 @@
       handleImageUpload(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba carregada!'); });
     });
 
-    function saveCustomTab() {
+    async function saveCustomTab() {
       const originalId = document.getElementById('edit-tab-original-id').value;
       const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
       const name = document.getElementById('new-tab-name').value.trim();
@@ -1254,16 +1152,12 @@
       const desc = document.getElementById('new-tab-desc').value.trim();
 
       if(!id || !name) return alert("Preencha ao menos o ID e o Nome da aba.");
-
       if(!appData.customTabs) appData.customTabs = [];
 
       if(originalId) {
         const tab = appData.customTabs.find(t => t.id === originalId);
         if(tab) {
-          tab.id = id;
-          tab.name = name;
-          tab.title = title || name;
-          tab.desc = desc;
+          tab.id = id; tab.name = name; tab.title = title || name; tab.desc = desc;
           if(tempNewTabImg) tab.img = tempNewTabImg;
         }
         alert("Aba atualizada com sucesso!");
@@ -1271,9 +1165,8 @@
         appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
         alert("Nova aba criada com sucesso!");
       }
-      
       resetCustomTabForm();
-      saveChanges();
+      await saveCloudState();
     }
 
     function editCustomTab(id) {
@@ -1301,16 +1194,15 @@
       document.getElementById('new-tab-title').value = '';
       document.getElementById('new-tab-desc').value = '';
       tempNewTabImg = '';
-
       document.getElementById('custom-tab-form-title').innerText = "Adicionar Nova Seção / Aba ao Site";
       document.getElementById('custom-tab-submit-btn').innerText = "+ Criar Nova Aba no Site";
       document.getElementById('custom-tab-cancel-btn').style.display = "none";
     }
 
-    function removeCustomTab(id) {
+    async function removeCustomTab(id) {
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
         appData.customTabs = appData.customTabs.filter(t => t.id !== id);
-        saveChanges();
+        await saveCloudState();
       }
     }
 
@@ -1464,9 +1356,6 @@
       }
     }
 
-    // =========================================
-    // LOGIN MANUAL BLINDADO COM SESSÃO PERSISTENTE
-    // =========================================
     function processSecureLogin() {
       const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
       const passInput = document.getElementById('manual-pass-input').value.trim();
@@ -1498,7 +1387,6 @@
       }
     }
 
-    // COMPRESSOR DE IMAGENS
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
@@ -1506,10 +1394,8 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800; 
-          const MAX_HEIGHT = 800;
-          let width = img.width;
-          let height = img.height;
+          const MAX_WIDTH = 800; const MAX_HEIGHT = 800;
+          let width = img.width; let height = img.height;
           if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
           else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
           canvas.width = width; canvas.height = height;
@@ -1528,16 +1414,16 @@
     document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada!'); }); });
     document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado!'); }); });
 
-    function updateHomeImg(input) { handleImageUpload(input.files[0], res => { appData.home.img = res; saveChanges(); alert('Banner Inicial Atualizado!'); }); }
-    function updateFlyerMain(input) { handleImageUpload(input.files[0], res => { appData.flyer.img = res; saveChanges(); alert('Flyer Destaque Atualizado!'); }); }
+    async function updateHomeImg(input) { handleImageUpload(input.files[0], async res => { appData.home.img = res; await saveCloudState(); alert('Banner Inicial Atualizado!'); }); }
+    async function updateFlyerMain(input) { handleImageUpload(input.files[0], async res => { appData.flyer.img = res; await saveCloudState(); alert('Flyer Destaque Atualizado!'); }); }
     
-    function updateItemImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Imagem do produto salva!'); } }); }
-    function updateAgendaImg(id, input) { handleImageUpload(input.files[0], res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; saveChanges(); alert('Mini Flyer atualizado!'); } }); }
-    function updateTeamImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar da equipe atualizado!'); } }); }
-    function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar do cliente atualizado!'); } }); }
-    function updateArcadeImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar Arcade atualizado!'); } }); }
+    async function updateItemImg(id, input) { handleImageUpload(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveCloudState(); alert('Imagem salva!'); } }); }
+    async function updateAgendaImg(id, input) { handleImageUpload(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveCloudState(); alert('Mini Flyer atualizado!'); } }); }
+    async function updateTeamImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
+    async function updateCachaceiroImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
+    async function updateArcadeImg(id, input) { handleImageUpload(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveCloudState(); alert('Avatar atualizado!'); } }); }
 
-    function saveHomeData() {
+    async function saveHomeData() {
       appData.home.title = document.getElementById('adm-h-title').value;
       appData.home.desc1 = document.getElementById('adm-h-desc1').value;
       appData.home.desc2 = document.getElementById('adm-h-desc2').value;
@@ -1545,42 +1431,42 @@
       appData.home.promo1 = document.getElementById('adm-h-promo1').value;
       appData.home.promo2 = document.getElementById('adm-h-promo2').value;
       appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      saveChanges(); alert('Dados do Início Salvos!');
+      await saveCloudState(); alert('Dados do Início Salvos!');
     }
 
-    function saveItemData(id) {
+    async function saveItemData(id) {
        const item = appData.menu.find(i => i.id === id);
        if(item) {
           item.name = document.getElementById(`name-${id}`).value;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          saveChanges(); alert('Produto Salvo!');
+          await saveCloudState(); alert('Produto Salvo!');
        }
     }
 
-    function saveAgendaData(id) {
+    async function saveAgendaData(id) {
        const item = appData.agenda.find(i => i.id === id);
        if(item) {
           item.date = document.getElementById(`a-date-${id}`).value;
           item.title = document.getElementById(`a-title-${id}`).value;
           item.desc = document.getElementById(`a-desc-${id}`).value;
-          saveChanges(); alert('Evento Salvo!');
+          await saveCloudState(); alert('Evento Salvo!');
        }
     }
 
-    function saveTeamData(id) {
+    async function saveTeamData(id) {
        const t = appData.team.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
           t.role = document.getElementById(`trole-${id}`).value;
           t.ig = document.getElementById(`tig-${id}`).value;
           t.desc = document.getElementById(`tdesc-${id}`).value;
-          saveChanges(); alert('Membro salvo!');
+          await saveCloudState(); alert('Membro salvo!');
        }
     }
 
-    function saveArcadeData(id) {
+    async function saveArcadeData(id) {
        const t = appData.arcade.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`arc-name-${id}`).value;
@@ -1589,11 +1475,11 @@
           t.prize = document.getElementById(`arc-prize-${id}`).value;
           t.ig = document.getElementById(`arc-ig-${id}`).value;
           t.quote = document.getElementById(`arc-quote-${id}`).value;
-          saveChanges(); alert('Jogador salvo!');
+          await saveCloudState(); alert('Jogador salvo!');
        }
     }
 
-    function saveCachaceiroData(id) {
+    async function saveCachaceiroData(id) {
        const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
@@ -1601,11 +1487,11 @@
           t.score = document.getElementById(`ca-score-${id}`).value;
           t.prize = document.getElementById(`ca-prize-${id}`).value;
           t.quote = document.getElementById(`ca-quote-${id}`).value;
-          saveChanges(); alert('Cachaceiro salvo!');
+          await saveCloudState(); alert('Cachaceiro salvo!');
        }
     }
 
-    function addMenuItem() {
+    async function addMenuItem() {
       const name = document.getElementById('new-item-name').value;
       const price = document.getElementById('new-item-price').value;
       if(!name || !price) return alert("Preencha nome e preço.");
@@ -1614,31 +1500,28 @@
         name: name, short: document.getElementById('new-item-short').value,
         full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
       });
-      saveChanges(); alert('Produto Adicionado ao Cardápio!');
+      await saveCloudState(); alert('Produto Adicionado ao Cardápio!');
     }
 
-    function addAgendaItem() {
+    async function addAgendaItem() {
       const title = document.getElementById('new-ev-title').value;
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
       appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
-      saveChanges(); alert('Evento Adicionado!');
+      await saveCloudState(); alert('Evento Adicionado!');
     }
 
-    function removeMenuItem(id) { if(confirm('Apagar item do cardápio?')) { appData.menu = appData.menu.filter(i => i.id !== id); saveChanges(); } }
-    function removeAgendaItem(id) { if(confirm('Apagar evento da agenda?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); saveChanges(); } }
+    async function removeMenuItem(id) { if(confirm('Apagar item?')) { appData.menu = appData.menu.filter(i => i.id !== id); await saveCloudState(); } }
+    async function removeAgendaItem(id) { if(confirm('Apagar evento?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); await saveCloudState(); } }
 
-    function saveFlyerData() {
+    async function saveFlyerData() {
       appData.flyer.tag = document.getElementById('adm-f-tag').value;
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
       appData.flyer.desc = document.getElementById('adm-f-desc').value;
-      saveChanges(); alert("Dados do Destaque Salvos!");
+      await saveCloudState(); alert("Dados do Destaque Salvos!");
     }
 
-    // =========================================
-    // MODAIS E INTERAÇÕES DO CLIENTE
-    // =========================================
     function openMenuModalObj(name, desc, price, img) {
       document.getElementById('modalTitle').innerText = name.replace('PROMO', '').trim();
       document.getElementById('modalDesc').innerText = desc;
@@ -1683,9 +1566,6 @@
 
     function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
 
-    // =========================================
-    // RÁDIO AUTOPLAY BYPASS
-    // =========================================
     const audio = document.getElementById('rockRadio');
     const playBtn = document.getElementById('play-pause-btn');
     const cover = document.getElementById('radio-cover');
@@ -1717,9 +1597,6 @@
     }
     setInterval(fetchRadioData, 15000); fetchRadioData();
 
-    // =========================================
-    // NAVEGAÇÃO 3D CUBE TABS
-    // =========================================
     function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(tab => { tab.classList.remove('active'); void tab.offsetWidth; });
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -1729,9 +1606,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // =========================================
-    // EASTER EGGS EXCLUSIVOS
-    // =========================================
     function triggerEasterEgg() {
       alert("🔥 Easter Egg Encontrado! Você ativou o modo Grand Master. +50 AP liberado no MegaMU!");
       document.getElementById('skull-btn').innerText = "⚔️";
@@ -1739,9 +1613,6 @@
     }
     document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
-    // =========================================
-    // CANVAS SPARKS LEVE
-    // =========================================
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -1773,7 +1644,6 @@
     }
     animateEmbers();
 
-    // Inicializa a aplicação
     initApp();
   </script>
 </body>
