@@ -524,7 +524,7 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES COM TOKEN PÚBLICO INTEGRADO -->
+          <!-- MODERAÇÃO DE INTERAÇÕES COM TOKEN PÚBLICO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -780,7 +780,7 @@
       // 1. Puxa interações públicas do Relay Cloud (token anônimo embutido)
       try {
         const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), {
-          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8' }
+          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'}
         });
         if(relayRes.ok) {
           const relayJson = await relayRes.json();
@@ -823,7 +823,10 @@
       try {
         await fetch(RELAY_BIN_URL, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'
+          },
           body: JSON.stringify({
             pendingSongs: appData.pendingSongs || [],
             pendingMessages: appData.pendingMessages || [],
@@ -866,11 +869,13 @@
     }
 
     // =========================================
-    // ENVIO PÚBLICO COM TOKEN EMBUTIDO (SEM CONFIGURAÇÃO DO CLIENTE)
+    // ENVIO PÚBLICO COM TOKEN ANÔNIMO EMBUTIDO
     // =========================================
     async function publicPushToRelay(newItem, type) {
       try {
-        const getRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime());
+        const getRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), {
+          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8' }
+        });
         let currentRecord = { pendingSongs: [], pendingMessages: [], userSongs: [], userMessages: [] };
         if(getRes.ok) {
           const json = await getRes.json();
@@ -889,7 +894,10 @@
 
         await fetch(RELAY_BIN_URL, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'
+          },
           body: JSON.stringify(currentRecord)
         });
         return true;
