@@ -1,0 +1,385 @@
+{
+  "home": {
+    "promoBannerText": "SÓ ROCK, CERVEJA E CACHAÇA",
+    "title": "SOM PESADO & BEBIDA TRINCANDO",
+    "desc1": "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.",
+    "desc2": "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.",
+    "promoTitle": "🔥 DIVERSÃO GARANTIDA",
+    "promo1": "🎸 Agenda de Shows Coberta o Mês Todo",
+    "promo2": "🕹️ Fliperama Arcades Liberados",
+    "promo3": "🍻 Bebidas Baratas & Porções Brutas",
+    "img": ""
+  },
+  "menu": [
+    {
+      "id": 1,
+      "type": "drink",
+      "name": "Gin Sunset",
+      "short": "Gin, laranja e especiarias.",
+      "full": "Gin artesanal vibrante.",
+      "price": "8000",
+      "img": "https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400"
+    },
+    {
+      "id": 2,
+      "type": "drink",
+      "name": "Caipirinha",
+      "short": "Limão taiti, açúcar e cachaça.",
+      "full": "O clássico nacional.",
+      "price": "10,00",
+      "img": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400"
+    },
+    {
+      "id": 3,
+      "type": "drink",
+      "name": "Caipiroska",
+      "short": "Vodka premium e morango.",
+      "full": "Visual brutal e sabor letal.",
+      "price": "14,00",
+      "img": "https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400"
+    },
+    {
+      "id": 4,
+      "type": "drink",
+      "name": "Bloody Mary",
+      "short": "Vodka, tomate, pimenta.",
+      "full": "Para curar a ressaca.",
+      "price": "18,00",
+      "img": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400"
+    },
+    {
+      "id": 5,
+      "type": "drink",
+      "name": "Fenrir Whiskey",
+      "short": "Whiskey on the rocks.",
+      "full": "O combustível dos rockstars.",
+      "price": "20,00",
+      "img": "https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400"
+    },
+    {
+      "id": 6,
+      "type": "beer",
+      "name": "Heineken (LN)",
+      "short": "A verdinha trincando.",
+      "full": "Garrafa 330ml gelada ao extremo.",
+      "price": "12,00",
+      "img": "https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400"
+    },
+    {
+      "id": 7,
+      "type": "beer",
+      "name": "Budweiser (LN)",
+      "short": "Lager americana clássica.",
+      "full": "Cerveja redonda e clássica.",
+      "price": "10,00",
+      "img": "https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400"
+    },
+    {
+      "id": 8,
+      "type": "beer",
+      "name": "Skol Lata",
+      "short": "Pilsen pra descer redondo.",
+      "full": "Lata 350ml trincando.",
+      "price": "8,00",
+      "img": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400"
+    },
+    {
+      "id": 9,
+      "type": "noalcohol",
+      "name": "Mocktail",
+      "short": "Morango, limão e soda.",
+      "full": "Sem álcool. Muito gelo.",
+      "price": "15,00",
+      "img": "https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400"
+    },
+    {
+      "id": 10,
+      "type": "portion",
+      "name": "Batata Cheddar",
+      "short": "Cheddar e bacon.",
+      "full": "Batata rústica com avalanche de cheddar.",
+      "price": "36,00",
+      "img": "https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400"
+    },
+    {
+      "id": 11,
+      "type": "portion",
+      "name": "Calabresa Fire",
+      "short": "Flambada na cachaça.",
+      "full": "Calabresa com cebola roxa e pão de alho.",
+      "price": "38,00",
+      "img": "https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400"
+    },
+    {
+      "id": 12,
+      "type": "portion",
+      "name": "Tábua Churras",
+      "short": "Iscas de carne e fritas.",
+      "full": "A tábua cooperativa de respeito com chimichurri.",
+      "price": "65,00",
+      "img": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800"
+    }
+  ],
+  "agenda": [
+    {
+      "id": 1,
+      "date": "15/Out",
+      "title": "Quinta Grunge",
+      "desc": "Nirvana, Pearl Jam e Arctic Monkeys.",
+      "img": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80"
+    },
+    {
+      "id": 2,
+      "date": "16/Out",
+      "title": "Sexta Classic",
+      "desc": "AC/DC, Guns e Queen.",
+      "img": "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80"
+    },
+    {
+      "id": 3,
+      "date": "18/Out",
+      "title": "Domingo Acústico",
+      "desc": "Voz e violão. Rock nacional.",
+      "img": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80"
+    }
+  ],
+  "team": [
+    {
+      "id": "dir1",
+      "type": "dir",
+      "name": "TOURU",
+      "role": "TI & Infra",
+      "ig": "@Diego_touru",
+      "desc": "O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.",
+      "img": "169819.jpg"
+    },
+    {
+      "id": "dir2",
+      "type": "dir",
+      "name": "EDINHO",
+      "role": "Eventos",
+      "ig": "@Thrasher_eds",
+      "desc": "O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.",
+      "img": "169822.jpg"
+    },
+    {
+      "id": "dir3",
+      "type": "dir",
+      "name": "ALISSON",
+      "role": "Barman",
+      "ig": "@alisson_adler",
+      "desc": "O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.",
+      "img": "169823.jpg"
+    },
+    {
+      "id": "pro1",
+      "type": "pro",
+      "name": "KELVIN",
+      "role": "Bandas & Mosh",
+      "ig": "@jkelvin_guitar",
+      "desc": "O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.",
+      "img": "https://unavatar.io/instagram/jkelvin_guitar"
+    }
+  ],
+  "arcade": [
+    {
+      "id": 1,
+      "name": "Rodrigo \"KOF-GOD\"",
+      "sub": "KOF 2002",
+      "score": "1000K",
+      "prize": "TORRE CHOPP",
+      "quote": "Aqui ninguém me ganha, traga sua ficha e chore!",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P1&background=e91e63&color=fff"
+    },
+    {
+      "id": 2,
+      "name": "Player 2",
+      "sub": "KOF 2002",
+      "score": "950K",
+      "prize": "",
+      "quote": "Aqui ninguém me ganha, traga sua ficha e chore!",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P2&background=e91e63&color=fff"
+    },
+    {
+      "id": 3,
+      "name": "Player 3",
+      "sub": "KOF 2002",
+      "score": "900K",
+      "prize": "",
+      "quote": "Aqui ninguém me ganha, traga sua ficha e chore!",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P3&background=e91e63&color=fff"
+    },
+    {
+      "id": 4,
+      "name": "Player 4",
+      "sub": "KOF 2002",
+      "score": "850K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P4&background=e91e63&color=fff"
+    },
+    {
+      "id": 5,
+      "name": "Player 5",
+      "sub": "KOF 2002",
+      "score": "800K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P5&background=e91e63&color=fff"
+    },
+    {
+      "id": 6,
+      "name": "Player 6",
+      "sub": "KOF 2002",
+      "score": "750K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P6&background=e91e63&color=fff"
+    },
+    {
+      "id": 7,
+      "name": "Player 7",
+      "sub": "KOF 2002",
+      "score": "700K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P7&background=e91e63&color=fff"
+    },
+    {
+      "id": 8,
+      "name": "Player 8",
+      "sub": "KOF 2002",
+      "score": "650K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P8&background=e91e63&color=fff"
+    },
+    {
+      "id": 9,
+      "name": "Player 9",
+      "sub": "KOF 2002",
+      "score": "600K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P9&background=e91e63&color=fff"
+    },
+    {
+      "id": 10,
+      "name": "Player 10",
+      "sub": "KOF 2002",
+      "score": "550K",
+      "prize": "",
+      "quote": "",
+      "ig": "@rocker",
+      "img": "https://ui-avatars.com/api/?name=P10&background=e91e63&color=fff"
+    }
+  ],
+  "cachaceiros": [
+    {
+      "id": 1,
+      "name": "Alex \"Tanque\"",
+      "sub": "@rocker",
+      "score": "40 L",
+      "prize": "JACK DANIELS",
+      "quote": "Água é pro fígado fraco, desce mais uma dose!",
+      "img": "https://ui-avatars.com/api/?name=B1&background=00bcd4&color=fff"
+    },
+    {
+      "id": 2,
+      "name": "Bebedor 2",
+      "sub": "@rocker",
+      "score": "38 L",
+      "prize": "",
+      "quote": "Água é pro fígado fraco, desce mais uma dose!",
+      "img": "https://ui-avatars.com/api/?name=B2&background=00bcd4&color=fff"
+    },
+    {
+      "id": 3,
+      "name": "Bebedor 3",
+      "sub": "@rocker",
+      "score": "36 L",
+      "prize": "",
+      "quote": "Água é pro fígado fraco, desce mais uma dose!",
+      "img": "https://ui-avatars.com/api/?name=B3&background=00bcd4&color=fff"
+    },
+    {
+      "id": 4,
+      "name": "Bebedor 4",
+      "sub": "@rocker",
+      "score": "34 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B4&background=00bcd4&color=fff"
+    },
+    {
+      "id": 5,
+      "name": "Bebedor 5",
+      "sub": "@rocker",
+      "score": "32 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B5&background=00bcd4&color=fff"
+    },
+    {
+      "id": 6,
+      "name": "Bebedor 6",
+      "sub": "@rocker",
+      "score": "30 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B6&background=00bcd4&color=fff"
+    },
+    {
+      "id": 7,
+      "name": "Bebedor 7",
+      "sub": "@rocker",
+      "score": "28 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B7&background=00bcd4&color=fff"
+    },
+    {
+      "id": 8,
+      "name": "Bebedor 8",
+      "sub": "@rocker",
+      "score": "26 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B8&background=00bcd4&color=fff"
+    },
+    {
+      "id": 9,
+      "name": "Bebedor 9",
+      "sub": "@rocker",
+      "score": "24 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B9&background=00bcd4&color=fff"
+    },
+    {
+      "id": 10,
+      "name": "Bebedor 10",
+      "sub": "@rocker",
+      "score": "22 L",
+      "prize": "",
+      "quote": "",
+      "img": "https://ui-avatars.com/api/?name=B10&background=00bcd4&color=fff"
+    }
+  ],
+  "flyer": {
+    "tag": "SÁBADO INSANO",
+    "title": "BANDA HELLFIRE",
+    "sub": "ESPECIAL METALLICA E SLIPKNOT",
+    "desc": "A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!",
+    "img": "https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80"
+  }
+}
