@@ -17,7 +17,6 @@
 
     :root {
       --bg-dark: #050505;
-      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -65,7 +64,6 @@
 
     #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.9; }
 
-    /* EFEITO VIDRO FOSCO */
     .glass-panel {
       background: var(--glass-bg); backdrop-filter: blur(20px) saturate(200%); -webkit-backdrop-filter: blur(20px) saturate(200%);
       border-top: 1px solid var(--glass-border-top); border-left: 1px solid var(--glass-border-top);
@@ -79,10 +77,7 @@
     /* =========================================
        3. RÁDIO E CABEÇALHO
        ========================================= */
-    .radio-player-bar {
-      border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan);
-      display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px;
-    }
+    .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
     .radio-cover { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-pink); animation: spinRecord 4s linear infinite paused; }
     @keyframes spinRecord { to { transform: rotate(360deg); } }
@@ -106,11 +101,7 @@
        ========================================= */
     .nav-container { background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
-    .tab-btn {
-      flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); 
-      font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; 
-      border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase;
-    }
+    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
     .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.2); border-color: var(--c-pink); box-shadow: inset 0 0 10px rgba(233,30,99,0.3); }
 
@@ -145,6 +136,7 @@
     .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; text-shadow: 0 0 10px rgba(0,188,212,0.3); }
+    .badge-promo { font-size: 0.55rem; background: var(--c-red); color: #fff; padding: 2px 4px; border-radius: 3px; vertical-align: middle; margin-left: 5px; }
 
     /* =========================================
        7. MODAIS
@@ -159,12 +151,26 @@
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; text-shadow: 0 0 15px rgba(255,235,59,0.4); }
+    .modal-discount { background: rgba(0, 188, 212, 0.1); border: 1px dashed var(--c-cyan); padding: 10px; border-radius: 8px; }
+    .modal-discount a { color: var(--c-yellow); font-weight: 900; text-decoration: none; font-size: 1.1rem; display: block; margin-top: 5px; }
 
     #eventModalImg { border-color: var(--c-purple); max-height: 250px; }
     #e-title { font-family: var(--font-title); font-size: 2.5rem; color: #fff; line-height: 1;}
 
     #playerModalImg { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; }
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
+
+    /* Modal do Google Simulado */
+    .google-modal { background: #fff; color: #202124; padding: 40px 30px; border-radius: 8px; border: none; max-width: 400px; text-align: center; width: 100%; margin: 10% auto; position: relative;}
+    .google-modal img { width: 80px; margin-bottom: 15px; }
+    .google-modal h2 { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 400; font-size: 1.5rem; margin-bottom: 10px; }
+    .google-modal p { color: #5f6368; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1rem; margin-bottom: 30px; }
+    .google-input { width: 100%; padding: 13px 15px; font-size: 1rem; border: 1px solid #dadce0; border-radius: 4px; margin-bottom: 40px; }
+    .google-input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+    .google-action { display: flex; justify-content: space-between; align-items: center; }
+    .google-action a { color: #1a73e8; text-decoration: none; font-weight: 600; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;}
+    .google-btn-real { background: #1a73e8; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: 0.2s;}
+    .google-btn-real:hover { background: #1557b0; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
     /* =========================================
        8. LISTAS DE RANKING COM DESTAQUE TOP 3
@@ -199,28 +205,18 @@
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* =========================================
-       10. DIRETORIA, PROMOTERS E CONTATO
+       10. DIRETORIA E CONTATO (Com Efeitos)
        ========================================= */
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
-    
-    /* Efeitos de Destaque na Diretoria */
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; transition: all 0.4s ease; border-top: 2px solid transparent;}
     .dir-card:hover { transform: translateY(-8px); border-top-color: var(--card-color, var(--c-cyan)); box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 20px rgba(255,255,255,0.05); z-index: 5;}
-    
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); transition: all 0.4s ease;}
     .dir-card:hover .dir-img { transform: scale(1.1) rotate(5deg); box-shadow: 0 0 25px var(--card-color, var(--c-cyan)); }
-    
     .dir-name { font-family: var(--font-title); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px;}
     .dir-role { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
     .dir-desc { color: #aaa; font-size: 0.95rem; line-height: 1.5; margin-top: 15px; }
 
-    /* Botão Instagram Destaque */
-    .ig-button {
-      display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink));
-      padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); 
-      text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px;
-      transition: all 0.3s ease; margin: 10px 0 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
+    .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; transition: all 0.3s ease; margin: 10px 0 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
     .ig-button span { color: #fff; font-family: var(--font-body); font-weight: bold; font-size: 0.85rem; letter-spacing: 0;}
     .ig-button:hover { background: var(--card-color, var(--c-pink)); color: #000 !important; box-shadow: 0 0 20px var(--card-color, var(--c-pink)); transform: scale(1.05); }
     .ig-button:hover span { color: #000 !important; }
@@ -233,33 +229,20 @@
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
 
     /* =========================================
-       11. PAINEL DE ADMINISTRAÇÃO ACORDEÃO
+       11. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
        ========================================= */
     .admin-login-box { text-align: center; padding: 40px 15px; }
     
-    .admin-accordion-btn {
-      background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; 
-      border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; 
-      border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
+    .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
-    
-    .admin-accordion-content {
-      padding: 20px; display: none; background: rgba(0,0,0,0.6); 
-      border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; 
-      margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-    }
-
+    .admin-accordion-content { padding: 20px; display: none; background: rgba(0,0,0,0.6); border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .admin-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; position: relative;}
     .admin-card-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .admin-input { flex: 1; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); min-width: 120px; }
     .admin-textarea { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); resize: vertical; }
-    
     .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: #333; padding: 8px 15px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; flex: 1; border: 1px solid #555;}
     .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
-    
     .action-btn { background: var(--c-cyan); color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s;}
     .action-btn:hover { filter: brightness(1.2); }
     .del-btn { background: var(--c-red); color: #fff;}
@@ -279,7 +262,7 @@
 </head>
 <body>
 
-  <!-- EFEITOS DE FUNDO 3D E VIDRO -->
+  <!-- EFEITOS DE FUNDO -->
   <div class="stage-lights">
     <div class="spotlight cyan"></div>
     <div class="spotlight yellow"></div>
@@ -317,6 +300,19 @@
       <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
       <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
       <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
+    </div>
+  </div>
+
+  <!-- MODAL LOGIN GOOGLE (SIMULADOR OAUTH SEGURO) -->
+  <div id="googleModal" class="modal" style="background: rgba(0,0,0,0.95); z-index: 9999;">
+    <div class="glass-panel" style="background: #fff; color: #202124; padding: 40px 30px; border-radius: 8px; max-width: 400px; text-align: center; margin: 10% auto; position: relative;">
+      <span class="close-btn" onclick="closeModal('googleModal')" style="color: #000; right: 10px; top: 5px;">×</span>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" style="width: 80px; margin-bottom: 15px;">
+      <h2 style="font-family: Arial, sans-serif; font-weight: 400; font-size: 1.5rem; margin-bottom: 10px;">Fazer login</h2>
+      <p style="color: #5f6368; font-family: Arial, sans-serif; font-size: 1rem; margin-bottom: 30px;">Acesso Administrativo</p>
+      
+      <input type="email" id="google-email-input" style="width: 100%; padding: 12px; font-size: 1rem; border: 1px solid #dadce0; border-radius: 4px; margin-bottom: 20px;" placeholder="Digite o E-mail Autorizado" autocomplete="off">
+      <button style="background: #1a73e8; color: #fff; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 600; cursor: pointer; width: 100%;" onclick="processManualLogin()">Avançar</button>
     </div>
   </div>
 
@@ -358,7 +354,7 @@
         <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
         <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
         <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
-        <button class="tab-btn" onclick="switchTab('admin')" style="color: var(--c-red); font-weight: bold; border-color: var(--c-red);">⚙️ ADM</button>
+        <button class="tab-btn" onclick="document.getElementById('googleModal').style.display='flex'" style="color: var(--c-red); font-weight: bold; border-color: var(--c-red);">⚙️ ADM</button>
       </nav>
     </div>
 
@@ -452,14 +448,7 @@
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
-        <div id="admin-login" class="glass-panel admin-login-box">
-          <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail Administrativo para liberar o painel.</p>
-          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Digite o E-mail Autorizado" autocomplete="off">
-          <br>
-          <button class="btn-fire" onclick="processManualLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
-        </div>
-
+        <!-- O Login foi movido para o modal do Google no header para ser acessado pelo Botão ADM -->
         <div id="admin-dashboard" style="display: none;">
           
           <div style="background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 20px; font-weight: bold;">
@@ -471,7 +460,7 @@
           <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card">
               
-              <h5 style="color:#fff; margin-top:5px; margin-bottom: 5px;">Frase do Topo (Letreiro)</h5>
+              <h5 style="color:#fff; margin-top:5px; margin-bottom: 5px;">Frase do Topo (Letreiro Caveira)</h5>
               <input type="text" class="admin-input" id="adm-h-promo-banner" placeholder="SÓ ROCK, CERVEJA E CACHAÇA" style="margin-bottom: 15px; border-color: var(--c-yellow);">
 
               <div class="file-upload-wrapper">
@@ -586,7 +575,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace;">Otimizado via Vanilla JS. ADM Dinâmico com Storage Nativo.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace;">Otimizado via Vanilla JS. ADM Dinâmico com Storage Nativo Restaurado.</p>
     </footer>
 
   </div>
@@ -594,6 +583,7 @@
   <script>
     // =========================================
     // BLINDADOR DE TEXTOS (Escaping)
+    // Protege contra aspas quebrando o código no Top 1 e Cardápio
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
@@ -601,7 +591,8 @@
     }
 
     // =========================================
-    // BANCO DE DADOS LOCAL COMPLETO (Versão _v4)
+    // BANCO DE DADOS LOCAL COMPLETO (Versão _v5)
+    // Atualizado a Key para limpar cache e carregar descrições longas
     // =========================================
     
     // HOME DATA
@@ -655,13 +646,14 @@
       quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff'
     }));
 
-    let currentHome = JSON.parse(localStorage.getItem('brg_home_v4')) || defaultHome;
-    let currentMenu = JSON.parse(localStorage.getItem('brg_menu_v4')) || defaultMenu;
-    let currentAgenda = JSON.parse(localStorage.getItem('brg_agenda_v4')) || defaultAgenda;
-    let currentTeam = JSON.parse(localStorage.getItem('brg_team_v4')) || defaultTeam;
-    let currentArcade = JSON.parse(localStorage.getItem('brg_arcade_v4')) || defaultArcade;
-    let currentCachaceiros = JSON.parse(localStorage.getItem('brg_cachaceiros_v4')) || defaultCachaceiros;
-    let currentFlyer = JSON.parse(localStorage.getItem('brg_flyer_v4')) || { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
+    // Forçamos o V5 para limpar o cache velho
+    let currentHome = JSON.parse(localStorage.getItem('brg_home_v5')) || defaultHome;
+    let currentMenu = JSON.parse(localStorage.getItem('brg_menu_v5')) || defaultMenu;
+    let currentAgenda = JSON.parse(localStorage.getItem('brg_agenda_v5')) || defaultAgenda;
+    let currentTeam = JSON.parse(localStorage.getItem('brg_team_v5')) || defaultTeam;
+    let currentArcade = JSON.parse(localStorage.getItem('brg_arcade_v5')) || defaultArcade;
+    let currentCachaceiros = JSON.parse(localStorage.getItem('brg_cachaceiros_v5')) || defaultCachaceiros;
+    let currentFlyer = JSON.parse(localStorage.getItem('brg_flyer_v5')) || { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
 
     // =========================================
     // RENDERIZAÇÃO DOM CLIENTE
@@ -725,7 +717,7 @@
       document.getElementById('adm-f-sub').value = currentFlyer.sub;
       document.getElementById('adm-f-desc').value = currentFlyer.desc;
 
-      // DIRETORIA E PROMOTERS CLIENTE (Textos completos & Efeitos Adicionados)
+      // DIRETORIA E PROMOTERS CLIENTE (Com os textos detalhados)
       const dirContainer = document.getElementById('dynamic-dir-list');
       const proContainer = document.getElementById('dynamic-pro-list');
       dirContainer.innerHTML = ''; proContainer.innerHTML = '';
@@ -748,7 +740,7 @@
       currentTeam.filter(t => t.type === 'pro').forEach(t => {
         proContainer.innerHTML += `
           <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px;" onerror="fallbackImg(this)">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
             <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
             <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
             <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
@@ -764,6 +756,7 @@
         const safeIg = escapeHTML(i.ig || '@jogador');
         const safeQuoteStr = escapeHTML(safeQuote);
         
+        // clickHTML agora é ativado para isTop3
         const clickHTML = isTop3 ? `onclick="openPlayerModal('${safeName}', '${safeIg}', '${safeQuoteStr}', '${i.img}')"` : '';
         
         return `
@@ -832,6 +825,16 @@
     }
 
     function renderAdminLists() {
+      // Home Admin Pre-fill
+      document.getElementById('adm-h-promo-banner').value = currentHome.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
+      document.getElementById('adm-h-title').value = currentHome.title;
+      document.getElementById('adm-h-desc1').value = currentHome.desc1;
+      document.getElementById('adm-h-desc2').value = currentHome.desc2;
+      document.getElementById('adm-h-promo-title').value = currentHome.promoTitle;
+      document.getElementById('adm-h-promo1').value = currentHome.promo1;
+      document.getElementById('adm-h-promo2').value = currentHome.promo2;
+      document.getElementById('adm-h-promo3').value = currentHome.promo3;
+
       // Menu Admin
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
@@ -959,7 +962,7 @@
     }
 
     // =========================================
-    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL
+    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL (UPLOADS & SALVAR)
     // =========================================
     function processManualLogin() {
       const email = document.getElementById('manual-email-input').value.trim();
@@ -967,16 +970,50 @@
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
         document.getElementById('manual-email-input').value = '';
+        document.getElementById('googleModal').style.display = 'none';
+        
+        // Puxa infos pro form flyer
+        document.getElementById('adm-f-tag').value = currentFlyer.tag;
+        document.getElementById('adm-f-title').value = currentFlyer.title;
+        document.getElementById('adm-f-sub').value = currentFlyer.sub;
+        document.getElementById('adm-f-desc').value = currentFlyer.desc;
+        
         alert('Acesso Concedido. Bem-vindo ao painel da Diretoria!');
       } else {
         alert('Acesso Negado. E-mail não autorizado ou incorreto.');
       }
     }
 
+    // OTIMIZADOR DE IMAGEM INVISÍVEL (CANVAS)
+    // Isso impede que o LocalStorage estoure ao upar fotos gigantes do celular
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
-      reader.onloadend = function() { callback(reader.result); }
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800; // Tamanho super otimizado pra não travar
+          const MAX_HEIGHT = 800;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Comprime para JPEG 70%
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          callback(dataUrl);
+        }
+        img.src = e.target.result;
+      }
       reader.readAsDataURL(file);
     }
 
@@ -1096,14 +1133,18 @@
     }
 
     function saveToStorage() {
-      localStorage.setItem('brg_home_v3', JSON.stringify(currentHome));
-      localStorage.setItem('brg_menu_v3', JSON.stringify(currentMenu));
-      localStorage.setItem('brg_agenda_v3', JSON.stringify(currentAgenda));
-      localStorage.setItem('brg_team_v3', JSON.stringify(currentTeam));
-      localStorage.setItem('brg_arcade_v3', JSON.stringify(currentArcade));
-      localStorage.setItem('brg_cachaceiros_v3', JSON.stringify(currentCachaceiros));
-      localStorage.setItem('brg_flyer_v3', JSON.stringify(currentFlyer));
-      renderApp();
+      try {
+        localStorage.setItem('brg_home_v5', JSON.stringify(currentHome));
+        localStorage.setItem('brg_menu_v5', JSON.stringify(currentMenu));
+        localStorage.setItem('brg_agenda_v5', JSON.stringify(currentAgenda));
+        localStorage.setItem('brg_team_v5', JSON.stringify(currentTeam));
+        localStorage.setItem('brg_arcade_v5', JSON.stringify(currentArcade));
+        localStorage.setItem('brg_cachaceiros_v5', JSON.stringify(currentCachaceiros));
+        localStorage.setItem('brg_flyer_v5', JSON.stringify(currentFlyer));
+        renderApp();
+      } catch (e) {
+        alert("ERRO DE MEMÓRIA NO NAVEGADOR! Você fez upload de muitas imagens gigantes originais. Limpe o cache do navegador e refaça o processo usando o Compressor Nativo que adicionamos agora.");
+      }
     }
 
     // =========================================
@@ -1149,6 +1190,7 @@
       if (event.target == document.getElementById('productModal')) closeModal('productModal'); 
       if (event.target == document.getElementById('eventModal')) closeModal('eventModal'); 
       if (event.target == document.getElementById('playerModal')) closeModal('playerModal');
+      if (event.target == document.getElementById('googleModal')) closeModal('googleModal');
     }
 
     function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
@@ -1207,7 +1249,7 @@
       document.getElementById('skull-btn').innerText = "⚔️";
       document.getElementById('skull-btn2').innerText = "⚔️";
     }
-    document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio, café e magia de Soul Wizard."));
+    document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
     // =========================================
     // CANVAS SPARKS LEVE
