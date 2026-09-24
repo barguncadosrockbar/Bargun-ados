@@ -699,7 +699,7 @@
     // =========================================
     // BANCO DE DADOS GLOBAL COM INTERAÇÕES
     // =========================================
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -793,7 +793,7 @@
     }
 
     // =========================================
-    // SALVAMENTO NO GITHUB (COM SUPORTE PÚBLICO E CACHE BYPASS)
+    // SALVAMENTO NO GITHUB VIA API (TEMPO REAL)
     // =========================================
     async function saveChanges() {
       renderApp(); 
@@ -811,7 +811,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização em tempo real (Bargunçados)", content: contentBase64 };
+        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         await fetch(url, {
@@ -832,11 +832,11 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (ENVIO PÚBLICO DIRETO AO GITHUB)
+    // INTERAÇÃO PÚBLICA DO CLIENTE (SEM EXIGIR TOKEN DE ADM)
     // =========================================
     async function publicPushToGitHub(newItem, type) {
       if(!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        // Fallback local se o GitHub não estiver vinculado no ADM
+        alert("⚠️ O sistema do GitHub não foi vinculado no painel ADM. O pedido foi guardado apenas neste aparelho.");
         if(type === 'song') {
           if(!appData.pendingSongs) appData.pendingSongs = [];
           appData.pendingSongs.push(newItem);
@@ -844,11 +844,10 @@
           if(!appData.pendingMessages) appData.pendingMessages = [];
           appData.pendingMessages.push(newItem);
         }
-        return true;
+        return;
       }
 
       try {
-        // Puxa a versão mais atual da nuvem
         const getRes = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
         let sha = null;
         let remoteData = appData;
@@ -872,16 +871,12 @@
         const body = { message: "Novo pedido de cliente (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
-        const putRes = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, {
+        await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, {
           method: 'PUT',
           headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-
-        return putRes.ok;
-      } catch(e) {
-        return false;
-      }
+      } catch(e) {}
     }
 
     async function submitUserSong() {
@@ -1173,7 +1168,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO EM TEMPO REAL
+    // ADMIN ACORDEÃO E MODERAÇÃO
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
