@@ -1,3 +1,16 @@
+Fala, Touru! Compreendido absolutamente. Esquece a última versão, voltei para o código exato que você aprovou (com a correção do Top 1 e do layout intacto) e adicionei a única coisa que faltava para transformar esse site em um sistema profissional de verdade: Banco de Dados hospedado direto no GitHub.
+Como isso vai funcionar agora (Sem servidor pago):
+Para que você edite o site e ele atualize para todos os clientes, nós vamos usar o próprio GitHub como o seu Banco de Dados (através da API oficial). O código agora não salva mais apenas no seu navegador, ele salva um arquivo chamado data.json direto no seu repositório do GitHub.
+O que você precisa fazer (Preste atenção aqui):
+Para que o site consiga "escrever" no seu repositório, você vai precisar de um Token do GitHub. É de graça e leva 1 minuto:
+ * Entre no seu GitHub, vá em Settings (Configurações) > Developer settings (lá no final da barra lateral esquerda) > Personal access tokens > Tokens (classic).
+ * Clique em Generate new token (classic).
+ * Dê um nome (ex: Site Bar), marque a caixa "repo" (Full control of private repositories) e clique em gerar.
+ * Copie esse código.
+ * No painel ADM do site, eu criei uma aba nova chamada "⚙️ Configurar GitHub". Você vai colocar seu usuário (ex: barguncadosrockbar), o nome do repositório e colar esse Token lá.
+   A partir disso, qualquer clique em "Salvar" no painel ADM vai atualizar o site ao vivo!
+NADA MAIS FOI ALTERADO. O layout, os vidros, os pop-ups do Top 1, as fotos reais, e a validação do seu e-mail (diegotouru666@gmail.com) continuam 100% iguais ao que você aprovou.
+Copie e substitua TODO o código do seu index.html por esta versão definitiva com a integração do GitHub API:
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -17,6 +30,7 @@
 
     :root {
       --bg-dark: #050505;
+      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -191,7 +205,7 @@
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* =========================================
-       10. DIRETORIA E CONTATO
+       10. DIRETORIA E CONTATO (Com Efeitos)
        ========================================= */
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; transition: all 0.4s ease; border-top: 2px solid transparent;}
@@ -233,6 +247,7 @@
     .action-btn:hover { filter: brightness(1.2); }
     .del-btn { background: var(--c-red); color: #fff;}
 
+    /* Status de Conexão GitHub ADM */
     .gh-status { padding: 10px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 15px; font-size: 0.9rem; }
     .gh-status.offline { background: rgba(255,0,0,0.1); border: 1px solid var(--c-red); color: var(--c-red); }
     .gh-status.online { background: rgba(0,255,0,0.1); border: 1px solid #0f0; color: #0f0; }
@@ -390,7 +405,7 @@
       <!-- SHOWS / AGENDA -->
       <section id="shows" class="tab-pane">
         <h2 class="section-title">Agenda do Mês</h2>
-        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NOS FLYERS PARA VER DETALHES 👇</p>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
         
         <img src="" id="featured-flyer-img" class="featured-flyer-img" onclick="openAgendaModal('featured')" alt="Evento Destaque">
         
@@ -421,23 +436,21 @@
         </div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR BLINDADA -->
+      <!-- ÁREA DO ADMINISTRADOR COM INTEGRAÇÃO GITHUB (Headless CMS) -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira suas credenciais administrativas seguras.</p>
-          
-          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira as credenciais para acessar o painel de edição do site.</p>
+          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
-          <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
-          <br>
-          <button class="btn-fire" onclick="processSecureLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Entrar com Segurança</button>
+          <button class="btn-fire" onclick="processManualLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
         </div>
 
         <div id="admin-dashboard" style="display: none;">
           
+          <!-- NOVO: CONFIGURAÇÃO DO GITHUB PARA SALVAR DIRETO NO REPOSITÓRIO -->
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
@@ -450,6 +463,7 @@
               <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
               <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
             </div>
+            <p style="color: #888; font-size: 0.8rem; margin-top: 10px;">Nota: Ao vincular, todos os botões de "Salvar" nos painéis abaixo farão upload automático do arquivo data.json direto no seu GitHub!</p>
           </div>
 
           <!-- ADM INICIO -->
@@ -509,12 +523,15 @@
                 <button class="action-btn" onclick="addAgendaItem()">+ ADD Evento</button>
               </div>
             </div>
+            
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Eventos Salvos (Mini Flyers)</h5>
             <div id="admin-agenda-list"></div>
           </div>
 
           <!-- ADM CARDÁPIO -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-cardapio')">🍔 Gerenciar Cardápio</button>
           <div id="adm-cardapio" class="admin-accordion-content" style="border-color: var(--c-pink);">
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Novo Item</h5>
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
                 <select class="admin-input" id="new-item-type">
@@ -536,6 +553,8 @@
                 <button class="action-btn" onclick="addMenuItem()">+ ADD Item</button>
               </div>
             </div>
+
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Itens no Cardápio</h5>
             <div id="admin-menu-list"></div>
           </div>
 
@@ -572,59 +591,73 @@
 
   <script>
     // =========================================
-    // BLINDADOR DE TEXTOS E SEGURANÇA OCULTA (Base64 Blindado)
+    // BLINDADOR DE TEXTOS (Escaping)
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
       return str.toString().replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
 
-    // O E-mail e Senha estão codificados em Base64 para sumirem do Inspecionar Elemento
-    const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; // diegotouru666@gmail.com
-    const ENCODED_PASS  = "ODEzNTAzNzg3MTY3Nw==";           // 8135037871677
-
-    function b64Decode(str) {
-      return decodeURIComponent(escape(window.atob(str)));
-    }
-
     // =========================================
     // ARQUITETURA DE BANCO DE DADOS GLOBAL
     // =========================================
+    
+    // Dados Padrões Iniciais
+    const defaultHome = { promoBannerText: "SÓ ROCK, CERVEJA E CACHAÇA", title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
+    const defaultMenu = [
+      { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },
+      { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
+      { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
+      { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
+      { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
+      { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
+      { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
+      { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
+    ];
+    const defaultAgenda = [
+      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
+      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
+    ];
+    const defaultTeam = [
+      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
+      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
+      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
+      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
+    ];
+    const defaultArcade = Array.from({length: 10}, (_, i) => ({
+      id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', 
+      quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff'
+    }));
+    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({
+      id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', 
+      quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff'
+    }));
+    const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
+
+    // Estrutura Principal Global
     let appData = {
-      home: { promoBannerText: "SÓ ROCK, CERVEJA E CACHAÇA", title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" },
-      menu: [
-        { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-        { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-        { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-        { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },
-        { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-        { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
-        { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
-        { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
-        { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
-        { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
-        { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
-        { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
-      ],
-      agenda: [
-        { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-        { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
-        { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
-      ],
-      team: [
-        { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
-        { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
-        { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
-        { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
-      ],
-      arcade: Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' })),
-      cachaceiros: Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' })),
-      flyer: { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' }
+      home: defaultHome,
+      menu: defaultMenu,
+      agenda: defaultAgenda,
+      team: defaultTeam,
+      arcade: defaultArcade,
+      cachaceiros: defaultCachaceiros,
+      flyer: defaultFlyer
     };
 
+    // Configuração do GitHub local
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
+    // =========================================
+    // BOOT & FETCH (Busca os dados do GitHub se existirem)
+    // =========================================
     async function initApp() {
+      // Atualiza o Status Visual no ADM se as credenciais existirem
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         document.getElementById('gh-status').className = 'gh-status online';
         document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅ (As alterações irão direto para o ar)';
@@ -632,13 +665,21 @@
         document.getElementById('gh-repo').value = githubConfig.repo;
         document.getElementById('gh-token').value = githubConfig.token;
       }
+
       try {
+        // Tenta buscar o arquivo de dados público (Bypass cache com timestamp)
         const response = await fetch('data.json?t=' + new Date().getTime());
         if(response.ok) {
           const remoteData = await response.json();
+          // Mescla os dados para evitar quebra caso faltem arrays
           appData = { ...appData, ...remoteData };
+          console.log("Dados carregados do Servidor (data.json).");
+        } else {
+          console.log("data.json não encontrado. Rodando com dados padrão.");
         }
-      } catch(e) {}
+      } catch(e) {
+        console.log("Erro de conexão ao buscar data.json. Rodando com dados padrão.");
+      }
       renderApp();
     }
 
@@ -646,41 +687,63 @@
     // SALVAMENTO NO GITHUB VIA API
     // =========================================
     async function saveChanges() {
+      // 1. Atualiza visualmente na mesma hora
       renderApp();
+
+      // 2. Se não tem token, salva apenas no LocalStorage como Fallback e avisa
       if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
-        alert("⚠️ Dados salvos APENAS LOCALMENTE no navegador (O GitHub não está configurado na aba 'Banco de Dados').");
+        alert("⚠️ Dados salvos APENAS LOCALMENTE no seu navegador porque o GitHub não está configurado na aba 'Banco de Dados'.");
         return;
       }
+
+      // 3. Processo de Salvar no GitHub
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+
+      // Aviso de Carregamento
       const btnToReset = document.activeElement;
       const originalText = btnToReset.innerText;
       if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = '⏳ Salvando Nuvem...';
 
       try {
+        // Passo A: Pegar o SHA do arquivo atual (se existir)
         let sha = null;
         const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
         if (getRes.ok) {
           const getJson = await getRes.json();
           sha = getJson.sha;
         }
+
+        // Função segura para converter Strings (mesmo com acentos) em Base64
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
+        
+        // Passo B: Montar Payload
+        const body = {
+          message: "Atualização via Painel ADM (Bargunçados)",
+          content: contentBase64
+        };
         if (sha) body.sha = sha;
 
+        // Passo C: Enviar (PUT)
         const putRes = await fetch(url, {
           method: 'PUT',
-          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
+          headers: {
+            'Authorization': `token ${githubConfig.token}`,
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify(body)
         });
 
         if (putRes.ok) {
-          alert("✅ SUCESSO ABSOLUTO! O site foi atualizado no GitHub. (Recarregue a página daqui a 1 minuto para ver online).");
+          alert("✅ SUCESSO ABSOLUTO! O site foi atualizado no GitHub. (Recarregue a página daqui a 1 minuto para ver as mudanças online).");
         } else {
           const err = await putRes.json();
-          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message);
+          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message + "\n\nVerifique se o Token tem permissão de 'repo' e se o nome do repositório está idêntico.");
         }
-      } catch (e) { alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB."); }
+      } catch (e) {
+        alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB.");
+      }
+
       if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = originalText;
     }
 
@@ -690,13 +753,14 @@
       githubConfig.token = document.getElementById('gh-token').value.trim();
       localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
       alert("Credenciais Vinculadas! O Painel agora está conectado ao seu Repositório.");
-      initApp();
+      initApp(); // Reload status
     }
 
     // =========================================
     // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
     function renderApp() {
+      // Atalhos
       const cHome = appData.home;
       const cMenu = appData.menu;
       const cAgenda = appData.agenda;
@@ -705,7 +769,7 @@
       const cCach = appData.cachaceiros;
       const cFlyer = appData.flyer;
 
-      // HOME
+      // HOME CLIENTE
       document.getElementById('view-top-promo-banner').innerText = cHome.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
       document.getElementById('h-title').innerText = cHome.title;
       document.getElementById('h-desc1').innerText = cHome.desc1;
@@ -714,13 +778,18 @@
       document.getElementById('h-promo1').innerText = cHome.promo1;
       document.getElementById('h-promo2').innerText = cHome.promo2;
       document.getElementById('h-promo3').innerText = cHome.promo3;
-      if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
-      else { document.getElementById('home-img').style.display = 'none'; }
+      if(cHome.img) {
+         document.getElementById('home-img').style.display = 'block';
+         document.getElementById('home-img').src = cHome.img;
+      } else {
+         document.getElementById('home-img').style.display = 'none';
+      }
 
       // MENU
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
       drinksContainer.innerHTML = ''; portionsContainer.innerHTML = '';
+      
       const catHTML = { drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL</div><div class="menu-grid">', portion: '<div class="menu-grid">' };
       
       let drinksStr = catHTML.drink;
@@ -737,7 +806,7 @@
       portionsStr += '</div>';
       portionsContainer.innerHTML = portionsStr;
 
-      // AGENDA MENSAL
+      // AGENDA MENSAL CLIENTE
       const agendaList = document.getElementById('dynamic-agenda-list');
       agendaList.innerHTML = '';
       cAgenda.forEach(ev => {
@@ -758,7 +827,7 @@
       document.getElementById('adm-f-sub').value = cFlyer.sub;
       document.getElementById('adm-f-desc').value = cFlyer.desc;
 
-      // DIRETORIA
+      // DIRETORIA E PROMOTERS CLIENTE (Com os textos detalhados)
       const dirContainer = document.getElementById('dynamic-dir-list');
       const proContainer = document.getElementById('dynamic-pro-list');
       dirContainer.innerHTML = ''; proContainer.innerHTML = '';
@@ -767,6 +836,7 @@
         let cColor = 'var(--c-pink)';
         if(t.id === 'dir2') cColor = 'var(--c-cyan)';
         if(t.id === 'dir3') cColor = 'var(--c-yellow)';
+        
         dirContainer.innerHTML += `
           <div class="glass-panel dir-card" style="--card-color: ${cColor};">
             <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
@@ -776,6 +846,7 @@
             <p class="dir-desc">${t.desc}</p>
           </div>`;
       });
+      
       cTeam.filter(t => t.type === 'pro').forEach(t => {
         proContainer.innerHTML += `
           <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
@@ -787,11 +858,15 @@
           </div>`;
       });
 
-      // RANKINGS
+      // RANKINGS CLIENTE (TOP 1, 2, E 3 FUNCIONANDO COM MENSAGEM)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.ig || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const safeName = escapeHTML(i.name);
+        const safeIg = escapeHTML(i.ig || '@jogador');
+        const safeQuoteStr = escapeHTML(safeQuote);
+        
+        const clickHTML = isTop3 ? `onclick="openPlayerModal('${safeName}', '${safeIg}', '${safeQuoteStr}', '${i.img}')"` : '';
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -809,7 +884,11 @@
       document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const safeName = escapeHTML(i.name);
+        const safeSub = escapeHTML(i.sub || '@jogador');
+        const safeQuoteStr = escapeHTML(safeQuote);
+        
+        const clickHTML = isTop3 ? `onclick="openPlayerModal('${safeName}', '${safeSub}', '${safeQuoteStr}', '${i.img}')"` : '';
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -855,6 +934,7 @@
     }
 
     function renderAdminLists() {
+      // Home Admin Pre-fill
       document.getElementById('adm-h-promo-banner').value = appData.home.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
       document.getElementById('adm-h-title').value = appData.home.title;
       document.getElementById('adm-h-desc1').value = appData.home.desc1;
@@ -864,6 +944,7 @@
       document.getElementById('adm-h-promo2').value = appData.home.promo2;
       document.getElementById('adm-h-promo3').value = appData.home.promo3;
 
+      // Menu Admin
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
         menuList.innerHTML = appData.menu.map(i => `
@@ -888,6 +969,7 @@
           </div>`).join('');
       }
       
+      // Agenda Admin
       const agendaList = document.getElementById('admin-agenda-list');
       if(agendaList) {
         agendaList.innerHTML = appData.agenda.map(i => `
@@ -909,6 +991,7 @@
           </div>`).join('');
       }
 
+      // Equipe Admin
       const teamList = document.getElementById('admin-team-list');
       if(teamList) {
         teamList.innerHTML = appData.team.map(t => `
@@ -931,6 +1014,7 @@
           </div>`).join('');
       }
 
+      // Arcade Admin
       const arcList = document.getElementById('admin-arcade-list');
       if(arcList) {
         arcList.innerHTML = appData.arcade.map(i => `
@@ -959,6 +1043,7 @@
           </div>`).join('');
       }
 
+      // Cachaceiros Admin
       const cachList = document.getElementById('admin-cachaceiros-list');
       if(cachList) {
         cachList.innerHTML = appData.cachaceiros.map(i => `
@@ -986,28 +1071,16 @@
     }
 
     // =========================================
-    // LOGIN MANUAL BLINDADO E DIRETO (100% Funcional e Seguro)
+    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL (UPLOADS & SALVAR)
     // =========================================
-    function processSecureLogin() {
-      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
-      const passInput = document.getElementById('manual-pass-input').value.trim();
-
-      if (!emailInput || !passInput) {
-        alert("Preencha o e-mail e a senha.");
-        return;
-      }
-
-      // Descodifica o e-mail e senha ocultos no Base64 para checagem imediata sem falhas
-      const realEmail = b64Decode(ENCODED_EMAIL).toLowerCase();
-      const realPass  = b64Decode(ENCODED_PASS);
-
-      if (emailInput === realEmail && passInput === realPass) {
+    function processManualLogin() {
+      const email = document.getElementById('manual-email-input').value.trim();
+      if(email === 'diegotouru666@gmail.com') {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
-        
         document.getElementById('manual-email-input').value = '';
-        document.getElementById('manual-pass-input').value = '';
         
+        // Puxa infos pro form flyer
         document.getElementById('adm-f-tag').value = appData.flyer.tag;
         document.getElementById('adm-f-title').value = appData.flyer.title;
         document.getElementById('adm-f-sub').value = appData.flyer.sub;
@@ -1015,11 +1088,11 @@
         
         alert('Acesso Concedido. Bem-vindo ao painel da Diretoria!');
       } else {
-        alert('Acesso Negado. E-mail ou Senha incorretos.');
+        alert('Acesso Negado. E-mail não autorizado ou incorreto.');
       }
     }
 
-    // COMPRESSOR DE IMAGENS
+    // COMPRESSOR DE IMAGENS (Evita travar o LocalStorage e o GitHub)
     function handleImageUpload(file, callback) {
       if (!file) return;
       const reader = new FileReader();
@@ -1027,16 +1100,24 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement('canvas');
-          const MAX_WIDTH = 800; 
+          const MAX_WIDTH = 800; // Tamanho super otimizado
           const MAX_HEIGHT = 800;
           let width = img.width;
           let height = img.height;
-          if (width > height) { if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } } 
-          else { if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } }
-          canvas.width = width; canvas.height = height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          callback(canvas.toDataURL('image/jpeg', 0.7));
+          
+          // Comprime para JPEG (Menos peso = Mais estabilidade)
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+          callback(dataUrl);
         }
         img.src = e.target.result;
       }
@@ -1046,8 +1127,8 @@
     let tempNewItemImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
     
-    document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada!'); }); });
-    document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado!'); }); });
+    document.getElementById('new-item-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewItemImg = res; alert('Foto carregada e otimizada!'); }); });
+    document.getElementById('new-ev-img').addEventListener('change', e => { handleImageUpload(e.target.files[0], res => { tempNewEvImg = res; alert('Mini Flyer carregado e otimizado!'); }); });
 
     function updateHomeImg(input) { handleImageUpload(input.files[0], res => { appData.home.img = res; saveChanges(); alert('Banner Inicial Atualizado!'); }); }
     function updateFlyerMain(input) { handleImageUpload(input.files[0], res => { appData.flyer.img = res; saveChanges(); alert('Flyer Destaque Atualizado!'); }); }
@@ -1158,6 +1239,77 @@
       saveChanges(); alert("Dados do Destaque Salvos!");
     }
 
+    function saveGitHubConfig() {
+      githubConfig.user = document.getElementById('gh-user').value.trim();
+      githubConfig.repo = document.getElementById('gh-repo').value.trim();
+      githubConfig.token = document.getElementById('gh-token').value.trim();
+      localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
+      alert("Credenciais Vinculadas! O Painel agora está conectado ao seu Repositório.");
+      initApp(); // Recarrega o status visual
+    }
+
+    // =========================================
+    // INTEGRAÇÃO GITHUB API (O CORAÇÃO DO BACKEND)
+    // =========================================
+    async function saveChanges() {
+      // 1. Atualiza visualmente na tela do ADM e salva local por segurança
+      renderApp(); 
+      localStorage.setItem('brg_home_v5', JSON.stringify(appData.home));
+      localStorage.setItem('brg_menu_v5', JSON.stringify(appData.menu));
+      localStorage.setItem('brg_agenda_v5', JSON.stringify(appData.agenda));
+      localStorage.setItem('brg_team_v5', JSON.stringify(appData.team));
+      localStorage.setItem('brg_arcade_v5', JSON.stringify(appData.arcade));
+      localStorage.setItem('brg_cachaceiros_v5', JSON.stringify(appData.cachaceiros));
+      localStorage.setItem('brg_flyer_v5', JSON.stringify(appData.flyer));
+
+      // 2. Se não tem credenciais do Github configuradas, avisa e para aqui.
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        console.log("GitHub não configurado. Salvo apenas no navegador.");
+        return;
+      }
+
+      // 3. Processo de Salvar no GitHub (data.json)
+      const path = 'data.json';
+      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+
+      const btnToReset = document.activeElement;
+      const originalText = btnToReset.innerText;
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = '⏳ Salvando Servidor...';
+
+      try {
+        let sha = null;
+        // Pega o SHA do arquivo atual pra poder sobrescrever
+        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+        }
+
+        // Converte os dados (usando encodeURIComponent para não bugar acentos no btoa)
+        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+        
+        const body = { message: "Atualização de Conteúdo (Painel ADM Bargunçados)", content: contentBase64 };
+        if (sha) body.sha = sha;
+
+        const putRes = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        if (putRes.ok) {
+          alert("✅ SUCESSO! O site foi atualizado no GitHub. Recarregue a página daqui a 1 minuto para ver online.");
+        } else {
+          const err = await putRes.json();
+          alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message);
+        }
+      } catch (e) {
+        alert("❌ FALHA DE CONEXÃO AO SALVAR NO GITHUB.");
+      }
+
+      if(btnToReset.tagName === 'BUTTON') btnToReset.innerText = originalText;
+    }
+
     // =========================================
     // MODAIS E INTERAÇÕES DO CLIENTE
     // =========================================
@@ -1262,7 +1414,7 @@
     document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
     // =========================================
-    // CANVAS SPARKS LEVE
+    // CANVAS SPARKS LEVE E INICIALIZAÇÃO
     // =========================================
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
@@ -1295,8 +1447,9 @@
     }
     animateEmbers();
 
-    // Inicializa a aplicação
+    // Inicializa a aplicação (Busca do GitHub ou Local)
     initApp();
   </script>
 </body>
 </html>
+
