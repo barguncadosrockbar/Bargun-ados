@@ -339,11 +339,11 @@
       <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
     </div>
 
-    <header>
+    header>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO (Sem o botão ADM, limpo e profissional) -->
+    <!-- NAVEGAÇÃO (Sem o botão ADM superior) -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -396,7 +396,7 @@
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
-      <!-- RANKINGS UNIFICADOS -->
+      <!-- RANKINGS UNIFICADOS (COM CACHACEIROS CORRIGIDO) -->
       <section id="rankings" class="tab-pane">
         <h2 class="section-title">Mural de Honra & Rankings</h2>
         
@@ -524,7 +524,7 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) COM NOTIFICAÇÃO -->
+          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) COM ATUALIZAÇÃO EM TEMPO REAL -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -675,7 +675,6 @@
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
       <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Vanilla JS. Sistema Headless (GitHub API).</p>
-      <!-- Acesso ADM Discreto no rodapé -->
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
@@ -717,8 +716,8 @@
     ];
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
-      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=400' }
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
+      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
     const defaultTeam = [
       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
@@ -750,20 +749,36 @@
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         document.getElementById('gh-status').className = 'gh-status online';
-        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅ (As alterações e fotos irão direto para o ar)';
+        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅ (Sincronizado em tempo real)';
         document.getElementById('gh-user').value = githubConfig.user;
         document.getElementById('gh-repo').value = githubConfig.repo;
         document.getElementById('gh-token').value = githubConfig.token;
       }
-      try {
-        const response = await fetch('data.json?t=' + new Date().getTime());
-        if(response.ok) {
-          const remoteData = await response.json();
-          appData = { ...appData, ...remoteData };
-          cleanExpiredInteractions();
-        }
-      } catch(e) {}
+      await syncAndFetchLatestData();
       renderApp();
+      
+      // Atualização automática em tempo real para o ADM a cada 5 segundos
+      setInterval(async () => {
+        await syncAndFetchLatestData();
+        const modContent = document.getElementById('adm-moderation');
+        if(modContent && modContent.style.display === "block") {
+          renderModerationLists();
+        }
+      }, 5000);
+    }
+
+    async function syncAndFetchLatestData() {
+      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
+          if(res.ok) {
+            const json = await res.json();
+            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
+            appData = { ...appData, ...decoded };
+            cleanExpiredInteractions();
+          }
+        } catch(e) {}
+      }
     }
 
     function cleanExpiredInteractions() {
@@ -796,7 +811,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
+        const body = { message: "Atualização em tempo real (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         await fetch(url, {
@@ -817,24 +832,8 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO TOTAL COM GITHUB)
+    // INTERAÇÃO DO CLIENTE COM MENSAGEM DE AVISO
     // =========================================
-    async function syncAndFetchLatestData() {
-      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
-        try {
-          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
-          if(res.ok) {
-            const json = await res.json();
-            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
-            if(decoded.pendingSongs) appData.pendingSongs = decoded.pendingSongs;
-            if(decoded.pendingMessages) appData.pendingMessages = decoded.pendingMessages;
-            if(decoded.userSongs) appData.userSongs = decoded.userSongs;
-            if(decoded.userMessages) appData.userMessages = decoded.userMessages;
-          }
-        } catch(e) {}
-      }
-    }
-
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
@@ -893,6 +892,25 @@
         if(index === 1) return '🍻 Senhor dos Destilados';
         if(index === 2) return '🥃 Gladiador do Copo Cheio';
         return '🍷 Guerreiro da Cachaça';
+      }
+    }
+
+    function switchRankingView(view) {
+      const btnArcade = document.getElementById('btn-switch-arcade');
+      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
+      const viewArcade = document.getElementById('rankings-view-arcade');
+      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
+
+      if(view === 'arcade') {
+        btnArcade.classList.add('active');
+        btnCachaceiros.classList.remove('active');
+        viewArcade.style.display = 'block';
+        viewCachaceiros.style.display = 'none';
+      } else {
+        btnCachaceiros.classList.add('active');
+        btnArcade.classList.remove('active');
+        viewCachaceiros.style.display = 'block';
+        viewArcade.style.display = 'none';
       }
     }
 
@@ -987,7 +1005,7 @@
           </div>`;
       });
 
-      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL)
+      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL PARA ARCADE E CACHACEIROS)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -1012,9 +1030,9 @@
       document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
         const honorTitle = getHonorTitle(index, 'cachaceiro');
-        const displayIg = i.sub || '@cachaceiro';
+        const displayIg = i.sub || i.ig || '@cachaceiro';
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -1127,7 +1145,6 @@
     }
 
     async function renderModerationLists() {
-      // Puxa os dados mais recentes do GitHub para garantir que o ADM veja em tempo real
       await syncAndFetchLatestData();
 
       const pSongsDiv = document.getElementById('admin-pending-songs');
