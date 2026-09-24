@@ -513,7 +513,7 @@
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para sincronizar com o GitHub, insira seu Personal Access Token com permissão 'repo'.</p>
             <div class="admin-card">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
@@ -524,9 +524,10 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES COM TOKEN PÚBLICO -->
+          <!-- MODERAÇÃO DE INTERAÇÕES COM INTEGRAÇÃO DIRETA DO GITHUB -->
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
+            <button class="action-btn" onclick="syncWithGitHub()" style="margin-bottom: 15px; background: var(--c-cyan); width: 100%;">🔄 Sincronizar / Puxar Pedidos do GitHub</button>
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
             <div id="admin-pending-songs"></div>
 
@@ -697,10 +698,8 @@
     }
 
     // =========================================
-    // BANCO DE DADOS GLOBAL COM RELAY CLOUD (JSONBIN.IO)
+    // BANCO DE DADOS GLOBAL COM GITHUB API DIRETA
     // =========================================
-    const RELAY_BIN_URL = "https://api.jsonbin.io/v3/b/661845cbe41b4d34e4474721";
-
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
@@ -718,7 +717,7 @@
     ];
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=400&q=80' },
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
     const defaultTeam = [
@@ -751,49 +750,23 @@
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         document.getElementById('gh-status').className = 'gh-status online';
-        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅ (Sincronizado em tempo real)';
+        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅';
         document.getElementById('gh-user').value = githubConfig.user;
         document.getElementById('gh-repo').value = githubConfig.repo;
         document.getElementById('gh-token').value = githubConfig.token;
       }
       
-      await syncAndFetchLatestData();
+      await syncWithGitHub();
       renderApp();
       
-      // Restaura sessão do ADM se já estava logado (Não desloga ao atualizar)
+      // Restaura sessão do ADM (Nunca mais desloga ao atualizar)
       if(localStorage.getItem('brg_adm_logged') === 'true') {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
       }
-      
-      // Sincronização automática em tempo real a cada 3 segundos
-      setInterval(async () => {
-        await syncAndFetchLatestData();
-        const modContent = document.getElementById('adm-moderation');
-        if(modContent && modContent.style.display === "block") {
-          renderModerationLists();
-        }
-      }, 3000);
     }
 
-    async function syncAndFetchLatestData() {
-      // 1. Puxa interações públicas do Relay Cloud (token anônimo embutido)
-      try {
-        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), {
-          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'}
-        });
-        if(relayRes.ok) {
-          const relayJson = await relayRes.json();
-          if(relayJson.record) {
-            if(relayJson.record.pendingSongs) appData.pendingSongs = relayJson.record.pendingSongs;
-            if(relayJson.record.pendingMessages) appData.pendingMessages = relayJson.record.pendingMessages;
-            if(relayJson.record.userSongs) appData.userSongs = relayJson.record.userSongs;
-            if(relayJson.record.userMessages) appData.userMessages = relayJson.record.userMessages;
-          }
-        }
-      } catch(e) {}
-
-      // 2. Puxa dados principais do GitHub
+    async function syncWithGitHub() {
       const user = githubConfig.user || 'barguncadosrockbar';
       const repo = githubConfig.repo || 'Bargun-ados';
       try {
@@ -801,42 +774,17 @@
         if(res.ok) {
           const remote = await res.json();
           appData = { ...appData, ...remote };
+          renderApp();
         }
       } catch(e) {}
-
-      cleanExpiredInteractions();
-    }
-
-    function cleanExpiredInteractions() {
-      const now = Date.now();
-      const sixteenHours = 16 * 60 * 60 * 1000;
-      if(appData.userSongs) {
-        appData.userSongs = appData.userSongs.filter(item => (now - item.timestamp) < sixteenHours);
-      }
-      if(appData.userMessages) {
-        appData.userMessages = appData.userMessages.filter(item => (now - item.timestamp) < sixteenHours);
-      }
     }
 
     async function saveChanges() {
       renderApp(); 
-      try {
-        await fetch(RELAY_BIN_URL, {
-          method: 'PUT',
-          headers: { 
-            'Content-Type': 'application/json',
-            'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'
-          },
-          body: JSON.stringify({
-            pendingSongs: appData.pendingSongs || [],
-            pendingMessages: appData.pendingMessages || [],
-            userSongs: appData.userSongs || [],
-            userMessages: appData.userMessages || []
-          })
-        });
-      } catch(e) {}
-
-      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) {
+        alert("⚠️ Configure o seu Token do GitHub na aba 'Banco de Dados (GitHub)' para salvar na nuvem.");
+        return;
+      }
       const path = 'data.json';
       const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
 
@@ -851,12 +799,18 @@
         const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
-        await fetch(url, {
+        const putRes = await fetch(url, {
           method: 'PUT',
           headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
         });
-      } catch (e) {}
+
+        if(putRes.ok) {
+          alert("✅ Salvo com sucesso no GitHub!");
+        }
+      } catch (e) {
+        alert("Erro ao salvar no GitHub. Tente novamente.");
+      }
     }
 
     function saveGitHubConfig() {
@@ -864,48 +818,13 @@
       githubConfig.repo = document.getElementById('gh-repo').value.trim();
       githubConfig.token = document.getElementById('gh-token').value.trim();
       localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
-      alert("Credenciais Vinculadas! O Painel agora está conectado ao seu Repositório.");
+      alert("Credenciais Vinculadas com sucesso!");
       initApp();
     }
 
     // =========================================
-    // ENVIO PÚBLICO COM TOKEN ANÔNIMO EMBUTIDO
+    // ENVIO DE PEDIDO DE SOM / RECADO (DIRETO NO REPOSITÓRIO)
     // =========================================
-    async function publicPushToRelay(newItem, type) {
-      try {
-        const getRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), {
-          headers: { 'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8' }
-        });
-        let currentRecord = { pendingSongs: [], pendingMessages: [], userSongs: [], userMessages: [] };
-        if(getRes.ok) {
-          const json = await getRes.json();
-          if(json.record) currentRecord = json.record;
-        }
-
-        if(type === 'song') {
-          if(!currentRecord.pendingSongs) currentRecord.pendingSongs = [];
-          currentRecord.pendingSongs.push(newItem);
-          appData.pendingSongs = currentRecord.pendingSongs;
-        } else {
-          if(!currentRecord.pendingMessages) currentRecord.pendingMessages = [];
-          currentRecord.pendingMessages.push(newItem);
-          appData.pendingMessages = currentRecord.pendingMessages;
-        }
-
-        await fetch(RELAY_BIN_URL, {
-          method: 'PUT',
-          headers: { 
-            'Content-Type': 'application/json',
-            'X-Master-Key': '$2a$10$i.V8y08j8Y8x8y8y8y8y8e8y8y8y8y8y8y8y8y8y8y8y8y8y8y8y8'
-          },
-          body: JSON.stringify(currentRecord)
-        });
-        return true;
-      } catch(e) {
-        return false;
-      }
-    }
-
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
@@ -921,7 +840,11 @@
       document.getElementById('user-song-ig').value = '';
       document.getElementById('user-song-req').value = '';
       
-      await publicPushToRelay(newItem, 'song');
+      if(!appData.pendingSongs) appData.pendingSongs = [];
+      appData.pendingSongs.push(newItem);
+      
+      // Salva diretamente no GitHub para o ADM receber
+      await saveChangesQuietly();
       alert("✅ Pedido enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
@@ -940,8 +863,34 @@
       document.getElementById('user-msg-ig').value = '';
       document.getElementById('user-msg-text').value = '';
       
-      await publicPushToRelay(newItem, 'msg');
+      if(!appData.pendingMessages) appData.pendingMessages = [];
+      appData.pendingMessages.push(newItem);
+      
+      // Salva diretamente no GitHub para o ADM receber
+      await saveChangesQuietly();
       alert("✅ Recado enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
+    }
+
+    async function saveChangesQuietly() {
+      if (!githubConfig.token || !githubConfig.user || !githubConfig.repo) return;
+      const path = 'data.json';
+      const url = `https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/${path}`;
+      try {
+        let sha = null;
+        const getRes = await fetch(url, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+        if (getRes.ok) {
+          const getJson = await getRes.json();
+          sha = getJson.sha;
+        }
+        const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
+        const body = { message: "Nova interação de cliente", content: contentBase64 };
+        if (sha) body.sha = sha;
+        await fetch(url, {
+          method: 'PUT',
+          headers: { 'Authorization': `token ${githubConfig.token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+      } catch(e) {}
     }
 
     // =========================================
@@ -1210,9 +1159,7 @@
       if(id === 'adm-moderation') renderModerationLists();
     }
 
-    async function renderModerationLists() {
-      await syncAndFetchLatestData();
-
+    function renderModerationLists() {
       const pSongsDiv = document.getElementById('admin-pending-songs');
       const pMsgsDiv = document.getElementById('admin-pending-msgs');
       const counterSpan = document.getElementById('adm-notify-counter');
@@ -1258,43 +1205,39 @@
       }
     }
 
-    async function approveSong(id) {
-      await syncAndFetchLatestData();
+    function approveSong(id) {
       const item = appData.pendingSongs.find(s => s.id === id);
       if(item) {
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        await saveChanges();
+        saveChanges();
         renderModerationLists();
         alert("Pedido de som aprovado e publicado no site!");
       }
     }
 
-    async function rejectSong(id) {
-      await syncAndFetchLatestData();
+    function rejectSong(id) {
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      await saveChanges();
+      saveChanges();
       renderModerationLists();
     }
 
-    async function approveMsg(id) {
-      await syncAndFetchLatestData();
+    function approveMsg(id) {
       const item = appData.pendingMessages.find(m => m.id === id);
       if(item) {
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        await saveChanges();
+        saveChanges();
         renderModerationLists();
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
-    async function rejectMsg(id) {
-      await syncAndFetchLatestData();
+    function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      await saveChanges();
+      saveChanges();
       renderModerationLists();
     }
 
