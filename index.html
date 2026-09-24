@@ -17,6 +17,7 @@
 
     :root {
       --bg-dark: #050505;
+      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -159,7 +160,7 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING UNIFICADAS
+       8. LISTAS DE RANKING UNIFICADAS (Com Instagram visível)
        ========================================= */
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
     .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
@@ -232,6 +233,10 @@
     .feed-author { font-weight: bold; color: var(--c-cyan); font-size: 0.95rem; margin-bottom: 4px; }
     .feed-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
     .feed-time { font-size: 0.75rem; color: #888; position: absolute; right: 15px; top: 15px; }
+
+    /* Notificação ADM */
+    .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; animation: pulseBadge 1.5s infinite; }
+    @keyframes pulseBadge { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     /* =========================================
        12. PAINEL DE ADMINISTRAÇÃO TOTAL (ACORDEÃO)
@@ -338,7 +343,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- NAVEGAÇÃO (Rola junto com a página) -->
+    <!-- NAVEGAÇÃO (Sem o botão ADM, limpo e profissional) -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
@@ -351,7 +356,6 @@
         <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
         <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
         <button class="tab-btn" onclick="switchTab('interaja')">Mural & Som 🎸</button>
-        <button class="tab-btn" onclick="switchTab('admin')" style="color: var(--c-red); font-weight: bold; border-color: var(--c-red);">⚙️ ADM</button>
       </nav>
     </div>
 
@@ -520,8 +524,8 @@
             </div>
           </div>
 
-          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) -->
-          <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas</button>
+          <!-- MODERAÇÃO DE INTERAÇÕES (CLIENTES) COM NOTIFICAÇÃO -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
             <div id="admin-pending-songs"></div>
@@ -666,10 +670,13 @@
 
     </main>
 
+    <!-- RODAPÉ COM ACESSO ADM SUTIL E DISCRETO -->
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace;">Otimizado via Vanilla JS. Sistema Headless (GitHub API).</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via Vanilla JS. Sistema Headless (GitHub API).</p>
+      <!-- Acesso ADM Discreto no rodapé -->
+      <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
   </div>
@@ -720,7 +727,7 @@
       { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
     ];
     const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
-    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
+    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
     const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
 
     let appData = {
@@ -810,24 +817,30 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO COM O GITHUB PARA FIXAR PEDIDOS)
+    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO TOTAL COM GITHUB)
     // =========================================
+    async function syncAndFetchLatestData() {
+      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json?t=` + new Date().getTime(), { headers: { 'Authorization': `token ${githubConfig.token}` } });
+          if(res.ok) {
+            const json = await res.json();
+            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
+            if(decoded.pendingSongs) appData.pendingSongs = decoded.pendingSongs;
+            if(decoded.pendingMessages) appData.pendingMessages = decoded.pendingMessages;
+            if(decoded.userSongs) appData.userSongs = decoded.userSongs;
+            if(decoded.userMessages) appData.userMessages = decoded.userMessages;
+          }
+        } catch(e) {}
+      }
+    }
+
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
       if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
       
-      // Busca dados mais recentes do repositório antes de adicionar para não sobrescrever pedidos de outros clientes
-      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
-        try {
-          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, { headers: { 'Authorization': `token ${githubConfig.token}` } });
-          if(res.ok) {
-            const json = await res.json();
-            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
-            if(decoded.pendingSongs) appData.pendingSongs = decoded.pendingSongs;
-          }
-        } catch(e) {}
-      }
+      await syncAndFetchLatestData();
 
       if(!appData.pendingSongs) appData.pendingSongs = [];
       appData.pendingSongs.push({
@@ -841,7 +854,7 @@
       document.getElementById('user-song-req').value = '';
       
       await saveChanges();
-      alert("🎵 Pedido enviado para a moderação da casa! Em breve vai rolar no som.");
+      alert("✅ Pedido enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
     async function submitUserMessage() {
@@ -849,16 +862,7 @@
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
       
-      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
-        try {
-          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, { headers: { 'Authorization': `token ${githubConfig.token}` } });
-          if(res.ok) {
-            const json = await res.json();
-            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
-            if(decoded.pendingMessages) appData.pendingMessages = decoded.pendingMessages;
-          }
-        } catch(e) {}
-      }
+      await syncAndFetchLatestData();
 
       if(!appData.pendingMessages) appData.pendingMessages = [];
       appData.pendingMessages.push({
@@ -872,7 +876,7 @@
       document.getElementById('user-msg-text').value = '';
       
       await saveChanges();
-      alert("⚡ Recado enviado para moderação! Assim que aprovado, aparecerá no mural.");
+      alert("✅ Recado enviado com sucesso! Aguarde a aprovação do pedido ou recado.");
     }
 
     // =========================================
@@ -983,12 +987,13 @@
           </div>`;
       });
 
-      // RANKINGS UNIFICADOS (COM FOTOS E PROVOCAÇÕES TOP 3)
+      // RANKINGS UNIFICADOS (COM INSTAGRAM VISÍVEL)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
         const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.ig || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
         const honorTitle = getHonorTitle(index, 'arcade');
+        const displayIg = i.ig || '@jogador';
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -996,7 +1001,7 @@
           <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
-            <span class="lb-sub">${i.sub}</span>
+            <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
             <span class="lb-title-badge">${honorTitle}</span>
             ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
@@ -1009,6 +1014,7 @@
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
         const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
         const honorTitle = getHonorTitle(index, 'cachaceiro');
+        const displayIg = i.sub || '@cachaceiro';
         
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
@@ -1016,7 +1022,7 @@
           <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
-            <span class="lb-sub">${i.sub}</span>
+            <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
             <span class="lb-title-badge">${honorTitle}</span>
             ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
@@ -1105,7 +1111,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E MODERAÇÃO
+    // ADMIN ACORDEÃO E MODERAÇÃO (Com Notificação Pulsante)
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
@@ -1120,12 +1126,23 @@
       if(id === 'adm-moderation') renderModerationLists();
     }
 
-    function renderModerationLists() {
+    async function renderModerationLists() {
+      // Puxa os dados mais recentes do GitHub para garantir que o ADM veja em tempo real
+      await syncAndFetchLatestData();
+
       const pSongsDiv = document.getElementById('admin-pending-songs');
       const pMsgsDiv = document.getElementById('admin-pending-msgs');
+      const counterSpan = document.getElementById('adm-notify-counter');
 
       const pSongs = appData.pendingSongs || [];
       const pMsgs = appData.pendingMessages || [];
+      const totalPending = pSongs.length + pMsgs.length;
+
+      if(totalPending > 0) {
+        counterSpan.innerHTML = `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>`;
+      } else {
+        counterSpan.innerHTML = '';
+      }
 
       if(pSongs.length === 0) {
         pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
@@ -1159,6 +1176,7 @@
     }
 
     async function approveSong(id) {
+      await syncAndFetchLatestData();
       const item = appData.pendingSongs.find(s => s.id === id);
       if(item) {
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
@@ -1171,12 +1189,14 @@
     }
 
     async function rejectSong(id) {
+      await syncAndFetchLatestData();
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
       await saveChanges();
       renderModerationLists();
     }
 
     async function approveMsg(id) {
+      await syncAndFetchLatestData();
       const item = appData.pendingMessages.find(m => m.id === id);
       if(item) {
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
@@ -1189,6 +1209,7 @@
     }
 
     async function rejectMsg(id) {
+      await syncAndFetchLatestData();
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
       await saveChanges();
       renderModerationLists();
