@@ -17,6 +17,7 @@
 
     :root {
       --bg-dark: #050505;
+      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -98,9 +99,9 @@
     @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); border-color: var(--c-yellow); box-shadow: 0 0 35px rgba(0,188,212,0.8); } }
 
     /* =========================================
-       4. NAVEGAÇÃO
+       4. NAVEGAÇÃO (Com Rolagem Natural - Sem Sticky)
        ========================================= */
-    .nav-container { background: rgba(5, 5, 8, 0.7); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+    .nav-container { background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
     .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.3s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
@@ -427,7 +428,7 @@
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e a Senha da Diretoria.</p>
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e Senha para liberar o painel.</p>
           <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
           <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
@@ -452,11 +453,12 @@
             </div>
           </div>
 
-          <!-- NOVO: CRIADOR DE ABAS DINÂMICAS -->
-          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar Novas Abas</button>
+          <!-- CRIADOR DE ABAS DINÂMICAS COM OPÇÃO DE EDITAR -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
           <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
-              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
+              <h5 id="custom-tab-form-title" style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
+              <input type="hidden" id="edit-tab-original-id" value="">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="new-tab-id" placeholder="ID (ex: eventos, vip)">
                 <input type="text" class="admin-input" id="new-tab-name" placeholder="Nome Exibição (ex: Eventos)">
@@ -467,7 +469,8 @@
                 <span>📷 Foto Opcional para a Aba</span>
                 <input type="file" id="new-tab-img-file" accept="image/*">
               </div>
-              <button class="action-btn" onclick="createNewCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
+              <button class="action-btn" id="custom-tab-submit-btn" onclick="saveCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
+              <button class="action-btn" id="custom-tab-cancel-btn" onclick="resetCustomTabForm()" style="margin-top: 5px; background: #444; color:#fff; display:none;">Cancelar Edição</button>
             </div>
             
             <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">Abas Personalizadas Criadas</h5>
@@ -611,7 +614,7 @@
     }
 
     // =========================================
-    // BANCO DE DADOS GLOBAL COM SUPORTE A ABAS DINÂMICAS
+    // BANCO DE DADOS GLOBAL COM SUPORTE A ABAS
     // =========================================
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
@@ -651,7 +654,7 @@
       arcade: defaultArcade,
       cachaceiros: defaultCachaceiros,
       flyer: defaultFlyer,
-      customTabs: [] // Abas criadas pelo ADM
+      customTabs: []
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -728,7 +731,7 @@
     }
 
     // =========================================
-    // RENDERIZAÇÃO DOM CLIENTE (COM ABAS CUSTOMIZADAS)
+    // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
     function renderApp() {
       const cHome = appData.home;
@@ -858,7 +861,7 @@
         </div>`;
       }).join('');
 
-      // RENDERIZAR ABAS CUSTOMIZADAS (Menu + Seções)
+      // RENDERIZAR ABAS CUSTOMIZADAS
       renderCustomTabs(cCustomTabs);
 
       renderAdminLists();
@@ -868,20 +871,16 @@
       const navContainer = document.getElementById('dynamic-nav-tabs');
       const mainContainer = document.getElementById('dynamic-tab-panes');
 
-      // Remove abas dinâmicas antigas do DOM antes de recriar
       document.querySelectorAll('.custom-tab-btn').forEach(el => el.remove());
       document.querySelectorAll('.custom-tab-pane').forEach(el => el.remove());
 
       tabs.forEach(tab => {
-        // Cria o Botão no Menu
         const btn = document.createElement('button');
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
         btn.innerText = tab.name;
-        // Insere antes do botão ADM
         navContainer.insertBefore(btn, navContainer.lastElementChild);
 
-        // Cria a Seção no Main
         const section = document.createElement('section');
         section.id = tab.id;
         section.className = 'tab-pane custom-tab-pane';
@@ -909,7 +908,7 @@
     }
 
     // =========================================
-    // ADMIN ACORDEÃO E LISTAS (Quadradinhos)
+    // ADMIN ACORDEÃO E LISTAS (COM SUPORTE A EDITAR ABAS)
     // =========================================
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
@@ -925,28 +924,71 @@
 
     let tempNewTabImg = '';
     document.getElementById('new-tab-img-file').addEventListener('change', e => {
-      handleImageUpload(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da nova aba carregada!'); });
+      handleImageUpload(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba carregada!'); });
     });
 
-    function createNewCustomTab() {
+    function saveCustomTab() {
+      const originalId = document.getElementById('edit-tab-original-id').value;
       const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
       const name = document.getElementById('new-tab-name').value.trim();
       const title = document.getElementById('new-tab-title').value.trim();
       const desc = document.getElementById('new-tab-desc').value.trim();
 
-      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da nova aba.");
-      
+      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da aba.");
+
       if(!appData.customTabs) appData.customTabs = [];
-      appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
+
+      if(originalId) {
+        // Modo Edição
+        const tab = appData.customTabs.find(t => t.id === originalId);
+        if(tab) {
+          tab.id = id;
+          tab.name = name;
+          tab.title = title || name;
+          tab.desc = desc;
+          if(tempNewTabImg) tab.img = tempNewTabImg;
+        }
+        alert("Aba atualizada com sucesso!");
+      } else {
+        // Modo Criação
+        appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
+        alert("Nova aba criada com sucesso!");
+      }
       
+      resetCustomTabForm();
+      saveChanges();
+    }
+
+    function editCustomTab(id) {
+      const tab = appData.customTabs.find(t => t.id === id);
+      if(!tab) return;
+      document.getElementById('edit-tab-original-id').value = tab.id;
+      document.getElementById('new-tab-id').value = tab.id;
+      document.getElementById('new-tab-name').value = tab.name;
+      document.getElementById('new-tab-title').value = tab.title;
+      document.getElementById('new-tab-desc').value = tab.desc;
+      tempNewTabImg = tab.img || '';
+
+      document.getElementById('custom-tab-form-title').innerText = "Editar Seção / Aba do Site";
+      document.getElementById('custom-tab-submit-btn').innerText = "💾 Salvar Alterações da Aba";
+      document.getElementById('custom-tab-cancel-btn').style.display = "inline-block";
+      
+      // Abre o acordeão se estiver fechado
+      document.getElementById('adm-new-tab').style.display = "block";
+      document.getElementById('adm-new-tab').previousElementSibling.classList.add("active");
+    }
+
+    function resetCustomTabForm() {
+      document.getElementById('edit-tab-original-id').value = '';
       document.getElementById('new-tab-id').value = '';
       document.getElementById('new-tab-name').value = '';
       document.getElementById('new-tab-title').value = '';
       document.getElementById('new-tab-desc').value = '';
       tempNewTabImg = '';
 
-      saveChanges();
-      alert("Nova aba criada com sucesso!");
+      document.getElementById('custom-tab-form-title').innerText = "Adicionar Nova Seção / Aba ao Site";
+      document.getElementById('custom-tab-submit-btn').innerText = "+ Criar Nova Aba no Site";
+      document.getElementById('custom-tab-cancel-btn').style.display = "none";
     }
 
     function removeCustomTab(id) {
@@ -965,7 +1007,6 @@
       document.getElementById('adm-h-promo2').value = appData.home.promo2;
       document.getElementById('adm-h-promo3').value = appData.home.promo3;
 
-      // Listar Abas Customizadas no ADM para gerenciamento
       const customTabsList = document.getElementById('admin-custom-tabs-list');
       if(customTabsList) {
         const tabs = appData.customTabs || [];
@@ -976,7 +1017,10 @@
             <div class="admin-card" style="border-color: var(--c-yellow);">
               <div class="admin-card-row">
                 <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
-                <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar Aba</button>
+                <div>
+                  <button class="action-btn" onclick="editCustomTab('${t.id}')" style="background:var(--c-cyan); color:#000; margin-right:5px;">✏️ Editar</button>
+                  <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar</button>
+                </div>
               </div>
             </div>
           `).join('');
