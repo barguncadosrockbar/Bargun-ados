@@ -17,7 +17,6 @@
 
     :root {
       --bg-dark: #050505;
-      /* Vidro Fosco Premium */
       --glass-bg: rgba(20, 20, 25, 0.45);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -99,7 +98,7 @@
     @keyframes floatLogo { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); border-color: var(--c-yellow); box-shadow: 0 0 35px rgba(0,188,212,0.8); } }
 
     /* =========================================
-       4. NAVEGAÇÃO (Com Rolagem Natural - Sem Sticky)
+       4. NAVEGAÇÃO
        ========================================= */
     .nav-container { background: rgba(5, 5, 8, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
@@ -160,7 +159,7 @@
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     /* =========================================
-       8. LISTAS DE RANKING UNIFICADAS & TÍTULOS
+       8. LISTAS DE RANKING UNIFICADAS
        ========================================= */
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
     .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
@@ -393,24 +392,21 @@
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
-      <!-- RANKINGS UNIFICADOS (Arcade + Cachaceiros com Botão de Alternância) -->
+      <!-- RANKINGS UNIFICADOS -->
       <section id="rankings" class="tab-pane">
         <h2 class="section-title">Mural de Honra & Rankings</h2>
         
-        <!-- Botões para alternar entre Arcade e Cachaceiros -->
         <div class="rankings-switch">
           <button class="rank-switch-btn active" id="btn-switch-arcade" onclick="switchRankingView('arcade')">🕹️ Arcade Top 10</button>
           <button class="rank-switch-btn" id="btn-switch-cachaceiros" onclick="switchRankingView('cachaceiros')">🍻 Cachaceiros Top 10</button>
         </div>
 
-        <!-- Visão Arcade -->
         <div id="rankings-view-arcade">
           <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
           <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação!)</p>
           <div class="leaderboard-list" id="dynamic-arcade-list"></div>
         </div>
 
-        <!-- Visão Cachaceiros -->
         <div id="rankings-view-cachaceiros" style="display: none;">
           <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado!)</p>
           <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
@@ -814,13 +810,25 @@
     }
 
     // =========================================
-    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO IMEDIATA)
+    // INTERAÇÃO DO CLIENTE (SINCRONIZAÇÃO COM O GITHUB PARA FIXAR PEDIDOS)
     // =========================================
     async function submitUserSong() {
       const ig = document.getElementById('user-song-ig').value.trim();
       const req = document.getElementById('user-song-req').value.trim();
       if(!ig || !req) return alert("Preencha seu Instagram e o pedido de música.");
       
+      // Busca dados mais recentes do repositório antes de adicionar para não sobrescrever pedidos de outros clientes
+      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+          if(res.ok) {
+            const json = await res.json();
+            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
+            if(decoded.pendingSongs) appData.pendingSongs = decoded.pendingSongs;
+          }
+        } catch(e) {}
+      }
+
       if(!appData.pendingSongs) appData.pendingSongs = [];
       appData.pendingSongs.push({
         id: Date.now(),
@@ -841,6 +849,17 @@
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
       
+      if(githubConfig.token && githubConfig.user && githubConfig.repo) {
+        try {
+          const res = await fetch(`https://api.github.com/repos/${githubConfig.user}/${githubConfig.repo}/contents/data.json`, { headers: { 'Authorization': `token ${githubConfig.token}` } });
+          if(res.ok) {
+            const json = await res.json();
+            const decoded = JSON.parse(decodeURIComponent(escape(window.atob(json.content))));
+            if(decoded.pendingMessages) appData.pendingMessages = decoded.pendingMessages;
+          }
+        } catch(e) {}
+      }
+
       if(!appData.pendingMessages) appData.pendingMessages = [];
       appData.pendingMessages.push({
         id: Date.now(),
@@ -859,22 +878,17 @@
     // =========================================
     // RENDERIZAÇÃO DOM CLIENTE
     // =========================================
-    function switchRankingView(view) {
-      const btnArcade = document.getElementById('btn-switch-arcade');
-      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
-      const viewArcade = document.getElementById('rankings-view-arcade');
-      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
-
-      if(view === 'arcade') {
-        btnArcade.classList.add('active');
-        btnCachaceiros.classList.remove('active');
-        viewArcade.style.display = 'block';
-        viewCachaceiros.style.display = 'none';
+    function getHonorTitle(index, type) {
+      if(type === 'arcade') {
+        if(index === 0) return '👑 Lenda Viva do Arcade';
+        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
+        if(index === 2) return '🕹️ Mestre dos Controles';
+        return '🎮 Veterano do Fliperama';
       } else {
-        btnCachaceiros.classList.add('active');
-        btnArcade.classList.remove('active');
-        viewCachaceiros.style.display = 'block';
-        viewArcade.style.display = 'none';
+        if(index === 0) return '🏆 Campeão Supremo do Fígado';
+        if(index === 1) return '🍻 Senhor dos Destilados';
+        if(index === 2) return '🥃 Gladiador do Copo Cheio';
+        return '🍷 Guerreiro da Cachaça';
       }
     }
 
@@ -969,7 +983,7 @@
           </div>`;
       });
 
-      // RANKINGS UNIFICADOS
+      // RANKINGS UNIFICADOS (COM FOTOS E PROVOCAÇÕES TOP 3)
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
@@ -979,7 +993,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          ${isTop3 ? `<img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">` : ''}
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub}</span>
