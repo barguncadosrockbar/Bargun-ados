@@ -477,16 +477,13 @@
             </div>
           </div>
 
-          <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-push')">🔔 Disparar Notificação Push (OneSignal)</button>
+          <!-- SEÇÃO SEPARADA COM LINK PARA ENVIAR NOTIFICAÇÃO GERAL NO ONESIGNAL -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-push')">🔔 Enviar Notificação Geral (OneSignal)</button>
           <div id="adm-push" class="admin-accordion-content" style="border-color: var(--c-cyan);">
-            <div class="admin-card" style="border-color: var(--c-cyan);">
-              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Enviar Alerta em Massa via Painel ADM</h5>
-              <p style="color:#ccc; font-size:0.85rem; margin-bottom:10px;">Insira a sua REST API Key do OneSignal abaixo e envie o push instantaneamente para a galera.</p>
-              
-              <input type="password" class="admin-input" id="onesignal-rest-key-input" placeholder="Cole sua REST API Key do OneSignal aqui" style="margin-bottom:8px;">
-              <input type="text" class="admin-input" id="onesignal-title-input" placeholder="Título (Ex: 🎸 BANDA AO VIVO AGORA!)" style="margin-bottom:8px;">
-              <textarea class="admin-textarea" id="onesignal-body-input" rows="2" placeholder="Mensagem (Ex: Corre pro Bargunçados que o som começou no talo!)" style="margin-bottom:8px;"></textarea>
-              <button class="action-btn" onclick="sendOneSignalNotificationSecure()" style="background: var(--c-cyan); color:#000; width:100%;">🚀 Disparar Push via OneSignal</button>
+            <div class="admin-card" style="border-color: var(--c-cyan); text-align: center; padding: 20px;">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.4rem; margin-bottom:10px;">Disparar Alertas em Massa</h5>
+              <p style="color:#ccc; font-size:0.9rem; margin-bottom:20px; line-height: 1.5;">Para enviar notificações push para os telemóveis de todos os clientes (com o site aberto ou fechado), utilize o painel oficial seguro do OneSignal.</p>
+              <a href="https://dashboard.onesignal.com/" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, var(--c-cyan), var(--c-purple)); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🚀 ABRIR PAINEL ONESIGNAL</a>
             </div>
           </div>
 
@@ -751,45 +748,6 @@
           body: JSON.stringify(appData)
         });
       } catch(e) {}
-    }
-
-    async function sendOneSignalNotificationSecure() {
-      const restKey = document.getElementById('onesignal-rest-key-input').value.trim();
-      const title = document.getElementById('onesignal-title-input').value.trim();
-      const body = document.getElementById('onesignal-body-input').value.trim();
-
-      if (!restKey || !title || !body) {
-        alert("Preencha a REST API Key, o Título e a Mensagem.");
-        return;
-      }
-
-      const payload = {
-        app_id: ONESIGNAL_APP_ID,
-        included_segments: ["All"],
-        headings: { "en": title, "pt": title },
-        contents: { "en": body, "pt": body }
-      };
-
-      try {
-        const response = await fetch("https://onesignal.com/api/v1/notifications", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json; charset=utf-8",
-            "Authorization": `Basic ${restKey}`
-          },
-          body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-          alert("🚀 Notificação Push enviada com sucesso para todos os clientes!");
-          document.getElementById('onesignal-title-input').value = '';
-          document.getElementById('onesignal-body-input').value = '';
-        } else {
-          alert("Erro ao disparar notificação. Verifique se a REST API Key está correta.");
-        }
-      } catch (err) {
-        alert("Falha na conexão com a API do OneSignal.");
-      }
     }
 
     function saveGitHubConfig() {
