@@ -779,7 +779,7 @@
     async function syncAndFetchLatestData() {
       // 1. Puxa interações públicas do Relay Cloud (tempo real de clientes)
       try {
-        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime());
+        const relayRes = await fetch(RELAY_BIN_URL + '/latest?t=' + new Date().getTime(), { headers: { 'X-Master-Key': '$2a$10$C8qT93.W0m3Gq8x...'} });
         if(relayRes.ok) {
           const relayJson = await relayRes.json();
           if(relayJson.record) {
