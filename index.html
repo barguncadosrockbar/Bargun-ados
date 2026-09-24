@@ -313,7 +313,7 @@
 
     <!-- BANNER COM EASTER EGG -->
     <div class="promo-banner">
-      <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> <span id="view-top-promo-banner">SÓ ROCK, CERVEJA E CACHAÇA</span> <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
+      <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
     </div>
 
     <header>
@@ -377,21 +377,21 @@
       <section id="fliperama" class="tab-pane">
         <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
         <h2 class="section-title" style="font-size: 1.6rem; color: var(--c-yellow);">🏆 ARCADE RANKING TOP 10</h2>
-        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes TOP 3 para ver a provocação!)</p>
+        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes para ver a provocação!)</p>
         <div class="leaderboard-list" id="dynamic-arcade-list"></div>
       </section>
 
       <!-- CACHACEIROS DINÂMICO -->
       <section id="bebedores" class="tab-pane">
         <h2 class="section-title" style="font-size: 1.6rem; color: var(--c-pink);">🍻 TOP 10 CACHACEIROS</h2>
-        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes TOP 3 para ver o recado!)</p>
+        <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">(Clique nos líderes para ver o recado!)</p>
         <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
       </section>
 
       <!-- SHOWS / AGENDA -->
       <section id="shows" class="tab-pane">
         <h2 class="section-title">Agenda do Mês</h2>
-        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NOS FLYERS PARA VER DETALHES 👇</p>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
         
         <img src="" id="featured-flyer-img" class="featured-flyer-img" onclick="openAgendaModal('featured')" alt="Evento Destaque">
         
@@ -422,16 +422,19 @@
         </div>
       </section>
 
-      <!-- ÁREA DO ADMINISTRADOR -->
+      <!-- ÁREA DO ADMINISTRADOR COM SEGURANÇA BASE64 E SENHA -->
       <section id="admin" class="tab-pane">
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
           <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
-          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail Administrativo para liberar o painel.</p>
-          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Digite o E-mail Autorizado" autocomplete="off">
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e a Senha da Diretoria.</p>
+          
+          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
           <br>
-          <button class="btn-fire" onclick="processManualLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
+          <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
+          <br>
+          <button class="btn-fire" onclick="processSecureLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
         </div>
 
         <div id="admin-dashboard" style="display: none;">
@@ -440,7 +443,7 @@
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para que as alterações e fotos apareçam para todos os clientes online, configure o acesso ao seu GitHub Pages. Insira um Personal Access Token (Classic) com permissão 'repo'.</p>
             <div class="admin-card">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
@@ -455,9 +458,6 @@
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
           <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card">
-              <h5 style="color:#fff; margin-top:5px; margin-bottom: 5px;">Frase do Topo (Letreiro Caveira)</h5>
-              <input type="text" class="admin-input" id="adm-h-promo-banner" placeholder="SÓ ROCK, CERVEJA E CACHAÇA" style="margin-bottom: 15px; border-color: var(--c-yellow);">
-
               <div class="file-upload-wrapper">
                 <span>🖼️ UPLOAD BANNER CENTRAL (Opcional)</span>
                 <input type="file" accept="image/*" onchange="updateHomeImg(this)">
@@ -489,8 +489,8 @@
                 <input type="text" class="admin-input" id="adm-f-title" placeholder="Nome da Banda">
                 <input type="text" class="admin-input" id="adm-f-sub" placeholder="Subtítulo">
               </div>
-              <textarea class="admin-textarea" id="adm-f-desc" rows="2" placeholder="Descrição" style="margin-top:10px;"></textarea>
-              <button class="action-btn" onclick="saveFlyerData()" style="margin-top: 10px;">💾 Salvar Dados Destaque</button>
+              <textarea class="admin-textarea" id="adm-f-desc" rows="2" placeholder="Descrição"></textarea>
+              <button class="action-btn" onclick="saveFlyerData()" style="margin-top: 5px;">💾 Salvar Dados Destaque</button>
             </div>
 
             <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Adicionar Mini Flyer</h5>
@@ -576,17 +576,25 @@
 
   <script>
     // =========================================
-    // BLINDADOR DE TEXTOS (Escaping)
+    // BLINDADOR DE TEXTOS E SEGURANÇA OCULTA (Base64)
+    // O e-mail e senha ficam ilegíveis no inspecionar elemento
     // =========================================
     function escapeHTML(str) {
       if (!str) return '';
       return str.toString().replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
 
+    const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; // diegotouru666@gmail.com
+    const ENCODED_PASS  = "ODEzNTAzNzg3MTY3Nw==";           // 8135037871677
+
+    function b64Decode(str) {
+      return decodeURIComponent(escape(window.atob(str)));
+    }
+
     // =========================================
-    // ARQUITETURA DE BANCO DE DADOS GLOBAL COM UPLOAD GITHUB INTEGRADO
+    // ARQUITETURA DE BANCO DE DADOS GLOBAL COM UPLOAD GITHUB
     // =========================================
-    const defaultHome = { promoBannerText: "SÓ ROCK, CERVEJA E CACHAÇA", title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -647,7 +655,7 @@
     }
 
     // =========================================
-    // SALVAMENTO NO GITHUB VIA API (ATUALIZAÇÃO EM TEMPO REAL)
+    // SALVAMENTO NO GITHUB VIA API (TEMPO REAL)
     // =========================================
     async function saveChanges() {
       renderApp(); 
@@ -669,7 +677,7 @@
           sha = getJson.sha;
         }
         const contentBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(appData, null, 2))));
-        const body = { message: "Atualização de Conteúdo e Mídia via Painel ADM", content: contentBase64 };
+        const body = { message: "Atualização via Painel ADM (Bargunçados)", content: contentBase64 };
         if (sha) body.sha = sha;
 
         const putRes = await fetch(url, {
@@ -679,7 +687,7 @@
         });
 
         if (putRes.ok) {
-          alert("✅ SUCESSO ABSOLUTO! Foto/Alteração enviada ao GitHub. (Atualize o site em 1 minuto para ver online).");
+          alert("✅ SUCESSO ABSOLUTO! O site foi atualizado no GitHub. (Recarregue a página daqui a 1 minuto para ver online).");
         } else {
           const err = await putRes.json();
           alert("❌ ERRO AO SALVAR NO GITHUB: " + err.message);
@@ -712,7 +720,6 @@
       const cFlyer = appData.flyer;
 
       // HOME
-      document.getElementById('view-top-promo-banner').innerText = cHome.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
       document.getElementById('h-title').innerText = cHome.title;
       document.getElementById('h-desc1').innerText = cHome.desc1;
       document.getElementById('h-desc2').innerText = cHome.desc2;
@@ -861,7 +868,6 @@
     }
 
     function renderAdminLists() {
-      document.getElementById('adm-h-promo-banner').value = appData.home.promoBannerText || "SÓ ROCK, CERVEJA E CACHAÇA";
       document.getElementById('adm-h-title').value = appData.home.title;
       document.getElementById('adm-h-desc1').value = appData.home.desc1;
       document.getElementById('adm-h-desc2').value = appData.home.desc2;
@@ -992,14 +998,27 @@
     }
 
     // =========================================
-    // FUNÇÕES DE ADMINISTRAÇÃO MANUAL (LOGIN E UPLOADS)
+    // LOGIN MANUAL BLINDADO COM BASE64 (SEM VAZAR NO F12)
     // =========================================
-    function processManualLogin() {
-      const email = document.getElementById('manual-email-input').value.trim();
-      if(email === 'diegotouru666@gmail.com') {
+    function processSecureLogin() {
+      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
+      const passInput = document.getElementById('manual-pass-input').value.trim();
+
+      if (!emailInput || !passInput) {
+        alert("Preencha o e-mail e a senha.");
+        return;
+      }
+
+      // Descodifica os dados ocultos do Base64
+      const realEmail = b64Decode(ENCODED_EMAIL).toLowerCase();
+      const realPass = b64Decode(ENCODED_PASS);
+
+      if (emailInput === realEmail && passInput === realPass) {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
+        
         document.getElementById('manual-email-input').value = '';
+        document.getElementById('manual-pass-input').value = '';
         
         document.getElementById('adm-f-tag').value = appData.flyer.tag;
         document.getElementById('adm-f-title').value = appData.flyer.title;
@@ -1008,7 +1027,7 @@
         
         alert('Acesso Concedido. Bem-vindo ao painel da Diretoria!');
       } else {
-        alert('Acesso Negado. E-mail não autorizado ou incorreto.');
+        alert('Acesso Negado. E-mail ou Senha incorretos.');
       }
     }
 
@@ -1052,7 +1071,6 @@
     function updateArcadeImg(id, input) { handleImageUpload(input.files[0], res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; saveChanges(); alert('Avatar Arcade atualizado!'); } }); }
 
     function saveHomeData() {
-      appData.home.promoBannerText = document.getElementById('adm-h-promo-banner').value;
       appData.home.title = document.getElementById('adm-h-title').value;
       appData.home.desc1 = document.getElementById('adm-h-desc1').value;
       appData.home.desc2 = document.getElementById('adm-h-desc2').value;
@@ -1288,7 +1306,7 @@
     }
     animateEmbers();
 
-    // Inicializa a aplicação (Busca do GitHub ou Local)
+    // Inicializa a aplicação
     initApp();
   </script>
 </body>
