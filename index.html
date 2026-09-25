@@ -103,7 +103,8 @@
     .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
     .section-title::before { content: '⚡'; color: var(--c-yellow); font-size: 0.8em; }
 
-    .status-badge-container { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 30px; margin-bottom: 15px; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; }
+    .status-badge-container { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 12px; margin-bottom: 15px; }
+    .status-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; }
     .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
     .status-dot.open { background: #00e676; box-shadow: 0 0 10px #00e676; animation: pulseOpen 2s infinite; }
     .status-dot.closed { background: #ff1744; box-shadow: 0 0 10px #ff1744; }
@@ -137,6 +138,9 @@
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
 
+    .featured-flyer-img { width: 100%; height: 280px; object-fit: cover; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
+    .featured-flyer-img:hover { transform: scale(1.01); }
+
     #eventModalImg { border-color: var(--c-purple); max-height: 250px; }
     #e-title { font-family: var(--font-title); font-size: 2.5rem; color: #fff; line-height: 1;}
 
@@ -164,8 +168,6 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    .featured-flyer-img { width: 100%; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
-    .featured-flyer-img:hover { transform: scale(1.01); }
     .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
     .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1 / 1; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: cover; background-position: center; transition: transform 0.3s; }
     .mini-flyer:hover { transform: scale(1.03); }
@@ -299,16 +301,16 @@
 
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inicio')">🎸 O Bar</button>
-        <button class="tab-btn" onclick="switchTab('bebidas')">🥃 Bebidas</button>
-        <button class="tab-btn" onclick="switchTab('porcoes')">🍟 Porções</button>
-        <button class="tab-btn" onclick="switchTab('shows')">📅 Agenda</button>
-        <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
-        <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
-        <button class="tab-btn" onclick="switchTab('promoters')">🤘 Promoter</button>
-        <button class="tab-btn" onclick="switchTab('contato')">📞 Contato</button>
-        <button class="tab-btn" onclick="switchTab('como-chegar')">🗺️ Como Chegar</button>
-        <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
+        <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
+        <button class="tab-btn" onclick="switchTab('bebidas')">Bebidas</button>
+        <button class="tab-btn" onclick="switchTab('porcoes')">Porções</button>
+        <button class="tab-btn" onclick="switchTab('shows')">Agenda</button>
+        <button class="tab-btn" onclick="switchTab('rankings')">Rankings 🏆</button>
+        <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
+        <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
+        <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
+        <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
+        <button class="tab-btn" onclick="switchTab('interaja')">Mural & Som 🎸</button>
       </nav>
     </div>
 
@@ -318,9 +320,13 @@
         <h2 class="section-title">O Templo da Bargunça</h2>
         <div class="grid">
           <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 15px;">
+            <!-- Badge de Status com Horário e Obs (Aberto desde as 17:00, Som e Promo das 21:00) -->
             <div id="home-status-badge" class="status-badge-container">
-              <span id="status-dot-el" class="status-dot open"></span>
-              <span id="status-text-el" style="color: #00e676;">BARGUNÇADOS ABERTO</span>
+              <div class="status-row">
+                <span id="status-dot-el" class="status-dot open"></span>
+                <span id="status-text-el" style="color: #00e676;">BARGUNÇADOS ABERTO</span>
+              </div>
+              <span style="font-family: var(--font-body); font-size: 0.8rem; color: var(--c-yellow); font-weight: 600; margin-left: 18px;">⏰ Aberto desde as 17:00 (Esquenta) | Som & Promoções das 21:00 às 03:00</span>
             </div>
 
             <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
@@ -481,25 +487,6 @@
             </div>
           </div>
 
-          <!-- NOVA ABA DE ESTATÍSTICAS DE ACESSOS DIÁRIOS -->
-          <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-stats')">📊 Estatísticas de Acessos</button>
-          <div id="adm-stats" class="admin-accordion-content" style="border-color: var(--c-cyan);">
-            <div class="admin-card" style="border-color: var(--c-cyan); text-align: center;">
-              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.3rem; margin-bottom:15px;">🔥 Controlo de Acessos de Hoje</h5>
-              <div style="display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
-                <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--c-cyan); flex: 1; min-width: 130px;">
-                  <span style="font-size: 0.8rem; color: #aaa; display: block;">VISITAS TOTAIS (HITS)</span>
-                  <span id="stat-hits-today" style="font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow);">0</span>
-                </div>
-                <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--c-pink); flex: 1; min-width: 130px;">
-                  <span style="font-size: 0.8rem; color: #aaa; display: block;">DISPOSITIVOS ÚNICOS</span>
-                  <span id="stat-uniques-today" style="font-family: var(--font-title); font-size: 2rem; color: var(--c-pink);">0</span>
-                </div>
-              </div>
-              <p style="color: #888; font-size: 0.75rem;">A contagem é atualizada automaticamente a cada acesso diário dos clientes.</p>
-            </div>
-          </div>
-
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <button class="action-btn" onclick="fetchBinData()" style="margin-bottom: 15px; background: var(--c-yellow); color:#000; width: 100%;">🔄 Atualizar Pedidos da Nuvem</button>
@@ -508,9 +495,6 @@
 
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
             <div id="admin-pending-msgs"></div>
-
-            <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.2rem; margin-top:25px; margin-bottom:10px;">🗑️ Gerenciar / Excluir Pedidos e Recados Ativos</h5>
-            <div id="admin-active-interactions"></div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
@@ -662,8 +646,11 @@
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    const ENCODED_EMAIL = "ZGllZ290b3VydTY2NkBnbWFpbC5jb20="; 
-    const ENCODED_PASS  = "ODEzNTAzNzg3MTY3Nw==";           
+    /* Credenciais ADM (Diego e Rafa) */
+    const AUTH_CREDENTIALS = [
+      { email: "ZGllZ290b3VydTY2NkBnbWFpbC5jb20=", pass: "ODEzNTAzNzg3MTY3Nw==" }, // Diego
+      { email: "UmFmYTM2OWBnbWFpbC5jb20=", pass: "MjgwNTE0" }                     // Rafa
+    ];
 
     function b64Decode(str) {
       return decodeURIComponent(escape(window.atob(str)));
@@ -711,8 +698,7 @@
       userSongs: [],
       pendingSongs: [],
       userMessages: [],
-      pendingMessages: [],
-      stats: { hits: 0, uniques: 0, lastDate: '' }
+      pendingMessages: []
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -727,7 +713,6 @@
       }
       
       await fetchBinData();
-      registerVisit();
       renderApp();
       
       if(localStorage.getItem('brg_adm_logged') === 'true') {
@@ -736,37 +721,6 @@
       }
 
       setInterval(fetchBinData, 15000);
-    }
-
-    async function registerVisit() {
-      const todayStr = new Date().toDateString();
-      const lastVisitDate = localStorage.getItem('brg_last_visit_date');
-      const hasCountedUniqueToday = localStorage.getItem('brg_unique_counted_' + todayStr);
-
-      try {
-        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
-        if(res.ok) {
-          const json = await res.json();
-          if(json.record) appData = { ...appData, ...json.record };
-        }
-      } catch(e) {}
-
-      if(!appData.stats) appData.stats = { hits: 0, uniques: 0, lastDate: todayStr };
-
-      if(appData.stats.lastDate !== todayStr) {
-        appData.stats.hits = 0;
-        appData.stats.uniques = 0;
-        appData.stats.lastDate = todayStr;
-      }
-
-      appData.stats.hits += 1;
-
-      if(!hasCountedUniqueToday) {
-        appData.stats.uniques += 1;
-        localStorage.setItem('brg_unique_counted_' + todayStr, 'true');
-      }
-
-      await saveBinDataSilent();
     }
 
     async function fetchBinData() {
@@ -789,19 +743,6 @@
 
     async function saveBinData() {
       renderApp();
-      try {
-        await fetch(BIN_URL, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': MASTER_KEY
-          },
-          body: JSON.stringify(appData)
-        });
-      } catch(e) {}
-    }
-
-    async function saveBinDataSilent() {
       try {
         await fetch(BIN_URL, {
           method: 'PUT',
@@ -932,7 +873,6 @@
       const cCach = appData.cachaceiros;
       const cFlyer = appData.flyer;
       const cCustomTabs = appData.customTabs || [];
-      const stats = appData.stats || { hits: 0, uniques: 0 };
 
       document.getElementById('h-title').innerText = cHome.title;
       document.getElementById('h-desc1').innerText = cHome.desc1;
@@ -953,12 +893,6 @@
         statusText.innerText = 'BARGUNÇADOS FECHADO';
         statusText.style.color = '#ff1744';
       }
-
-      // Atualizar valores na aba de Estatísticas da ADM
-      const hitsEl = document.getElementById('stat-hits-today');
-      const uniquesEl = document.getElementById('stat-uniques-today');
-      if(hitsEl) hitsEl.innerText = stats.hits;
-      if(uniquesEl) uniquesEl.innerText = stats.uniques;
 
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
@@ -1120,7 +1054,7 @@
         const btn = document.createElement('button');
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
-        btn.innerText = '📑 ' + tab.name;
+        btn.innerText = tab.name;
         const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
         navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
@@ -1167,13 +1101,10 @@
     function renderModerationLists() {
       const pSongsDiv = document.getElementById('admin-pending-songs');
       const pMsgsDiv = document.getElementById('admin-pending-msgs');
-      const activeIntDiv = document.getElementById('admin-active-interactions');
       const counterSpan = document.getElementById('adm-notify-counter');
 
       const pSongs = appData.pendingSongs || [];
       const pMsgs = appData.pendingMessages || [];
-      const uSongs = appData.userSongs || [];
-      const uMsgs = appData.userMessages || [];
       const totalPending = pSongs.length + pMsgs.length;
 
       if(totalPending > 0) {
@@ -1211,29 +1142,6 @@
           </div>
         `).join('');
       }
-
-      if(uSongs.length === 0 && uMsgs.length === 0) {
-        activeIntDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido ou recado ativo no site.</p>';
-      } else {
-        let activeHtml = '';
-        uSongs.forEach(s => {
-          activeHtml += `
-            <div class="admin-card" style="border-left: 3px solid var(--c-cyan);">
-              <span style="color:var(--c-cyan); font-size:0.85rem;">[Som Aprovado] ${escapeHTML(s.ig)}:</span>
-              <p style="color:#fff; font-size:0.9rem;">"${escapeHTML(s.text)}"</p>
-              <button class="action-btn del-btn" onclick="deleteActiveSong(${s.id})" style="margin-top:5px; width:fit-content;">🗑️ Excluir do Site</button>
-            </div>`;
-        });
-        uMsgs.forEach(m => {
-          activeHtml += `
-            <div class="admin-card" style="border-left: 3px solid var(--c-yellow);">
-              <span style="color:var(--c-yellow); font-size:0.85rem;">[Recado Ativo] ${escapeHTML(m.ig)}:</span>
-              <p style="color:#fff; font-size:0.9rem;">"${escapeHTML(m.text)}"</p>
-              <button class="action-btn del-btn" onclick="deleteActiveMsg(${m.id})" style="margin-top:5px; width:fit-content;">🗑️ Excluir do Mural</button>
-            </div>`;
-        });
-        activeIntDiv.innerHTML = activeHtml;
-      }
     }
 
     async function approveSong(id) {
@@ -1266,22 +1174,6 @@
     async function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
       await saveBinData();
-    }
-
-    async function deleteActiveSong(id) {
-      if(confirm("Tem certeza que deseja excluir este pedido de som ativo?")) {
-        appData.userSongs = appData.userSongs.filter(s => s.id !== id);
-        await saveBinData();
-        alert("Pedido excluído do site com sucesso!");
-      }
-    }
-
-    async function deleteActiveMsg(id) {
-      if(confirm("Tem certeza que deseja excluir este recado do mural?")) {
-        appData.userMessages = appData.userMessages.filter(m => m.id !== id);
-        await saveBinData();
-        alert("Recado excluído do mural com sucesso!");
-      }
     }
 
     let tempNewTabImg = '';
@@ -1535,10 +1427,15 @@
         return;
       }
 
-      const realEmail = b64Decode(ENCODED_EMAIL).toLowerCase();
-      const realPass = b64Decode(ENCODED_PASS);
+      let authorized = false;
+      for (let cred of AUTH_CREDENTIALS) {
+        if (emailInput === b64Decode(cred.email).toLowerCase() && passInput === b64Decode(cred.pass)) {
+          authorized = true;
+          break;
+        }
+      }
 
-      if (emailInput === realEmail && passInput === realPass) {
+      if (authorized) {
         localStorage.setItem('brg_adm_logged', 'true');
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
