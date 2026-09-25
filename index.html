@@ -1166,7 +1166,7 @@
     }
 
     async function savePermissions() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return;
 
       const canHome = document.getElementById('perm-home').checked;
@@ -1352,7 +1352,7 @@
     }
 
     async function savePlayerEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canRank: true };
       if(!isMaster && !permissions.canRank) return alert("Acesso Negado: A tua permissão para alterar rankings foi desativada pelo Master!");
 
@@ -1434,7 +1434,7 @@
     }
 
     async function saveEventEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canAgenda: true };
       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
 
@@ -1500,7 +1500,7 @@
         counterSpan.innerHTML = '';
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canMod: true };
       const modPermitted = isMaster || permissions.canMod;
 
@@ -1631,7 +1631,7 @@
     }
 
     function editCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado!");
 
       const tab = appData.customTabs.find(t => t.id === id);
@@ -1664,7 +1664,7 @@
     }
 
     async function removeCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado!");
 
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
@@ -1706,7 +1706,7 @@
         }
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canMenu: true, canAgenda: true };
       
       const menuPermitted = isMaster || permissions.canMenu;
@@ -1782,7 +1782,7 @@
                   <span style="font-size:0.75rem;">📷 Upar Avatar</span>
                   <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
                 </div>
-                <button class="action-btn" onclick="saveTeamData(${t.id})">💾 Salvar</button>
+                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
             </div>
           </div>`).join('');
       }
@@ -1884,7 +1884,7 @@
 
     function updateAdminGreeting() {
       const name = localStorage.getItem('brg_adm_name') || 'Administrador';
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const greetingEl = document.getElementById('adm-welcome-text');
       const masterTabsSec = document.getElementById('master-tabs-section');
       const masterCtrlSec = document.getElementById('master-control-section');
@@ -1965,7 +1965,7 @@
     }
 
     async function saveItemData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
        const permissions = appData.permissions || { canMenu: true };
        if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
 
@@ -1983,7 +1983,7 @@
     }
 
     async function saveAgendaData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
        const permissions = appData.permissions || { canAgenda: true };
        if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
 
@@ -2041,7 +2041,7 @@
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
 
     async function addMenuItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canMenu: true };
       if(!isMaster && !permissions.canMenu) return alert("Acesso Negado!");
 
@@ -2058,7 +2058,7 @@
     }
 
     async function addAgendaItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const permissions = appData.permissions || { canAgenda: true };
       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado!");
 
@@ -2071,7 +2071,7 @@
     }
 
     async function removeMenuItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir itens do cardápio!");
 
       const item = appData.menu.find(i => i.id === id);
@@ -2082,7 +2082,7 @@
     }
 
     async function removeAgendaItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir eventos da agenda!");
 
       const ev = appData.agenda.find(i => i.id === id);
@@ -2101,12 +2101,16 @@
       alert("Dados do Destaque Salvos!");
     }
 
-    function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+    function closeModal(modalId) { 
+      const modal = document.getElementById(modalId);
+      if(modal) modal.style.display = 'none'; 
+    }
+
     window.onclick = function(event) { 
       if (event.target == document.getElementById('productModal')) closeModal('productModal'); 
       if (event.target == document.getElementById('eventModal')) closeModal('eventModal'); 
       if (event.target == document.getElementById('playerModal')) closeModal('playerModal');
-    }
+    };
 
     function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
 
@@ -2144,8 +2148,9 @@
     function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(tab => { tab.classList.remove('active'); });
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById(tabId).classList.add('active');
-      const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick').includes(tabId));
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) targetPane.classList.add('active');
+      const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick')?.includes(tabId));
       if (clickedBtn) clickedBtn.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
