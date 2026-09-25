@@ -120,7 +120,6 @@
     .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    /* PREENCHIMENTO COMPLETO SEM CORTES */
     .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
     .product-card:hover .product-img { transform: scale(1.02); }
     
@@ -128,7 +127,6 @@
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
-    /* MODAIS COM ROLAGEM TOUCH SEMPRE ACESSÍVEIS */
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -141,12 +139,10 @@
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
 
-    /* FLYER DESTAQUE GIGANTE E COMPLETO */
     .featured-flyer-container { width: 100%; border-radius: 12px; border: 2px solid var(--c-red); overflow: hidden; box-shadow: 0 10px 30px rgba(211,47,47,0.5); margin-bottom: 15px; cursor: pointer; }
     .featured-flyer-img { width: 100%; min-height: 380px; max-height: 560px; height: auto; object-fit: fill; object-position: center; display: block; transition: transform 0.3s ease; }
     .featured-flyer-container:hover .featured-flyer-img { transform: scale(1.01); }
 
-    /* FLYER DENTRO DO MODAL */
     #eventModalImg { width: 100%; min-height: 320px; max-height: 480px; object-fit: fill; object-position: center; border-radius: 8px; border: 2px solid var(--c-purple); margin-bottom: 12px; }
     #e-title { font-family: var(--font-title); font-size: 2.5rem; color: #fff; line-height: 1;}
 
@@ -174,7 +170,6 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    /* MINI FLYERS PREENCHENDO TOTALMENTE */
     .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
     .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 3 / 4; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: 100% 100%; background-position: center; transition: transform 0.3s; }
     .mini-flyer:hover { transform: scale(1.03); }
@@ -232,6 +227,12 @@
     .db-status-indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
 
     .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
+
+    /* CONTADOR DE DISPOSITIVOS E CLIQUES/VISITAS RESTAURADO */
+    .traffic-counter-box { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 12px 20px; text-align: center; flex: 1; min-width: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
+    .counter-stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
 
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -662,6 +663,18 @@
             <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
           </div>
 
+          <!-- CONTADOR DE VISITAS E DISPOSITIVOS RESTAURADO -->
+          <div class="traffic-counter-box">
+            <div class="counter-stat-card">
+              <div class="counter-stat-val" id="adm-stat-views">0</div>
+              <div class="counter-stat-lbl">Visitas Totais (Cliques)</div>
+            </div>
+            <div class="counter-stat-card" style="border-color: var(--c-pink);">
+              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-pink);">0</div>
+              <div class="counter-stat-lbl">Dispositivos Únicos Conectados</div>
+            </div>
+          </div>
+
           <!-- BANCO DE DADOS E SINCRONIZAÇÃO COMPLETA -->
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados & Sincronização em Tempo Real</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
@@ -958,10 +971,43 @@
       userMessages: [],
       pendingMessages: [],
       adminLogs: [],
-      permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true }
+      permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
+      traffic: { totalViews: 0, devices: [] }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
+
+    // RASTREAMENTO INTELIGENTE DE DISPOSITIVOS E VISITAS
+    function recordTrafficAnalytics() {
+      let deviceId = localStorage.getItem('brg_device_id');
+      if(!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        localStorage.setItem('brg_device_id', deviceId);
+      }
+
+      if(!appData.traffic) {
+        appData.traffic = { totalViews: 0, devices: [] };
+      }
+
+      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
+
+      if(!Array.isArray(appData.traffic.devices)) {
+        appData.traffic.devices = [];
+      }
+
+      if(!appData.traffic.devices.includes(deviceId)) {
+        appData.traffic.devices.push(deviceId);
+      }
+
+      updateTrafficUI();
+    }
+
+    function updateTrafficUI() {
+      const viewsEl = document.getElementById('adm-stat-views');
+      const devEl = document.getElementById('adm-stat-devices');
+      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
+    }
 
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
@@ -977,6 +1023,7 @@
       }
       
       await fetchBinData();
+      recordTrafficAnalytics();
       renderApp();
       
       if(localStorage.getItem('brg_adm_logged') === 'true') {
@@ -1021,6 +1068,7 @@
           if(json.record) {
             appData = { ...appData, ...json.record };
             renderApp();
+            updateTrafficUI();
           }
         }
       } catch(e) {}
@@ -1039,6 +1087,7 @@
         });
       }
       renderApp();
+      updateTrafficUI();
       try {
         await fetch(BIN_URL, {
           method: 'PUT',
@@ -1199,7 +1248,6 @@
         document.getElementById('home-img').style.display = 'none'; 
       }
 
-      // Visibilidade das barras de ação para ADM nas abas
       const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
@@ -1503,10 +1551,40 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
+    // UPLOAD BLINDADO COM SUPORTE TOTAL A BASE64 E IMGBB
+    async function uploadToImgBB(file, callback) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function() {
+        const base64Data = reader.result.split(',')[1];
+        try {
+          const bodyData = new URLSearchParams();
+          bodyData.append('image', base64Data);
+
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+            method: 'POST',
+            body: bodyData
+          });
+          const json = await res.json();
+          if (json.success && json.data && json.data.url) {
+            callback(json.data.url);
+          } else {
+            // Fallback imediato para manter imagem ativa
+            callback(reader.result);
+          }
+        } catch (e) {
+          callback(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
     async function modalUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
         document.getElementById('modal-edit-img').value = res;
-        alert("Nova foto carregada com sucesso!");
+        document.getElementById('modalImg').src = res;
+        alert("Foto carregada com sucesso!");
       });
     }
 
@@ -1720,6 +1798,7 @@
     async function playerUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
         document.getElementById('player-edit-img').value = res;
+        document.getElementById('playerModalImg').src = res;
         alert("Avatar atualizado com sucesso!");
       });
     }
@@ -1834,6 +1913,7 @@
     async function eventUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
         document.getElementById('event-edit-img').value = res;
+        document.getElementById('eventModalImg').src = res;
         alert("Flyer atualizado com sucesso!");
       });
     }
@@ -2016,29 +2096,8 @@
     }
 
     let tempNewTabImg = '';
-    
-    async function uploadToImgBB(file, callback) {
-      if (!file) return;
-      const formData = new FormData();
-      formData.append('image', file);
-      try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-          method: 'POST',
-          body: formData
-        });
-        const json = await res.json();
-        if (json.success) {
-          callback(json.data.url);
-        } else {
-          alert("Erro ao enviar imagem para o ImgBB.");
-        }
-      } catch (e) {
-        alert("Falha na conexão com o ImgBB.");
-      }
-    }
-
     document.getElementById('new-tab-img-file').addEventListener('change', e => {
-      uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada para o ImgBB com sucesso!'); });
+      uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
     });
 
     async function saveCustomTab() {
