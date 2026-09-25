@@ -11,7 +11,7 @@
 
   <style>
     /* =========================================
-       1. RESET E VARIÁVEIS (Otimizado 60 FPS)
+       1. RESET E VARIÁVEIS (Otimizado 120 FPS)
        ========================================= */
     * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
 
@@ -527,22 +527,26 @@
             </div>
           </div>
 
-          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU) -->
+          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - PERMISSÕES COMPLETAS) -->
           <div id="master-control-section" style="display:none;">
-            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle de ADMs)</button>
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle Total de ADMs)</button>
             <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
               <div class="admin-card" style="border-color: var(--c-red);">
                 <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Controlo de Permissões dos Colaboradores</h5>
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Aqui podes definir exatamente o que o Alisson (Rafa369@gmail.com) pode fazer no painel.</p>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Ative ou desative abaixo todas as permissões para o Alisson (Rafa369@gmail.com):</p>
                 <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
-                  <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
+                  <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px;">
                     <div>
-                      <strong style="color: #fff; display: block;">Alisson (Colaborador)</strong>
-                      <span style="color: #aaa; font-size: 0.75rem;">Rafa369@gmail.com</span>
+                      <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador)</strong>
+                      <span style="color: var(--c-cyan); font-size: 0.8rem;">Rafa369@gmail.com</span>
                     </div>
-                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-menu" onchange="savePermissions()" checked> Editar Cardápio</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()" checked> Editar Agenda</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 5px;">
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-home" onchange="savePermissions()"> Gerenciar Início</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-menu" onchange="savePermissions()"> Gerenciar Cardápio</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Gerenciar Agenda</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Moderar Recados/Som</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Gerenciar Equipe</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Gerenciar Rankings</label>
                     </div>
                   </div>
                 </div>
@@ -651,7 +655,7 @@
             <div id="admin-cachaceiros-list"></div>
           </div>
 
-          <!-- RELATÓRIO DE ALTERAÇÕES (LOGS ADM) -->
+          <!-- RELATÓRIO DE ALTERAÇÕES (LOGS ADM) COM DETALHES EXATOS -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-logs')">📋 Relatório de Alterações (Logs ADM)</button>
           <div id="adm-logs" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
@@ -671,7 +675,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via JSONBin.io & ImgBB API.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via JSONBin.io & ImgBB API.</p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
@@ -741,7 +745,7 @@
       userMessages: [],
       pendingMessages: [],
       adminLogs: [],
-      permissions: { canMenu: true, canAgenda: true }
+      permissions: { canHome: true, canMenu: true, canAgenda: true, canMod: true, canTeam: true, canRank: true }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -1101,14 +1105,22 @@
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return;
 
+      const canHome = document.getElementById('perm-home').checked;
       const canMenu = document.getElementById('perm-menu').checked;
       const canAgenda = document.getElementById('perm-agenda').checked;
+      const canMod = document.getElementById('perm-mod').checked;
+      const canTeam = document.getElementById('perm-team').checked;
+      const canRank = document.getElementById('perm-rank').checked;
 
       if(!appData.permissions) appData.permissions = {};
+      appData.permissions.canHome = canHome;
       appData.permissions.canMenu = canMenu;
       appData.permissions.canAgenda = canAgenda;
+      appData.permissions.canMod = canMod;
+      appData.permissions.canTeam = canTeam;
+      appData.permissions.canRank = canRank;
 
-      await saveBinData("Atualizou as permissões do colaborador Alisson");
+      await saveBinData("Atualizou todas as permissões do colaborador Alisson");
       alert("Permissões guardadas com sucesso!");
     }
 
@@ -1214,6 +1226,16 @@
         counterSpan.innerHTML = '';
       }
 
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canMod: true };
+      const modPermitted = isMaster || permissions.canMod;
+
+      if(!modPermitted) {
+        pSongsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
+        pMsgsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
+        return;
+      }
+
       if(pSongs.length === 0) {
         pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
       } else {
@@ -1251,14 +1273,15 @@
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        await saveBinData("Aprovou pedido de som de " + item.ig);
+        await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
         alert("Pedido aprovado e publicado no site!");
       }
     }
 
     async function rejectSong(id) {
+      const item = appData.pendingSongs.find(s => s.id === id);
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      await saveBinData("Rejeitou um pedido de som");
+      await saveBinData(`Rejeitou o pedido de som de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
     }
 
     async function approveMsg(id) {
@@ -1267,14 +1290,15 @@
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        await saveBinData("Aprovou recado no mural de " + item.ig);
+        await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
     async function rejectMsg(id) {
+      const item = appData.pendingMessages.find(m => m.id === id);
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      await saveBinData("Rejeitou um recado do mural");
+      await saveBinData(`Rejeitou o recado no mural de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
     }
 
     let tempNewTabImg = '';
@@ -1607,10 +1631,19 @@
       if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
       if(appData.permissions) {
+        const pHome = document.getElementById('perm-home');
         const pMenu = document.getElementById('perm-menu');
         const pAgenda = document.getElementById('perm-agenda');
+        const pMod = document.getElementById('perm-mod');
+        const pTeam = document.getElementById('perm-team');
+        const pRank = document.getElementById('perm-rank');
+
+        if(pHome) pHome.checked = appData.permissions.canHome !== false;
         if(pMenu) pMenu.checked = appData.permissions.canMenu !== false;
         if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
+        if(pMod) pMod.checked = appData.permissions.canMod !== false;
+        if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
+        if(pRank) pRank.checked = appData.permissions.canRank !== false;
       }
     }
 
@@ -1912,7 +1945,7 @@
     function animateEmbers() {
       ctx.clearRect(0, 0, width, height);
       embers.forEach(ember => { ember.update(); ember.draw(); });
-      requestAnimationFrame(animateEmbers);
+      requestAnimationFrame(animateEmbers, 1000 / 120);
     }
     animateEmbers();
 
