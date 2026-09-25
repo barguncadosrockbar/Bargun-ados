@@ -9,14 +9,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <!-- SDK Oficial do OneSignal para Web Push -->
+  <!-- SDK Oficial do OneSignal para Web Push com prompt automático -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
         appId: "18f2e8eb-157c-436e-899d-cdbe0f7d71cc",
+        safari_web_id: "",
+        notifyButton: {
+          enable: true,
+        },
       });
+      // Solicita permissão de forma nativa e imediata ao entrar no site
+      OneSignal.Slidedown.promptPush();
     });
   </script>
 
@@ -477,12 +483,12 @@
             </div>
           </div>
 
-          <!-- SEÇÃO SEPARADA COM LINK PARA ENVIAR NOTIFICAÇÃO GERAL NO ONESIGNAL -->
+          <!-- SEÇÃO SEPARADA COM LINK PARA ABRIR O ONESIGNAL -->
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-push')">🔔 Enviar Notificação Geral (OneSignal)</button>
           <div id="adm-push" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card" style="border-color: var(--c-cyan); text-align: center; padding: 20px;">
               <h5 style="color:#fff; font-family:var(--font-title); font-size:1.4rem; margin-bottom:10px;">Disparar Alertas em Massa</h5>
-              <p style="color:#ccc; font-size:0.9rem; margin-bottom:20px; line-height: 1.5;">Para enviar notificações push para os telemóveis de todos os clientes (com o site aberto ou fechado), utilize o painel oficial seguro do OneSignal.</p>
+              <p style="color:#ccc; font-size:0.9rem; margin-bottom:20px; line-height: 1.5;">O pop-up de permissão já aparece automaticamente para os clientes ao entrarem no site. Para disparar as notificações em massa, utilize o painel oficial do OneSignal:</p>
               <a href="https://dashboard.onesignal.com/" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, var(--c-cyan), var(--c-purple)); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🚀 ABRIR PAINEL ONESIGNAL</a>
             </div>
           </div>
