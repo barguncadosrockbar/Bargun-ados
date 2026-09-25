@@ -415,7 +415,7 @@
           <a href="https://maps.google.com/?q=Rua+Assis+Abude+197+Guarulhos+SP" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, #4285F4, #34A853); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🗺️ ABRIR NO GOOGLE MAPS</a>
           
           <div class="map-container" style="margin-top: 25px;">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.136585125484!2d-46.3887!3d-23.4332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce614120cfd4bf%3A0x8e8331da29d1a8e2!2sR.%20Assis%20Abude%2C%20197%20-%20Pimentas%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1650000000000!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy"></iframe>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.136585125484!2d-46.3887!3d-23.4332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce614120cfd4bf%3A0x8e8331da29d1a8e2!2sR.%20Assis+Abude%2C%20197%20-%20Pimentas%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1650000000000!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy"></iframe>
           </div>
         </div>
       </section>
@@ -697,7 +697,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -1484,7 +1484,7 @@
                   <span style="font-size:0.75rem;">📷 Upar Avatar</span>
                   <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
                 </div>
-                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
+                <button class="action-btn" onclick="saveTeamData(${t.id})">💾 Salvar</button>
             </div>
           </div>`).join('');
       }
@@ -1606,7 +1606,6 @@
       if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
       if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
-      // Sincronizar checkboxes de permissão se existirem
       if(appData.permissions) {
         const pMenu = document.getElementById('perm-menu');
         const pAgenda = document.getElementById('perm-agenda');
