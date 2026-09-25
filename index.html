@@ -527,6 +527,29 @@
             </div>
           </div>
 
+          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU) -->
+          <div id="master-control-section" style="display:none;">
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle de ADMs)</button>
+            <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
+              <div class="admin-card" style="border-color: var(--c-red);">
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Controlo de Permissões dos Colaboradores</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Aqui podes definir exatamente o que o Alisson (Rafa369@gmail.com) pode fazer no painel.</p>
+                <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                  <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                      <strong style="color: #fff; display: block;">Alisson (Colaborador)</strong>
+                      <span style="color: #aaa; font-size: 0.75rem;">Rafa369@gmail.com</span>
+                    </div>
+                    <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-menu" onchange="savePermissions()" checked> Editar Cardápio</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()" checked> Editar Agenda</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
           <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
             <div class="admin-card">
@@ -674,7 +697,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -717,7 +740,8 @@
       pendingSongs: [],
       userMessages: [],
       pendingMessages: [],
-      adminLogs: []
+      adminLogs: [],
+      permissions: { canMenu: true, canAgenda: true }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -1064,10 +1088,28 @@
     }
 
     async function clearLogs() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode limpar os logs!");
+
       if(confirm("Tem certeza que deseja limpar o histórico de logs?")) {
         appData.adminLogs = [];
         await saveBinData("Limpou todo o histórico de logs de auditoria");
       }
+    }
+
+    async function savePermissions() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return;
+
+      const canMenu = document.getElementById('perm-menu').checked;
+      const canAgenda = document.getElementById('perm-agenda').checked;
+
+      if(!appData.permissions) appData.permissions = {};
+      appData.permissions.canMenu = canMenu;
+      appData.permissions.canAgenda = canAgenda;
+
+      await saveBinData("Atualizou as permissões do colaborador Alisson");
+      alert("Permissões guardadas com sucesso!");
     }
 
     function renderPublicInteractions() {
@@ -1366,50 +1408,63 @@
         }
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canMenu: true, canAgenda: true };
+      
+      const menuPermitted = isMaster || permissions.canMenu;
+      const agendaPermitted = isMaster || permissions.canAgenda;
+
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
-        menuList.innerHTML = appData.menu.map(i => `
-          <div class="admin-card">
-            <div class="admin-card-row">
-                <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
-                <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
-            </div>
-            <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-                <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
-                  <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
-                </div>
-                <button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>
-                ${isMaster ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : `<span style="font-size:0.75rem; color:#888;">(Apenas Master exclui)</span>`}
-            </div>
-          </div>`).join('');
+        if(!menuPermitted) {
+          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master (Touru) desativou a tua permissão para alterar o cardápio.</p>';
+        } else {
+          menuList.innerHTML = appData.menu.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
+                  <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
+              </div>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
+              </div>
+              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                  <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
+                    <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
+                  </div>
+                  <button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>
+                  ${isMaster ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : `<span style="font-size:0.75rem; color:#888;">(Apenas Master exclui)</span>`}
+              </div>
+            </div>`).join('');
+        }
       }
       
       const agendaList = document.getElementById('admin-agenda-list');
       if(agendaList) {
-        agendaList.innerHTML = appData.agenda.map(i => `
-          <div class="admin-card">
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
-              <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
-            </div>
-            <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
-                  <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
+        if(!agendaPermitted) {
+          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master (Touru) desativou a tua permissão para alterar a agenda.</p>';
+        } else {
+          agendaList.innerHTML = appData.agenda.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
+                <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
               </div>
-              <button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>
-              ${isMaster ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
-            </div>
-          </div>`).join('');
+              <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+                <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
+                    <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
+                </div>
+                <button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>
+                ${isMaster ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
+              </div>
+            </div>`).join('');
+        }
       }
 
       const teamList = document.getElementById('admin-team-list');
@@ -1534,6 +1589,7 @@
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const greetingEl = document.getElementById('adm-welcome-text');
       const masterTabsSec = document.getElementById('master-tabs-section');
+      const masterCtrlSec = document.getElementById('master-control-section');
       const clearLogsBtn = document.getElementById('clear-logs-btn');
 
       if(greetingEl) {
@@ -1546,12 +1602,16 @@
         }
       }
 
-      if(masterTabsSec) {
-        masterTabsSec.style.display = isMaster ? 'block' : 'none';
-      }
+      if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
+      if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
+      if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
-      if(clearLogsBtn) {
-        clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
+      // Sincronizar checkboxes de permissão se existirem
+      if(appData.permissions) {
+        const pMenu = document.getElementById('perm-menu');
+        const pAgenda = document.getElementById('perm-agenda');
+        if(pMenu) pMenu.checked = appData.permissions.canMenu !== false;
+        if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
       }
     }
 
@@ -1599,6 +1659,10 @@
     }
 
     async function saveItemData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const permissions = appData.permissions || { canMenu: true };
+       if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
+
        const item = appData.menu.find(i => i.id === id);
        if(item) {
           const oldName = item.name;
@@ -1613,6 +1677,10 @@
     }
 
     async function saveAgendaData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const permissions = appData.permissions || { canAgenda: true };
+       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
+
        const item = appData.agenda.find(i => i.id === id);
        if(item) {
           const oldTitle = item.title;
@@ -1650,7 +1718,7 @@
        }
     }
 
-    async function saveCachaceirosData(id) {
+    async function saveCachaceiroData(id) {
        const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
@@ -1667,6 +1735,10 @@
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
 
     async function addMenuItem() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canMenu: true };
+      if(!isMaster && !permissions.canMenu) return alert("Acesso Negado!");
+
       const name = document.getElementById('new-item-name').value;
       const price = document.getElementById('new-item-price').value;
       if(!name || !price) return alert("Preencha nome e preço.");
@@ -1680,6 +1752,10 @@
     }
 
     async function addAgendaItem() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canAgenda: true };
+      if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado!");
+
       const title = document.getElementById('new-ev-title').value;
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
