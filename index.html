@@ -133,12 +133,11 @@
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #eventModalImg, #agendaEditModalImg, #playerModalImg { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg, #eventModalImg, #playerModalImg { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
 
-    /* FLYER DE DESTAQUE CENTRALIZADO E PROPORCIONAL */
     .featured-flyer-img { width: 100%; max-height: 400px; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
     .featured-flyer-img:hover { transform: scale(1.01); }
 
@@ -275,7 +274,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE EDIÇÃO DIRETA DE RANKINGS (ARCADE / CACHACEIROS) -->
+  <!-- MODAL DE DETALHES / EDIÇÃO DE RANKINGS -->
   <div id="playerModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
       <span class="close-btn" onclick="closeModal('playerModal')">×</span>
@@ -308,7 +307,7 @@
     </div>
   </div>
 
-  <!-- MODAL DE EDIÇÃO DIRETA DE AGENDA / FLYER DESTAQUE -->
+  <!-- MODAL DE DETALHES / EDIÇÃO DE AGENDA -->
   <div id="eventModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
       <span class="close-btn" onclick="closeModal('eventModal')">×</span>
@@ -1167,7 +1166,7 @@
     }
 
     async function savePermissions() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return;
 
       const canHome = document.getElementById('perm-home').checked;
@@ -1353,7 +1352,7 @@
     }
 
     async function savePlayerEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canRank: true };
       if(!isMaster && !permissions.canRank) return alert("Acesso Negado: A tua permissão para alterar rankings foi desativada pelo Master!");
 
@@ -1378,7 +1377,6 @@
     }
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
-      const isLoggedIn = (localStorage.getItem('brg_adm_is_master') === 'true' || appData.permissions?.canAgenda !== false);
       const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
 
       if(type === 'featured') {
@@ -1436,7 +1434,7 @@
     }
 
     async function saveEventEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canAgenda: true };
       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
 
@@ -1502,7 +1500,7 @@
         counterSpan.innerHTML = '';
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canMod: true };
       const modPermitted = isMaster || permissions.canMod;
 
@@ -1604,7 +1602,7 @@
     });
 
     async function saveCustomTab() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode criar ou editar abas!");
 
       const originalId = document.getElementById('edit-tab-original-id').value;
@@ -1886,7 +1884,7 @@
 
     function updateAdminGreeting() {
       const name = localStorage.getItem('brg_adm_name') || 'Administrador';
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const greetingEl = document.getElementById('adm-welcome-text');
       const masterTabsSec = document.getElementById('master-tabs-section');
       const masterCtrlSec = document.getElementById('master-control-section');
