@@ -11,13 +11,12 @@
 
   <style>
     /* =========================================
-       1. RESET E VARIÁVEIS (Zero Lag - Otimizado Mobile)
+       1. RESET E VARIÁVEIS (Otimizado 60 FPS)
        ========================================= */
     * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
 
     :root {
       --bg-dark: #050505;
-      /* Vidro otimizado sem blur pesado para zerar o lag na rolagem */
       --glass-bg: rgba(18, 18, 24, 0.92);
       --glass-border-top: rgba(255, 255, 255, 0.25);
       --glass-border-bot: rgba(255, 255, 255, 0.05);
@@ -34,7 +33,7 @@
 
     body {
       background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-body);
-      overflow-x: hidden; font-size: 14px; scroll-behavior: smooth;
+      overflow-x: hidden; font-size: 14px; scroll-behavior: smooth; perspective: 1200px;
     }
 
     ::-webkit-scrollbar { width: 5px; height: 4px; }
@@ -48,7 +47,6 @@
       opacity: 0.12; filter: grayscale(10%) contrast(150%);
     }
     
-    /* Luzes de Palco fixas e leves */
     .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -2; overflow: hidden; transform: translateZ(0); }
     .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; }
     .spotlight.cyan { left: -10vw; background: linear-gradient(to bottom, rgba(0, 188, 212, 0.35) 0%, transparent 100%); }
@@ -57,7 +55,6 @@
 
     #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.5; }
 
-    /* Painel de Vidro Limpo e Instantâneo (Sem Blur pesando no scroll) */
     .glass-panel {
       background: var(--glass-bg);
       border-top: 1px solid var(--glass-border-top); 
@@ -95,11 +92,19 @@
     .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.25); border-color: var(--c-pink); }
 
     main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; }
-    .tab-pane { display: none; }
-    .tab-pane.active { display: block; }
+    
+    /* EFEITO DE ENTRADA AO CLICAR NA ABA (Estilo Carta 3D / Cubo fluido) */
+    .tab-pane { display: none; opacity: 0; transform: rotateX(-20deg) scale(0.96) translateY(15px); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease; transform-origin: top; }
+    .tab-pane.active { display: block; opacity: 1; transform: rotateX(0deg) scale(1) translateY(0); }
 
     .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
     .section-title::before { content: '⚡'; color: var(--c-yellow); font-size: 0.8em; }
+
+    .status-badge-container { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 30px; margin-bottom: 15px; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .status-dot.open { background: #00e676; box-shadow: 0 0 10px #00e676; animation: pulseOpen 2s infinite; }
+    .status-dot.closed { background: #ff1744; box-shadow: 0 0 10px #ff1744; }
+    @keyframes pulseOpen { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     .grid { display: grid; gap: 15px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
@@ -108,15 +113,21 @@
     .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-    .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; }
-    .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); }
+    /* EFEITO AO PASSAR O MOUSE / TOQUE NOS ITENS DO CARDÁPIO */
+    .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
+    .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
+    .product-card:hover .product-img { transform: scale(1.04); }
     
     .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
+    /* EFEITO POPUP DE CLIQUE NOS ITENS (Aparência fluida de zoom) */
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; }
+    @keyframes popUpScale { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
@@ -137,8 +148,8 @@
     .rank-switch-btn.active { background: rgba(0, 188, 212, 0.2); border-color: var(--c-cyan); color: #fff; }
 
     .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
-    .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); }
-    .lb-item.clickable:hover { background: rgba(233,30,99,0.1); border-color: var(--c-pink); cursor: pointer; }
+    .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: transform 0.2s; }
+    .lb-item.clickable:hover { background: rgba(233,30,99,0.1); border-color: var(--c-pink); cursor: pointer; transform: translateX(3px); }
     
     .top3-item { border-color: rgba(255, 235, 59, 0.4); background: rgba(255, 235, 59, 0.05); }
     .lb-inline-quote { color: #fff; font-style: italic; font-size: 0.8rem; margin-top: 5px; border-left: 2px solid var(--c-pink); padding-left: 6px; display: block; width: 100%;}
@@ -152,26 +163,31 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    .featured-flyer-img { width: 100%; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; }
+    .featured-flyer-img { width: 100%; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
+    .featured-flyer-img:hover { transform: scale(1.01); }
     .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
-    .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1 / 1; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: cover; background-position: center; }
+    .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1 / 1; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: cover; background-position: center; transition: transform 0.3s; }
+    .mini-flyer:hover { transform: scale(1.03); }
     .mini-flyer::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 100%); z-index: 1; }
     .mf-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; z-index: 2; text-align: center; }
     .mf-date { background: var(--c-red); color: #fff; font-family: var(--font-title); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 5px; }
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
-    .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; }
+    .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
+    .dir-card:hover { transform: translateY(-4px); }
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
     .dir-name { font-family: var(--font-title); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px;}
     .dir-role { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
     .dir-desc { color: #aaa; font-size: 0.95rem; line-height: 1.5; margin-top: 15px; }
 
-    .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; margin: 10px 0 5px; }
+    .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; transition: 0.3s; margin: 10px 0 5px; }
     .ig-button span { color: #fff; font-family: var(--font-body); font-weight: bold; font-size: 0.85rem; letter-spacing: 0;}
+    .ig-button:hover { background: var(--card-color, var(--c-pink)); color: #000 !important; }
 
     .contact-card { text-align: center; padding: 3rem 1rem; }
-    .contact-link { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; text-decoration: none; color: #fff; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+    .contact-link { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; text-decoration: none; color: #fff; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+    .contact-link:hover { background: rgba(255,255,255,0.1); border-color: var(--c-cyan); }
 
     .map-container { border: 1px solid var(--glass-border-top); border-radius: 12px; overflow: hidden; height: 250px; }
     .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
@@ -189,7 +205,8 @@
     .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; }
 
     .admin-login-box { text-align: center; padding: 40px 15px; }
-    .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; }
+    .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; }
+    .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
     .admin-accordion-content { padding: 20px; display: none; background: rgba(0,0,0,0.6); border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-bottom: 20px; }
     .admin-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; position: relative;}
@@ -300,6 +317,11 @@
         <h2 class="section-title">O Templo da Bargunça</h2>
         <div class="grid">
           <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 15px;">
+            <div id="home-status-badge" class="status-badge-container">
+              <span id="status-dot-el" class="status-dot open"></span>
+              <span id="status-text-el" style="color: #00e676;">BARGUNÇADOS ABERTO</span>
+            </div>
+
             <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
             <h3 id="h-title" style="font-family:var(--font-title); font-size:1.6rem; color:var(--c-cyan); margin-bottom:10px;">SOM PESADO & BEBIDA TRINCANDO</h3>
             <p id="h-desc1" style="color:#ddd; line-height:1.5; margin-bottom:10px;">Bem-vindo ao <strong>Bargunçados Rock Bar</strong>. Aqui a regra é clara: som no talo, copo cheio e zero frescura.</p>
@@ -444,6 +466,17 @@
               </div>
               <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
               <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: #00e676; border-left: 4px solid #00e676;" onclick="toggleAdminSection('adm-status')">🟢 Status da Casa (Aberto / Fechado)</button>
+          <div id="adm-status" class="admin-accordion-content" style="border-color: #00e676;">
+            <div class="admin-card" style="border-color: #00e676; text-align: center;">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Alterar Estado Atual da Casa</h5>
+              <div class="admin-card-row" style="justify-content: center; gap: 15px;">
+                <button class="action-btn" onclick="updateBarStatus('open')" style="background: #00e676; color: #000; font-size: 1.1rem; padding: 12px 25px;">🟢 ABRIR BAR</button>
+                <button class="action-btn" onclick="updateBarStatus('closed')" style="background: #ff1744; color: #fff; font-size: 1.1rem; padding: 12px 25px;">🔴 FECHAR BAR</button>
+              </div>
             </div>
           </div>
 
@@ -613,7 +646,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -710,6 +743,13 @@
           body: JSON.stringify(appData)
         });
       } catch(e) {}
+    }
+
+    async function updateBarStatus(status) {
+      if(!appData.home) appData.home = defaultHome;
+      appData.home.isOpen = (status === 'open');
+      await saveBinData();
+      alert(appData.home.isOpen ? "🟢 Bar alterado para ABERTO!" : "🔴 Bar alterado para FECHADO!");
     }
 
     function saveGitHubConfig() {
@@ -831,6 +871,19 @@
       document.getElementById('h-promo1').innerText = cHome.promo1;
       document.getElementById('h-promo2').innerText = cHome.promo2;
       document.getElementById('h-promo3').innerText = cHome.promo3;
+
+      const statusDot = document.getElementById('status-dot-el');
+      const statusText = document.getElementById('status-text-el');
+      if(cHome.isOpen !== false) {
+        statusDot.className = 'status-dot open';
+        statusText.innerText = 'BARGUNÇADOS ABERTO';
+        statusText.style.color = '#00e676';
+      } else {
+        statusDot.className = 'status-dot closed';
+        statusText.innerText = 'BARGUNÇADOS FECHADO';
+        statusText.style.color = '#ff1744';
+      }
+
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
 
@@ -1601,7 +1654,6 @@
     }
     document.getElementById('easter-footer').addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
 
-    // Motor de partículas leve e otimizado
     const canvas = document.getElementById('sparks-canvas');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -1611,8 +1663,8 @@
       constructor() { this.reset(true); }
       reset(initial = false) {
         this.x = Math.random() * width; this.y = initial ? Math.random() * height : height + Math.random() * 50;
-        this.size = Math.random() * 1.5 + 0.5; this.speedY = Math.random() * 1 + 0.3; this.speedX = (Math.random() - 0.5) * 0.5;
-        this.opacity = Math.random() * 0.6 + 0.2; this.fade = Math.random() * 0.01 + 0.003;
+        this.size = Math.random() * 1.5 + 0.5; this.speedY = Math.random() * 0.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.5 + 0.1; this.fade = Math.random() * 0.008 + 0.002;
         const colors = ['233, 30, 99', '0, 188, 212', '255, 235, 59'];
         this.color = colors[Math.floor(Math.random() * colors.length)];
       }
@@ -1625,7 +1677,7 @@
         ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`; ctx.fill();
       }
     }
-    const embers = Array.from({ length: 15 }, () => new Ember());
+    const embers = Array.from({ length: 12 }, () => new Ember());
     function animateEmbers() {
       ctx.clearRect(0, 0, width, height);
       embers.forEach(ember => { ember.update(); ember.draw(); });
