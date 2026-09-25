@@ -645,9 +645,9 @@
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    const AUTH_CREDENTIALS = [
-      { email: "ZGllZ290b3VydTY2NkBnbWFpbC5jb20=", pass: "ODEzNTAzNzg3MTY3Nw==" }, // Diego
-      { email: "UmFmYTM2OWBnbWFpbC5jb20=", pass: "MjgwNTE0" }                     // Rafa
+    const AUTH_ACCOUNTS = [
+      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw==") },
+      { email: "Rafa369@gmail.com", pass: "280514" }
     ];
 
     function b64Decode(str) {
@@ -1426,8 +1426,8 @@
       }
 
       let authorized = false;
-      for (let cred of AUTH_CREDENTIALS) {
-        if (emailInput === b64Decode(cred.email).toLowerCase() && passInput === b64Decode(cred.pass)) {
+      for (let acc of AUTH_ACCOUNTS) {
+        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
           authorized = true;
           break;
         }
