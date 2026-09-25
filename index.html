@@ -127,13 +127,13 @@
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 400px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 420px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 90vh; overflow-y: auto; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #eventModalImg, #playerModalImg { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg, #eventModalImg, #playerModalImg, #create-item-img-preview { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
@@ -224,7 +224,7 @@
     .db-status-box { background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; }
     .db-status-indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
 
-    .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.8); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
+    .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
 
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -261,24 +261,76 @@
       <div id="modal-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
         <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Item (Cardápio)</h5>
         <input type="hidden" id="modal-edit-id">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Categoria do Item:</label>
+        <select id="modal-edit-category" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+          <option value="drink">🔥 Destilados & Clássicos</option>
+          <option value="beer">🍺 Cervejas</option>
+          <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+          <option value="portion">🍟 Porções & Larica</option>
+        </select>
+
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
         <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Preço (R$):</label>
         <input type="text" id="modal-edit-price" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Resumo Curto:</label>
         <input type="text" id="modal-edit-short" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa:</label>
         <textarea id="modal-edit-full" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        
         <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
           <span>📷 Mudar Foto do Item</span>
           <input type="file" accept="image/*" onchange="modalUploadImg(this)">
         </div>
         <input type="hidden" id="modal-edit-img">
+        
         <div style="display:flex; gap:8px; margin-top:10px;">
           <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar</button>
           <button id="modal-item-del-btn" class="action-btn del-btn" onclick="deleteModalItemDirect()" style="flex: 1; padding: 8px; font-family: var(--font-title); font-size: 0.9rem;">🗑️ Excluir</button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
+  <div id="itemCreateModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
+      <span class="close-btn" onclick="closeModal('itemCreateModal')">×</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); margin-bottom: 12px; text-align: center;">✨ Adicionar Novo Item</h3>
+      
+      <img id="create-item-img-preview" src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80" alt="Preview">
+      
+      <label style="font-size: 0.8rem; color: #aaa;">Categoria:</label>
+      <select id="create-item-category" class="interaction-input" style="padding: 8px;">
+        <option value="drink">🔥 Destilados & Clássicos</option>
+        <option value="beer">🍺 Cervejas</option>
+        <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+        <option value="portion">🍟 Porções & Larica</option>
+      </select>
+
+      <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
+      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Cerveja IPA ou Suco Natural">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
+      <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Resumo Curto:</label>
+      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Lata 350ml gelada ao extremo">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada:</label>
+      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Detalhes dos ingredientes ou procedência..."></textarea>
+
+      <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
+        <span>📷 Upar Foto do Item (ImgBB)</span>
+        <input type="file" accept="image/*" onchange="createUploadImg(this)">
+      </div>
+      <input type="hidden" id="create-item-img" value="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80">
+
+      <button class="btn-fire" onclick="confirmCreateItem()" style="background: var(--c-yellow); color:#000; margin-top: 5px;">+ Confirmar e Cadastrar Item</button>
     </div>
   </div>
 
@@ -426,7 +478,7 @@
       <section id="bebidas" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
-          <button class="action-btn" onclick="openInlineAddItem('drink')" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Bebida Aqui</button>
+          <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
@@ -436,7 +488,7 @@
       <section id="porcoes" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-porcoes">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
-          <button class="action-btn" onclick="openInlineAddItem('portion')" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Porção Aqui</button>
+          <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
         </div>
         <h2 class="section-title">Larica Pesada</h2>
         <div id="dynamic-menu-porcoes"></div>
@@ -465,7 +517,7 @@
       <section id="shows" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-agenda">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Agenda</span>
-          <button class="action-btn" onclick="openInlineAddEvent()" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Evento Aqui</button>
+          <button class="action-btn" onclick="openInlineAddEvent()" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Evento Aqui</button>
         </div>
         <h2 class="section-title">Agenda do Mês</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
@@ -724,10 +776,10 @@
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
                 <select class="admin-input" id="new-item-type">
-                  <option value="drink">Destilado</option>
-                  <option value="beer">Cerveja</option>
-                  <option value="noalcohol">Sem Álcool</option>
-                  <option value="portion">Porção</option>
+                  <option value="drink">🔥 Destilado</option>
+                  <option value="beer">🍺 Cerveja</option>
+                  <option value="noalcohol">🥤 Sem Álcool / Suco / Refri</option>
+                  <option value="portion">🍟 Porção</option>
                 </select>
                 <input type="text" class="admin-input" id="new-item-name" placeholder="Nome">
                 <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 15,00)">
@@ -903,7 +955,7 @@
     }
 
     async function fetchBinData() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
       try {
@@ -1113,7 +1165,7 @@
       const catHTML = { 
         drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', 
         beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', 
-        noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL</div><div class="menu-grid">', 
+        noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL / SUCOS / REFRIS</div><div class="menu-grid">', 
         portion: '<div class="menu-grid">' 
       };
       
@@ -1352,7 +1404,7 @@
       const sShort = escapeHTML(item.short);
       const sPrice = escapeHTML(item.price);
       return `
-        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id}, '${sName}', '${sFull}', '${sPrice}', '${item.img}')">
+        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id})">
           <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
           <h4 class="m-title">${item.name}</h4>
           <p class="m-short">${sShort}</p>
@@ -1360,11 +1412,14 @@
         </div>`;
     }
 
-    function openMenuModalObj(id, name, desc, price, img) {
-      document.getElementById('modalTitle').innerText = name.replace('PROMO', '').trim();
-      document.getElementById('modalDesc').innerText = desc;
-      document.getElementById('modalPrice').innerText = 'R$ ' + price;
-      document.getElementById('modalImg').src = img;
+    function openMenuModalObj(id) {
+      const item = appData.menu.find(i => i.id === id);
+      if(!item) return;
+
+      document.getElementById('modalTitle').innerText = item.name.replace('PROMO', '').trim();
+      document.getElementById('modalDesc').innerText = item.full || item.short;
+      document.getElementById('modalPrice').innerText = 'R$ ' + item.price;
+      document.getElementById('modalImg').src = item.img;
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
@@ -1376,12 +1431,13 @@
 
       if(isLoggedIn && (canEdit || canDel)) {
         editBox.style.display = 'block';
-        document.getElementById('modal-edit-id').value = id;
-        document.getElementById('modal-edit-name').value = name;
-        document.getElementById('modal-edit-price').value = price;
-        document.getElementById('modal-edit-short').value = desc;
-        document.getElementById('modal-edit-full').value = desc;
-        document.getElementById('modal-edit-img').value = img;
+        document.getElementById('modal-edit-id').value = item.id;
+        document.getElementById('modal-edit-category').value = item.type;
+        document.getElementById('modal-edit-name').value = item.name;
+        document.getElementById('modal-edit-price').value = item.price;
+        document.getElementById('modal-edit-short').value = item.short;
+        document.getElementById('modal-edit-full').value = item.full;
+        document.getElementById('modal-edit-img').value = item.img;
         document.getElementById('modal-item-del-btn').style.display = canDel ? 'inline-block' : 'none';
       } else {
         editBox.style.display = 'none';
@@ -1408,7 +1464,9 @@
 
       const oldName = item.name;
       const oldPrice = item.price;
+      const oldCat = item.type;
       const newName = document.getElementById('modal-edit-name').value.trim();
+      const newCat = document.getElementById('modal-edit-category').value;
 
       if(newName.toLowerCase() !== oldName.toLowerCase()) {
         const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
@@ -1418,13 +1476,14 @@
       }
 
       item.name = newName;
+      item.type = newCat;
       item.price = document.getElementById('modal-edit-price').value;
       item.short = document.getElementById('modal-edit-short').value;
       item.full = document.getElementById('modal-edit-full').value;
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
       closeModal('productModal');
-      await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
+      await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Categoria: ${newCat}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
       alert("✅ Item atualizado com sucesso!");
     }
 
@@ -1443,6 +1502,67 @@
         await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}" (Preço R$ ${item.price})`);
         alert("✅ Item excluído com sucesso!");
       }
+    }
+
+    /* MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA */
+    function openCreateItemModal(defaultCategory = 'drink') {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
+
+      document.getElementById('create-item-category').value = defaultCategory;
+      document.getElementById('create-item-name').value = '';
+      document.getElementById('create-item-price').value = '';
+      document.getElementById('create-item-short').value = '';
+      document.getElementById('create-item-full').value = '';
+      document.getElementById('create-item-img').value = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+      document.getElementById('create-item-img-preview').src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+
+      document.getElementById('itemCreateModal').style.display = 'flex';
+    }
+
+    async function createUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('create-item-img').value = res;
+        document.getElementById('create-item-img-preview').src = res;
+        alert("Foto ilustrativa carregada com sucesso!");
+      });
+    }
+
+    async function confirmCreateItem() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAdd === false) return alert("Acesso Negado!");
+
+      const cat = document.getElementById('create-item-category').value;
+      const name = document.getElementById('create-item-name').value.trim();
+      const price = document.getElementById('create-item-price').value.trim();
+      const shortDesc = document.getElementById('create-item-short').value.trim();
+      const fullDesc = document.getElementById('create-item-full').value.trim();
+      const img = document.getElementById('create-item-img').value;
+
+      if(!name || !price) {
+        return alert("Por favor, preencha o Nome e o Preço do produto!");
+      }
+
+      const exists = appData.menu.some(i => i.name.trim().toLowerCase() === name.toLowerCase());
+      if(exists) {
+        return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+      }
+
+      appData.menu.push({
+        id: Date.now(),
+        type: cat,
+        name: name,
+        short: shortDesc || name,
+        full: fullDesc || shortDesc || name,
+        price: price,
+        img: img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
+      });
+
+      closeModal('itemCreateModal');
+      await saveBinData(`Adicionou novo item ilustrado: "${name}" (${cat}) por R$ ${price}`);
+      alert("✅ Item cadastrado com sucesso no cardápio!");
     }
 
     function openPlayerModal(type, id, name, sub, score, prize, quote, ig, imgUrl) {
@@ -1654,34 +1774,6 @@
         await saveBinData(`Excluiu diretamente da agenda o evento: "${ev.title}" (${ev.date})`);
         alert("✅ Evento excluído com sucesso!");
       }
-    }
-
-    function openInlineAddItem(type) {
-      const name = prompt("Nome do novo item:");
-      if(!name || !name.trim()) return;
-      const cleanName = name.trim();
-
-      const exists = appData.menu.some(i => i.name.trim().toLowerCase() === cleanName.toLowerCase());
-      if(exists) {
-        return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
-      }
-
-      const price = prompt("Preço (ex: 25,00):");
-      if(!price) return;
-      const desc = prompt("Descrição curta:") || "";
-
-      appData.menu.push({
-        id: Date.now(),
-        type: type,
-        name: cleanName,
-        short: desc,
-        full: desc,
-        price: price,
-        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
-      });
-
-      saveBinData(`Adicionou diretamente na aba o item: "${cleanName}" (${type}) por R$ ${price}`);
-      alert("✅ Item adicionado com sucesso!");
     }
 
     function openInlineAddEvent() {
@@ -1906,7 +1998,7 @@
     }
 
     function renderAdminLists() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
 
@@ -1951,6 +2043,12 @@
           menuList.innerHTML = appData.menu.map(i => `
             <div class="admin-card">
               <div class="admin-card-row">
+                  <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
+                    <option value="drink" ${i.type === 'drink' ? 'selected' : ''}>🔥 Destilado</option>
+                    <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
+                    <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
+                    <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
+                  </select>
                   <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
                   <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
               </div>
@@ -2212,6 +2310,7 @@
           const oldName = item.name;
           const oldPrice = item.price;
           const newName = document.getElementById(`name-${id}`).value.trim();
+          const newType = document.getElementById(`type-${id}`).value;
 
           if(newName.toLowerCase() !== oldName.toLowerCase()) {
             const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
@@ -2221,10 +2320,11 @@
           }
 
           item.name = newName;
+          item.type = newType;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
+          await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Categoria: ${newType}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
           alert('Produto Salvo!');
        }
     }
@@ -2296,8 +2396,12 @@
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
 
+      const cat = document.getElementById('new-item-type').value;
       const name = document.getElementById('new-item-name').value.trim();
       const price = document.getElementById('new-item-price').value.trim();
+      const shortDesc = document.getElementById('new-item-short').value.trim();
+      const fullDesc = document.getElementById('new-item-full').value.trim();
+
       if(!name || !price) return alert("Preencha nome e preço.");
 
       const exists = appData.menu.some(i => i.name.trim().toLowerCase() === name.toLowerCase());
@@ -2306,11 +2410,15 @@
       }
 
       appData.menu.push({
-        id: Date.now(), type: document.getElementById('new-item-type').value,
-        name: name, short: document.getElementById('new-item-short').value,
-        full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
+        id: Date.now(),
+        type: cat,
+        name: name,
+        short: shortDesc || name,
+        full: fullDesc || shortDesc || name,
+        price: price,
+        img: tempNewItemImg
       });
-      await saveBinData(`Adicionou novo item ao cardápio: "${name}" por R$ ${price}`);
+      await saveBinData(`Adicionou novo item ao cardápio: "${name}" (${cat}) por R$ ${price}`);
       alert('Produto Adicionado ao Cardápio!');
     }
 
@@ -2369,6 +2477,7 @@
       if (event.target == document.getElementById('productModal')) closeModal('productModal'); 
       if (event.target == document.getElementById('eventModal')) closeModal('eventModal'); 
       if (event.target == document.getElementById('playerModal')) closeModal('playerModal');
+      if (event.target == document.getElementById('itemCreateModal')) closeModal('itemCreateModal');
     };
 
     function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
