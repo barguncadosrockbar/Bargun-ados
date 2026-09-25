@@ -977,7 +977,6 @@
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
-    // RASTREAMENTO INTELIGENTE DE DISPOSITIVOS E VISITAS
     function recordTrafficAnalytics() {
       let deviceId = localStorage.getItem('brg_device_id');
       if(!deviceId) {
@@ -1570,7 +1569,6 @@
           if (json.success && json.data && json.data.url) {
             callback(json.data.url);
           } else {
-            // Fallback imediato para manter imagem ativa
             callback(reader.result);
           }
         } catch (e) {
