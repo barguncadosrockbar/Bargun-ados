@@ -460,7 +460,12 @@
         </div>
 
         <div id="admin-dashboard" style="display: none;">
-          
+          <!-- IDENTIFICAÇÃO DO ADMINISTRADOR LOGADO -->
+          <div id="adm-user-greeting" class="glass-panel" style="padding: 12px 20px; margin-bottom: 15px; border-left: 4px solid var(--c-yellow); display: flex; align-items: center; justify-content: space-between;">
+            <span id="adm-welcome-text" style="font-family: var(--font-title); font-size: 1.3rem; color: var(--c-yellow);">👑 Conectado como: --</span>
+            <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
+          </div>
+
           <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
@@ -620,6 +625,17 @@
             <div id="admin-cachaceiros-list"></div>
           </div>
 
+          <!-- NOVA ABA DE AUDITORIA / LOGS DOS ADMINISTRADORES -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-logs')">📋 Relatório de Alterações (Logs ADM)</button>
+          <div id="adm-logs" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico de Ações dos Administradores</h5>
+              <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo detalhado de quem alterou o quê, data e horário.</p>
+              <div id="admin-logs-list" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+              <button class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content;">🗑️ Limpar Histórico de Logs</button>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -646,8 +662,8 @@
     }
 
     const AUTH_ACCOUNTS = [
-      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw==") },
-      { email: "Rafa369@gmail.com", pass: "280514" }
+      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru" },
+      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson" }
     ];
 
     function b64Decode(str) {
@@ -696,7 +712,8 @@
       userSongs: [],
       pendingSongs: [],
       userMessages: [],
-      pendingMessages: []
+      pendingMessages: [],
+      adminLogs: []
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -716,6 +733,7 @@
       if(localStorage.getItem('brg_adm_logged') === 'true') {
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
+        updateAdminGreeting();
       }
 
       setInterval(fetchBinData, 15000);
@@ -739,7 +757,18 @@
       } catch(e) {}
     }
 
-    async function saveBinData() {
+    async function saveBinData(actionDesc = '') {
+      if(actionDesc) {
+        const loggedName = localStorage.getItem('brg_adm_name') || 'Desconhecido';
+        const now = new Date().toLocaleString('pt-BR');
+        if(!appData.adminLogs) appData.adminLogs = [];
+        appData.adminLogs.unshift({
+          id: Date.now(),
+          admin: loggedName,
+          action: actionDesc,
+          date: now
+        });
+      }
       renderApp();
       try {
         await fetch(BIN_URL, {
@@ -756,7 +785,7 @@
     async function updateBarStatus(status) {
       if(!appData.home) appData.home = defaultHome;
       appData.home.isOpen = (status === 'open');
-      await saveBinData();
+      await saveBinData("Alterou o status da casa para: " + (status === 'open' ? 'ABERTO' : 'FECHADO'));
       alert(appData.home.isOpen ? "🟢 Bar alterado para ABERTO!" : "🔴 Bar alterado para FECHADO!");
     }
 
@@ -1007,6 +1036,33 @@
       renderCustomTabs(cCustomTabs);
       renderAdminLists();
       renderModerationLists();
+      renderAdminLogsList();
+    }
+
+    function renderAdminLogsList() {
+      const logsContainer = document.getElementById('admin-logs-list');
+      if(!logsContainer) return;
+      const logs = appData.adminLogs || [];
+      if(logs.length === 0) {
+        logsContainer.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum registo de alteração ainda.</p>';
+      } else {
+        logsContainer.innerHTML = logs.map(l => `
+          <div style="background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 10px; border-radius: 6px; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between; color: var(--c-yellow); margin-bottom: 3px;">
+              <strong>👤 ADM: ${escapeHTML(l.admin)}</strong>
+              <span style="color: #aaa; font-size: 0.75rem;">📅 ${escapeHTML(l.date)}</span>
+            </div>
+            <div style="color: #fff;">⚡ Ação: ${escapeHTML(l.action)}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function clearLogs() {
+      if(confirm("Tem certeza que deseja limpar o histórico de logs?")) {
+        appData.adminLogs = [];
+        await saveBinData("Limpou o relatório de logs ADM");
+      }
     }
 
     function renderPublicInteractions() {
@@ -1148,14 +1204,14 @@
         appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
-        await saveBinData();
+        await saveBinData("Aprovou pedido de som de " + item.ig);
         alert("Pedido aprovado e publicado no site!");
       }
     }
 
     async function rejectSong(id) {
       appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      await saveBinData();
+      await saveBinData("Rejeitou um pedido de som");
     }
 
     async function approveMsg(id) {
@@ -1164,14 +1220,14 @@
         appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
-        await saveBinData();
+        await saveBinData("Aprovou recado no mural de " + item.ig);
         alert("Recado aprovado e publicado no mural!");
       }
     }
 
     async function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      await saveBinData();
+      await saveBinData("Rejeitou um recado do mural");
     }
 
     let tempNewTabImg = '';
@@ -1216,13 +1272,14 @@
           tab.id = id; tab.name = name; tab.title = title || name; tab.desc = desc;
           if(tempNewTabImg) tab.img = tempNewTabImg;
         }
+        await saveBinData("Atualizou a aba personalizada: " + name);
         alert("Aba atualizada com sucesso!");
       } else {
         appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
+        await saveBinData("Criou nova aba personalizada: " + name);
         alert("Nova aba criada com sucesso!");
       }
       resetCustomTabForm();
-      await saveBinData();
     }
 
     function editCustomTab(id) {
@@ -1258,7 +1315,7 @@
     async function removeCustomTab(id) {
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
         appData.customTabs = appData.customTabs.filter(t => t.id !== id);
-        await saveBinData();
+        await saveBinData("Apagou a aba personalizada ID: " + id);
       }
     }
 
@@ -1425,18 +1482,22 @@
         return;
       }
 
-      let authorized = false;
+      let matchedAcc = null;
       for (let acc of AUTH_ACCOUNTS) {
         if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
-          authorized = true;
+          matchedAcc = acc;
           break;
         }
       }
 
-      if (authorized) {
+      if (matchedAcc) {
         localStorage.setItem('brg_adm_logged', 'true');
+        localStorage.setItem('brg_adm_email', matchedAcc.email);
+        localStorage.setItem('brg_adm_name', matchedAcc.name);
+
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
+        updateAdminGreeting();
         
         document.getElementById('manual-email-input').value = '';
         document.getElementById('manual-pass-input').value = '';
@@ -1446,32 +1507,54 @@
         document.getElementById('adm-f-sub').value = appData.flyer.sub;
         document.getElementById('adm-f-desc').value = appData.flyer.desc;
         
-        alert('Acesso Concedido. Bem-vindo ao painel da Diretoria!');
+        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
       } else {
         alert('Acesso Negado. E-mail ou Senha incorretos.');
       }
     }
 
+    function updateAdminGreeting() {
+      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
+      const greetingEl = document.getElementById('adm-welcome-text');
+      if(greetingEl) {
+        if(name === 'Touru') {
+          greetingEl.innerText = '👑 Conectado como: Touru';
+        } else if(name === 'Alisson') {
+          greetingEl.innerText = '🍻 Conectado como: Alisson';
+        } else {
+          greetingEl.innerText = '⚙️ Conectado como: ' + name;
+        }
+      }
+    }
+
+    function processLogout() {
+      localStorage.removeItem('brg_adm_logged');
+      localStorage.removeItem('brg_adm_email');
+      localStorage.removeItem('brg_adm_name');
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('admin-login').style.display = 'block';
+    }
+
     async function updateHomeImg(input) {
-      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData(); alert('Banner Inicial Atualizado via ImgBB!'); });
+      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial"); alert('Banner Inicial Atualizado via ImgBB!'); });
     }
     async function updateFlyerMain(input) {
-      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData(); alert('Flyer Destaque Atualizado via ImgBB!'); });
+      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal"); alert('Flyer Destaque Atualizado via ImgBB!'); });
     }
     async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData(); alert('Imagem do produto salva via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do item de cardápio: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
     }
     async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData(); alert('Mini Flyer atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o mini flyer da agenda: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
     }
     async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData(); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do membro: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
     }
     async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData(); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
     }
     async function updateArcadeImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData(); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
     }
 
     async function saveHomeData() {
@@ -1482,7 +1565,8 @@
       appData.home.promo1 = document.getElementById('adm-h-promo1').value;
       appData.home.promo2 = document.getElementById('adm-h-promo2').value;
       appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      await saveBinData(); alert('Dados do Início Salvos!');
+      await saveBinData("Modificou os textos da Página Inicial");
+      alert('Dados do Início Salvos!');
     }
 
     async function saveItemData(id) {
@@ -1492,7 +1576,8 @@
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData(); alert('Produto Salvo!');
+          await saveBinData("Modificou o produto do cardápio: " + item.name + " (R$ " + item.price + ")");
+          alert('Produto Salvo!');
        }
     }
 
@@ -1502,7 +1587,8 @@
           item.date = document.getElementById(`a-date-${id}`).value;
           item.title = document.getElementById(`a-title-${id}`).value;
           item.desc = document.getElementById(`a-desc-${id}`).value;
-          await saveBinData(); alert('Evento Salvo!');
+          await saveBinData("Modificou o evento da agenda: " + item.title + " (" + item.date + ")");
+          alert('Evento Salvo!');
        }
     }
 
@@ -1513,7 +1599,8 @@
           t.role = document.getElementById(`trole-${id}`).value;
           t.ig = document.getElementById(`tig-${id}`).value;
           t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveBinData(); alert('Membro salvo!');
+          await saveBinData("Modificou o membro da equipe: " + t.name);
+          alert('Membro salvo!');
        }
     }
 
@@ -1526,7 +1613,8 @@
           t.prize = document.getElementById(`arc-prize-${id}`).value;
           t.ig = document.getElementById(`arc-ig-${id}`).value;
           t.quote = document.getElementById(`arc-quote-${id}`).value;
-          await saveBinData(); alert('Jogador salvo!');
+          await saveBinData("Modificou o ranking Arcade na posição #" + id);
+          alert('Jogador salvo!');
        }
     }
 
@@ -1538,7 +1626,8 @@
           t.score = document.getElementById(`ca-score-${id}`).value;
           t.prize = document.getElementById(`ca-prize-${id}`).value;
           t.quote = document.getElementById(`ca-quote-${id}`).value;
-          await saveBinData(); alert('Cachaceiro salvo!');
+          await saveBinData("Modificou o ranking Cachaceiros na posição #" + id);
+          alert('Cachaceiro salvo!');
        }
     }
 
@@ -1554,7 +1643,8 @@
         name: name, short: document.getElementById('new-item-short').value,
         full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
       });
-      await saveBinData(); alert('Produto Adicionado ao Cardápio!');
+      await saveBinData("Adicionou novo item ao cardápio: " + name);
+      alert('Produto Adicionado ao Cardápio!');
     }
 
     async function addAgendaItem() {
@@ -1562,18 +1652,30 @@
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
       appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
-      await saveBinData(); alert('Evento Adicionado!');
+      await saveBinData("Adicionou novo evento à agenda: " + title);
+      alert('Evento Adicionado!');
     }
 
-    async function removeMenuItem(id) { if(confirm('Apagar item?')) { appData.menu = appData.menu.filter(i => i.id !== id); await saveBinData(); } }
-    async function removeAgendaItem(id) { if(confirm('Apagar evento?')) { appData.agenda = appData.agenda.filter(i => i.id !== id); await saveBinData(); } }
+    async function removeMenuItem(id) { 
+      if(confirm('Apagar item?')) { 
+        appData.menu = appData.menu.filter(i => i.id !== id); 
+        await saveBinData("Removeu um item do cardápio"); 
+      } 
+    }
+    async function removeAgendaItem(id) { 
+      if(confirm('Apagar evento?')) { 
+        appData.agenda = appData.agenda.filter(i => i.id !== id); 
+        await saveBinData("Removeu um evento da agenda"); 
+      } 
+    }
 
     async function saveFlyerData() {
       appData.flyer.tag = document.getElementById('adm-f-tag').value;
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
       appData.flyer.desc = document.getElementById('adm-f-desc').value;
-      await saveBinData(); alert("Dados do Destaque Salvos!");
+      await saveBinData("Modificou o flyer de destaque principal");
+      alert("Dados do Destaque Salvos!");
     }
 
     function openMenuModalObj(name, desc, price, img) {
