@@ -501,27 +501,30 @@
             <div id="admin-pending-msgs"></div>
           </div>
 
-          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
-          <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
-            <div class="admin-card" style="border-color: var(--c-yellow);">
-              <h5 id="custom-tab-form-title" style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
-              <input type="hidden" id="edit-tab-original-id" value="">
-              <div class="admin-card-row">
-                <input type="text" class="admin-input" id="new-tab-id" placeholder="ID (ex: eventos, vip)">
-                <input type="text" class="admin-input" id="new-tab-name" placeholder="Nome Exibição (ex: Eventos)">
+          <!-- SEÇÃO DE CRIAR ABAS (SOMENTE MASTER - TOURU) -->
+          <div id="master-tabs-section" style="display:none;">
+            <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas (Master)</button>
+            <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+              <div class="admin-card" style="border-color: var(--c-yellow);">
+                <h5 id="custom-tab-form-title" style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
+                <input type="hidden" id="edit-tab-original-id" value="">
+                <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="new-tab-id" placeholder="ID (ex: eventos, vip)">
+                  <input type="text" class="admin-input" id="new-tab-name" placeholder="Nome Exibição (ex: Eventos)">
+                </div>
+                <input type="text" class="admin-input" id="new-tab-title" placeholder="Título da Seção (ex: PRÓXIMOS EVENTOS)" style="margin-top: 8px;">
+                <textarea class="admin-textarea" id="new-tab-desc" rows="2" placeholder="Texto descritivo da nova aba..." style="margin-top: 8px;"></textarea>
+                <div class="file-upload-wrapper" style="margin-top: 8px;">
+                  <span>📷 Foto Opcional para a Aba</span>
+                  <input type="file" id="new-tab-img-file" accept="image/*">
+                </div>
+                <button class="action-btn" id="custom-tab-submit-btn" onclick="saveCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
+                <button class="action-btn" id="custom-tab-cancel-btn" onclick="resetCustomTabForm()" style="margin-top: 5px; background: #444; color:#fff; display:none;">Cancelar Edição</button>
               </div>
-              <input type="text" class="admin-input" id="new-tab-title" placeholder="Título da Seção (ex: PRÓXIMOS EVENTOS)" style="margin-top: 8px;">
-              <textarea class="admin-textarea" id="new-tab-desc" rows="2" placeholder="Texto descritivo da nova aba..." style="margin-top: 8px;"></textarea>
-              <div class="file-upload-wrapper" style="margin-top: 8px;">
-                <span>📷 Foto Opcional para a Aba</span>
-                <input type="file" id="new-tab-img-file" accept="image/*">
-              </div>
-              <button class="action-btn" id="custom-tab-submit-btn" onclick="saveCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
-              <button class="action-btn" id="custom-tab-cancel-btn" onclick="resetCustomTabForm()" style="margin-top: 5px; background: #444; color:#fff; display:none;">Cancelar Edição</button>
+              
+              <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">Abas Personalizadas Criadas</h5>
+              <div id="admin-custom-tabs-list"></div>
             </div>
-            
-            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">Abas Personalizadas Criadas</h5>
-            <div id="admin-custom-tabs-list"></div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
@@ -625,14 +628,15 @@
             <div id="admin-cachaceiros-list"></div>
           </div>
 
-          <!-- NOVA ABA DE AUDITORIA / LOGS DOS ADMINISTRADORES -->
+          <!-- RELATÓRIO DE ALTERAÇÕES (LOGS ADM) -->
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-logs')">📋 Relatório de Alterações (Logs ADM)</button>
           <div id="adm-logs" class="admin-accordion-content" style="border-color: var(--c-yellow);">
             <div class="admin-card" style="border-color: var(--c-yellow);">
-              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico de Ações dos Administradores</h5>
-              <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo detalhado de quem alterou o quê, data e horário.</p>
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico Detalhado de Ações dos ADMs</h5>
+              <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo exato de quem alterou, o que foi editado/adicionado/excluído, data e horário.</p>
               <div id="admin-logs-list" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
-              <button class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content;">🗑️ Limpar Histórico de Logs</button>
+              <!-- BOTÃO DE LIMPAR LOGS EXCLUSIVO PARA MASTER (TOURU) -->
+              <button id="clear-logs-btn" class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content; display:none;">🗑️ Limpar Histórico de Logs (Master)</button>
             </div>
           </div>
 
@@ -662,15 +666,15 @@
     }
 
     const AUTH_ACCOUNTS = [
-      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru" },
-      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson" }
+      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
+      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
     ];
 
     function b64Decode(str) {
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -759,7 +763,7 @@
 
     async function saveBinData(actionDesc = '') {
       if(actionDesc) {
-        const loggedName = localStorage.getItem('brg_adm_name') || 'Desconhecido';
+        const loggedName = localStorage.getItem('brg_adm_name') || 'Administrador';
         const now = new Date().toLocaleString('pt-BR');
         if(!appData.adminLogs) appData.adminLogs = [];
         appData.adminLogs.unshift({
@@ -785,7 +789,8 @@
     async function updateBarStatus(status) {
       if(!appData.home) appData.home = defaultHome;
       appData.home.isOpen = (status === 'open');
-      await saveBinData("Alterou o status da casa para: " + (status === 'open' ? 'ABERTO' : 'FECHADO'));
+      const stText = status === 'open' ? 'ABERTO' : 'FECHADO';
+      await saveBinData("Alterou o status da casa para: " + stText);
       alert(appData.home.isOpen ? "🟢 Bar alterado para ABERTO!" : "🔴 Bar alterado para FECHADO!");
     }
 
@@ -1052,7 +1057,7 @@
               <strong>👤 ADM: ${escapeHTML(l.admin)}</strong>
               <span style="color: #aaa; font-size: 0.75rem;">📅 ${escapeHTML(l.date)}</span>
             </div>
-            <div style="color: #fff;">⚡ Ação: ${escapeHTML(l.action)}</div>
+            <div style="color: #fff;">⚡ Detalhe: ${escapeHTML(l.action)}</div>
           </div>
         `).join('');
       }
@@ -1061,7 +1066,7 @@
     async function clearLogs() {
       if(confirm("Tem certeza que deseja limpar o histórico de logs?")) {
         appData.adminLogs = [];
-        await saveBinData("Limpou o relatório de logs ADM");
+        await saveBinData("Limpou todo o histórico de logs de auditoria");
       }
     }
 
@@ -1257,6 +1262,9 @@
     });
 
     async function saveCustomTab() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode criar ou editar abas!");
+
       const originalId = document.getElementById('edit-tab-original-id').value;
       const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
       const name = document.getElementById('new-tab-name').value.trim();
@@ -1283,6 +1291,9 @@
     }
 
     function editCustomTab(id) {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado!");
+
       const tab = appData.customTabs.find(t => t.id === id);
       if(!tab) return;
       document.getElementById('edit-tab-original-id').value = tab.id;
@@ -1313,6 +1324,9 @@
     }
 
     async function removeCustomTab(id) {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado!");
+
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
         appData.customTabs = appData.customTabs.filter(t => t.id !== id);
         await saveBinData("Apagou a aba personalizada ID: " + id);
@@ -1352,6 +1366,7 @@
         }
       }
 
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
         menuList.innerHTML = appData.menu.map(i => `
@@ -1371,7 +1386,7 @@
                   <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
                 </div>
                 <button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>
-                <button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️</button>
+                ${isMaster ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : `<span style="font-size:0.75rem; color:#888;">(Apenas Master exclui)</span>`}
             </div>
           </div>`).join('');
       }
@@ -1391,8 +1406,8 @@
                   <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
                   <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
               </div>
-              <button class="action-btn" onclick="saveAgendaData(${i.id})">💾</button>
-              <button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️</button>
+              <button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>
+              ${isMaster ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
             </div>
           </div>`).join('');
       }
@@ -1494,6 +1509,7 @@
         localStorage.setItem('brg_adm_logged', 'true');
         localStorage.setItem('brg_adm_email', matchedAcc.email);
         localStorage.setItem('brg_adm_name', matchedAcc.name);
+        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
 
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
@@ -1515,15 +1531,27 @@
 
     function updateAdminGreeting() {
       const name = localStorage.getItem('brg_adm_name') || 'Administrador';
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const greetingEl = document.getElementById('adm-welcome-text');
+      const masterTabsSec = document.getElementById('master-tabs-section');
+      const clearLogsBtn = document.getElementById('clear-logs-btn');
+
       if(greetingEl) {
         if(name === 'Touru') {
-          greetingEl.innerText = '👑 Conectado como: Touru';
+          greetingEl.innerText = '👑 Conectado como: Touru (Master)';
         } else if(name === 'Alisson') {
-          greetingEl.innerText = '🍻 Conectado como: Alisson';
+          greetingEl.innerText = '🍻 Conectado como: Alisson (Colaborador)';
         } else {
           greetingEl.innerText = '⚙️ Conectado como: ' + name;
         }
+      }
+
+      if(masterTabsSec) {
+        masterTabsSec.style.display = isMaster ? 'block' : 'none';
+      }
+
+      if(clearLogsBtn) {
+        clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
       }
     }
 
@@ -1531,27 +1559,28 @@
       localStorage.removeItem('brg_adm_logged');
       localStorage.removeItem('brg_adm_email');
       localStorage.removeItem('brg_adm_name');
+      localStorage.removeItem('brg_adm_is_master');
       document.getElementById('admin-dashboard').style.display = 'none';
       document.getElementById('admin-login').style.display = 'block';
     }
 
     async function updateHomeImg(input) {
-      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial"); alert('Banner Inicial Atualizado via ImgBB!'); });
+      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial da página home"); alert('Banner Inicial Atualizado via ImgBB!'); });
     }
     async function updateFlyerMain(input) {
-      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal"); alert('Flyer Destaque Atualizado via ImgBB!'); });
+      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
     }
     async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do item de cardápio: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do produto: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
     }
     async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o mini flyer da agenda: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o flyer do evento: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
     }
     async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do membro: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
     }
     async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
     }
     async function updateArcadeImg(id, input) {
       uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
@@ -1565,18 +1594,20 @@
       appData.home.promo1 = document.getElementById('adm-h-promo1').value;
       appData.home.promo2 = document.getElementById('adm-h-promo2').value;
       appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      await saveBinData("Modificou os textos da Página Inicial");
+      await saveBinData("Modificou os textos e descrições da Página Inicial");
       alert('Dados do Início Salvos!');
     }
 
     async function saveItemData(id) {
        const item = appData.menu.find(i => i.id === id);
        if(item) {
+          const oldName = item.name;
+          const oldPrice = item.price;
           item.name = document.getElementById(`name-${id}`).value;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData("Modificou o produto do cardápio: " + item.name + " (R$ " + item.price + ")");
+          await saveBinData(`Editou o item do cardápio "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
           alert('Produto Salvo!');
        }
     }
@@ -1584,10 +1615,11 @@
     async function saveAgendaData(id) {
        const item = appData.agenda.find(i => i.id === id);
        if(item) {
+          const oldTitle = item.title;
           item.date = document.getElementById(`a-date-${id}`).value;
           item.title = document.getElementById(`a-title-${id}`).value;
           item.desc = document.getElementById(`a-desc-${id}`).value;
-          await saveBinData("Modificou o evento da agenda: " + item.title + " (" + item.date + ")");
+          await saveBinData(`Editou o evento de agenda "${oldTitle}" para "${item.title}" (${item.date})`);
           alert('Evento Salvo!');
        }
     }
@@ -1599,7 +1631,7 @@
           t.role = document.getElementById(`trole-${id}`).value;
           t.ig = document.getElementById(`tig-${id}`).value;
           t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveBinData("Modificou o membro da equipe: " + t.name);
+          await saveBinData("Modificou dados da equipe: " + t.name);
           alert('Membro salvo!');
        }
     }
@@ -1613,12 +1645,12 @@
           t.prize = document.getElementById(`arc-prize-${id}`).value;
           t.ig = document.getElementById(`arc-ig-${id}`).value;
           t.quote = document.getElementById(`arc-quote-${id}`).value;
-          await saveBinData("Modificou o ranking Arcade na posição #" + id);
+          await saveBinData(`Atualizou o ranking Arcade na posição #${id} (${t.name} - ${t.score})`);
           alert('Jogador salvo!');
        }
     }
 
-    async function saveCachaceiroData(id) {
+    async function saveCachaceirosData(id) {
        const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
@@ -1626,7 +1658,7 @@
           t.score = document.getElementById(`ca-score-${id}`).value;
           t.prize = document.getElementById(`ca-prize-${id}`).value;
           t.quote = document.getElementById(`ca-quote-${id}`).value;
-          await saveBinData("Modificou o ranking Cachaceiros na posição #" + id);
+          await saveBinData(`Atualizou o ranking de Cachaceiros na posição #${id} (${t.name} - ${t.score})`);
           alert('Cachaceiro salvo!');
        }
     }
@@ -1643,7 +1675,7 @@
         name: name, short: document.getElementById('new-item-short').value,
         full: document.getElementById('new-item-full').value, price: price, img: tempNewItemImg
       });
-      await saveBinData("Adicionou novo item ao cardápio: " + name);
+      await saveBinData(`Adicionou novo item ao cardápio: "${name}" por R$ ${price}`);
       alert('Produto Adicionado ao Cardápio!');
     }
 
@@ -1652,20 +1684,29 @@
       const date = document.getElementById('new-ev-date').value;
       if(!title || !date) return alert("Preencha data e título.");
       appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
-      await saveBinData("Adicionou novo evento à agenda: " + title);
+      await saveBinData(`Adicionou novo evento à agenda: "${title}" na data ${date}`);
       alert('Evento Adicionado!');
     }
 
     async function removeMenuItem(id) { 
-      if(confirm('Apagar item?')) { 
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir itens do cardápio!");
+
+      const item = appData.menu.find(i => i.id === id);
+      if(confirm('Tem certeza que deseja excluir o item "' + (item ? item.name : id) + '" do cardápio?')) { 
         appData.menu = appData.menu.filter(i => i.id !== id); 
-        await saveBinData("Removeu um item do cardápio"); 
+        await saveBinData("Excluiu o item do cardápio: " + (item ? item.name : id)); 
       } 
     }
+
     async function removeAgendaItem(id) { 
-      if(confirm('Apagar evento?')) { 
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir eventos da agenda!");
+
+      const ev = appData.agenda.find(i => i.id === id);
+      if(confirm('Tem certeza que deseja excluir o evento "' + (ev ? ev.title : id) + '" da agenda?')) { 
         appData.agenda = appData.agenda.filter(i => i.id !== id); 
-        await saveBinData("Removeu um evento da agenda"); 
+        await saveBinData("Excluiu o evento da agenda: " + (ev ? ev.title : id)); 
       } 
     }
 
@@ -1674,7 +1715,7 @@
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
       appData.flyer.desc = document.getElementById('adm-f-desc').value;
-      await saveBinData("Modificou o flyer de destaque principal");
+      await saveBinData("Modificou as informações do Flyer Principal de Destaque");
       alert("Dados do Destaque Salvos!");
     }
 
