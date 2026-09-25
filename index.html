@@ -481,6 +481,25 @@
             </div>
           </div>
 
+          <!-- NOVA ABA DE ESTATÍSTICAS DE ACESSOS DIÁRIOS -->
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-stats')">📊 Estatísticas de Acessos</button>
+          <div id="adm-stats" class="admin-accordion-content" style="border-color: var(--c-cyan);">
+            <div class="admin-card" style="border-color: var(--c-cyan); text-align: center;">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.3rem; margin-bottom:15px;">🔥 Controlo de Acessos de Hoje</h5>
+              <div style="display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+                <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--c-cyan); flex: 1; min-width: 130px;">
+                  <span style="font-size: 0.8rem; color: #aaa; display: block;">VISITAS TOTAIS (HITS)</span>
+                  <span id="stat-hits-today" style="font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow);">0</span>
+                </div>
+                <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--c-pink); flex: 1; min-width: 130px;">
+                  <span style="font-size: 0.8rem; color: #aaa; display: block;">DISPOSITIVOS ÚNICOS</span>
+                  <span id="stat-uniques-today" style="font-family: var(--font-title); font-size: 2rem; color: var(--c-pink);">0</span>
+                </div>
+              </div>
+              <p style="color: #888; font-size: 0.75rem;">A contagem é atualizada automaticamente a cada acesso diário dos clientes.</p>
+            </div>
+          </div>
+
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <button class="action-btn" onclick="fetchBinData()" style="margin-bottom: 15px; background: var(--c-yellow); color:#000; width: 100%;">🔄 Atualizar Pedidos da Nuvem</button>
@@ -490,7 +509,6 @@
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
             <div id="admin-pending-msgs"></div>
 
-            <!-- ADICIONADO: Aba de Exclusão Direta dos Recados e Músicas Ativos no Site -->
             <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.2rem; margin-top:25px; margin-bottom:10px;">🗑️ Gerenciar / Excluir Pedidos e Recados Ativos</h5>
             <div id="admin-active-interactions"></div>
           </div>
@@ -693,7 +711,8 @@
       userSongs: [],
       pendingSongs: [],
       userMessages: [],
-      pendingMessages: []
+      pendingMessages: [],
+      stats: { hits: 0, uniques: 0, lastDate: '' }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
@@ -708,6 +727,7 @@
       }
       
       await fetchBinData();
+      registerVisit();
       renderApp();
       
       if(localStorage.getItem('brg_adm_logged') === 'true') {
@@ -716,6 +736,37 @@
       }
 
       setInterval(fetchBinData, 15000);
+    }
+
+    async function registerVisit() {
+      const todayStr = new Date().toDateString();
+      const lastVisitDate = localStorage.getItem('brg_last_visit_date');
+      const hasCountedUniqueToday = localStorage.getItem('brg_unique_counted_' + todayStr);
+
+      try {
+        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
+        if(res.ok) {
+          const json = await res.json();
+          if(json.record) appData = { ...appData, ...json.record };
+        }
+      } catch(e) {}
+
+      if(!appData.stats) appData.stats = { hits: 0, uniques: 0, lastDate: todayStr };
+
+      if(appData.stats.lastDate !== todayStr) {
+        appData.stats.hits = 0;
+        appData.stats.uniques = 0;
+        appData.stats.lastDate = todayStr;
+      }
+
+      appData.stats.hits += 1;
+
+      if(!hasCountedUniqueToday) {
+        appData.stats.uniques += 1;
+        localStorage.setItem('brg_unique_counted_' + todayStr, 'true');
+      }
+
+      await saveBinDataSilent();
     }
 
     async function fetchBinData() {
@@ -738,6 +789,19 @@
 
     async function saveBinData() {
       renderApp();
+      try {
+        await fetch(BIN_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': MASTER_KEY
+          },
+          body: JSON.stringify(appData)
+        });
+      } catch(e) {}
+    }
+
+    async function saveBinDataSilent() {
       try {
         await fetch(BIN_URL, {
           method: 'PUT',
@@ -868,6 +932,7 @@
       const cCach = appData.cachaceiros;
       const cFlyer = appData.flyer;
       const cCustomTabs = appData.customTabs || [];
+      const stats = appData.stats || { hits: 0, uniques: 0 };
 
       document.getElementById('h-title').innerText = cHome.title;
       document.getElementById('h-desc1').innerText = cHome.desc1;
@@ -888,6 +953,12 @@
         statusText.innerText = 'BARGUNÇADOS FECHADO';
         statusText.style.color = '#ff1744';
       }
+
+      // Atualizar valores na aba de Estatísticas da ADM
+      const hitsEl = document.getElementById('stat-hits-today');
+      const uniquesEl = document.getElementById('stat-uniques-today');
+      if(hitsEl) hitsEl.innerText = stats.hits;
+      if(uniquesEl) uniquesEl.innerText = stats.uniques;
 
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
@@ -1141,7 +1212,6 @@
         `).join('');
       }
 
-      // Renderizar secção de exclusão/gestão dos ativos no site
       if(uSongs.length === 0 && uMsgs.length === 0) {
         activeIntDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido ou recado ativo no site.</p>';
       } else {
