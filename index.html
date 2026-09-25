@@ -33,7 +33,7 @@
 
     body {
       background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-body);
-      overflow-x: hidden; font-size: 14px; scroll-behavior: smooth; perspective: 1200px;
+      overflow-x: hidden; font-size: 14px; scroll-behavior: smooth;
     }
 
     ::-webkit-scrollbar { width: 5px; height: 4px; }
@@ -93,9 +93,13 @@
 
     main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; }
     
-    /* EFEITO DE ENTRADA AO CLICAR NA ABA (Estilo Carta 3D / Cubo fluido) */
-    .tab-pane { display: none; opacity: 0; transform: rotateX(-20deg) scale(0.96) translateY(15px); transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.35s ease; transform-origin: top; }
-    .tab-pane.active { display: block; opacity: 1; transform: rotateX(0deg) scale(1) translateY(0); }
+    /* EFEITO DE ENTRADA AO CLICAR NA ABA (Desliza e expande suavemente de cima para baixo) */
+    .tab-pane { display: none; opacity: 0; transform: translateY(-15px) scale(0.98); }
+    .tab-pane.active { display: block; animation: slideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes slideDownFade {
+      0% { opacity: 0; transform: translateY(-15px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
     .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
     .section-title::before { content: '⚡'; color: var(--c-yellow); font-size: 0.8em; }
@@ -113,7 +117,6 @@
     .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-    /* EFEITO AO PASSAR O MOUSE / TOQUE NOS ITENS DO CARDÁPIO */
     .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
@@ -123,10 +126,10 @@
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
-    /* EFEITO POPUP DE CLIQUE NOS ITENS (Aparência fluida de zoom) */
-    .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; }
-    @keyframes popUpScale { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    /* POP-UP CORRIGIDO: 100% Centralizado na tela sem falhas de alinhamento */
+    .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; }
+    @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
@@ -298,16 +301,16 @@
 
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
-        <button class="tab-btn" onclick="switchTab('bebidas')">Bebidas</button>
-        <button class="tab-btn" onclick="switchTab('porcoes')">Porções</button>
-        <button class="tab-btn" onclick="switchTab('shows')">Agenda</button>
-        <button class="tab-btn" onclick="switchTab('rankings')">Rankings 🏆</button>
-        <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
-        <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
-        <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
-        <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
-        <button class="tab-btn" onclick="switchTab('interaja')">Mural & Som 🎸</button>
+        <button class="tab-btn active" onclick="switchTab('inicio')">🎸 O Bar</button>
+        <button class="tab-btn" onclick="switchTab('bebidas')">🥃 Bebidas</button>
+        <button class="tab-btn" onclick="switchTab('porcoes')">🍟 Porções</button>
+        <button class="tab-btn" onclick="switchTab('shows')">📅 Agenda</button>
+        <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
+        <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
+        <button class="tab-btn" onclick="switchTab('promoters')">🤘 Promoter</button>
+        <button class="tab-btn" onclick="switchTab('contato')">📞 Contato</button>
+        <button class="tab-btn" onclick="switchTab('como-chegar')">🗺️ Como Chegar</button>
+        <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
       </nav>
     </div>
 
@@ -646,7 +649,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
