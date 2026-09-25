@@ -9,23 +9,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 
-  <!-- SDK Oficial do OneSignal para Web Push com prompt automático -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    window.OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "18f2e8eb-157c-436e-899d-cdbe0f7d71cc",
-        safari_web_id: "",
-        notifyButton: {
-          enable: true,
-        },
-      });
-      // Solicita permissão de forma nativa e imediata ao entrar no site
-      OneSignal.Slidedown.promptPush();
-    });
-  </script>
-
   <style>
     /* =========================================
        1. RESET E VARIÁVEIS (Mobile-First)
@@ -483,16 +466,6 @@
             </div>
           </div>
 
-          <!-- SEÇÃO SEPARADA COM LINK PARA ABRIR O ONESIGNAL -->
-          <button class="admin-accordion-btn" style="border-color: var(--c-cyan); border-left: 4px solid var(--c-cyan);" onclick="toggleAdminSection('adm-push')">🔔 Enviar Notificação Geral (OneSignal)</button>
-          <div id="adm-push" class="admin-accordion-content" style="border-color: var(--c-cyan);">
-            <div class="admin-card" style="border-color: var(--c-cyan); text-align: center; padding: 20px;">
-              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.4rem; margin-bottom:10px;">Disparar Alertas em Massa</h5>
-              <p style="color:#ccc; font-size:0.9rem; margin-bottom:20px; line-height: 1.5;">O pop-up de permissão já aparece automaticamente para os clientes ao entrarem no site. Para disparar as notificações em massa, utilize o painel oficial do OneSignal:</p>
-              <a href="https://dashboard.onesignal.com/" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, var(--c-cyan), var(--c-purple)); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🚀 ABRIR PAINEL ONESIGNAL</a>
-            </div>
-          </div>
-
           <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <button class="action-btn" onclick="fetchBinData()" style="margin-bottom: 15px; background: var(--c-yellow); color:#000; width: 100%;">🔄 Atualizar Pedidos da Nuvem</button>
@@ -635,7 +608,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via JSONBin.io, ImgBB & OneSignal Push.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via JSONBin.io & ImgBB.</p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
@@ -646,7 +619,6 @@
     const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
     const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
-    const ONESIGNAL_APP_ID = "18f2e8eb-157c-436e-899d-cdbe0f7d71cc";
 
     function escapeHTML(str) {
       if (!str) return '';
