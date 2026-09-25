@@ -93,7 +93,6 @@
 
     main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; }
     
-    /* EFEITO DE ENTRADA AO CLICAR NA ABA (Desliza e expande suavemente de cima para baixo) */
     .tab-pane { display: none; opacity: 0; transform: translateY(-15px) scale(0.98); }
     .tab-pane.active { display: block; animation: slideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideDownFade {
@@ -126,7 +125,6 @@
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
-    /* POP-UP CORRIGIDO: 100% Centralizado na tela sem falhas de alinhamento */
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 350px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -491,6 +489,10 @@
 
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
             <div id="admin-pending-msgs"></div>
+
+            <!-- ADICIONADO: Aba de Exclusão Direta dos Recados e Músicas Ativos no Site -->
+            <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.2rem; margin-top:25px; margin-bottom:10px;">🗑️ Gerenciar / Excluir Pedidos e Recados Ativos</h5>
+            <div id="admin-active-interactions"></div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas</button>
@@ -649,7 +651,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -1047,7 +1049,7 @@
         const btn = document.createElement('button');
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
-        btn.innerText = tab.name;
+        btn.innerText = '📑 ' + tab.name;
         const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
         navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
@@ -1094,10 +1096,13 @@
     function renderModerationLists() {
       const pSongsDiv = document.getElementById('admin-pending-songs');
       const pMsgsDiv = document.getElementById('admin-pending-msgs');
+      const activeIntDiv = document.getElementById('admin-active-interactions');
       const counterSpan = document.getElementById('adm-notify-counter');
 
       const pSongs = appData.pendingSongs || [];
       const pMsgs = appData.pendingMessages || [];
+      const uSongs = appData.userSongs || [];
+      const uMsgs = appData.userMessages || [];
       const totalPending = pSongs.length + pMsgs.length;
 
       if(totalPending > 0) {
@@ -1135,6 +1140,30 @@
           </div>
         `).join('');
       }
+
+      // Renderizar secção de exclusão/gestão dos ativos no site
+      if(uSongs.length === 0 && uMsgs.length === 0) {
+        activeIntDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido ou recado ativo no site.</p>';
+      } else {
+        let activeHtml = '';
+        uSongs.forEach(s => {
+          activeHtml += `
+            <div class="admin-card" style="border-left: 3px solid var(--c-cyan);">
+              <span style="color:var(--c-cyan); font-size:0.85rem;">[Som Aprovado] ${escapeHTML(s.ig)}:</span>
+              <p style="color:#fff; font-size:0.9rem;">"${escapeHTML(s.text)}"</p>
+              <button class="action-btn del-btn" onclick="deleteActiveSong(${s.id})" style="margin-top:5px; width:fit-content;">🗑️ Excluir do Site</button>
+            </div>`;
+        });
+        uMsgs.forEach(m => {
+          activeHtml += `
+            <div class="admin-card" style="border-left: 3px solid var(--c-yellow);">
+              <span style="color:var(--c-yellow); font-size:0.85rem;">[Recado Ativo] ${escapeHTML(m.ig)}:</span>
+              <p style="color:#fff; font-size:0.9rem;">"${escapeHTML(m.text)}"</p>
+              <button class="action-btn del-btn" onclick="deleteActiveMsg(${m.id})" style="margin-top:5px; width:fit-content;">🗑️ Excluir do Mural</button>
+            </div>`;
+        });
+        activeIntDiv.innerHTML = activeHtml;
+      }
     }
 
     async function approveSong(id) {
@@ -1167,6 +1196,22 @@
     async function rejectMsg(id) {
       appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
       await saveBinData();
+    }
+
+    async function deleteActiveSong(id) {
+      if(confirm("Tem certeza que deseja excluir este pedido de som ativo?")) {
+        appData.userSongs = appData.userSongs.filter(s => s.id !== id);
+        await saveBinData();
+        alert("Pedido excluído do site com sucesso!");
+      }
+    }
+
+    async function deleteActiveMsg(id) {
+      if(confirm("Tem certeza que deseja excluir este recado do mural?")) {
+        appData.userMessages = appData.userMessages.filter(m => m.id !== id);
+        await saveBinData();
+        alert("Recado excluído do mural com sucesso!");
+      }
     }
 
     let tempNewTabImg = '';
