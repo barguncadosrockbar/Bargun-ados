@@ -228,7 +228,6 @@
 
     .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
 
-    /* CONTADOR DE DISPOSITIVOS E CLIQUES/VISITAS RESTAURADO */
     .traffic-counter-box { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
     .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 12px 20px; text-align: center; flex: 1; min-width: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
@@ -476,18 +475,19 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
+    <!-- ABAS COM TODOS OS EMOTICONS E NOMES RESTAURADOS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
-        <button class="tab-btn active" onclick="switchTab('inicio')">O Bar</button>
-        <button class="tab-btn" onclick="switchTab('bebidas')">Bebidas</button>
-        <button class="tab-btn" onclick="switchTab('porcoes')">Porções</button>
-        <button class="tab-btn" onclick="switchTab('shows')">Agenda</button>
-        <button class="tab-btn" onclick="switchTab('rankings')">Rankings 🏆</button>
-        <button class="tab-btn" onclick="switchTab('diretoria')">Diretoria</button>
-        <button class="tab-btn" onclick="switchTab('promoters')">Promoter</button>
-        <button class="tab-btn" onclick="switchTab('contato')">Contato</button>
-        <button class="tab-btn" onclick="switchTab('como-chegar')">Como Chegar</button>
-        <button class="tab-btn" onclick="switchTab('interaja')">Mural & Som 🎸</button>
+        <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
+        <button class="tab-btn" onclick="switchTab('bebidas')">🍺 Bebidas</button>
+        <button class="tab-btn" onclick="switchTab('porcoes')">🍟 Porções</button>
+        <button class="tab-btn" onclick="switchTab('shows')">📅 Agenda</button>
+        <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
+        <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
+        <button class="tab-btn" onclick="switchTab('promoters')">🎤 Promoter</button>
+        <button class="tab-btn" onclick="switchTab('contato')">💬 Contato</button>
+        <button class="tab-btn" onclick="switchTab('como-chegar')">📍 Como Chegar</button>
+        <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
       </nav>
     </div>
 
@@ -574,7 +574,6 @@
         <h2 class="section-title">Agenda do Mês</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
         
-        <!-- CONTAINER DO FLYER DESTAQUE EXPANDIDO -->
         <div class="featured-flyer-container" onclick="openAgendaModal('featured')">
           <img src="" id="featured-flyer-img" class="featured-flyer-img" alt="Evento Destaque">
         </div>
@@ -1485,7 +1484,7 @@
         const btn = document.createElement('button');
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
-        btn.innerText = tab.name;
+        btn.innerText = `📑 ${tab.name}`;
         const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
         navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
@@ -1550,7 +1549,6 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
-    // UPLOAD BLINDADO COM SUPORTE TOTAL A BASE64 E IMGBB
     async function uploadToImgBB(file, callback) {
       if (!file) return;
 
@@ -1637,7 +1635,6 @@
       }
     }
 
-    /* MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA */
     function openCreateItemModal(defaultCategory = 'drink') {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
@@ -1698,7 +1695,6 @@
       alert("✅ Item cadastrado com sucesso no cardápio!");
     }
 
-    /* CONTROLE DIRETO NA ABA INICIAL (HOME) */
     function checkHomeCardClick() {
       const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
       if(isAdmLogged) {
