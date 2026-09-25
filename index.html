@@ -224,6 +224,8 @@
     .db-status-box { background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; }
     .db-status-indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
 
+    .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.8); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
+
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
     @media (max-width: 600px) {
@@ -247,7 +249,7 @@
   <div class="bg-watermark"></div>
   <canvas id="sparks-canvas"></canvas>
 
-  <!-- MODAL DE DETALHES / EDIÇÃO DIRETA DE CARDÁPIO -->
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE CARDÁPIO -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
       <span class="close-btn" onclick="closeModal('productModal')">×</span>
@@ -257,7 +259,7 @@
       <div id="modalPrice">R$ 00,00</div>
 
       <div id="modal-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
-        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição Rápida (Cardápio)</h5>
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Item (Cardápio)</h5>
         <input type="hidden" id="modal-edit-id">
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
         <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
@@ -274,13 +276,13 @@
         <input type="hidden" id="modal-edit-img">
         <div style="display:flex; gap:8px; margin-top:10px;">
           <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar</button>
-          <button class="action-btn del-btn" onclick="deleteModalItemDirect()" style="flex: 1; padding: 8px; font-family: var(--font-title); font-size: 0.9rem;">🗑️ Excluir</button>
+          <button id="modal-item-del-btn" class="action-btn del-btn" onclick="deleteModalItemDirect()" style="flex: 1; padding: 8px; font-family: var(--font-title); font-size: 0.9rem;">🗑️ Excluir</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DE DETALHES / EDIÇÃO DE RANKINGS -->
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE RANKINGS -->
   <div id="playerModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
       <span class="close-btn" onclick="closeModal('playerModal')">×</span>
@@ -290,7 +292,7 @@
       <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
 
       <div id="player-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
-        <h5 style="color: var(--c-yellow); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição de Jogador (Ranking)</h5>
+        <h5 style="color: var(--c-yellow); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Jogador (Ranking)</h5>
         <input type="hidden" id="player-edit-type">
         <input type="hidden" id="player-edit-id">
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
@@ -308,12 +310,15 @@
           <input type="file" accept="image/*" onchange="playerUploadImg(this)">
         </div>
         <input type="hidden" id="player-edit-img">
-        <button class="action-btn" onclick="savePlayerEdit()" style="background: var(--c-yellow); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Jogador</button>
+        <div style="display:flex; gap:8px; margin-top:10px;">
+          <button class="action-btn" onclick="savePlayerEdit()" style="background: var(--c-yellow); color: #000; flex: 2; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar</button>
+          <button id="modal-player-del-btn" class="action-btn del-btn" onclick="deleteModalPlayerDirect()" style="flex: 1; padding: 8px; font-family: var(--font-title); font-size: 0.9rem;">🗑️ Excluir</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DE DETALHES / EDIÇÃO DE AGENDA -->
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE AGENDA -->
   <div id="eventModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
       <span class="close-btn" onclick="closeModal('eventModal')">×</span>
@@ -324,7 +329,7 @@
       <p id="e-desc" style="color: #ccc; font-size: 1rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">DESCRIÇÃO</p>
 
       <div id="event-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
-        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição Rápida (Agenda)</h5>
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Evento (Agenda)</h5>
         <input type="hidden" id="event-edit-type">
         <input type="hidden" id="event-edit-id">
         <label style="font-size: 0.75rem; color: #aaa;">Tag / Data:</label>
@@ -419,12 +424,20 @@
       </section>
 
       <section id="bebidas" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-bebidas">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
+          <button class="action-btn" onclick="openInlineAddItem('drink')" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Bebida Aqui</button>
+        </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
       <section id="porcoes" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-porcoes">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
+          <button class="action-btn" onclick="openInlineAddItem('portion')" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Porção Aqui</button>
+        </div>
         <h2 class="section-title">Larica Pesada</h2>
         <div id="dynamic-menu-porcoes"></div>
       </section>
@@ -439,17 +452,21 @@
 
         <div id="rankings-view-arcade">
           <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação ou editar!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver provocação, editar ou excluir!)</p>
           <div class="leaderboard-list" id="dynamic-arcade-list"></div>
         </div>
 
         <div id="rankings-view-cachaceiros" style="display: none;">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado ou editar!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver o recado, editar ou excluir!)</p>
           <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
         </div>
       </section>
 
       <section id="shows" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-agenda">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Agenda</span>
+          <button class="action-btn" onclick="openInlineAddEvent()" style="font-size:0.8rem; padding:6px 12px;">+ Adicionar Evento Aqui</button>
+        </div>
         <h2 class="section-title">Agenda do Mês</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
         
@@ -548,7 +565,7 @@
                 <span>Banco de Dados Global (JSONBin.io): CONECTADO & SINCRONIZANDO ✅</span>
               </div>
               <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
-                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os celulares e computadores</strong> a cada 15 segundos.
+                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
               </p>
               
               <div id="gh-status-indicator" class="db-status-indicator" style="color: var(--c-cyan); margin-top: 10px;">
@@ -615,26 +632,28 @@
             </div>
           </div>
 
-          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - PERMISSÕES COMPLETAS) -->
+          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - CONTROLE MODULAR TOTAL) -->
           <div id="master-control-section" style="display:none;">
-            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle Total de ADMs)</button>
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle Total de Permissões)</button>
             <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
               <div class="admin-card" style="border-color: var(--c-red);">
-                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Controlo de Permissões dos Colaboradores</h5>
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Ative ou desative abaixo todas as permissões para o Alisson (Rafa369@gmail.com):</p>
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Gerenciar Poderes dos Administradores Colaboradores</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Defina exatamente o que o Alisson (Rafa369@gmail.com) tem permissão de adicionar, editar ou excluir no sistema:</p>
                 <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
                   <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px;">
                     <div>
                       <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador)</strong>
                       <span style="color: var(--c-cyan); font-size: 0.8rem;">Rafa369@gmail.com</span>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 5px;">
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-home" onchange="savePermissions()"> Gerenciar Início</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-menu" onchange="savePermissions()"> Gerenciar Cardápio</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Gerenciar Agenda</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Moderar Recados/Som</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Gerenciar Equipe</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Gerenciar Rankings</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 5px;">
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Pode Alterar Rankings</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Pode Alterar Agenda & Flyer</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Pode Alterar Equipe</label>
                     </div>
                   </div>
                 </div>
@@ -772,118 +791,8 @@
   <script>
     const BIN_ID = "6ab5ac11ac6210605af28b20";
     const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
-    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-    const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
-
-    function escapeHTML(str) {
-      if (!str) return '';
-      return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
-    const AUTH_ACCOUNTS = [
-      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
-      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
-    ];
-
-    function b64Decode(str) {
-      return decodeURIComponent(escape(window.atob(str)));
-    }
-
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
-    const defaultMenu = [
-      { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },
-      { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
-      { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
-      { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
-      { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
-      { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
-      { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
-      { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
-    ];
-    const defaultAgenda = [
-      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
-      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
-    ];
-    const defaultTeam = [
-      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
-      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
-      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
-      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
-    ];
-    const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
-    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
-    const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
-
-    let appData = {
-      home: defaultHome,
-      menu: defaultMenu,
-      agenda: defaultAgenda,
-      team: defaultTeam,
-      arcade: defaultArcade,
-      cachaceiros: defaultCachaceiros,
-      flyer: defaultFlyer,
-      customTabs: [],
-      userSongs: [],
-      pendingSongs: [],
-      userMessages: [],
-      pendingMessages: [],
-      adminLogs: [],
-      permissions: { canHome: true, canMenu: true, canAgenda: true, canMod: true, canTeam: true, canRank: true }
-    };
-
-    let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
-
-    async function initApp() {
-      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
-        document.getElementById('gh-user').value = githubConfig.user;
-        document.getElementById('gh-repo').value = githubConfig.repo;
-        document.getElementById('gh-token').value = githubConfig.token;
-        updateGitHubUI(true);
-      } else {
-        updateGitHubUI(false);
-      }
-      
-      await fetchBinData();
-      renderApp();
-      
-      if(localStorage.getItem('brg_adm_logged') === 'true') {
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        updateAdminGreeting();
-      }
-
-      setInterval(fetchBinData, 15000);
-    }
-
-    function updateGitHubUI(isConnected) {
-      const dot = document.getElementById('gh-status-dot');
-      const text = document.getElementById('gh-status-text');
-      if (!dot || !text) return;
-
-      if(isConnected) {
-        dot.className = 'status-dot open';
-        dot.style.background = '#00e676';
-        text.innerText = `GitHub (${githubConfig.user}/${githubConfig.repo}): VINCULADO & ATIVO ✅`;
-        text.style.color = '#00e676';
-      } else {
-        dot.className = 'status-dot closed';
-        dot.style.background = '#ff1744';
-        text.innerText = 'GitHub Pages: Não Vinculado (Salva na Nuvem JSONBin) ⚠️';
-        text.style.color = '#ff9800';
-      }
-    }
-
-    async function fetchBinData() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
-        return;
-      }
-      try {
-        const res = await fetch(`${BIN_URL}/latest`, {
+    const BIN_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";      function escapeHTML(str) {       if (!str) return '';       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');     }      const AUTH_ACCOUNTS = [       { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },       { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }     ];      function b64Decode(str) {       return decodeURIComponent(escape(window.atob(str)));     }      const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };     const defaultMenu = [       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },       { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },       { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },       { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },       { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },       { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },       { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },       { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },       { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },       { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },       { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }     ];     const defaultAgenda = [       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },       { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }     ];     const defaultTeam = [       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },       { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },       { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },       { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }     ];     const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
+    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));     const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };      let appData = {       home: defaultHome,       menu: defaultMenu,       agenda: defaultAgenda,       team: defaultTeam,       arcade: defaultArcade,       cachaceiros: defaultCachaceiros,       flyer: defaultFlyer,       customTabs: [],       userSongs: [],       pendingSongs: [],       userMessages: [],       pendingMessages: [],       adminLogs: [],       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true }     };      let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) \vert{}\vert{} { user: '', repo: '', token: '' };      async function initApp() {       if(githubConfig.user && githubConfig.repo && githubConfig.token) {         document.getElementById('gh-user').value = githubConfig.user;         document.getElementById('gh-repo').value = githubConfig.repo;         document.getElementById('gh-token').value = githubConfig.token;         updateGitHubUI(true);       } else {         updateGitHubUI(false);       }              await fetchBinData();       renderApp();              if(localStorage.getItem('brg_adm_logged') === 'true') {         document.getElementById('admin-login').style.display = 'none';         document.getElementById('admin-dashboard').style.display = 'block';         updateAdminGreeting();       }        setInterval(fetchBinData, 15000);     }      function updateGitHubUI(isConnected) {       const dot = document.getElementById('gh-status-dot');       const text = document.getElementById('gh-status-text');       if (!dot \vert{}\vert{} !text) return;        if(isConnected) {         dot.className = 'status-dot open';         dot.style.background = '#00e676';         text.innerText = `GitHub (${githubConfig.user}/${githubConfig.repo}): VINCULADO & ATIVO ✅`;         text.style.color = '#00e676';       } else {         dot.className = 'status-dot closed';         dot.style.background = '#ff1744';         text.innerText = 'GitHub Pages: Não Vinculado (Salva na Nuvem JSONBin) ⚠️';         text.style.color = '#ff9800';       }     }      async function fetchBinData() {       if (document.activeElement && (document.activeElement.tagName === 'INPUT' \vert{}\vert{} document.activeElement.tagName === 'TEXTAREA')) {         return;       }       try {         const res = await fetch(`${BIN_URL}/latest`, {
           headers: { 'X-Master-Key': MASTER_KEY }
         });
         if(res.ok) {
@@ -955,37 +864,7 @@
       document.getElementById('user-song-req').value = '';
       
       try {
-        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
-        if(res.ok) {
-          const json = await res.json();
-          if(json.record) appData = { ...appData, ...json.record };
-        }
-      } catch(e) {}
-
-      if(!appData.pendingSongs) appData.pendingSongs = [];
-      appData.pendingSongs.push(newItem);
-      
-      await saveBinData();
-      alert("✅ Pedido enviado com sucesso! Aguarde a moderação do DJ.");
-    }
-
-    async function submitUserMessage() {
-      const ig = document.getElementById('user-msg-ig').value.trim();
-      const text = document.getElementById('user-msg-text').value.trim();
-      if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
-      
-      const newItem = {
-        id: Date.now(),
-        ig: ig.startsWith('@') ? ig : '@' + ig,
-        text: text,
-        timestamp: Date.now()
-      };
-
-      document.getElementById('user-msg-ig').value = '';
-      document.getElementById('user-msg-text').value = '';
-      
-      try {
-        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
+        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });         if(res.ok) {           const json = await res.json();           if(json.record) appData = { ...appData, ...json.record };         }       } catch(e) {}        if(!appData.pendingSongs) appData.pendingSongs = [];       appData.pendingSongs.push(newItem);              await saveBinData();       alert("✅ Pedido enviado com sucesso! Aguarde a moderação do DJ.");     }      async function submitUserMessage() {       const ig = document.getElementById('user-msg-ig').value.trim();       const text = document.getElementById('user-msg-text').value.trim();       if(!ig \vert{}\vert{} !text) return alert("Preencha seu Instagram e o recado.");              const newItem = {         id: Date.now(),         ig: ig.startsWith('@') ? ig : '@' + ig,         text: text,         timestamp: Date.now()       };        document.getElementById('user-msg-ig').value = '';       document.getElementById('user-msg-text').value = '';              try {         const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
         if(res.ok) {
           const json = await res.json();
           if(json.record) appData = { ...appData, ...json.record };
@@ -1064,6 +943,19 @@
 
       if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
       else { document.getElementById('home-img').style.display = 'none'; }
+
+      // Visibilidade das barras de ação para ADM nas abas
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canAdd = isMaster || perms.canAdd !== false;
+
+      const bBebidas = document.getElementById('bar-action-bebidas');
+      const bPorcoes = document.getElementById('bar-action-porcoes');
+      const bAgenda = document.getElementById('bar-action-agenda');
+      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
 
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
@@ -1213,22 +1105,26 @@
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return;
 
-      const canHome = document.getElementById('perm-home').checked;
-      const canMenu = document.getElementById('perm-menu').checked;
-      const canAgenda = document.getElementById('perm-agenda').checked;
+      const canAdd = document.getElementById('perm-add').checked;
+      const canEdit = document.getElementById('perm-edit').checked;
+      const canDel = document.getElementById('perm-del').checked;
+      const canTabs = document.getElementById('perm-tabs').checked;
       const canMod = document.getElementById('perm-mod').checked;
-      const canTeam = document.getElementById('perm-team').checked;
       const canRank = document.getElementById('perm-rank').checked;
+      const canAgenda = document.getElementById('perm-agenda').checked;
+      const canTeam = document.getElementById('perm-team').checked;
 
       if(!appData.permissions) appData.permissions = {};
-      appData.permissions.canHome = canHome;
-      appData.permissions.canMenu = canMenu;
-      appData.permissions.canAgenda = canAgenda;
+      appData.permissions.canAdd = canAdd;
+      appData.permissions.canEdit = canEdit;
+      appData.permissions.canDel = canDel;
+      appData.permissions.canTabs = canTabs;
       appData.permissions.canMod = canMod;
-      appData.permissions.canTeam = canTeam;
       appData.permissions.canRank = canRank;
+      appData.permissions.canAgenda = canAgenda;
+      appData.permissions.canTeam = canTeam;
 
-      await saveBinData("Atualizou todas as permissões do colaborador Alisson");
+      await saveBinData("Atualizou todas as permissões modulares do colaborador Alisson");
       alert("Permissões guardadas com sucesso!");
     }
 
@@ -1314,9 +1210,14 @@
       document.getElementById('modalImg').src = img;
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canEdit = isMaster || perms.canEdit !== false;
+      const canDel = isMaster || perms.canDel !== false;
+
       const editBox = document.getElementById('modal-adm-edit-box');
 
-      if(isLoggedIn) {
+      if(isLoggedIn && (canEdit || canDel)) {
         editBox.style.display = 'block';
         document.getElementById('modal-edit-id').value = id;
         document.getElementById('modal-edit-name').value = name;
@@ -1324,6 +1225,7 @@
         document.getElementById('modal-edit-short').value = desc;
         document.getElementById('modal-edit-full').value = desc;
         document.getElementById('modal-edit-img').value = img;
+        document.getElementById('modal-item-del-btn').style.display = canDel ? 'inline-block' : 'none';
       } else {
         editBox.style.display = 'none';
       }
@@ -1340,16 +1242,16 @@
 
     async function saveModalEdit() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canMenu: true };
-      if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
       const id = Number(document.getElementById('modal-edit-id').value);
       const item = appData.menu.find(i => i.id === id);
       if(!item) return;
 
-      const newName = document.getElementById('modal-edit-name').value.trim();
       const oldName = item.name;
       const oldPrice = item.price;
+      const newName = document.getElementById('modal-edit-name').value.trim();
 
       // Validação de duplicidade ao renomear
       if(newName.toLowerCase() !== oldName.toLowerCase()) {
@@ -1366,13 +1268,14 @@
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
       closeModal('productModal');
-      await saveBinData(`Editou diretamente no modal o item "${oldName}" para "${item.name}" (Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
+      await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
       alert("✅ Item atualizado com sucesso!");
     }
 
     async function deleteModalItemDirect() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir itens do cardápio!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const id = Number(document.getElementById('modal-edit-id').value);
       const item = appData.menu.find(i => i.id === id);
@@ -1381,7 +1284,7 @@
       if(confirm(`Tem certeza que deseja EXCLUIR "${item.name}" do cardápio?`)) {
         appData.menu = appData.menu.filter(i => i.id !== id);
         closeModal('productModal');
-        await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}"`);
+        await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}" (Preço R$ ${item.price})`);
         alert("✅ Item excluído com sucesso!");
       }
     }
@@ -1394,9 +1297,14 @@
       document.getElementById('playerModalImg').src = imgUrl;
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canRank = isMaster || perms.canRank !== false;
+      const canDel = isMaster || perms.canDel !== false;
+
       const editBox = document.getElementById('player-adm-edit-box');
 
-      if(isLoggedIn) {
+      if(isLoggedIn && canRank) {
         editBox.style.display = 'block';
         document.getElementById('player-edit-type').value = type;
         document.getElementById('player-edit-id').value = id;
@@ -1406,6 +1314,7 @@
         document.getElementById('player-edit-prize').value = prize;
         document.getElementById('player-edit-quote').value = quote;
         document.getElementById('player-edit-img').value = imgUrl;
+        document.getElementById('modal-player-del-btn').style.display = canDel ? 'inline-block' : 'none';
       } else {
         editBox.style.display = 'none';
       }
@@ -1422,8 +1331,8 @@
 
     async function savePlayerEdit() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canRank: true };
-      if(!isMaster && !permissions.canRank) return alert("Acesso Negado: A tua permissão para alterar rankings foi desativada pelo Master!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canRank === false) return alert("Acesso Negado: Permissão de ranking desativada pelo Master!");
 
       const type = document.getElementById('player-edit-type').value;
       const id = Number(document.getElementById('player-edit-id').value);
@@ -1445,9 +1354,38 @@
       alert("✅ Jogador atualizado com sucesso!");
     }
 
+    async function deleteModalPlayerDirect() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
+
+      const type = document.getElementById('player-edit-type').value;
+      const id = Number(document.getElementById('player-edit-id').value);
+      const list = type === 'arcade' ? appData.arcade : appData.cachaceiros;
+      const player = list.find(i => i.id === id);
+      if(!player) return;
+
+      if(confirm(`Tem certeza que deseja limpar/excluir o registro de "${player.name}" da posição #${id}?`)) {
+        const oldName = player.name;
+        player.name = `Jogador ${id}`;
+        player.sub = `@rocker`;
+        player.score = `0`;
+        player.prize = ``;
+        player.quote = ``;
+        player.img = `https://ui-avatars.com/api/?name=P${id}&background=222&color=fff`;
+
+        closeModal('playerModal');
+        await saveBinData(`Excluiu/Resetou o registro do jogador "${oldName}" na posição #${id} do ranking ${type}`);
+        alert("✅ Registro removido com sucesso!");
+      }
+    }
+
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
       const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canAgenda = isMaster || perms.canAgenda !== false;
+      const canDel = isMaster || perms.canDel !== false;
 
       if(type === 'featured') {
         document.getElementById('e-tag').innerText = appData.flyer.tag;
@@ -1457,7 +1395,7 @@
         document.getElementById('eventModalImg').src = appData.flyer.img;
 
         const editBox = document.getElementById('event-adm-edit-box');
-        if(isAdmLogged) {
+        if(isAdmLogged && canAgenda) {
           editBox.style.display = 'block';
           document.getElementById('event-edit-type').value = 'featured';
           document.getElementById('event-edit-tag').value = appData.flyer.tag;
@@ -1465,7 +1403,7 @@
           document.getElementById('event-edit-sub').value = appData.flyer.sub;
           document.getElementById('event-edit-desc').value = appData.flyer.desc;
           document.getElementById('event-edit-img').value = appData.flyer.img;
-          document.getElementById('modal-event-del-btn').style.display = 'none'; // Flyer destaque não se exclui, só edita
+          document.getElementById('modal-event-del-btn').style.display = 'none';
         } else {
           editBox.style.display = 'none';
         }
@@ -1477,7 +1415,7 @@
         document.getElementById('eventModalImg').src = imgTag;
 
         const editBox = document.getElementById('event-adm-edit-box');
-        if(isAdmLogged) {
+        if(isAdmLogged && canAgenda) {
           editBox.style.display = 'block';
           document.getElementById('event-edit-type').value = 'mini';
           document.getElementById('event-edit-id').value = agendaId;
@@ -1486,7 +1424,7 @@
           document.getElementById('event-edit-sub').value = "";
           document.getElementById('event-edit-desc').value = descTag;
           document.getElementById('event-edit-img').value = imgTag;
-          document.getElementById('modal-event-del-btn').style.display = isMaster ? 'inline-block' : 'none';
+          document.getElementById('modal-event-del-btn').style.display = canDel ? 'inline-block' : 'none';
         } else {
           editBox.style.display = 'none';
         }
@@ -1507,8 +1445,8 @@
 
     async function saveEventEdit() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canAgenda: true };
-      if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
       const type = document.getElementById('event-edit-type').value;
       const newTag = document.getElementById('event-edit-tag').value;
@@ -1547,7 +1485,8 @@
 
     async function deleteModalEventDirect() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir eventos da agenda!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const id = Number(document.getElementById('event-edit-id').value);
       const ev = appData.agenda.find(i => i.id === id);
@@ -1559,6 +1498,52 @@
         await saveBinData(`Excluiu diretamente da agenda o evento: "${ev.title}" (${ev.date})`);
         alert("✅ Evento excluído com sucesso!");
       }
+    }
+
+    function openInlineAddItem(type) {
+      const name = prompt("Nome do novo item:");
+      if(!name || !name.trim()) return;
+      const cleanName = name.trim();
+
+      const exists = appData.menu.some(i => i.name.trim().toLowerCase() === cleanName.toLowerCase());
+      if(exists) {
+        return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+      }
+
+      const price = prompt("Preço (ex: 25,00):");
+      if(!price) return;
+      const desc = prompt("Descrição curta:") || "";
+
+      appData.menu.push({
+        id: Date.now(),
+        type: type,
+        name: cleanName,
+        short: desc,
+        full: desc,
+        price: price,
+        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
+      });
+
+      saveBinData(`Adicionou diretamente na aba o item: "${cleanName}" (${type}) por R$ ${price}`);
+      alert("✅ Item adicionado com sucesso!");
+    }
+
+    function openInlineAddEvent() {
+      const title = prompt("Título do evento / Nome da banda:");
+      if(!title || !title.trim()) return;
+      const date = prompt("Data (ex: 20/Out):") || "Em Breve";
+      const desc = prompt("Descrição do show:") || "";
+
+      appData.agenda.push({
+        id: Date.now(),
+        date: date,
+        title: title.trim(),
+        desc: desc,
+        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
+      });
+
+      saveBinData(`Adicionou diretamente na agenda o evento: "${title.trim()}" (${date})`);
+      alert("✅ Evento adicionado com sucesso!");
     }
 
     function toggleAdminSection(id) {
@@ -1589,8 +1574,8 @@
       }
 
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canMod: true };
-      const modPermitted = isMaster || permissions.canMod;
+      const perms = appData.permissions || {};
+      const modPermitted = isMaster || perms.canMod !== false;
 
       if(!modPermitted) {
         pSongsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
@@ -1691,7 +1676,8 @@
 
     async function saveCustomTab() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode criar ou editar abas!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado: Permissão de abas desativada pelo Master!");
 
       const originalId = document.getElementById('edit-tab-original-id').value;
       const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
@@ -1720,7 +1706,8 @@
 
     function editCustomTab(id) {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
       const tab = appData.customTabs.find(t => t.id === id);
       if(!tab) return;
@@ -1753,7 +1740,8 @@
 
     async function removeCustomTab(id) {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
         appData.customTabs = appData.customTabs.filter(t => t.id !== id);
@@ -1795,15 +1783,14 @@
       }
 
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canMenu: true, canAgenda: true };
-      
-      const menuPermitted = isMaster || permissions.canMenu;
-      const agendaPermitted = isMaster || permissions.canAgenda;
+      const perms = appData.permissions || {};
+      const canEdit = isMaster || perms.canEdit !== false;
+      const canDel = isMaster || perms.canDel !== false;
 
       const menuList = document.getElementById('admin-menu-list');
       if(menuList) {
-        if(!menuPermitted) {
-          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master (Touru) desativou a tua permissão para alterar o cardápio.</p>';
+        if(!canEdit && !canDel) {
+          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
         } else {
           menuList.innerHTML = appData.menu.map(i => `
             <div class="admin-card">
@@ -1821,8 +1808,8 @@
                     <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
                     <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
                   </div>
-                  <button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>
-                  ${isMaster ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : `<span style="font-size:0.75rem; color:#888;">(Apenas Master exclui)</span>`}
+                  ${canEdit ? `<button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>` : ''}
+                  ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
               </div>
             </div>`).join('');
         }
@@ -1830,8 +1817,9 @@
       
       const agendaList = document.getElementById('admin-agenda-list');
       if(agendaList) {
-        if(!agendaPermitted) {
-          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master (Touru) desativou a tua permissão para alterar a agenda.</p>';
+        const canAgenda = isMaster || perms.canAgenda !== false;
+        if(!canAgenda) {
+          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar a agenda.</p>';
         } else {
           agendaList.innerHTML = appData.agenda.map(i => `
             <div class="admin-card">
@@ -1846,8 +1834,8 @@
                     <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
                     <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
                 </div>
-                <button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>
-                ${isMaster ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
+                ${canEdit ? `<button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>` : ''}
+                ${canDel ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
               </div>
             </div>`).join('');
         }
@@ -1965,6 +1953,7 @@
         document.getElementById('adm-f-desc').value = appData.flyer.desc;
         
         alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
+        renderApp();
       } else {
         alert('Acesso Negado. E-mail ou Senha incorretos.');
       }
@@ -1993,19 +1982,23 @@
       if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
       if(appData.permissions) {
-        const pHome = document.getElementById('perm-home');
-        const pMenu = document.getElementById('perm-menu');
-        const pAgenda = document.getElementById('perm-agenda');
+        const pAdd = document.getElementById('perm-add');
+        const pEdit = document.getElementById('perm-edit');
+        const pDel = document.getElementById('perm-del');
+        const pTabs = document.getElementById('perm-tabs');
         const pMod = document.getElementById('perm-mod');
-        const pTeam = document.getElementById('perm-team');
         const pRank = document.getElementById('perm-rank');
+        const pAgenda = document.getElementById('perm-agenda');
+        const pTeam = document.getElementById('perm-team');
 
-        if(pHome) pHome.checked = appData.permissions.canHome !== false;
-        if(pMenu) pMenu.checked = appData.permissions.canMenu !== false;
-        if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
+        if(pAdd) pAdd.checked = appData.permissions.canAdd !== false;
+        if(pEdit) pEdit.checked = appData.permissions.canEdit !== false;
+        if(pDel) pDel.checked = appData.permissions.canDel !== false;
+        if(pTabs) pTabs.checked = appData.permissions.canTabs !== false;
         if(pMod) pMod.checked = appData.permissions.canMod !== false;
-        if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
         if(pRank) pRank.checked = appData.permissions.canRank !== false;
+        if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
+        if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
       }
     }
 
@@ -2016,6 +2009,7 @@
       localStorage.removeItem('brg_adm_is_master');
       document.getElementById('admin-dashboard').style.display = 'none';
       document.getElementById('admin-login').style.display = 'block';
+      renderApp();
     }
 
     async function updateHomeImg(input) {
@@ -2054,8 +2048,8 @@
 
     async function saveItemData(id) {
        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-       const permissions = appData.permissions || { canMenu: true };
-       if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
        const item = appData.menu.find(i => i.id === id);
        if(item) {
@@ -2063,7 +2057,6 @@
           const oldPrice = item.price;
           const newName = document.getElementById(`name-${id}`).value.trim();
 
-          // Prevenção de duplicidade
           if(newName.toLowerCase() !== oldName.toLowerCase()) {
             const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
             if(exists) {
@@ -2075,15 +2068,15 @@
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData(`Editou o item do cardápio "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
+          await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
           alert('Produto Salvo!');
        }
     }
 
     async function saveAgendaData(id) {
        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-       const permissions = appData.permissions || { canAgenda: true };
-       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
        const item = appData.agenda.find(i => i.id === id);
        if(item) {
@@ -2109,6 +2102,10 @@
     }
 
     async function saveArcadeData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
+
        const t = appData.arcade.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`arc-name-${id}`).value;
@@ -2123,6 +2120,10 @@
     }
 
     async function saveCachaceiroData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
+
        const t = appData.cachaceiros.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
@@ -2140,14 +2141,13 @@
 
     async function addMenuItem() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canMenu: true };
-      if(!isMaster && !permissions.canMenu) return alert("Acesso Negado!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
 
       const name = document.getElementById('new-item-name').value.trim();
       const price = document.getElementById('new-item-price').value.trim();
       if(!name || !price) return alert("Preencha nome e preço.");
 
-      // Prevenção de duplicidade ao adicionar novo item
       const exists = appData.menu.some(i => i.name.trim().toLowerCase() === name.toLowerCase());
       if(exists) {
         return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
@@ -2164,8 +2164,8 @@
 
     async function addAgendaItem() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canAgenda: true };
-      if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada!");
 
       const title = document.getElementById('new-ev-title').value.trim();
       const date = document.getElementById('new-ev-date').value.trim();
@@ -2177,7 +2177,8 @@
 
     async function removeMenuItem(id) { 
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir itens do cardápio!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const item = appData.menu.find(i => i.id === id);
       if(confirm('Tem certeza que deseja excluir o item "' + (item ? item.name : id) + '" do cardápio?')) { 
@@ -2188,7 +2189,8 @@
 
     async function removeAgendaItem(id) { 
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir eventos da agenda!");
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const ev = appData.agenda.find(i => i.id === id);
       if(confirm('Tem certeza que deseja excluir o evento "' + (ev ? ev.title : id) + '" da agenda?')) { 
