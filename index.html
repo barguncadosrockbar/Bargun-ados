@@ -127,18 +127,19 @@
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 380px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 400px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 90vh; overflow-y: auto; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #eventModalImg { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg, #eventModalImg, #agendaEditModalImg, #playerModalImg { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
 
-    .featured-flyer-img { width: 100%; height: 280px; object-fit: cover; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
+    /* FLYER DE DESTAQUE CENTRALIZADO E PROPORCIONAL */
+    .featured-flyer-img { width: 100%; max-height: 400px; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
     .featured-flyer-img:hover { transform: scale(1.01); }
 
     #eventModalImg { border-color: var(--c-purple); max-height: 250px; }
@@ -244,7 +245,7 @@
   <div class="bg-watermark"></div>
   <canvas id="sparks-canvas"></canvas>
 
-  <!-- MODAL DE DETALHES / EDIÇÃO DIRETA NAS ABAS (CARDÁPIO) -->
+  <!-- MODAL DE DETALHES / EDIÇÃO DIRETA DE CARDÁPIO -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
       <span class="close-btn" onclick="closeModal('productModal')">×</span>
@@ -253,9 +254,8 @@
       <p id="modalDesc">Descrição</p>
       <div id="modalPrice">R$ 00,00</div>
 
-      <!-- SEÇÃO DE EDIÇÃO INTERNA VISÍVEL APENAS PARA ADMINISTRADORES LOGADOS -->
       <div id="modal-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
-        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Painel de Edição Direta</h5>
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição Rápida (Cardápio)</h5>
         <input type="hidden" id="modal-edit-id">
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
         <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
@@ -270,11 +270,45 @@
           <input type="file" accept="image/*" onchange="modalUploadImg(this)">
         </div>
         <input type="hidden" id="modal-edit-img">
-        <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Alteração Direta</button>
+        <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Alteração</button>
       </div>
     </div>
   </div>
 
+  <!-- MODAL DE EDIÇÃO DIRETA DE RANKINGS (ARCADE / CACHACEIROS) -->
+  <div id="playerModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
+      <span class="close-btn" onclick="closeModal('playerModal')">×</span>
+      <img id="playerModalImg" src="" alt="Player" onerror="fallbackImg(this)">
+      <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
+      <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
+      <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
+
+      <div id="player-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-yellow); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição de Jogador (Ranking)</h5>
+        <input type="hidden" id="player-edit-type">
+        <input type="hidden" id="player-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
+        <input type="text" id="player-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo / Instagram (@):</label>
+        <input type="text" id="player-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Score / Litros:</label>
+        <input type="text" id="player-edit-score" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Prêmio:</label>
+        <input type="text" id="player-edit-prize" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Frase de Provocação:</label>
+        <input type="text" id="player-edit-quote" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Avatar</span>
+          <input type="file" accept="image/*" onchange="playerUploadImg(this)">
+        </div>
+        <input type="hidden" id="player-edit-img">
+        <button class="action-btn" onclick="savePlayerEdit()" style="background: var(--c-yellow); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Jogador</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DIRETA DE AGENDA / FLYER DESTAQUE -->
   <div id="eventModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
       <span class="close-btn" onclick="closeModal('eventModal')">×</span>
@@ -283,16 +317,26 @@
       <h3 id="e-title" style="font-family: var(--font-title); font-size: 2.2rem; color: #fff; margin-bottom: 5px; text-transform: uppercase;">TITULO</h3>
       <p id="e-sub" style="color: var(--c-yellow); font-weight: bold; font-size: 1rem; margin-bottom: 15px;">SUBTITULO</p>
       <p id="e-desc" style="color: #ccc; font-size: 1rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">DESCRIÇÃO</p>
-    </div>
-  </div>
 
-  <div id="playerModal" class="modal">
-    <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
-      <span class="close-btn" onclick="closeModal('playerModal')">×</span>
-      <img id="playerModalImg" src="" alt="Player" onerror="fallbackImg(this)">
-      <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
-      <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
-      <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
+      <div id="event-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição Rápida (Agenda)</h5>
+        <input type="hidden" id="event-edit-type">
+        <input type="hidden" id="event-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Tag / Data:</label>
+        <input type="text" id="event-edit-tag" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Título / Banda:</label>
+        <input type="text" id="event-edit-title" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo:</label>
+        <input type="text" id="event-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Descrição:</label>
+        <textarea id="event-edit-desc" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Flyer / Imagem</span>
+          <input type="file" accept="image/*" onchange="eventUploadImg(this)">
+        </div>
+        <input type="hidden" id="event-edit-img">
+        <button class="action-btn" onclick="saveEventEdit()" style="background: var(--c-cyan); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Evento</button>
+      </div>
     </div>
   </div>
 
@@ -387,12 +431,12 @@
 
         <div id="rankings-view-arcade">
           <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação ou editar!)</p>
           <div class="leaderboard-list" id="dynamic-arcade-list"></div>
         </div>
 
         <div id="rankings-view-cachaceiros" style="display: none;">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado ou editar!)</p>
           <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
         </div>
       </section>
@@ -722,7 +766,7 @@
       return decodeURIComponent(escape(window.atob(str)));
     }
 
-    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie ao Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -1002,7 +1046,7 @@
       cAgenda.forEach(ev => {
         const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
         agendaList.innerHTML += `
-          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openEventModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}')">
+          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
             <div class="mf-content">
               <div class="mf-date">${ev.date}</div>
               <div class="mf-title">${ev.title}</div>
@@ -1047,12 +1091,12 @@
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.ig || '@jogador')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
         const honorTitle = getHonorTitle(index, 'arcade');
         const displayIg = i.ig || '@jogador';
         
         return `
-        <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
           <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
@@ -1068,12 +1112,12 @@
       document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-        const clickHTML = isTop3 ? `onclick="openPlayerModal('${escapeHTML(i.name)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${escapeHTML(safeQuote)}', '${i.img}')"` : '';
+        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
         const honorTitle = getHonorTitle(index, 'cachaceiro');
         const displayIg = i.sub || i.ig || '@cachaceiro';
         
         return `
-        <div class="lb-item ${isTop3 ? 'top3-item clickable' : ''}" ${clickHTML}>
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
           <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
@@ -1270,8 +1314,165 @@
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
       closeModal('productModal');
-      await saveBinData(`Editou diretamente no cardápio o item "${oldName}" para "${item.name}" (Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
+      await saveBinData(`Editou diretamente no modal o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
       alert("✅ Item atualizado com sucesso!");
+    }
+
+    function openPlayerModal(type, id, name, sub, score, prize, quote, ig, imgUrl) {
+      document.getElementById('playerName').innerText = name;
+      document.getElementById('playerIg').innerText = ig;
+      document.getElementById('playerIg').href = "https://instagram.com/" + ig.replace('@','');
+      document.getElementById('playerQuote').innerText = `"${quote}"`;
+      document.getElementById('playerModalImg').src = imgUrl;
+
+      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
+      const editBox = document.getElementById('player-adm-edit-box');
+
+      if(isLoggedIn) {
+        editBox.style.display = 'block';
+        document.getElementById('player-edit-type').value = type;
+        document.getElementById('player-edit-id').value = id;
+        document.getElementById('player-edit-name').value = name;
+        document.getElementById('player-edit-sub').value = sub;
+        document.getElementById('player-edit-score').value = score;
+        document.getElementById('player-edit-prize').value = prize;
+        document.getElementById('player-edit-quote').value = quote;
+        document.getElementById('player-edit-img').value = imgUrl;
+      } else {
+        editBox.style.display = 'none';
+      }
+
+      document.getElementById('playerModal').style.display = 'flex';
+    }
+
+    async function playerUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('player-edit-img').value = res;
+        alert("Avatar atualizado com sucesso!");
+      });
+    }
+
+    async function savePlayerEdit() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canRank: true };
+      if(!isMaster && !permissions.canRank) return alert("Acesso Negado: A tua permissão para alterar rankings foi desativada pelo Master!");
+
+      const type = document.getElementById('player-edit-type').value;
+      const id = Number(document.getElementById('player-edit-id').value);
+      
+      const list = type === 'arcade' ? appData.arcade : appData.cachaceiros;
+      const player = list.find(i => i.id === id);
+      if(!player) return;
+
+      const oldName = player.name;
+      player.name = document.getElementById('player-edit-name').value;
+      player.sub = document.getElementById('player-edit-sub').value;
+      player.score = document.getElementById('player-edit-score').value;
+      player.prize = document.getElementById('player-edit-prize').value;
+      player.quote = document.getElementById('player-edit-quote').value;
+      player.img = document.getElementById('player-edit-img').value || player.img;
+
+      closeModal('playerModal');
+      await saveBinData(`Editou o ranking ${type === 'arcade' ? 'Arcade' : 'Cachaceiros'} na posição #${id} ("${oldName}" alterado para "${player.name}", Score: ${player.score})`);
+      alert("✅ Jogador atualizado com sucesso!");
+    }
+
+    function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
+      const isLoggedIn = (localStorage.getItem('brg_adm_is_master') === 'true' || appData.permissions?.canAgenda !== false);
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+
+      if(type === 'featured') {
+        document.getElementById('e-tag').innerText = appData.flyer.tag;
+        document.getElementById('e-title').innerText = appData.flyer.title;
+        document.getElementById('e-sub').innerText = appData.flyer.sub;
+        document.getElementById('e-desc').innerText = appData.flyer.desc;
+        document.getElementById('eventModalImg').src = appData.flyer.img;
+
+        const editBox = document.getElementById('event-adm-edit-box');
+        if(isAdmLogged) {
+          editBox.style.display = 'block';
+          document.getElementById('event-edit-type').value = 'featured';
+          document.getElementById('event-edit-tag').value = appData.flyer.tag;
+          document.getElementById('event-edit-title').value = appData.flyer.title;
+          document.getElementById('event-edit-sub').value = appData.flyer.sub;
+          document.getElementById('event-edit-desc').value = appData.flyer.desc;
+          document.getElementById('event-edit-img').value = appData.flyer.img;
+        } else {
+          editBox.style.display = 'none';
+        }
+      } else {
+        document.getElementById('e-tag').innerText = dateTag;
+        document.getElementById('e-title').innerText = titleTag;
+        document.getElementById('e-sub').innerText = "Agenda Mensal";
+        document.getElementById('e-desc').innerText = descTag;
+        document.getElementById('eventModalImg').src = imgTag;
+
+        const editBox = document.getElementById('event-adm-edit-box');
+        if(isAdmLogged) {
+          editBox.style.display = 'block';
+          document.getElementById('event-edit-type').value = 'mini';
+          document.getElementById('event-edit-id').value = agendaId;
+          document.getElementById('event-edit-tag').value = dateTag;
+          document.getElementById('event-edit-title').value = titleTag;
+          document.getElementById('event-edit-sub').value = "";
+          document.getElementById('event-edit-desc').value = descTag;
+          document.getElementById('event-edit-img').value = imgTag;
+        } else {
+          editBox.style.display = 'none';
+        }
+      }
+      document.getElementById('eventModal').style.display = 'flex';
+    }
+
+    function openAgendaModalFromList(title, date, desc, img, id) {
+      openAgendaModal('mini', title, date, desc, img, id);
+    }
+
+    async function eventUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('event-edit-img').value = res;
+        alert("Flyer atualizado com sucesso!");
+      });
+    }
+
+    async function saveEventEdit() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const permissions = appData.permissions || { canAgenda: true };
+      if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
+
+      const type = document.getElementById('event-edit-type').value;
+      const newTag = document.getElementById('event-edit-tag').value;
+      const newTitle = document.getElementById('event-edit-title').value;
+      const newSub = document.getElementById('event-edit-sub').value;
+      const newDesc = document.getElementById('event-edit-desc').value;
+      const newImg = document.getElementById('event-edit-img').value;
+
+      if(type === 'featured') {
+        const oldTitle = appData.flyer.title;
+        appData.flyer.tag = newTag;
+        appData.flyer.title = newTitle;
+        appData.flyer.sub = newSub;
+        appData.flyer.desc = newDesc;
+        if(newImg) appData.flyer.img = newImg;
+
+        closeModal('eventModal');
+        await saveBinData(`Editou o Flyer de Destaque Principal ("${oldTitle}" ➔ "${newTitle}")`);
+        alert("✅ Flyer de Destaque atualizado com sucesso!");
+      } else {
+        const id = Number(document.getElementById('event-edit-id').value);
+        const item = appData.agenda.find(i => i.id === id);
+        if(!item) return;
+
+        const oldTitle = item.title;
+        item.date = newTag;
+        item.title = newTitle;
+        item.desc = newDesc;
+        if(newImg) item.img = newImg;
+
+        closeModal('eventModal');
+        await saveBinData(`Editou o evento da agenda "${oldTitle}" para "${item.title}" (${item.date})`);
+        alert("✅ Evento atualizado com sucesso!");
+      }
     }
 
     function toggleAdminSection(id) {
@@ -1403,7 +1604,7 @@
     });
 
     async function saveCustomTab() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode criar ou editar abas!");
 
       const originalId = document.getElementById('edit-tab-original-id').value;
@@ -1432,7 +1633,7 @@
     }
 
     function editCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return alert("Acesso Negado!");
 
       const tab = appData.customTabs.find(t => t.id === id);
@@ -1465,7 +1666,7 @@
     }
 
     async function removeCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return alert("Acesso Negado!");
 
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
@@ -1507,7 +1708,7 @@
         }
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canMenu: true, canAgenda: true };
       
       const menuPermitted = isMaster || permissions.canMenu;
@@ -1766,7 +1967,7 @@
     }
 
     async function saveItemData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
        const permissions = appData.permissions || { canMenu: true };
        if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
 
@@ -1784,7 +1985,7 @@
     }
 
     async function saveAgendaData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
        const permissions = appData.permissions || { canAgenda: true };
        if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado: A tua permissão para alterar a agenda foi desativada pelo Master!");
 
@@ -1842,7 +2043,7 @@
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
 
     async function addMenuItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canMenu: true };
       if(!isMaster && !permissions.canMenu) return alert("Acesso Negado!");
 
@@ -1859,7 +2060,7 @@
     }
 
     async function addAgendaItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const permissions = appData.permissions || { canAgenda: true };
       if(!isMaster && !permissions.canAgenda) return alert("Acesso Negado!");
 
@@ -1872,7 +2073,7 @@
     }
 
     async function removeMenuItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir itens do cardápio!");
 
       const item = appData.menu.find(i => i.id === id);
@@ -1883,7 +2084,7 @@
     }
 
     async function removeAgendaItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode excluir eventos da agenda!");
 
       const ev = appData.agenda.find(i => i.id === id);
@@ -1900,56 +2101,6 @@
       appData.flyer.desc = document.getElementById('adm-f-desc').value;
       await saveBinData("Modificou as informações do Flyer Principal de Destaque");
       alert("Dados do Destaque Salvos!");
-    }
-
-    function openAgendaModal(type) {
-      document.getElementById('e-tag').innerText = appData.flyer.tag;
-      document.getElementById('e-title').innerText = appData.flyer.title;
-      document.getElementById('e-sub').innerText = appData.flyer.sub;
-      document.getElementById('e-desc').innerText = appData.flyer.desc;
-      document.getElementById('eventModalImg').src = appData.flyer.img;
-      document.getElementById('eventModal').style.display = 'flex';
-    }
-
-    function openEventModalFromList(title, date, desc, img) {
-      document.getElementById('e-tag').innerText = date;
-      document.getElementById('e-title').innerText = title;
-      document.getElementById('e-sub').innerText = "Agenda Mensal";
-      document.getElementById('e-desc').innerText = desc;
-      document.getElementById('eventModalImg').src = img;
-      document.getElementById('eventModal').style.display = 'flex';
-    }
-
-    function openPlayerModal(name, ig, quote, imgUrl) {
-      document.getElementById('playerName').innerText = name;
-      document.getElementById('playerIg').innerText = ig;
-      document.getElementById('playerIg').href = "https://instagram.com/" + ig.replace('@','');
-      document.getElementById('playerQuote').innerText = `"${quote}"`;
-      document.getElementById('playerModalImg').src = imgUrl;
-      document.getElementById('playerModal').style.display = 'flex';
-    }
-
-    async function saveModalEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const permissions = appData.permissions || { canMenu: true };
-      if(!isMaster && !permissions.canMenu) return alert("Acesso Negado: A tua permissão para alterar o cardápio foi desativada pelo Master!");
-
-      const id = Number(document.getElementById('modal-edit-id').value);
-      const item = appData.menu.find(i => i.id === id);
-      if(!item) return;
-
-      const oldName = item.name;
-      const oldPrice = item.price;
-
-      item.name = document.getElementById('modal-edit-name').value;
-      item.price = document.getElementById('modal-edit-price').value;
-      item.short = document.getElementById('modal-edit-short').value;
-      item.full = document.getElementById('modal-edit-full').value;
-      item.img = document.getElementById('modal-edit-img').value || item.img;
-
-      closeModal('productModal');
-      await saveBinData(`Editou diretamente no modal o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
-      alert("✅ Item atualizado com sucesso!");
     }
 
     function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
