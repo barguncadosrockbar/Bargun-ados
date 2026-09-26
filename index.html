@@ -114,22 +114,12 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.2); }
 
-    /* CATEGORIAS EM ACORDEOM / SANFONA */
-    .menu-cat-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
-    .menu-cat-header:hover { background: rgba(255,255,255,0.08); border-color: var(--c-yellow); }
-    .menu-cat-header .cat-arrow { font-size: 0.9rem; transition: transform 0.3s; color: var(--c-yellow); }
-    .menu-cat-header.collapsed .cat-arrow { transform: rotate(-90deg); }
-    .menu-cat-content { display: block; }
-    .menu-cat-content.collapsed { display: none; }
-
-    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+    .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
     .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    .product-card.promo-destaque { border: 2px solid var(--c-yellow); box-shadow: 0 0 15px rgba(255, 235, 59, 0.35); }
-    .promo-flag { position: absolute; top: 8px; left: 8px; background: var(--c-red); color: #fff; font-size: 0.65rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
-
     .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
     .product-card:hover .product-img { transform: scale(1.02); }
     
@@ -238,10 +228,10 @@
 
     .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
 
-    .traffic-counter-box { display: flex; gap: 12px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
-    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 10px 15px; text-align: center; flex: 1; min-width: 120px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-    .counter-stat-val { font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
-    .counter-stat-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
+    .traffic-counter-box { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 12px 20px; text-align: center; flex: 1; min-width: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
+    .counter-stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
 
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
@@ -485,7 +475,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- ABAS COM TODOS OS EMOTICONS E NOMES ORIGINAIS RESTAURADOS -->
+    <!-- ABAS COM TODOS OS EMOTICONS E NOMES RESTAURADOS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
@@ -543,6 +533,7 @@
           <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
@@ -936,7 +927,6 @@
     ];
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
-    
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
       { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
@@ -951,7 +941,6 @@
       { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
       { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
     ];
-
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
       { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
@@ -981,93 +970,69 @@
       userMessages: [],
       pendingMessages: [],
       adminLogs: [],
-      customAdmins: [],
       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
-      traffic: { totalViews: 0, devices: [], daily: {} }
+      traffic: { totalViews: 0, devices: [] }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
     function recordTrafficAnalytics() {
-      try {
-        let deviceId = localStorage.getItem('brg_device_id');
-        if(!deviceId) {
-          deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-          localStorage.setItem('brg_device_id', deviceId);
-        }
+      let deviceId = localStorage.getItem('brg_device_id');
+      if(!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        localStorage.setItem('brg_device_id', deviceId);
+      }
 
-        if(!appData.traffic) {
-          appData.traffic = { totalViews: 0, devices: [], daily: {} };
-        }
-        if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') {
-          appData.traffic.daily = {};
-        }
+      if(!appData.traffic) {
+        appData.traffic = { totalViews: 0, devices: [] };
+      }
 
-        const todayStr = new Date().toISOString().split('T')[0];
-        if(!Array.isArray(appData.traffic.daily[todayStr])) {
-          appData.traffic.daily[todayStr] = [];
-        }
+      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
 
-        if(!appData.traffic.daily[todayStr].includes(deviceId)) {
-          appData.traffic.daily[todayStr].push(deviceId);
-        }
+      if(!Array.isArray(appData.traffic.devices)) {
+        appData.traffic.devices = [];
+      }
 
-        appData.traffic.totalViews = (Number(appData.traffic.totalViews) || 0) + 1;
+      if(!appData.traffic.devices.includes(deviceId)) {
+        appData.traffic.devices.push(deviceId);
+      }
 
-        if(!Array.isArray(appData.traffic.devices)) {
-          appData.traffic.devices = [];
-        }
-        if(!appData.traffic.devices.includes(deviceId)) {
-          appData.traffic.devices.push(deviceId);
-        }
-
-        updateTrafficUI();
-      } catch(e) {}
+      updateTrafficUI();
     }
 
     function updateTrafficUI() {
-      try {
-        const viewsEl = document.getElementById('adm-stat-views');
-        const devEl = document.getElementById('adm-stat-devices');
-        const todayEl = document.getElementById('adm-stat-today');
-        
-        const todayStr = new Date().toISOString().split('T')[0];
-        const todayCount = (appData.traffic && appData.traffic.daily && Array.isArray(appData.traffic.daily[todayStr])) ? appData.traffic.daily[todayStr].length : 0;
-
-        if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
-        if(devEl && appData.traffic) devEl.innerText = (Array.isArray(appData.traffic.devices) ? appData.traffic.devices.length : 0);
-        if(todayEl) todayEl.innerText = todayCount;
-      } catch(e) {}
+      const viewsEl = document.getElementById('adm-stat-views');
+      const devEl = document.getElementById('adm-stat-devices');
+      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
     }
 
     async function initApp() {
-      try {
-        if(githubConfig.user && githubConfig.repo && githubConfig.token) {
-          const uEl = document.getElementById('gh-user');
-          const rEl = document.getElementById('gh-repo');
-          const tEl = document.getElementById('gh-token');
-          if(uEl) uEl.value = githubConfig.user;
-          if(rEl) rEl.value = githubConfig.repo;
-          if(tEl) tEl.value = githubConfig.token;
-          updateGitHubUI(true);
-        } else {
-          updateGitHubUI(false);
-        }
-        
-        await fetchBinData();
-        recordTrafficAnalytics();
-        renderApp();
-        
-        if(localStorage.getItem('brg_adm_logged') === 'true') {
-          const logBox = document.getElementById('admin-login');
-          const dashBox = document.getElementById('admin-dashboard');
-          if(logBox) logBox.style.display = 'none';
-          if(dashBox) dashBox.style.display = 'block';
-          updateAdminGreeting();
-        }
+      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+        const uEl = document.getElementById('gh-user');
+        const rEl = document.getElementById('gh-repo');
+        const tEl = document.getElementById('gh-token');
+        if(uEl) uEl.value = githubConfig.user;
+        if(rEl) rEl.value = githubConfig.repo;
+        if(tEl) tEl.value = githubConfig.token;
+        updateGitHubUI(true);
+      } else {
+        updateGitHubUI(false);
+      }
+      
+      await fetchBinData();
+      recordTrafficAnalytics();
+      renderApp();
+      
+      if(localStorage.getItem('brg_adm_logged') === 'true') {
+        const logBox = document.getElementById('admin-login');
+        const dashBox = document.getElementById('admin-dashboard');
+        if(logBox) logBox.style.display = 'none';
+        if(dashBox) dashBox.style.display = 'block';
+        updateAdminGreeting();
+      }
 
-        setInterval(fetchBinData, 15000);
-      } catch(e) {}
+      setInterval(fetchBinData, 15000);
     }
 
     function updateGitHubUI(isConnected) {
@@ -1245,214 +1210,179 @@
     }
 
     function renderApp() {
-      try {
-        const cHome = appData.home || defaultHome;
-        const cMenu = appData.menu || defaultMenu;
-        const cAgenda = appData.agenda || defaultAgenda;
-        const cTeam = appData.team || defaultTeam;
-        const cArcade = appData.arcade || defaultArcade;
-        const cCach = appData.cachaceiros || defaultCachaceiros;
-        const cFlyer = appData.flyer || defaultFlyer;
-        const cCustomTabs = appData.customTabs || [];
+      const cHome = appData.home;
+      const cMenu = appData.menu;
+      const cAgenda = appData.agenda;
+      const cTeam = appData.team;
+      const cArcade = appData.arcade;
+      const cCach = appData.cachaceiros;
+      const cFlyer = appData.flyer;
+      const cCustomTabs = appData.customTabs || [];
 
-        const hTitle = document.getElementById('h-title');
-        const hDesc1 = document.getElementById('h-desc1');
-        const hDesc2 = document.getElementById('h-desc2');
-        const hPromoTitle = document.getElementById('h-promo-title');
-        const hPromo1 = document.getElementById('h-promo1');
-        const hPromo2 = document.getElementById('h-promo2');
-        const hPromo3 = document.getElementById('h-promo3');
+      document.getElementById('h-title').innerText = cHome.title;
+      document.getElementById('h-desc1').innerText = cHome.desc1;
+      document.getElementById('h-desc2').innerText = cHome.desc2;
+      document.getElementById('h-promo-title').innerText = cHome.promoTitle;
+      document.getElementById('h-promo1').innerText = cHome.promo1;
+      document.getElementById('h-promo2').innerText = cHome.promo2;
+      document.getElementById('h-promo3').innerText = cHome.promo3;
 
-        if(hTitle) hTitle.innerText = cHome.title;
-        if(hDesc1) hDesc1.innerText = cHome.desc1;
-        if(hDesc2) hDesc2.innerText = cHome.desc2;
-        if(hPromoTitle) hPromoTitle.innerText = cHome.promoTitle;
-        if(hPromo1) hPromo1.innerText = cHome.promo1;
-        if(hPromo2) hPromo2.innerText = cHome.promo2;
-        if(hPromo3) hPromo3.innerText = cHome.promo3;
+      const statusDot = document.getElementById('status-dot-el');
+      const statusText = document.getElementById('status-text-el');
+      if(cHome.isOpen !== false) {
+        statusDot.className = 'status-dot open';
+        statusText.innerText = 'BARGUNÇADOS ABERTO';
+        statusText.style.color = '#00e676';
+      } else {
+        statusDot.className = 'status-dot closed';
+        statusText.innerText = 'BARGUNÇADOS FECHADO';
+        statusText.style.color = '#ff1744';
+      }
 
-        const statusDot = document.getElementById('status-dot-el');
-        const statusText = document.getElementById('status-text-el');
-        if(statusDot && statusText) {
-          if(cHome.isOpen !== false) {
-            statusDot.className = 'status-dot open';
-            statusText.innerText = 'BARGUNÇADOS ABERTO';
-            statusText.style.color = '#00e676';
-          } else {
-            statusDot.className = 'status-dot closed';
-            statusText.innerText = 'BARGUNÇADOS FECHADO';
-            statusText.style.color = '#ff1744';
-          }
-        }
+      if(cHome.img) { 
+        document.getElementById('home-img').style.display = 'block'; 
+        document.getElementById('home-img').src = cHome.img; 
+      } else { 
+        document.getElementById('home-img').style.display = 'none'; 
+      }
 
-        const homeImg = document.getElementById('home-img');
-        if(homeImg) {
-          if(cHome.img) { 
-            homeImg.style.display = 'block'; 
-            homeImg.src = cHome.img; 
-          } else { 
-            homeImg.style.display = 'none'; 
-          }
-        }
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canAdd = isMaster || perms.canAdd !== false;
 
-        const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-        const perms = appData.permissions || {};
-        const canAdd = isMaster || perms.canAdd !== false;
+      const bHome = document.getElementById('bar-action-home');
+      const bBebidas = document.getElementById('bar-action-bebidas');
+      const bPorcoes = document.getElementById('bar-action-porcoes');
+      const bAgenda = document.getElementById('bar-action-agenda');
 
-        const bHome = document.getElementById('bar-action-home');
-        const bBebidas = document.getElementById('bar-action-bebidas');
-        const bPorcoes = document.getElementById('bar-action-porcoes');
-        const bAgenda = document.getElementById('bar-action-agenda');
+      if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
+      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
 
-        if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-        if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      const drinksContainer = document.getElementById('dynamic-menu-bebidas');
+      const portionsContainer = document.getElementById('dynamic-menu-porcoes');
+      drinksContainer.innerHTML = ''; 
+      portionsContainer.innerHTML = '';
+      
+      const catHTML = { 
+        drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', 
+        beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', 
+        noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL / SUCOS / REFRIS</div><div class="menu-grid">', 
+        portion: '<div class="menu-grid">' 
+      };
+      
+      let drinksStr = catHTML.drink;
+      cMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
+      drinksStr += catHTML.beer;
+      cMenu.filter(i => i.type === 'beer').forEach(i => drinksStr += createCard(i));
+      drinksStr += catHTML.noalcohol;
+      cMenu.filter(i => i.type === 'noalcohol').forEach(i => drinksStr += createCard(i));
+      drinksStr += '</div>';
+      drinksContainer.innerHTML = drinksStr;
 
-        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
-        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
-        if(drinksContainer) drinksContainer.innerHTML = ''; 
-        if(portionsContainer) portionsContainer.innerHTML = '';
+      let portionsStr = catHTML.portion;
+      cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
+      portionsStr += '</div>';
+      portionsContainer.innerHTML = portionsStr;
+
+      const agendaList = document.getElementById('dynamic-agenda-list');
+      agendaList.innerHTML = '';
+      cAgenda.forEach(ev => {
+        const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+        agendaList.innerHTML += `
+          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+            <div class="mf-content">
+              <div class="mf-date">${ev.date}</div>
+              <div class="mf-title">${ev.title}</div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById('featured-flyer-img').src = cFlyer.img;
+      document.getElementById('adm-f-tag').value = cFlyer.tag;
+      document.getElementById('adm-f-title').value = cFlyer.title;
+      document.getElementById('adm-f-sub').value = cFlyer.sub;
+      document.getElementById('adm-f-desc').value = cFlyer.desc;
+
+      const dirContainer = document.getElementById('dynamic-dir-list');
+      const proContainer = document.getElementById('dynamic-pro-list');
+      dirContainer.innerHTML = ''; 
+      proContainer.innerHTML = '';
+      
+      cTeam.filter(t => t.type === 'dir').forEach(t => {
+        let cColor = 'var(--c-pink)';
+        if(t.id === 'dir2') cColor = 'var(--c-cyan)';
+        if(t.id === 'dir3') cColor = 'var(--c-yellow)';
+        dirContainer.innerHTML += `
+          <div class="glass-panel dir-card" style="--card-color: ${cColor};">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
+            <h3 class="dir-name">${t.name}</h3>
+            <p class="dir-role" style="color:${cColor};">${t.role}</p>
+            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+            <p class="dir-desc">${t.desc}</p>
+          </div>`;
+      });
+
+      cTeam.filter(t => t.type === 'pro').forEach(t => {
+        proContainer.innerHTML += `
+          <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
+            <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
+            <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
+            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+            <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
+          </div>`;
+      });
+
+      document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
+        const isTop3 = index < 3;
+        const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
+        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
+        const honorTitle = getHonorTitle(index, 'arcade');
+        const displayIg = i.ig || '@jogador';
         
-        const catHTML = { 
-          drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', 
-          beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', 
-          noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL / SUCOS / REFRIS</div><div class="menu-grid">', 
-          portion: '<div class="menu-grid">' 
-        };
+        return `
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <div class="lb-info">
+            <span class="lb-name">${i.name}</span>
+            <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+            <span class="lb-title-badge">${honorTitle}</span>
+            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+          </div>
+          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
+        const isTop3 = index < 3;
+        const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
+        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
+        const honorTitle = getHonorTitle(index, 'cachaceiro');
+        const displayIg = i.sub || i.ig || '@cachaceiro';
         
-        if(drinksContainer) {
-          let drinksStr = catHTML.drink;
-          cMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
-          drinksStr += catHTML.beer;
-          cMenu.filter(i => i.type === 'beer').forEach(i => drinksStr += createCard(i));
-          drinksStr += catHTML.noalcohol;
-          cMenu.filter(i => i.type === 'noalcohol').forEach(i => drinksStr += createCard(i));
-          drinksStr += '</div>';
-          drinksContainer.innerHTML = drinksStr;
-        }
+        return `
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <div class="lb-info">
+            <span class="lb-name">${i.name}</span>
+            <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+            <span class="lb-title-badge">${honorTitle}</span>
+            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+          </div>
+          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+        </div>`;
+      }).join('');
 
-        if(portionsContainer) {
-          let portionsStr = catHTML.portion;
-          cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
-          portionsStr += '</div>';
-          portionsContainer.innerHTML = portionsStr;
-        }
-
-        const agendaList = document.getElementById('dynamic-agenda-list');
-        if(agendaList) {
-          agendaList.innerHTML = '';
-          cAgenda.forEach(ev => {
-            const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-            agendaList.innerHTML += `
-              <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}',${ev.id})">
-                <div class="mf-content">
-                  <div class="mf-date">${ev.date}</div>
-                  <div class="mf-title">${ev.title}</div>
-                </div>
-              </div>`;
-          });
-        }
-
-        const fImg = document.getElementById('featured-flyer-img');
-        const fTag = document.getElementById('adm-f-tag');
-        const fTitle = document.getElementById('adm-f-title');
-        const fSub = document.getElementById('adm-f-sub');
-        const fDesc = document.getElementById('adm-f-desc');
-
-        if(fImg) fImg.src = cFlyer.img;
-        if(fTag) fTag.value = cFlyer.tag;
-        if(fTitle) fTitle.value = cFlyer.title;
-        if(fSub) fSub.value = cFlyer.sub;
-        if(fDesc) fDesc.value = cFlyer.desc;
-
-        const dirContainer = document.getElementById('dynamic-dir-list');
-        const proContainer = document.getElementById('dynamic-pro-list');
-        if(dirContainer) dirContainer.innerHTML = ''; 
-        if(proContainer) proContainer.innerHTML = '';
-        
-        if(dirContainer) {
-          cTeam.filter(t => t.type === 'dir').forEach(t => {
-            let cColor = 'var(--c-pink)';
-            if(t.id === 'dir2') cColor = 'var(--c-cyan)';
-            if(t.id === 'dir3') cColor = 'var(--c-yellow)';
-            dirContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="--card-color: ${cColor};">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
-                <h3 class="dir-name">${t.name}</h3>
-                <p class="dir-role" style="color:${cColor};">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        if(proContainer) {
-          cTeam.filter(t => t.type === 'pro').forEach(t => {
-            proContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
-                <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
-                <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        const arcList = document.getElementById('dynamic-arcade-list');
-        if(arcList) {
-          arcList.innerHTML = cArcade.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-            const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub \vert{}\vert{} '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize \vert{}\vert{} '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig \vert{}\vert{} '@jogador')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'arcade');
-            const displayIg = i.ig || '@jogador';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        const cachList = document.getElementById('dynamic-cachaceiros-list');
-        if(cachList) {
-          cachList.innerHTML = cCach.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-            const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub \vert{}\vert{} '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize \vert{}\vert{} '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub \vert{}\vert{} '@cachaceiro')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'cachaceiro');
-            const displayIg = i.sub || i.ig || '@cachaceiro';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        renderPublicInteractions();
-        renderCustomTabs(cCustomTabs);
-        renderAdminLists();
-        renderModerationLists();
-        renderAdminLogsList();
-      } catch(e) {}
+      renderPublicInteractions();
+      renderCustomTabs(cCustomTabs);
+      renderAdminLists();
+      renderModerationLists();
+      renderAdminLogsList();
     }
 
     function renderAdminLogsList() {
@@ -1484,6 +1414,33 @@
       }
     }
 
+    async function savePermissions() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return;
+
+      const canAdd = document.getElementById('perm-add').checked;
+      const canEdit = document.getElementById('perm-edit').checked;
+      const canDel = document.getElementById('perm-del').checked;
+      const canTabs = document.getElementById('perm-tabs').checked;
+      const canMod = document.getElementById('perm-mod').checked;
+      const canRank = document.getElementById('perm-rank').checked;
+      const canAgenda = document.getElementById('perm-agenda').checked;
+      const canTeam = document.getElementById('perm-team').checked;
+
+      if(!appData.permissions) appData.permissions = {};
+      appData.permissions.canAdd = canAdd;
+      appData.permissions.canEdit = canEdit;
+      appData.permissions.canDel = canDel;
+      appData.permissions.canTabs = canTabs;
+      appData.permissions.canMod = canMod;
+      appData.permissions.canRank = canRank;
+      appData.permissions.canAgenda = canAgenda;
+      appData.permissions.canTeam = canTeam;
+
+      await saveBinData("Atualizou todas as permissões modulares do colaborador Alisson");
+      alert("Permissões guardadas com sucesso!");
+    }
+
     function renderPublicInteractions() {
       const songsDiv = document.getElementById('public-songs-feed');
       const msgsDiv = document.getElementById('public-msgs-feed');
@@ -1491,39 +1448,34 @@
       const songs = appData.userSongs || [];
       const msgs = appData.userMessages || [];
 
-      if(songsDiv) {
-        if(songs.length === 0) {
-          songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
-        } else {
-          songsDiv.innerHTML = songs.map(s => `
-            <div class="feed-card">
-              <div class="feed-time">Até 16h</div>
-              <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
-              <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
-            </div>
-          `).join('');
-        }
+      if(songs.length === 0) {
+        songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
+      } else {
+        songsDiv.innerHTML = songs.map(s => `
+          <div class="feed-card">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
+            <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
+          </div>
+        `).join('');
       }
 
-      if(msgsDiv) {
-        if(msgs.length === 0) {
-          msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
-        } else {
-          msgsDiv.innerHTML = msgs.map(m => `
-            <div class="feed-card" style="border-left-color: var(--c-yellow);">
-              <div class="feed-time">Até 16h</div>
-              <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
-              <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
-            </div>
-          `).join('');
-        }
+      if(msgs.length === 0) {
+        msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
+      } else {
+        msgsDiv.innerHTML = msgs.map(m => `
+          <div class="feed-card" style="border-left-color: var(--c-yellow);">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
+            <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
+          </div>
+        `).join('');
       }
     }
 
     function renderCustomTabs(tabs) {
       const navContainer = document.getElementById('dynamic-nav-tabs');
       const mainContainer = document.getElementById('dynamic-tab-panes');
-      if(!navContainer || !mainContainer) return;
 
       document.querySelectorAll('.custom-tab-btn').forEach(el => el.remove());
       document.querySelectorAll('.custom-tab-pane').forEach(el => el.remove());
@@ -1542,7 +1494,7 @@
         section.innerHTML = `
           <h2 class="section-title">${tab.title}</h2>
           <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
-            ${tab.img ? `<img src="${tab.img}" style="width:100%; max-height:300px; object-fit:cover; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);">` : ''}
+            ${tab.img ? `<img src="${tab.img}" style="width:100%; max-height:300px; object-fit:fill; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);">` : ''}
             <p style="color:#ddd; font-size:1.1rem; line-height:1.6; white-space: pre-wrap;">${tab.desc}</p>
           </div>
         `;
@@ -2034,6 +1986,720 @@
       saveBinData(`Adicionou diretamente na agenda o evento: "${title.trim()}" (${date})`);
       alert("✅ Evento adicionado com sucesso!");
     }
+
+    function toggleAdminSection(id) {
+      const content = document.getElementById(id);
+      const btn = content.previousElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        content.style.display = "block";
+        btn.classList.add("active");
+      }
+    }
+
+    function renderModerationLists() {
+      const pSongsDiv = document.getElementById('admin-pending-songs');
+      const pMsgsDiv = document.getElementById('admin-pending-msgs');
+      const counterSpan = document.getElementById('adm-notify-counter');
+
+      const pSongs = appData.pendingSongs || [];
+      const pMsgs = appData.pendingMessages || [];
+      const totalPending = pSongs.length + pMsgs.length;
+
+      if(totalPending > 0) {
+        counterSpan.innerHTML = `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>`;
+      } else {
+        counterSpan.innerHTML = '';
+      }
+
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const modPermitted = isMaster || perms.canMod !== false;
+
+      if(!modPermitted) {
+        pSongsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
+        pMsgsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
+        return;
+      }
+
+      if(pSongs.length === 0) {
+        pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
+      } else {
+        pSongsDiv.innerHTML = pSongs.map(s => `
+          <div class="admin-card">
+            <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
+            <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
+            <div class="admin-card-row">
+              <button class="action-btn" onclick="approveSong(${s.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${s.id})">❌ Rejeitar</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if(pMsgs.length === 0) {
+        pMsgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado pendente no mural.</p>';
+      } else {
+        pMsgsDiv.innerHTML = pMsgs.map(m => `
+          <div class="admin-card">
+            <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
+            <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
+            <div class="admin-card-row">
+              <button class="action-btn" onclick="approveMsg(${m.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${m.id})">❌ Rejeitar</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    async function approveSong(id) {
+      const item = appData.pendingSongs.find(s => s.id === id);
+      if(item) {
+        appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+        if(!appData.userSongs) appData.userSongs = [];
+        appData.userSongs.unshift(item);
+        await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
+        alert("Pedido aprovado e publicado no site!");
+      }
+    }
+
+    async function rejectSong(id) {
+      const item = appData.pendingSongs.find(s => s.id === id);
+      appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+      await saveBinData(`Rejeitou o pedido de som de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
+    }
+
+    async function approveMsg(id) {
+      const item = appData.pendingMessages.find(m => m.id === id);
+      if(item) {
+        appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+        if(!appData.userMessages) appData.userMessages = [];
+        appData.userMessages.unshift(item);
+        await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
+        alert("Recado aprovado e publicado no mural!");
+      }
+    }
+
+    async function rejectMsg(id) {
+      const item = appData.pendingMessages.find(m => m.id === id);
+      appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+      await saveBinData(`Rejeitou o recado no mural de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
+    }
+
+    let tempNewTabImg = '';
+    document.getElementById('new-tab-img-file').addEventListener('change', e => {
+      uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
+    });
+
+    async function saveCustomTab() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado: Permissão de abas desativada pelo Master!");
+
+      const originalId = document.getElementById('edit-tab-original-id').value;
+      const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
+      const name = document.getElementById('new-tab-name').value.trim();
+      const title = document.getElementById('new-tab-title').value.trim();
+      const desc = document.getElementById('new-tab-desc').value.trim();
+
+      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da aba.");
+      if(!appData.customTabs) appData.customTabs = [];
+
+      if(originalId) {
+        const tab = appData.customTabs.find(t => t.id === originalId);
+        if(tab) {
+          tab.id = id; tab.name = name; tab.title = title || name; tab.desc = desc;
+          if(tempNewTabImg) tab.img = tempNewTabImg;
+        }
+        await saveBinData("Atualizou a aba personalizada: " + name);
+        alert("Aba atualizada com sucesso!");
+      } else {
+        appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
+        await saveBinData("Criou nova aba personalizada: " + name);
+        alert("Nova aba criada com sucesso!");
+      }
+      resetCustomTabForm();
+    }
+
+    function editCustomTab(id) {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
+
+      const tab = appData.customTabs.find(t => t.id === id);
+      if(!tab) return;
+      document.getElementById('edit-tab-original-id').value = tab.id;
+      document.getElementById('new-tab-id').value = tab.id;
+      document.getElementById('new-tab-name').value = tab.name;
+      document.getElementById('new-tab-title').value = tab.title;
+      document.getElementById('new-tab-desc').value = tab.desc;
+      tempNewTabImg = tab.img || '';
+
+      document.getElementById('custom-tab-form-title').innerText = "Editar Seção / Aba do Site";
+      document.getElementById('custom-tab-submit-btn').innerText = "💾 Salvar Alterações da Aba";
+      document.getElementById('custom-tab-cancel-btn').style.display = "inline-block";
+      
+      document.getElementById('adm-new-tab').style.display = "block";
+      document.getElementById('adm-new-tab').previousElementSibling.classList.add("active");
+    }
+
+    function resetCustomTabForm() {
+      document.getElementById('edit-tab-original-id').value = '';
+      document.getElementById('new-tab-id').value = '';
+      document.getElementById('new-tab-name').value = '';
+      document.getElementById('new-tab-title').value = '';
+      document.getElementById('new-tab-desc').value = '';
+      tempNewTabImg = '';
+      document.getElementById('custom-tab-form-title').innerText = "Adicionar Nova Seção / Aba ao Site";
+      document.getElementById('custom-tab-submit-btn').innerText = "+ Criar Nova Aba no Site";
+      document.getElementById('custom-tab-cancel-btn').style.display = "none";
+    }
+
+    async function removeCustomTab(id) {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
+
+      if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
+        appData.customTabs = appData.customTabs.filter(t => t.id !== id);
+        await saveBinData("Apagou a aba personalizada ID: " + id);
+      }
+    }
+
+    function renderAdminLists() {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+        return;
+      }
+
+      document.getElementById('adm-h-title').value = appData.home.title;
+      document.getElementById('adm-h-desc1').value = appData.home.desc1;
+      document.getElementById('adm-h-desc2').value = appData.home.desc2;
+      document.getElementById('adm-h-promo-title').value = appData.home.promoTitle;
+      document.getElementById('adm-h-promo1').value = appData.home.promo1;
+      document.getElementById('adm-h-promo2').value = appData.home.promo2;
+      document.getElementById('adm-h-promo3').value = appData.home.promo3;
+
+      const customTabsList = document.getElementById('admin-custom-tabs-list');
+      if(customTabsList) {
+        const tabs = appData.customTabs || [];
+        if(tabs.length === 0) {
+          customTabsList.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhuma aba personalizada criada ainda.</p>';
+        } else {
+          customTabsList.innerHTML = tabs.map(t => `
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <div class="admin-card-row">
+                <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
+                <div>
+                  <button class="action-btn" onclick="editCustomTab('${t.id}')" style="background:var(--c-cyan); color:#000; margin-right:5px;">✏️ Editar</button>
+                  <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canEdit = isMaster || perms.canEdit !== false;
+      const canDel = isMaster || perms.canDel !== false;
+
+      const menuList = document.getElementById('admin-menu-list');
+      if(menuList) {
+        if(!canEdit && !canDel) {
+          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
+        } else {
+          menuList.innerHTML = appData.menu.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                  <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
+                    <option value="drink" ${i.type === 'drink' ? 'selected' : ''}>🔥 Destilado</option>
+                    <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
+                    <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
+                    <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
+                  </select>
+                  <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
+                  <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
+              </div>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
+              </div>
+              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <img src="${i.img}" style="width:40px; height:40px; object-fit:fill; border-radius:4px; border:1px solid #444;">
+                  <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
+                    <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
+                  </div>
+                  ${canEdit ? `<button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>` : ''}
+                  ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
+              </div>
+            </div>`).join('');
+        }
+      }
+      
+      const agendaList = document.getElementById('admin-agenda-list');
+      if(agendaList) {
+        const canAgenda = isMaster || perms.canAgenda !== false;
+        if(!canAgenda) {
+          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar a agenda.</p>';
+        } else {
+          agendaList.innerHTML = appData.agenda.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
+                <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
+              </div>
+              <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:fill; border-radius:4px;">
+                <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
+                    <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
+                </div>
+                ${canEdit ? `<button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>` : ''}
+                ${canDel ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
+              </div>
+            </div>`).join('');
+        }
+      }
+
+      const teamList = document.getElementById('admin-team-list');
+      if(teamList) {
+        teamList.innerHTML = appData.team.map(t => `
+          <div class="admin-card">
+            <strong style="color:var(--c-cyan);">${t.name} (${t.type.toUpperCase()})</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="tname-${t.id}" value="${escapeHTML(t.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="trole-${t.id}" value="${escapeHTML(t.role)}" placeholder="Cargo">
+            </div>
+            <input type="text" class="admin-input" id="tig-${t.id}" value="${escapeHTML(t.ig)}" placeholder="Instagram" style="margin-top:5px;">
+            <textarea class="admin-textarea" id="tdesc-${t.id}" rows="2" style="margin-top:5px;">${escapeHTML(t.desc)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+                <img src="${t.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
+                  <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
+                </div>
+                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
+            </div>
+          </div>`).join('');
+      }
+
+      const arcList = document.getElementById('admin-arcade-list');
+      if(arcList) {
+        arcList.innerHTML = appData.arcade.map(i => `
+          <div class="admin-card" style="border-color:var(--c-purple);">
+            <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="arc-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="arc-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Jogo">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="arc-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Score">
+              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="arc-ig-${i.id}" value="${escapeHTML(i.ig)}" placeholder="Instagram (@)">
+            </div>
+            <textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+              ${i.id <= 3 ? `<img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+              <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                <span style="font-size:0.75rem;">📷 Avatar Top 3</span>
+                <input type="file" accept="image/*" onchange="updateArcadeImg(${i.id}, this)">
+              </div>` : ''}
+              <button class="action-btn" onclick="saveArcadeData(${i.id})">💾 Salvar Jogador</button>
+            </div>
+          </div>`).join('');
+      }
+
+      const cachList = document.getElementById('admin-cachaceiros-list');
+      if(cachList) {
+        cachList.innerHTML = appData.cachaceiros.map(i => `
+          <div class="admin-card" style="border-color:#ff9800;">
+            <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="ca-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="ca-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Litros">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="ca-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Instagram (@)">
+              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
+            </div>
+            <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+              <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
+                  <input type="file" accept="image/*" onchange="updateCachaceiroImg(${i.id}, this)">
+              </div>
+              <button class="action-btn" onclick="saveCachaceiroData(${i.id})">💾 Salvar Bebedor #${i.id}</button>
+            </div>
+          </div>`).join('');
+      }
+    }
+
+    function processSecureLogin() {
+      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
+      const passInput = document.getElementById('manual-pass-input').value.trim();
+
+      if (!emailInput || !passInput) {
+        alert("Preencha o e-mail e a senha.");
+        return;
+      }
+
+      let matchedAcc = null;
+      for (let acc of AUTH_ACCOUNTS) {
+        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
+          matchedAcc = acc;
+          break;
+        }
+      }
+
+      if (matchedAcc) {
+        localStorage.setItem('brg_adm_logged', 'true');
+        localStorage.setItem('brg_adm_email', matchedAcc.email);
+        localStorage.setItem('brg_adm_name', matchedAcc.name);
+        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
+
+        document.getElementById('admin-login').style.display = 'none';
+        document.getElementById('admin-dashboard').style.display = 'block';
+        updateAdminGreeting();
+        
+        document.getElementById('manual-email-input').value = '';
+        document.getElementById('manual-pass-input').value = '';
+        
+        document.getElementById('adm-f-tag').value = appData.flyer.tag;
+        document.getElementById('adm-f-title').value = appData.flyer.title;
+        document.getElementById('adm-f-sub').value = appData.flyer.sub;
+        document.getElementById('adm-f-desc').value = appData.flyer.desc;
+        
+        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
+        renderApp();
+      } else {
+        alert('Acesso Negado. E-mail ou Senha incorretos.');
+      }
+    }
+
+    function updateAdminGreeting() {
+      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const greetingEl = document.getElementById('adm-welcome-text');
+      const masterTabsSec = document.getElementById('master-tabs-section');
+      const masterCtrlSec = document.getElementById('master-control-section');
+      const clearLogsBtn = document.getElementById('clear-logs-btn');
+
+      if(greetingEl) {
+        if(name === 'Touru') {
+          greetingEl.innerText = '👑 Conectado como: Touru (Master)';
+        } else if(name === 'Alisson') {
+          greetingEl.innerText = '🍻 Conectado como: Alisson (Colaborador)';
+        } else {
+          greetingEl.innerText = '⚙️ Conectado como: ' + name;
+        }
+      }
+
+      if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
+      if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
+      if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
+
+      if(appData.permissions) {
+        const pAdd = document.getElementById('perm-add');
+        const pEdit = document.getElementById('perm-edit');
+        const pDel = document.getElementById('perm-del');
+        const pTabs = document.getElementById('perm-tabs');
+        const pMod = document.getElementById('perm-mod');
+        const pRank = document.getElementById('perm-rank');
+        const pAgenda = document.getElementById('perm-agenda');
+        const pTeam = document.getElementById('perm-team');
+
+        if(pAdd) pAdd.checked = appData.permissions.canAdd !== false;
+        if(pEdit) pEdit.checked = appData.permissions.canEdit !== false;
+        if(pDel) pDel.checked = appData.permissions.canDel !== false;
+        if(pTabs) pTabs.checked = appData.permissions.canTabs !== false;
+        if(pMod) pMod.checked = appData.permissions.canMod !== false;
+        if(pRank) pRank.checked = appData.permissions.canRank !== false;
+        if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
+        if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
+      }
+    }
+
+    function processLogout() {
+      localStorage.removeItem('brg_adm_logged');
+      localStorage.removeItem('brg_adm_email');
+      localStorage.removeItem('brg_adm_name');
+      localStorage.removeItem('brg_adm_is_master');
+      document.getElementById('admin-dashboard').style.display = 'none';
+      document.getElementById('admin-login').style.display = 'block';
+      renderApp();
+    }
+
+    async function updateHomeImg(input) {
+      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial da página home"); alert('Banner Inicial Atualizado via ImgBB!'); });
+    }
+    async function updateFlyerMain(input) {
+      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
+    }
+    async function updateItemImg(id, input) {
+      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do produto: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
+    }
+    async function updateAgendaImg(id, input) {
+      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o flyer do evento: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
+    }
+    async function updateTeamImg(id, input) {
+      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+    }
+    async function updateCachaceiroImg(id, input) {
+      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+    }
+    async function updateArcadeImg(id, input) {
+      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+    }
+
+    async function saveHomeData() {
+      appData.home.title = document.getElementById('adm-h-title').value;
+      appData.home.desc1 = document.getElementById('adm-h-desc1').value;
+      appData.home.desc2 = document.getElementById('adm-h-desc2').value;
+      appData.home.promoTitle = document.getElementById('adm-h-promo-title').value;
+      appData.home.promo1 = document.getElementById('adm-h-promo1').value;
+      appData.home.promo2 = document.getElementById('adm-h-promo2').value;
+      appData.home.promo3 = document.getElementById('adm-h-promo3').value;
+      await saveBinData("Modificou os textos e descrições da Página Inicial");
+      alert('Dados do Início Salvos!');
+    }
+
+    async function saveItemData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
+
+       const item = appData.menu.find(i => i.id === id);
+       if(item) {
+          const oldName = item.name;
+          const oldPrice = item.price;
+          const newName = document.getElementById(`name-${id}`).value.trim();
+          const newType = document.getElementById(`type-${id}`).value;
+
+          if(newName.toLowerCase() !== oldName.toLowerCase()) {
+            const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
+            if(exists) {
+              return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+            }
+          }
+
+          item.name = newName;
+          item.type = newType;
+          item.price = document.getElementById(`price-${id}`).value;
+          item.short = document.getElementById(`short-${id}`).value;
+          item.full = document.getElementById(`full-${id}`).value;
+          await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Categoria: ${newType}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
+          alert('Produto Salvo!');
+       }
+    }
+
+    async function saveAgendaData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
+
+       const item = appData.agenda.find(i => i.id === id);
+       if(item) {
+          const oldTitle = item.title;
+          item.date = document.getElementById(`a-date-${id}`).value;
+          item.title = document.getElementById(`a-title-${id}`).value;
+          item.desc = document.getElementById(`a-desc-${id}`).value;
+          await saveBinData(`Editou o evento de agenda "${oldTitle}" para "${item.title}" (${item.date})`);
+          alert('Evento Salvo!');
+       }
+    }
+
+    async function saveTeamData(id) {
+       const t = appData.team.find(i => i.id === id);
+       if(t) {
+          t.name = document.getElementById(`tname-${id}`).value;
+          t.role = document.getElementById(`trole-${id}`).value;
+          t.ig = document.getElementById(`tig-${id}`).value;
+          t.desc = document.getElementById(`tdesc-${id}`).value;
+          await saveBinData("Modificou dados da equipe: " + t.name);
+          alert('Membro salvo!');
+       }
+    }
+
+    async function saveArcadeData(id) {
+       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
+
+       const t = appData.arcade.find(i => i.id === id);
+       if(t) {
+          t.name = document.getElementById(`arc-name-${id}`).value;
+          t.sub = document.getElementById(`arc-sub-${id}`).value;
+          t.score = document.getElementById(`arc-score-${id}`).value;
+          t.prize = document.getElementById(`arc-prize-${id}`).value;
+          t.ig = document.getElementById(`arc-ig-${id}`).value;
+          t.quote = document.getElementById(`arc-quote-${id}`).value;
+          await saveBinData(`Atualizou o ranking Arcade na posição #${id} (${t.name} - ${t.score})`);
+          alert('Jogador salvo!');
+       }
+    }
+
+    async function saveCachaceiroData(id) {
+       const t = appData.cachaceiros.find(i => i.id === id);
+       if(t) {
+          t.name = document.getElementById(`ca-name-${id}`).value;
+          t.sub = document.getElementById(`ca-sub-${id}`).value;
+          t.score = document.getElementById(`ca-score-${id}`).value;
+          t.prize = document.getElementById(`ca-prize-${id}`).value;
+          t.quote = document.getElementById(`ca-quote-${id}`).value;
+          await saveBinData(`Atualizou o ranking de Cachaceiros na posição #${id} (${t.name} - ${t.score})`);
+          alert('Cachaceiro salvo!');
+       }
+    }
+
+    let tempNewItemImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+    let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+
+    async function addMenuItem() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
+
+      const cat = document.getElementById('new-item-type').value;
+      const name = document.getElementById('new-item-name').value.trim();
+      const price = document.getElementById('new-item-price').value.trim();
+      const shortDesc = document.getElementById('new-item-short').value.trim();
+      const fullDesc = document.getElementById('new-item-full').value.trim();
+
+      if(!name || !price) return alert("Preencha nome e preço.");
+
+      const exists = appData.menu.some(i => i.name.trim().toLowerCase() === name.toLowerCase());
+      if(exists) {
+        return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+      }
+
+      appData.menu.push({
+        id: Date.now(),
+        type: cat,
+        name: name,
+        short: shortDesc || name,
+        full: fullDesc || shortDesc || name,
+        price: price,
+        img: tempNewItemImg
+      });
+      await saveBinData(`Adicionou novo item ao cardápio: "${name}" (${cat}) por R$ ${price}`);
+      alert('Produto Adicionado ao Cardápio!');
+    }
+
+    async function addAgendaItem() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada!");
+
+      const title = document.getElementById('new-ev-title').value.trim();
+      const date = document.getElementById('new-ev-date').value.trim();
+      if(!title || !date) return alert("Preencha data e título.");
+      appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: tempNewEvImg });
+      await saveBinData(`Adicionou novo evento à agenda: "${title}" na data ${date}`);
+      alert('Evento Adicionado!');
+    }
+
+    async function removeMenuItem(id) { 
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
+
+      const item = appData.menu.find(i => i.id === id);
+      if(confirm('Tem certeza que deseja excluir o item "' + (item ? item.name : id) + '" do cardápio?')) { 
+        appData.menu = appData.menu.filter(i => i.id !== id); 
+        await saveBinData("Excluiu o item do cardápio: " + (item ? item.name : id)); 
+      } 
+    }
+
+    async function removeAgendaItem(id) { 
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
+
+      const ev = appData.agenda.find(i => i.id === id);
+      if(confirm('Tem certeza que deseja excluir o evento "' + (ev ? ev.title : id) + '" da agenda?')) { 
+        appData.agenda = appData.agenda.filter(i => i.id !== id); 
+        await saveBinData("Excluiu o evento da agenda: " + (ev ? ev.title : id)); 
+      } 
+    }
+
+    async function saveFlyerData() {
+      appData.flyer.tag = document.getElementById('adm-f-tag').value;
+      appData.flyer.title = document.getElementById('adm-f-title').value;
+      appData.flyer.sub = document.getElementById('adm-f-sub').value;
+      appData.flyer.desc = document.getElementById('adm-f-desc').value;
+      await saveBinData("Modificou as informações do Flyer Principal de Destaque");
+      alert("Dados do Destaque Salvos!");
+    }
+
+    function closeModal(modalId) { 
+      const modal = document.getElementById(modalId);
+      if(modal) modal.style.display = 'none'; 
+    }
+
+    window.onclick = function(event) { 
+      if (event.target == document.getElementById('productModal')) closeModal('productModal'); 
+      if (event.target == document.getElementById('eventModal')) closeModal('eventModal'); 
+      if (event.target == document.getElementById('playerModal')) closeModal('playerModal');
+      if (event.target == document.getElementById('itemCreateModal')) closeModal('itemCreateModal');
+      if (event.target == document.getElementById('homeDirectEditModal')) closeModal('homeDirectEditModal');
+    };
+
+    function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
+
+    const audio = document.getElementById('rockRadio');
+    const playBtn = document.getElementById('play-pause-btn');
+    const cover = document.getElementById('radio-cover');
+
+    function forceAutoplay() {
+      if(audio && audio.paused) {
+        audio.volume = 0.5;
+        audio.play().then(() => {
+          if (playBtn) playBtn.innerHTML = '⏸ PAUSE'; 
+          if (cover) cover.style.animationPlayState = 'running';
+          ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => document.removeEventListener(evt, forceAutoplay));
+        }).catch(() => {});
+      }
+    }
+    forceAutoplay();
+    ['click', 'touchstart', 'scroll', 'keydown'].forEach(evt => document.addEventListener(evt, forceAutoplay, { once: true }));
+
+    if (playBtn) {
+      playBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        if(audio.paused) { 
+          audio.play(); 
+          playBtn.innerHTML = '⏸ PAUSE'; 
+          if (cover) cover.style.animationPlayState = 'running'; 
+        } else { 
+          audio.pause(); 
+          playBtn.innerHTML = '▶ PLAY'; 
+          if (cover) cover.style.animationPlayState = 'paused'; 
+        }
+      });
+    }
+
+    async function fetchRadioData() {
+      try {
+        const response = await fetch('https://api.radioparadise.com/api/now_playing?chan=2');
+        const data = await response.json();
+        const np = document.getElementById('now-playing');
+        if (np) np.innerHTML = `TOCANDO: <span>${data.artist} - ${data.title}</span>`;
+      } catch (err) { 
+        const np = document.getElementById('now-playing');
+        if (np) np.innerHTML = `TOCANDO: <span>ROCK MIX</span>`; 
+      }
+    }
+    setInterval(fetchRadioData, 15000); 
+    fetchRadioData();
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(tab => { tab.classList.remove('active'); });
