@@ -82,8 +82,9 @@
     .promo-banner { background: #0a0000; color: #fff; padding: 8px; text-align: center; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--c-red); }
     .promo-banner span { color: var(--c-yellow); border: 1px solid var(--c-yellow); padding: 1px 4px; border-radius: 3px; cursor: pointer; }
 
-    header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
-    .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.4); border: 2px solid rgba(255,255,255,0.2); display: block; margin: 0 auto; }
+    header { padding: 0.75rem 0.8rem 0.65rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+    .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.4); border: 2px solid rgba(255,255,255,0.2); display: block; margin: 0 auto; position: relative; z-index: 1; transition: transform .25s ease, box-shadow .25s ease; }
+    .logo-img:hover { transform: translateY(-2px) scale(1.015); box-shadow: 0 0 25px rgba(233,30,99,0.55), 0 8px 24px rgba(0,0,0,0.65); }
 
     .nav-container { background: rgba(5, 5, 8, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
@@ -117,10 +118,14 @@
     .menu-category { font-family: var(--font-title); font-size: 1.12rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
 
-    .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 8px; cursor: pointer; position: relative; overflow: hidden; height: 248px; min-height: 248px; box-sizing: border-box; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 8px; cursor: pointer; position: relative; overflow: hidden; height: 220px; min-height: 220px; box-sizing: border-box; isolation: isolate; background: rgba(12,12,16,0.20); transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(8,8,12,0.16)); pointer-events: none; }
+    .product-image-wrap { width: 100%; height: 118px; flex: 0 0 118px; position: relative; overflow: hidden; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(8,8,12,0.12); isolation: isolate; }
+    .product-image-wrap::before { content: ''; position: absolute; inset: -6px; z-index: 0; background-image: var(--card-photo, none); background-position: center; background-size: cover; background-repeat: no-repeat; transform: scale(1.06); opacity: 0.20; }
+    .product-image-wrap::after { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(255,255,255,0.035); pointer-events: none; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    .product-img { width: 100%; height: 118px; flex: 0 0 118px; object-fit: contain; object-position: center; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); background: #09090c; display: block; }
+    .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
     .product-card .m-short { width: 100%; min-height: 30px; margin-bottom: 4px; }
     .product-card .menu-price { width: 100%; margin-top: auto; }
     .menu-grid > .product-card, .drink-featured-grid > .product-card { width: 100%; }
@@ -131,9 +136,9 @@
     .drink-featured-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
     .drink-line-title { font-family: var(--font-title); font-size: 1.08rem; color: var(--c-yellow); margin: 1.35rem 0 0.75rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     
-    .m-title { font-size: 0.84rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
-    .m-short { font-size: 0.67rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
-    .menu-price { font-family: var(--font-title); font-size: 1.15rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
+    .m-title { font-size: 0.88rem; font-weight: 900; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; text-shadow: 0 1px 3px rgba(0,0,0,0.85); }
+    .m-short { font-size: 0.67rem; color: #d4d4de; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; text-shadow: 0 1px 3px rgba(0,0,0,0.85); }
+    .menu-price { font-family: var(--font-title); font-size: 1.42rem; color: var(--c-yellow); font-weight: bold; margin-top: auto; line-height: 1; text-shadow: 0 0 10px rgba(255,235,59,0.22), 0 2px 4px rgba(0,0,0,0.85); background: rgba(0,0,0,0.46); border: 1px solid rgba(255,235,59,0.42); border-radius: 999px; padding: 4px 12px 3px; min-width: 72px; width: auto !important; box-shadow: 0 3px 10px rgba(0,0,0,0.28); }
 
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -259,11 +264,13 @@
     
     @media (max-width: 600px) {
       .tab-btn { flex: 1 1 calc(33.333% - 6px); font-size: 0.95rem; padding: 8px 2px; }
-      .product-card { height: 238px; min-height: 238px; padding: 7px; }
-      .product-img { height: 108px; flex-basis: 108px; }
-      .m-title { font-size: 0.78rem; }
+      header { padding: 0.65rem 0.6rem 0.55rem; }
+      .logo-img { width: 126px; height: 126px; max-width: 126px; border-radius: 50%; }
+      .product-card { height: 214px; min-height: 214px; padding: 7px; }
+      .product-image-wrap { height: 108px; flex-basis: 108px; }
+      .m-title { font-size: 0.82rem; }
       .m-short { font-size: 0.63rem; }
-      .menu-price { font-size: 1.05rem; }
+      .menu-price { font-size: 1.28rem; }
       .drink-line-title, .drink-featured-title { font-size: 0.98rem; } 
       .dir-card { flex: 1 1 100%; }
       .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -1811,8 +1818,10 @@
 
     function createCard(item) {
       return `
-        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id})">
-          <img src="${escapeHTML(item.img || '')}" class="product-img" onerror="fallbackImg(this)">
+        <div class="product-card glass-panel" style="--card-photo:url('${escapeHTML(item.img || '')}')" onclick="openMenuModalObj(${item.id})">
+          <div class="product-image-wrap">
+            <img src="${escapeHTML(item.img || '')}" class="product-img" onerror="fallbackImg(this)">
+          </div>
           <h4 class="m-title">${escapeHTML(item.name)}</h4>
           <div class="m-short">${escapeHTML(item.short || '')}</div>
           <div class="menu-price">R$ ${escapeHTML(item.price)}</div>
