@@ -1,1 +1,1769 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BARGUNÇADOS ROCK BAR | Pub, Arcade & Metal</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================
+       1. RESET E VARIÁVEIS (Otimizado 120 FPS)
+       ========================================= */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #050505;
+      --glass-bg: rgba(18, 18, 24, 0.92);
+      --glass-border-top: rgba(255, 255, 255, 0.25);
+      --glass-border-bot: rgba(255, 255, 255, 0.05);
+      --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+      
+      --c-pink: #e91e63; --c-yellow: #ffeb3b; --c-red: #d32f2f;
+      --c-cyan: #00bcd4; --c-purple: #673ab7;
+      --text-main: #f0f0f3; --text-muted: #a0a0b0;
+      
+      --font-title: 'Bebas Neue', sans-serif;
+      --font-arcade: 'Press Start 2P', monospace;
+      --font-body: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark); color: var(--text-main); font-family: var(--font-body);
+      overflow-x: hidden; font-size: 14px; scroll-behavior: smooth;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.5); }
+    ::-webkit-scrollbar-thumb { background: var(--c-red); border-radius: 4px; }
+
+    .bg-watermark {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3;
+      background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s");
+      background-position: center; background-size: cover; background-repeat: no-repeat;
+      opacity: 0.12; filter: grayscale(10%) contrast(150%);
+      pointer-events: none !important;
+    }
+    
+    .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -2; overflow: hidden; transform: translateZ(0); }
+    .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; pointer-events: none !important; }
+    .spotlight.cyan { left: -10vw; background: linear-gradient(to bottom, rgba(0, 188, 212, 0.35) 0%, transparent 100%); }
+    .spotlight.pink { right: -10vw; background: linear-gradient(to bottom, rgba(233, 30, 99, 0.35) 0%, transparent 100%); }
+    .spotlight.yellow { left: 25vw; background: linear-gradient(to bottom, rgba(255, 235, 59, 0.2) 0%, transparent 100%); }
+
+    #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -1; opacity: 0.5; }
+
+    .glass-panel {
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border-top); 
+      border-left: 1px solid var(--glass-border-top);
+      border-bottom: 1px solid var(--glass-border-bot); 
+      border-right: 1px solid var(--glass-border-bot);
+      box-shadow: var(--glass-shadow); 
+      border-radius: 10px; 
+    }
+
+    .app-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
+
+    .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; background: rgba(10, 10, 15, 0.95); }
+    .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .radio-cover { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--c-pink); animation: spinRecord 4s linear infinite paused; }
+    @keyframes spinRecord { to { transform: rotate(360deg); } }
+    .radio-text { display: flex; flex-direction: column; }
+    .radio-station-name { color: var(--c-yellow); font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; }
+    .radio-now-playing { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .radio-now-playing span { color: var(--c-cyan); text-transform: uppercase;}
+    .play-pause-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); color: var(--c-cyan); font-family: var(--font-title); font-size: 1rem; padding: 6px 15px; border-radius: 20px; transition: 0.2s; cursor: pointer; pointer-events: auto !important; }
+    .play-pause-btn:hover { background: var(--c-cyan); color: #000; }
+    audio { display: none; }
+
+    .promo-banner { background: #0a0000; color: #fff; padding: 8px; text-align: center; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; border-bottom: 1px solid var(--c-red); }
+    .promo-banner span { color: var(--c-yellow); border: 1px solid var(--c-yellow); padding: 1px 4px; border-radius: 3px; cursor: pointer; }
+
+    header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+    .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.4); border: 2px solid rgba(255,255,255,0.2); display: block; margin: 0 auto; }
+
+    .nav-container { background: rgba(5, 5, 8, 0.98); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+    nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
+    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 10px 4px; border-radius: 6px; transition: 0.2s; text-align: center; cursor: pointer; text-transform: uppercase; pointer-events: auto !important; }
+    .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
+    .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.35); border-color: var(--c-pink); box-shadow: 0 0 10px rgba(233,30,99,0.5); }
+
+    main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; position: relative; z-index: 20; }
+    
+    .tab-pane { display: none !important; opacity: 0; }
+    .tab-pane.active { display: block !important; opacity: 1; animation: slideDownFade 0.25s forwards; }
+    @keyframes slideDownFade {
+      0% { opacity: 0; transform: translateY(-8px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+    .section-title::before { content: '⚡'; color: var(--c-yellow); font-size: 0.8em; }
+
+    .status-badge-container { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 12px; margin-bottom: 15px; }
+    .status-row { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .status-dot.open { background: #00e676; box-shadow: 0 0 10px #00e676; animation: pulseOpen 2s infinite; }
+    .status-dot.closed { background: #ff1744; box-shadow: 0 0 10px #ff1744; }
+    @keyframes pulseOpen { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+    .grid { display: grid; gap: 15px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
+    .btn-fire:hover { filter: brightness(1.2); }
+
+    /* CATEGORIAS EM ACORDEOM */
+    .menu-cat-header { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
+    .menu-cat-header:hover { background: rgba(255,255,255,0.12); border-color: var(--c-yellow); }
+    .menu-cat-header .cat-arrow { font-size: 0.9rem; transition: transform 0.3s; color: var(--c-yellow); }
+    .menu-cat-header.collapsed .cat-arrow { transform: rotate(-90deg); }
+    .menu-cat-content { display: block; }
+    .menu-cat-content.collapsed { display: none; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+
+    .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
+    
+    .product-card.promo-destaque { border: 2px solid var(--c-yellow); box-shadow: 0 0 15px rgba(255, 235, 59, 0.35); }
+    .promo-flag { position: absolute; top: 8px; left: 8px; background: var(--c-red); color: #fff; font-size: 0.65rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
+
+    .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
+    .product-card:hover .product-img { transform: scale(1.02); }
+    
+    .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
+    .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
+    .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
+
+    .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
+    .close-btn:hover { color: var(--c-red); }
+    
+    #modalImg, #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: fill; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
+    #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
+    #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
+
+    .featured-flyer-container { width: 100%; border-radius: 12px; border: 2px solid var(--c-red); overflow: hidden; box-shadow: 0 10px 30px rgba(211,47,47,0.5); margin-bottom: 15px; cursor: pointer; }
+    .featured-flyer-img { width: 100%; min-height: 380px; max-height: 560px; height: auto; object-fit: fill; object-position: center; display: block; transition: transform 0.3s ease; }
+    .featured-flyer-container:hover .featured-flyer-img { transform: scale(1.01); }
+
+    #eventModalImg { width: 100%; min-height: 320px; max-height: 480px; object-fit: fill; object-position: center; border-radius: 8px; border: 2px solid var(--c-purple); margin-bottom: 12px; }
+    #e-title { font-family: var(--font-title); font-size: 2.5rem; color: #fff; line-height: 1;}
+
+    #playerModalImg { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; background: #111; }
+    #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
+
+    .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+    .rank-switch-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.1rem; padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+    .rank-switch-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .rank-switch-btn.active { background: rgba(0, 188, 212, 0.2); border-color: var(--c-cyan); color: #fff; }
+
+    .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
+    .lb-item { display: flex; align-items: center; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); transition: transform 0.2s; }
+    .lb-item.clickable:hover { background: rgba(233,30,99,0.1); border-color: var(--c-pink); cursor: pointer; transform: translateX(3px); }
+    
+    .top3-item { border-color: rgba(255, 235, 59, 0.4); background: rgba(255, 235, 59, 0.05); }
+    .lb-inline-quote { color: #fff; font-style: italic; font-size: 0.8rem; margin-top: 5px; border-left: 2px solid var(--c-pink); padding-left: 6px; display: block; width: 100%;}
+    
+    .lb-pos { font-family: var(--font-arcade); color: var(--text-muted); font-size: 0.8rem; width: 30px; text-align: center; }
+    .lb-ava { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--c-cyan); margin: 0 10px; background: #111;}
+    .lb-info { flex: 1; display: flex; flex-direction: column; }
+    .lb-name { font-weight: bold; font-size: 0.95rem; color: #fff; }
+    .lb-sub { font-size: 0.75rem; color: var(--c-cyan); }
+    .lb-score { font-family: var(--font-title); font-size: 1.3rem; color: var(--c-pink); text-align: right; }
+    .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
+    .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
+
+    .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
+    .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 3 / 4; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: 100% 100%; background-position: center; transition: transform 0.3s; }
+    .mini-flyer:hover { transform: scale(1.03); }
+    .mini-flyer::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.1) 60%); z-index: 1; }
+    .mf-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; z-index: 2; text-align: center; }
+    .mf-date { background: var(--c-red); color: #fff; font-family: var(--font-title); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 5px; }
+    .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
+    .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
+    .dir-card:hover { transform: translateY(-4px); }
+    .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+    .dir-name { font-family: var(--font-title); font-size: 2rem; color: #fff; line-height: 1; margin-bottom: 5px;}
+    .dir-role { font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+    .dir-desc { color: #aaa; font-size: 0.95rem; line-height: 1.5; margin-top: 15px; }
+
+    .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; transition: 0.3s; margin: 10px 0 5px; }
+    .ig-button span { color: #fff; font-family: var(--font-body); font-weight: bold; font-size: 0.85rem; letter-spacing: 0;}
+    .ig-button:hover { background: var(--card-color, var(--c-pink)); color: #000 !important; }
+
+    .contact-card { text-align: center; padding: 3rem 1rem; }
+    .contact-link { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; text-decoration: none; color: #fff; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
+    .contact-link:hover { background: rgba(255,255,255,0.1); border-color: var(--c-cyan); }
+
+    .map-container { border: 1px solid var(--glass-border-top); border-radius: 12px; overflow: hidden; height: 250px; }
+    .map-container iframe { width: 100%; height: 100%; border: 0; filter: contrast(1.2) grayscale(0.2); }
+
+    .interaction-box { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); padding: 20px; border-radius: 12px; margin-bottom: 25px; text-align: left; }
+    .interaction-box h3 { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin-bottom: 10px; }
+    .interaction-input { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); }
+    .interaction-textarea { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; border-radius: 6px; margin-bottom: 10px; font-family: var(--font-body); resize: vertical; }
+
+    .feed-card { background: rgba(15,15,20,0.8); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 12px; text-align: left; position: relative; border-left: 4px solid var(--c-pink); }
+    .feed-author { font-weight: bold; color: var(--c-cyan); font-size: 0.95rem; margin-bottom: 4px; }
+    .feed-text { color: #ddd; font-size: 0.95rem; line-height: 1.4; }
+    .feed-time { font-size: 0.75rem; color: #888; position: absolute; right: 15px; top: 15px; }
+
+    .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; }
+
+    .admin-login-box { text-align: center; padding: 40px 15px; }
+    .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; }
+    .admin-accordion-btn:hover { filter: brightness(1.2); }
+    .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
+    .admin-accordion-content { padding: 20px; display: none; background: rgba(0,0,0,0.6); border-left: 4px solid var(--c-pink); border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; margin-bottom: 20px; }
+    .admin-card { background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; position: relative;}
+    .admin-card-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .admin-input { flex: 1; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); min-width: 120px; }
+    .admin-textarea { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; border-radius: 4px; font-family: var(--font-body); resize: vertical; }
+    .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; cursor: pointer; background: #333; padding: 8px 15px; border-radius: 4px; color: #fff; font-size: 0.85rem; font-weight: bold; text-align: center; flex: 1; border: 1px solid #555;}
+    .file-upload-wrapper input[type=file] { font-size: 100px; position: absolute; left: 0; top: 0; opacity: 0; cursor: pointer; }
+    .action-btn { background: var(--c-cyan); color: #000; border: none; padding: 8px 15px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+    .del-btn { background: var(--c-red); color: #fff;}
+
+    .db-status-box { background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; }
+    .db-status-indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
+
+    .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
+
+    .traffic-counter-box { display: flex; gap: 12px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 10px 15px; text-align: center; flex: 1; min-width: 120px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .counter-stat-val { font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
+    .counter-stat-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
+
+    footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
+    
+    @media (max-width: 600px) {
+      .tab-btn { flex: 1 1 calc(33.333% - 6px); font-size: 0.95rem; padding: 8px 2px; }
+      .product-img { height: 120px; } 
+      .dir-card { flex: 1 1 100%; }
+      .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .agenda-mini-grid { grid-template-columns: repeat(2, 1fr); }
+      .admin-card-row { flex-direction: column; align-items: stretch; }
+      .admin-input { width: 100%; }
+      .modal-content { max-height: 82vh; padding-bottom: 50px; }
+      .featured-flyer-img { min-height: 420px; max-height: 520px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage-lights">
+    <div class="spotlight cyan"></div>
+    <div class="spotlight yellow"></div>
+    <div class="spotlight pink"></div>
+  </div>
+  <div class="bg-watermark"></div>
+  <canvas id="sparks-canvas"></canvas>
+
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE CARDÁPIO -->
+  <div id="productModal" class="modal">
+    <div class="modal-content glass-panel">
+      <span class="close-btn" onclick="closeModal('productModal')">×</span>
+      <img id="modalImg" src="" alt="Produto" onerror="fallbackImg(this)">
+      <h3 id="modalTitle">Nome</h3>
+      <p id="modalDesc">Descrição</p>
+      <div id="modalPrice">R$ 00,00</div>
+
+      <div id="modal-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Item (Cardápio)</h5>
+        <input type="hidden" id="modal-edit-id">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Categoria do Item:</label>
+        <select id="modal-edit-category" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+          <option value="caipirinha">🍋 Linha Caipirinha</option>
+          <option value="vodka">🍸 Linha Vodka</option>
+          <option value="rum">🍹 Linha Rum</option>
+          <option value="tequila">🌵 Linha Tequila</option>
+          <option value="gin">🌿 Linha Gin</option>
+          <option value="whisky">🥃 Linha Whisky</option>
+          <option value="beer">🍺 Cervejas</option>
+          <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+          <option value="portion">🍟 Porções & Larica</option>
+        </select>
+
+        <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
+        <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Preço (R$):</label>
+        <input type="text" id="modal-edit-price" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Resumo / Ingredientes Rápidos:</label>
+        <input type="text" id="modal-edit-short" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa (Ingredientes):</label>
+        <textarea id="modal-edit-full" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Foto do Item</span>
+          <input type="file" accept="image/*" onchange="modalUploadImg(this)">
+        </div>
+        <input type="hidden" id="modal-edit-img">
+        
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar Alterações</button>
+          <button id="modal-item-del-btn" class="action-btn del-btn" onclick="deleteModalItemDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
+  <div id="itemCreateModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
+      <span class="close-btn" onclick="closeModal('itemCreateModal')">×</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); margin-bottom: 12px; text-align: center;">✨ Adicionar Novo Item</h3>
+      
+      <img id="create-item-img-preview" src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80" alt="Preview">
+      
+      <label style="font-size: 0.8rem; color: #aaa;">Categoria:</label>
+      <select id="create-item-category" class="interaction-input" style="padding: 8px;">
+        <option value="caipirinha">🍋 Linha Caipirinha</option>
+        <option value="vodka">🍸 Linha Vodka</option>
+        <option value="rum">🍹 Linha Rum</option>
+        <option value="tequila">🌵 Linha Tequila</option>
+        <option value="gin">🌿 Linha Gin</option>
+        <option value="whisky">🥃 Linha Whisky</option>
+        <option value="beer">🍺 Cervejas</option>
+        <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+        <option value="portion">🍟 Porções & Larica</option>
+      </select>
+
+      <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
+      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Caipirinha de Morango ou Moscow Mule">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
+      <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Resumo / Ingredientes:</label>
+      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Vodka, morangos frescos e açúcar">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada dos Ingredientes:</label>
+      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Descreva os ingredientes completos do coquetel ou porção..."></textarea>
+
+      <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
+        <span>📷 Upar Foto do Item (ImgBB)</span>
+        <input type="file" accept="image/*" onchange="createUploadImg(this)">
+      </div>
+      <input type="hidden" id="create-item-img" value="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80">
+
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button class="btn-fire" onclick="confirmCreateItem()" style="background: var(--c-yellow); color:#000; padding: 12px; font-size: 1.15rem;">+ Confirmar e Cadastrar Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DIRETA DA ABA HOME ("O BAR") -->
+  <div id="homeDirectEditModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-cyan); text-align: left;">
+      <span class="close-btn" onclick="closeModal('homeDirectEditModal')">×</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-cyan); margin-bottom: 12px; text-align: center;">🏠 Gerenciar Conteúdo da Home</h3>
+      
+      <img id="home-edit-img-preview" src="" alt="Banner Home Preview" style="display:none;">
+
+      <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
+        <span>🖼️ Alterar Banner Central da Home</span>
+        <input type="file" accept="image/*" onchange="homeDirectUploadImg(this)">
+      </div>
+      <input type="hidden" id="home-edit-img">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Título Principal:</label>
+      <input type="text" id="home-edit-title" class="interaction-input">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Primeiro Parágrafo:</label>
+      <textarea id="home-edit-desc1" class="interaction-textarea" rows="2"></textarea>
+
+      <label style="font-size: 0.8rem; color: #aaa;">Segundo Parágrafo:</label>
+      <textarea id="home-edit-desc2" class="interaction-textarea" rows="2"></textarea>
+
+      <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.1rem; margin: 10px 0 5px;">🔥 Destaques da Casa:</h5>
+      <input type="text" id="home-edit-promo-title" class="interaction-input" placeholder="Título dos Destaques">
+      <input type="text" id="home-edit-promo1" class="interaction-input" placeholder="Item 1">
+      <input type="text" id="home-edit-promo2" class="interaction-input" placeholder="Item 2">
+      <input type="text" id="home-edit-promo3" class="interaction-input" placeholder="Item 3">
+
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button class="btn-fire" onclick="saveHomeDirectEdit()" style="background: var(--c-cyan); color:#000; padding: 12px; font-size: 1.15rem;">💾 Salvar Alterações da Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE RANKINGS -->
+  <div id="playerModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
+      <span class="close-btn" onclick="closeModal('playerModal')">×</span>
+      <img id="playerModalImg" src="" alt="Player" onerror="fallbackImg(this)">
+      <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
+      <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
+      <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
+
+      <div id="player-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-yellow); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Jogador (Ranking)</h5>
+        <input type="hidden" id="player-edit-type">
+        <input type="hidden" id="player-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
+        <input type="text" id="player-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo / Instagram (@):</label>
+        <input type="text" id="player-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Score / Litros:</label>
+        <input type="text" id="player-edit-score" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Prêmio:</label>
+        <input type="text" id="player-edit-prize" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Frase de Provocação:</label>
+        <input type="text" id="player-edit-quote" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Avatar</span>
+          <input type="file" accept="image/*" onchange="playerUploadImg(this)">
+        </div>
+        <input type="hidden" id="player-edit-img">
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="savePlayerEdit()" style="background: var(--c-yellow); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar Jogador</button>
+          <button id="modal-player-del-btn" class="action-btn del-btn" onclick="deleteModalPlayerDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE AGENDA -->
+  <div id="eventModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
+      <span class="close-btn" onclick="closeModal('eventModal')">×</span>
+      <img id="eventModalImg" src="" alt="Evento" onerror="fallbackImg(this)">
+      <div id="e-tag" style="background: var(--c-red); color: #fff; display: inline-block; padding: 5px 10px; font-weight: bold; border-radius: 4px; margin-bottom: 10px;">TAG</div>
+      <h3 id="e-title" style="font-family: var(--font-title); font-size: 2.2rem; color: #fff; margin-bottom: 5px; text-transform: uppercase;">TITULO</h3>
+      <p id="e-sub" style="color: var(--c-yellow); font-weight: bold; font-size: 1rem; margin-bottom: 15px;">SUBTITULO</p>
+      <p id="e-desc" style="color: #ccc; font-size: 1rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">DESCRIÇÃO</p>
+
+      <div id="event-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Evento (Agenda)</h5>
+        <input type="hidden" id="event-edit-type">
+        <input type="hidden" id="event-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Tag / Data:</label>
+        <input type="text" id="event-edit-tag" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Título / Banda:</label>
+        <input type="text" id="event-edit-title" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo:</label>
+        <input type="text" id="event-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Descrição:</label>
+        <textarea id="event-edit-desc" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Flyer / Imagem</span>
+          <input type="file" accept="image/*" onchange="eventUploadImg(this)">
+        </div>
+        <input type="hidden" id="event-edit-img">
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="saveEventEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar</button>
+          <button id="modal-event-del-btn" class="action-btn del-btn" onclick="deleteModalEventDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-wrapper">
+    
+    <div class="radio-player-bar glass-panel">
+      <div class="radio-info-wrapper">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" id="radio-cover" class="radio-cover" alt="Logo">
+        <div class="radio-text">
+          <div class="radio-station-name">📻 RÁDIO BARGUNÇADOS</div>
+          <div class="radio-now-playing" id="now-playing">Aguardando... <span>INTERAJA NA TELA</span></div>
+        </div>
+      </div>
+      <button class="play-pause-btn" id="play-pause-btn">▶ PLAY</button>
+      <audio id="rockRadio" preload="none" crossorigin="anonymous">
+        <source src="https://stream.radioparadise.com/rock-128" type="audio/mpeg">
+      </audio>
+    </div>
+
+    <div class="promo-banner">
+      <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
+    </div>
+
+    <header>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
+    </header>
+
+    <!-- ABAS PRINCIPAIS COM OS EMOTICONS ORIGINAIS RESTAURADOS -->
+    <div class="nav-container">
+      <nav class="nav-tabs" id="dynamic-nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
+        <button class="tab-btn" onclick="switchTab('bebidas')">🍺 Bebidas</button>
+        <button class="tab-btn" onclick="switchTab('porcoes')">🍟 Porções</button>
+        <button class="tab-btn" onclick="switchTab('shows')">📅 Agenda</button>
+        <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
+        <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
+        <button class="tab-btn" onclick="switchTab('promoters')">🎤 Promoter</button>
+        <button class="tab-btn" onclick="switchTab('contato')">💬 Contato</button>
+        <button class="tab-btn" onclick="switchTab('como-chegar')">📍 Como Chegar</button>
+        <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
+      </nav>
+    </div>
+
+    <main id="dynamic-tab-panes">
+      
+      <section id="inicio" class="tab-pane active">
+        <div class="tab-admin-action-bar" id="bar-action-home">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Página Inicial</span>
+          <button class="action-btn" onclick="openHomeDirectEdit()" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">✏️ Editar Card da Home</button>
+        </div>
+
+        <h2 class="section-title">O Templo da Bargunça</h2>
+        <div class="grid">
+          <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 15px; cursor: pointer;" onclick="checkHomeCardClick()">
+            <div id="home-status-badge" class="status-badge-container">
+              <div class="status-row">
+                <span id="status-dot-el" class="status-dot open"></span>
+                <span id="status-text-el" style="color: #00e676;">BARGUNÇADOS ABERTO</span>
+              </div>
+              <span style="font-family: var(--font-body); font-size: 0.8rem; color: var(--c-yellow); font-weight: 600; margin-left: 18px;">⏰ Bar aberto desde as 17:00 (Esquenta) | Som & Promoções das 21:00 às 03:00</span>
+            </div>
+
+            <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1); object-fit:fill;">
+            <h3 id="h-title" style="font-family:var(--font-title); font-size:1.6rem; color:var(--c-cyan); margin-bottom:10px;">SOM PESADO & BEBIDA TRINCANDO</h3>
+            <p id="h-desc1" style="color:#ddd; line-height:1.5; margin-bottom:10px;">Bem-vindo ao <strong>Bargunçados Rock Bar</strong>. Aqui a regra é clara: som no talo, copo cheio e zero frescura.</p>
+            <p id="h-desc2" style="color:#ddd; line-height:1.5;">O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.</p>
+          </div>
+          <div class="glass-panel" style="padding: 1.5rem; border-color: rgba(211,47,47,0.4);">
+            <h3 id="h-promo-title" style="font-family:var(--font-title); font-size:1.6rem; color:var(--c-red); margin-bottom:10px;">🔥 DIVERSÃO GARANTIDA</h3>
+            <ul style="list-style:none; line-height:1.6; margin-bottom:15px; color:#fff;">
+              <li id="h-promo1">🎸 Agenda de Shows Coberta o Mês Todo</li>
+              <li id="h-promo2">🕹️ Fliperama Arcades Liberados</li>
+              <li id="h-promo3">🍻 Bebidas Baratas & Porções Brutas</li>
+            </ul>
+            <button class="btn-fire" onclick="switchTab('shows')">Ver Agenda Mensal</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="bebidas" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-bebidas">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
+          <button class="action-btn" onclick="openCreateItemModal('caipirinha')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Bebida / Drink</button>
+        </div>
+        <h2 class="section-title">Cardápio de Bebidas</h2>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NAS CATEGORIAS ABAIXO PARA EXPANDIR 👇</p>
+        <div id="dynamic-menu-bebidas"></div>
+      </section>
+
+      <section id="porcoes" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-porcoes">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
+          <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
+        </div>
+        <h2 class="section-title">Larica Pesada</h2>
+        <div id="dynamic-menu-porcoes"></div>
+      </section>
+
+      <section id="rankings" class="tab-pane">
+        <h2 class="section-title">Mural de Honra & Rankings</h2>
+        
+        <div class="rankings-switch">
+          <button class="rank-switch-btn active" id="btn-switch-arcade" onclick="switchRankingView('arcade')">🕹️ Arcade Top 10</button>
+          <button class="rank-switch-btn" id="btn-switch-cachaceiros" onclick="switchRankingView('cachaceiros')">🍻 Cachaceiros Top 10</button>
+        </div>
+
+        <div id="rankings-view-arcade">
+          <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver provocação, editar ou excluir!)</p>
+          <div class="leaderboard-list" id="dynamic-arcade-list"></div>
+        </div>
+
+        <div id="rankings-view-cachaceiros" style="display: none;">
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver o recado, editar ou excluir!)</p>
+          <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
+        </div>
+      </section>
+
+      <section id="shows" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-agenda">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Agenda</span>
+          <button class="action-btn" onclick="openInlineAddEvent()" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Evento Aqui</button>
+        </div>
+        <h2 class="section-title">Agenda do Mês</h2>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
+        
+        <div class="featured-flyer-container" onclick="openAgendaModal('featured')">
+          <img src="" id="featured-flyer-img" class="featured-flyer-img" alt="Evento Destaque">
+        </div>
+        
+        <h3 style="font-family: var(--font-title); font-size: 1.5rem; color: #fff; margin-top: 2rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">PRÓXIMOS EVENTOS</h3>
+        <div id="dynamic-agenda-list" class="agenda-mini-grid"></div>
+      </section>
+
+      <section id="diretoria" class="tab-pane">
+        <h2 class="section-title">A Diretoria</h2>
+        <div class="dir-grid" id="dynamic-dir-list"></div>
+      </section>
+
+      <section id="promoters" class="tab-pane">
+        <h2 class="section-title">Promoters</h2>
+        <div class="dir-grid" id="dynamic-pro-list"></div>
+      </section>
+
+      <section id="contato" class="tab-pane">
+        <h2 class="section-title">Contato & Redes</h2>
+        <div class="glass-panel contact-card">
+          <h3 style="font-family: var(--font-title); font-size: 2.5rem; color: var(--c-pink); margin-bottom: 10px;">BARGUNÇADOS ROCK BAR</h3>
+          <p style="color: #ccc; margin-bottom: 25px; font-size: 1rem;">Siga, mande mensagem e faça sua reserva.</p>
+          <a href="https://wa.me/5511959427214" target="_blank" class="contact-link" style="border-left: 4px solid #25D366;"><span style="font-size: 1.5rem;">💬</span> WhatsApp: (11) 95942-7214</a>
+          <a href="https://instagram.com/barguncadosrockbar" target="_blank" class="contact-link" style="border-left: 4px solid var(--c-pink);"><span style="font-size: 1.5rem;">📸</span> Instagram: @barguncadosrockbar</a>
+        </div>
+      </section>
+
+      <section id="como-chegar" class="tab-pane">
+        <h2 class="section-title">Como Chegar</h2>
+        <div class="glass-panel contact-card">
+          <h3 style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 10px;">📍 NOSSO ENDEREÇO</h3>
+          <p style="color: #fff; font-size: 1.1rem; margin-bottom: 20px; font-weight: 600;">Rua Assis Abude, 197 - Pimentas<br>Guarulhos - SP</p>
+          <p style="color: #ccc; margin-bottom: 25px; font-size: 0.95rem;">Clique no botão abaixo para traçar a rota direto no seu GPS do celular:</p>
+          <a href="https://maps.google.com/?q=Rua+Assis+Abude+197+Guarulhos+SP" target="_blank" class="btn-fire" style="background: linear-gradient(90deg, #4285F4, #34A853); max-width: 320px; margin: 0 auto; display: block; text-decoration: none;">🗺️ ABRIR NO GOOGLE MAPS</a>
+          
+          <div class="map-container" style="margin-top: 25px;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3659.136585125484!2d-46.3887!3d-23.4332!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce614120cfd4bf%3A0x8e8331da29d1a8e2!2sR.%20Assis%20Abude%2C%20197%20-%20Pimentas%2C%20Guarulhos%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1650000000000!5m2!1spt-BR!2sbr" allowfullscreen="" loading="lazy"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section id="interaja" class="tab-pane">
+        <h2 class="section-title">Mural & Pedidos de Som</h2>
+        
+        <div class="glass-panel interaction-box">
+          <h3>🎸 O que você quer ouvir hoje?</h3>
+          <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Mande sua banda ou música favorita para o DJ tocar na casa!</p>
+          <input type="text" id="user-song-ig" class="interaction-input" placeholder="Seu Instagram (ex: @rocker)" autocomplete="off">
+          <textarea id="user-song-req" class="interaction-textarea" rows="2" placeholder="Banda / Música desejada..."></textarea>
+          <button class="action-btn" onclick="submitUserSong()" style="background:var(--c-yellow); color:#000; width:100%;">Enviar Pedido de Som 🎵</button>
+        </div>
+
+        <div class="glass-panel interaction-box" style="border-color: var(--c-pink);">
+          <h3 style="color: var(--c-pink);">💬 Mural de Recados da Galera</h3>
+          <p style="color:#ccc; font-size:0.85rem; margin-bottom:12px;">Deixe um recado, salve para a resenha ou mande um salve para o bar!</p>
+          <input type="text" id="user-msg-ig" class="interaction-input" placeholder="Seu Instagram (ex: @metalhead)" autocomplete="off">
+          <textarea id="user-msg-text" class="interaction-textarea" rows="3" placeholder="Escreva seu recado aqui..."></textarea>
+          <button class="action-btn" onclick="submitUserMessage()" style="background:var(--c-pink); color:#fff; width:100%;">Publicar no Mural ⚡</button>
+        </div>
+
+        <h3 style="font-family: var(--font-title); font-size: 1.6rem; color: #fff; margin: 2rem 0 1rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">🎵 PEDIDOS DE SOM APROVADOS</h3>
+        <div id="public-songs-feed"></div>
+
+        <h3 style="font-family: var(--font-title); font-size: 1.6rem; color: #fff; margin: 2rem 0 1rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">💬 RECADOS RECENTES DA GALERA</h3>
+        <div id="public-msgs-feed"></div>
+      </section>
+
+      <section id="admin" class="tab-pane">
+        <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
+        
+        <div id="admin-login" class="glass-panel admin-login-box">
+          <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
+          <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e Senha para liberar o painel.</p>
+          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
+          <br>
+          <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
+          <br>
+          <button class="btn-fire" onclick="processSecureLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
+        </div>
+
+        <div id="admin-dashboard" style="display: none;">
+          <div id="adm-user-greeting" class="glass-panel" style="padding: 12px 20px; margin-bottom: 15px; border-left: 4px solid var(--c-yellow); display: flex; align-items: center; justify-content: space-between;">
+            <span id="adm-welcome-text" style="font-family: var(--font-title); font-size: 1.3rem; color: var(--c-yellow);">👑 Conectado como: --</span>
+            <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
+          </div>
+
+          <div class="traffic-counter-box">
+            <div class="counter-stat-card">
+              <div class="counter-stat-val" id="adm-stat-today">0</div>
+              <div class="counter-stat-lbl">Dispositivos Únicos Hoje</div>
+            </div>
+            <div class="counter-stat-card" style="border-color: var(--c-cyan);">
+              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-cyan);">0</div>
+              <div class="counter-stat-lbl">Dispositivos Registrados</div>
+            </div>
+            <div class="counter-stat-card" style="border-color: var(--c-pink);">
+              <div class="counter-stat-val" id="adm-stat-views" style="color: var(--c-pink);">0</div>
+              <div class="counter-stat-lbl">Total Geral de Visitas</div>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados & Sincronização em Tempo Real</button>
+          <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
+            <div class="db-status-box">
+              <div class="db-status-indicator" style="color: #00e676;">
+                <span class="status-dot open" style="width:8px; height:8px;"></span>
+                <span>Banco de Dados Global (JSONBin.io): CONECTADO & SINCRONIZANDO ✅</span>
+              </div>
+              <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
+                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
+              </p>
+              
+              <div id="gh-status-indicator" class="db-status-indicator" style="color: var(--c-cyan); margin-top: 10px;">
+                <span id="gh-status-dot" class="status-dot" style="width:8px; height:8px; background:#aaa;"></span>
+                <span id="gh-status-text">GitHub Pages: Verificando Configuração...</span>
+              </div>
+            </div>
+
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para sincronizar ou salvar versões no repositório GitHub, insira o seu Personal Access Token com permissão 'repo':</p>
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
+                <input type="text" class="admin-input" id="gh-repo" placeholder="Repositório (ex: Bargun-ados)">
+              </div>
+              <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
+              <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: #00e676; border-left: 4px solid #00e676;" onclick="toggleAdminSection('adm-status')">🟢 Status da Casa (Aberto / Fechado)</button>
+          <div id="adm-status" class="admin-accordion-content" style="border-color: #00e676;">
+            <div class="admin-card" style="border-color: #00e676; text-align: center;">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Alterar Estado Atual da Casa</h5>
+              <div class="admin-card-row" style="justify-content: center; gap: 15px;">
+                <button class="action-btn" onclick="updateBarStatus('open')" style="background: #00e676; color: #000; font-size: 1.1rem; padding: 12px 25px;">🟢 ABRIR BAR</button>
+                <button class="action-btn" onclick="updateBarStatus('closed')" style="background: #ff1744; color: #fff; font-size: 1.1rem; padding: 12px 25px;">🔴 FECHAR BAR</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
+          <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
+            <button class="action-btn" onclick="fetchBinData()" style="margin-bottom: 15px; background: var(--c-yellow); color:#000; width: 100%;">🔄 Atualizar Pedidos da Nuvem</button>
+            <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
+            <div id="admin-pending-songs"></div>
+
+            <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
+            <div id="admin-pending-msgs"></div>
+          </div>
+
+          <div id="master-tabs-section" style="display:none;">
+            <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas (Master)</button>
+            <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+              <div class="admin-card" style="border-color: var(--c-yellow);">
+                <h5 id="custom-tab-form-title" style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Adicionar Nova Seção / Aba ao Site</h5>
+                <input type="hidden" id="edit-tab-original-id" value="">
+                <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="new-tab-id" placeholder="ID (ex: eventos, vip)">
+                  <input type="text" class="admin-input" id="new-tab-name" placeholder="Nome Exibição (ex: Eventos)">
+                </div>
+                <input type="text" class="admin-input" id="new-tab-title" placeholder="Título da Seção (ex: PRÓXIMOS EVENTOS)" style="margin-top: 8px;">
+                <textarea class="admin-textarea" id="new-tab-desc" rows="2" placeholder="Texto descritivo da nova aba..." style="margin-top: 8px;"></textarea>
+                <div class="file-upload-wrapper" style="margin-top: 8px;">
+                  <span>📷 Foto Opcional para a Aba</span>
+                  <input type="file" id="new-tab-img-file" accept="image/*">
+                </div>
+                <button class="action-btn" id="custom-tab-submit-btn" onclick="saveCustomTab()" style="margin-top: 10px; background: var(--c-yellow); color:#000;">+ Criar Nova Aba no Site</button>
+                <button class="action-btn" id="custom-tab-cancel-btn" onclick="resetCustomTabForm()" style="margin-top: 5px; background: #444; color:#fff; display:none;">Cancelar Edição</button>
+              </div>
+              
+              <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-top: 15px; margin-bottom: 10px;">Abas Personalizadas Criadas</h5>
+              <div id="admin-custom-tabs-list"></div>
+            </div>
+          </div>
+
+          <div id="master-control-section" style="display:none;">
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Cadastrar ADMs & Permissões)</button>
+            <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
+              <div class="admin-card" style="border-color: var(--c-cyan); margin-bottom: 20px;">
+                <h5 style="color:var(--c-cyan); font-family:var(--font-title); font-size:1.3rem; margin-bottom:5px;">➕ Cadastrar Novo Administrador</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Cadastre o e-mail e senha de um novo administrador e defina as permissões dele:</p>
+                <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="new-adm-name" placeholder="Nome (ex: Carlos)">
+                  <input type="email" class="admin-input" id="new-adm-email" placeholder="E-mail (ex: carlos@gmail.com)">
+                  <input type="password" class="admin-input" id="new-adm-pass" placeholder="Senha">
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px;">
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-add" checked> Adicionar Itens</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-edit" checked> Editar Itens/Preços</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-del"> Excluir Itens</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-agenda" checked> Gerenciar Agenda</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-rank" checked> Alterar Rankings</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-mod" checked> Moderar Som/Mural</label>
+                </div>
+                <button class="btn-fire" onclick="registerNewAdmin()" style="background: var(--c-cyan); color:#000; margin-top:10px; padding: 10px;">+ Cadastrar Administrador</button>
+              </div>
+
+              <div class="admin-card" style="border-color: var(--c-red);">
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Gerenciar Permissões de Colaboradores</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Permissões ativas para Alisson (Rafa369@gmail.com):</p>
+                <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
+                  <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                      <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador Padrão)</strong>
+                      <span style="color: var(--c-cyan); font-size: 0.8rem;">Rafa369@gmail.com</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 5px;">
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Pode Alterar Rankings</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Pode Alterar Agenda & Flyer</label>
+                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Pode Alterar Equipe</label>
+                    </div>
+                  </div>
+                </div>
+
+                <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.1rem; margin-top: 15px; margin-bottom: 5px;">Outros Administradores Cadastrados:</h5>
+                <div id="dynamic-custom-adms-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
+          <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
+            <div class="admin-card">
+              <div class="file-upload-wrapper">
+                <span>🖼️ UPLOAD BANNER CENTRAL (Opcional)</span>
+                <input type="file" accept="image/*" onchange="updateHomeImg(this)">
+              </div>
+              <input type="text" class="admin-input" id="adm-h-title" placeholder="Título Principal" style="margin-top:10px;">
+              <textarea class="admin-textarea" id="adm-h-desc1" rows="2" placeholder="Parágrafo 1" style="margin-top:10px;"></textarea>
+              <textarea class="admin-textarea" id="adm-h-desc2" rows="2" placeholder="Parágrafo 2" style="margin-top:10px;"></textarea>
+              
+              <h5 style="color:#fff; margin-top:15px;">Destaques (Lista)</h5>
+              <input type="text" class="admin-input" id="adm-h-promo-title" placeholder="Título Destaques" style="margin-top:10px;">
+              <input type="text" class="admin-input" id="adm-h-promo1" placeholder="Item 1" style="margin-top:10px;">
+              <input type="text" class="admin-input" id="adm-h-promo2" placeholder="Item 2" style="margin-top:10px;">
+              <input type="text" class="admin-input" id="adm-h-promo3" placeholder="Item 3" style="margin-top:10px;">
+              <button class="action-btn" onclick="saveHomeData()" style="margin-top:15px; background: var(--c-cyan);">💾 Salvar Página Inicial</button>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow);" onclick="toggleAdminSection('adm-agenda')">📅 Gerenciar Agenda</button>
+          <div id="adm-agenda" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Flyer Destaque (Principal)</h5>
+              <div class="file-upload-wrapper">
+                <span>🖼️ UPLOAD DO FLYER DESTAQUE</span>
+                <input type="file" accept="image/*" onchange="updateFlyerMain(this)">
+              </div>
+              <div class="admin-card-row" style="margin-top: 10px;">
+                <input type="text" class="admin-input" id="adm-f-tag" placeholder="Tag (Ex: SÁBADO)">
+                <input type="text" class="admin-input" id="adm-f-title" placeholder="Nome da Banda">
+                <input type="text" class="admin-input" id="adm-f-sub" placeholder="Subtítulo">
+              </div>
+              <textarea class="admin-textarea" id="adm-f-desc" rows="2" placeholder="Descrição"></textarea>
+              <button class="action-btn" onclick="saveFlyerData()" style="margin-top: 5px;">💾 Salvar Dados Destaque</button>
+            </div>
+
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Adicionar Mini Flyer</h5>
+            <div class="admin-card" style="border-color: var(--c-cyan);">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="new-ev-date" placeholder="Data (15/Out)">
+                <input type="text" class="admin-input" id="new-ev-title" placeholder="Título">
+                <input type="text" class="admin-input" id="new-ev-desc" placeholder="Descrição">
+              </div>
+              <div class="admin-card-row" style="margin-top: 10px;">
+                <div class="file-upload-wrapper">
+                  <span>📷 Upload Foto</span>
+                  <input type="file" id="new-ev-img" accept="image/*">
+                </div>
+                <button class="action-btn" onclick="addAgendaItem()">+ ADD Evento</button>
+              </div>
+            </div>
+            
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Eventos Salvos (Mini Flyers)</h5>
+            <div id="admin-agenda-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-cardapio')">🍔 Gerenciar Cardápio</button>
+          <div id="adm-cardapio" class="admin-accordion-content" style="border-color: var(--c-pink);">
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Novo Item</h5>
+            <div class="admin-card" style="border-color: var(--c-pink);">
+              <div class="admin-card-row">
+                <select class="admin-input" id="new-item-type">
+                  <option value="caipirinha">🍋 Linha Caipirinha</option>
+                  <option value="vodka">🍸 Linha Vodka</option>
+                  <option value="rum">🍹 Linha Rum</option>
+                  <option value="tequila">🌵 Linha Tequila</option>
+                  <option value="gin">🌿 Linha Gin</option>
+                  <option value="whisky">🥃 Linha Whisky</option>
+                  <option value="beer">🍺 Cerveja</option>
+                  <option value="noalcohol">🥤 Sem Álcool / Suco / Refri</option>
+                  <option value="portion">🍟 Porção</option>
+                </select>
+                <input type="text" class="admin-input" id="new-item-name" placeholder="Nome">
+                <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 18,00)">
+              </div>
+              <input type="text" class="admin-input" id="new-item-short" placeholder="Resumo / Ingredientes rápidos..." style="margin-top: 10px;">
+              <textarea class="admin-textarea" id="new-item-full" rows="2" placeholder="Descrição completa dos ingredientes..." style="margin-top: 10px;"></textarea>
+              <div class="admin-card-row" style="margin-top: 10px;">
+                <div class="file-upload-wrapper">
+                  <span>📷 Upload Foto</span>
+                  <input type="file" id="new-item-img" accept="image/*">
+                </div>
+                <button class="action-btn" onclick="addMenuItem()">+ ADD Item</button>
+              </div>
+            </div>
+
+            <h5 style="color: #fff; font-family: var(--font-title); font-size: 1.2rem; margin-bottom: 10px;">Itens no Cardápio</h5>
+            <div id="admin-menu-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-equipe')">👔 Gerenciar Equipe</button>
+          <div id="adm-equipe" class="admin-accordion-content" style="border-color: var(--c-cyan);">
+            <div id="admin-team-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-arcade')">🕹️ Gerenciar Arcade Top 10</button>
+          <div id="adm-arcade" class="admin-accordion-content" style="border-color: var(--c-purple);">
+            <div id="admin-arcade-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: #ff9800;" onclick="toggleAdminSection('adm-cachaceiros')">🍻 Gerenciar Cachaceiros Top 10</button>
+          <div id="adm-cachaceiros" class="admin-accordion-content" style="border-color: #ff9800;">
+            <div id="admin-cachaceiros-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-logs')">📋 Relatório de Alterações (Logs ADM)</button>
+          <div id="adm-logs" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico Detalhado de Ações dos ADMs</h5>
+              <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo exato de quem alterou, o que foi editado/adicionado/excluído, data e horário.</p>
+              <div id="admin-logs-list" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+              <button id="clear-logs-btn" class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content; display:none;">🗑️ Limpar Histórico de Logs (Master)</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
+      <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
+      <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via JSONBin.io & ImgBB API.</p>
+      <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
+    </footer>
+
+  </div>
+
+  <script>
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function b64Decode(str) {
+      return decodeURIComponent(escape(window.atob(str)));
+    }
+
+    const BIN_ID = "6ab5ac11ac6210605af28b20";
+    const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
+    const BIN_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
+    const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
+
+    const AUTH_ACCOUNTS = [
+      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
+      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
+    ];
+
+    const defaultHome = {
+      title: "SOM PESADO & BEBIDA TRINCANDO",
+      desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.",
+      desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.",
+      promoTitle: "🔥 DIVERSÃO GARANTIDA",
+      promo1: "🎸 Agenda de Shows Coberta o Mês Todo",
+      promo2: "🕹️ Fliperama Arcades Liberados",
+      promo3: "🍻 Bebidas Baratas & Porções Brutas",
+      isOpen: true,
+      img: ""
+    };
+
+    const defaultMenu = [
+      // 🍋 Linha Caipirinha (01 a 07)
+      { id: 1, type: 'caipirinha', isPromo: true, name: '01: Caipirinha Tradicional (PROMO)', short: 'Cachaça artesanal, limão taiti, açúcar e gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça da boa, limão taiti macerado e gelo trincando.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 2, type: 'caipirinha', name: '02: Caipirinha de Morango', short: 'Cachaça artesanal, morangos frescos macerados e açúcar.', full: 'Morangos selecionados esmagados com cachaça nacional premium, açúcar e bastante gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 3, type: 'caipirinha', name: '03: Caipirinha de Maracujá', short: 'Cachaça artesanal, polpa de maracujá fresco e açúcar.', full: 'Sabor tropical marcante com polpa fresca de maracujá batida com cachaça e cubos de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 4, type: 'caipirinha', name: '04: Caipirinha de Abacaxi', short: 'Cachaça artesanal, abacaxi em cubos, açúcar e gelo.', full: 'Pedaços frescos de abacaxi macerados com cachaça artesanal e toque de frescor cítrico.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
+      { id: 5, type: 'caipirinha', name: '05: Caipirinha de Kiwi', short: 'Cachaça artesanal, kiwi fresco macerado e açúcar.', full: 'Kiwi fresco bem esmagado com cachaça suave, equilibrando doçura e acidez no copo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 6, type: 'caipirinha', name: '06: Caipirinha de Laranja', short: 'Cachaça artesanal, gomos de laranja doce e açúcar.', full: 'Cachaça artesanal batida com sumo e pedaços de laranja doce e muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+      { id: 7, type: 'caipirinha', name: '07: Caipirinha de Frutas Vermelhas', short: 'Cachaça, amora, morango e mirtilo.', full: 'Mix vibrante de frutas vermelhas maceradas na cachaça nobre com açúcar e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+
+      // 🍸 Linha Vodka (08 a 15)
+      { id: 8, type: 'vodka', name: '08: Caipiroska Tradicional', short: 'Vodka premium, limão taiti, açúcar e gelo.', full: 'A versão russa com limão macerado, vodka trincando e açúcar no capricho.', price: '18,00', img: 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=400' },
+      { id: 9, type: 'vodka', name: '09: Caipiroska de Morango', short: 'Vodka premium, morango fresco e açúcar.', full: 'Morangos frescos esmagados na vodka gelada com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
+      { id: 10, type: 'vodka', name: '10: Caipiroska de Maracujá', short: 'Vodka premium, polpa de maracujá e açúcar.', full: 'Maracujá doce e cítrico com dose generosa de vodka e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 11, type: 'vodka', name: '11: Screwdriver', short: 'Vodka premium e suco de laranja natural.', full: 'O clássico parafuso: vodka combinada com suco de laranja bem gelado.', price: '16,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+      { id: 12, type: 'vodka', name: '12: Sex on the Beach', short: 'Vodka, licor de pêssego, suco de laranja e groselha.', full: 'Coquetel doce e tropical em camadas com vodka, licor de pêssego, suco e groselha.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 13, type: 'vodka', name: '13: Cosmopolitan', short: 'Vodka, licor de laranja, cranberry e limão.', full: 'O sofisticado coquetel rosado com vodka, triple sec, cranberry e twist de limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 14, type: 'vodka', name: '14: Moscow Mule', short: 'Vodka, suco de limão e espuma de gengibre.', full: 'Servido na caneca de cobre: vodka, limão fresco, ginger e espuma cremosa de gengibre.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
+      { id: 15, type: 'vodka', name: '15: Vodka Sour', short: 'Vodka, suco de limão e xarope simples.', full: 'Equilíbrio ácido e aveludado batido com vodka, limão fresco e xarope de açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+
+      // 🍹 Linha Rum (16 a 21)
+      { id: 16, type: 'rum', name: '16: Cuba Libre', short: 'Rum carta branca, refrigerante de cola e limão.', full: 'Rum de qualidade com refrigerante de cola, fatias de limão e cubos de gelo.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 17, type: 'rum', name: '17: Mojito', short: 'Rum branco, hortelã, limão, açúcar e água com gás.', full: 'O mais refrescante: hortelã macerada com rum, limão e água gaseificada.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 18, type: 'rum', name: '18: Daiquiri', short: 'Rum branco, suco de limão e açúcar.', full: 'Clássico cubano batido na coqueteleira com rum, limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 19, type: 'rum', name: '19: Caipiríssima', short: 'Rum branco, limão taiti e açúcar.', full: 'A versão da caipirinha preparada exclusivamente com rum caribenho.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 20, type: 'rum', name: '20: Rum Sour', short: 'Rum dourado, limão taiti e açúcar.', full: 'Sabor robusto de rum dourado equilibrado com acidez do limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 21, type: 'rum', name: '21: Rum Punch', short: 'Rum claro e escuro, abacaxi, laranja e groselha.', full: 'Ponche tropical dos piratas com combinação de runs e frutas cítricas.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+
+      // 🌵 Linha Tequila (22 a 24)
+      { id: 22, type: 'tequila', name: '22: Margarita', short: 'Tequila prata, licor de laranja, limão e sal.', full: 'A lenda mexicana servida na taça crustada de sal com tequila e triple sec.', price: '20,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 23, type: 'tequila', name: '23: Tequila Sunrise', short: 'Tequila prata, suco de laranja e groselha.', full: 'Visual incrível em degradê nas cores do amanhecer com tequila e laranja.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 24, type: 'tequila', name: '24: Tequila Sour', short: 'Tequila, limão e xarope simples.', full: 'Potência e intensidade de tequila batida com suco de limão fresco.', price: '20,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+
+      // 🌿 Linha Gin (25 a 29)
+      { id: 25, type: 'gin', name: '25: Gin-Tônica', short: 'Gin botânico, tônica, alecrim e zimbro.', full: 'O clássico dos clássicos: gin aromático com água tônica trincando de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 26, type: 'gin', name: '26: Gin Sour', short: 'Gin, limão fresco e açúcar.', full: 'Toque herbal e botânico do gin balanceado com acidez refrescante.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 27, type: 'gin', name: '27: Gin Fizz', short: 'Gin, limão, açúcar e água com gás.', full: 'Bebida efervescente e viva de gin com soda artesanal e limão.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 28, type: 'gin', name: '28: Gimlet', short: 'Gin e cordial de limão.', full: 'Coquetel centenário inglês simples, seco e potente.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 29, type: 'gin', name: '29: Tom Collins', short: 'Gin, limão siciliano, açúcar e soda.', full: 'Servido no copo longo: gin, limão siciliano e soda com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+
+      // 🥃 Linha Whisky (30 a 34)
+      { id: 30, type: 'whisky', name: '30: Whisky Sour', short: 'Whisky, suco de limão e açúcar.', full: 'O clássico norte-americano aveludado batido com whisky e limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 31, type: 'whisky', name: '31: Old Fashioned', short: 'Whisky bourbon, açúcar, angostura e laranja.', full: 'O coquetel mais antigo do mundo montado no copo baixo com bourbon e angostura.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
+      { id: 32, type: 'whisky', name: '32: Whisky Highball', short: 'Whisky e água com gás carbonatada.', full: 'Bebida japonesa minimalista de whisky puro com água gaseificada trincando.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 33, type: 'whisky', name: '33: Whisky com Limão', short: 'Whisky on the rocks com fatias de limão.', full: 'Dose bruta de whisky no gelo com gotas e rodelas de limão fresco.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 34, type: 'whisky', name: '34: Whisky com Cola', short: 'Whisky e refrigerante de cola com gelo.', full: 'A mistura rockstar favorita dos pubs: whisky encorpado com cola e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+
+      // Cervejas & Sem Álcool
+      { id: 35, type: 'beer', name: 'Heineken Long Neck', short: 'Garrafa 330ml bem gelada.', full: 'A verdinha trincando na temperatura perfeita.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
+      { id: 36, type: 'beer', name: 'Budweiser Long Neck', short: 'Lager clássica 330ml.', full: 'Cerveja equilibrada e refrescante.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
+      { id: 37, type: 'beer', name: 'Skol Lata 350ml', short: 'Pilsen trincando.', full: 'Para descer redondo na resenha.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
+      { id: 38, type: 'noalcohol', name: 'Mocktail Tropical', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo e frutas frescas.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
+
+      // Porções
+      { id: 39, type: 'portion', name: 'Batata Cheddar & Bacon', short: 'Batata rústica com cheddar e bacon frito.', full: 'Batata frita sequinha coberta por avalanche de queijo cheddar e bacon crocante.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
+      { id: 40, type: 'portion', name: 'Calabresa Fire Flambada', short: 'Calabresa fatiada flambada na cachaça.', full: 'Calabresa acebolada servida no ponto com pão de alho e vinagrete.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
+      { id: 41, type: 'portion', name: 'Tábua Churrasco Brutal', short: 'Iscas de alcatra, fritas e chimichurri.', full: 'Tábua farta de carne bovina acebolada com batata frita e molho de ervas.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
+    ];
+
+    const defaultAgenda = [
+      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
+      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
+      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
+    ];
+
+    const defaultTeam = [
+      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
+      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
+      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
+      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
+    ];
+
+    const defaultArcade = Array.from({length: 10}, (_, i) => ({
+      id: i+1,
+      name: i===0 ? 'Rodrigo "KOF-GOD"' : `Player ${i+1}`,
+      sub: 'KOF 2002',
+      score: (1000 - i*50) + 'K',
+      prize: i===0 ? 'TORRE CHOPP' : '',
+      quote: i<3 ? 'Aqui ninguém me ganha, traga sua ficha e chore!' : '',
+      ig: '@rocker',
+      img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff'
+    }));
+
+    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({
+      id: i+1,
+      name: i===0 ? 'Alex "Tanque"' : `Bebedor ${i+1}`,
+      sub: '@rocker',
+      score: (40 - i*2) + ' L',
+      prize: i===0 ? 'JACK DANIELS' : '',
+      quote: i<3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '',
+      ig: '@cachaceiro_pro',
+      img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff'
+    }));
+
+    const defaultFlyer = {
+      tag: 'SÁBADO INSANO',
+      title: 'BANDA HELLFIRE',
+      sub: 'ESPECIAL METALLICA E SLIPKNOT',
+      desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!',
+      img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80'
+    };
+
+    let appData = {
+      home: defaultHome,
+      menu: defaultMenu,
+      agenda: defaultAgenda,
+      team: defaultTeam,
+      arcade: defaultArcade,
+      cachaceiros: defaultCachaceiros,
+      flyer: defaultFlyer,
+      customTabs: [],
+      userSongs: [],
+      pendingSongs: [],
+      userMessages: [],
+      pendingMessages: [],
+      adminLogs: [],
+      customAdmins: [],
+      permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
+      traffic: { totalViews: 0, devices: [], daily: {} }
+    };
+
+    let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
+
+    function switchTab(tabId) {
+      const panes = document.querySelectorAll('.tab-pane');
+      panes.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      const btns = document.querySelectorAll('.tab-btn');
+      btns.forEach(btn => btn.classList.remove('active'));
+      
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) {
+        targetPane.classList.add('active');
+      }
+      
+      const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => {
+        const attr = btn.getAttribute('onclick');
+        return attr && attr.includes("'" + tabId + "'");
+      });
+      if (clickedBtn) clickedBtn.classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMenuCategory(catKey) {
+      const header = document.getElementById('cat-hdr-' + catKey);
+      const content = document.getElementById('cat-cnt-' + catKey);
+      if(!content) return;
+      if(content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        if(header) header.classList.remove('collapsed');
+      } else {
+        content.classList.add('collapsed');
+        if(header) header.classList.add('collapsed');
+      }
+    }
+
+    function getHonorTitle(index, type) {
+      if(type === 'arcade') {
+        if(index === 0) return '👑 Lenda Viva do Arcade';
+        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
+        if(index === 2) return '🕹️ Mestre dos Controles';
+        return '🎮 Veterano do Fliperama';
+      } else {
+        if(index === 0) return '🏆 Campeão Supremo do Fígado';
+        if(index === 1) return '🍻 Senhor dos Destilados';
+        if(index === 2) return '🥃 Gladiador do Copo Cheio';
+        return '🍷 Guerreiro da Cachaça';
+      }
+    }
+
+    function switchRankingView(view) {
+      const btnArcade = document.getElementById('btn-switch-arcade');
+      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
+      const viewArcade = document.getElementById('rankings-view-arcade');
+      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
+
+      if(view === 'arcade') {
+        if(btnArcade) btnArcade.classList.add('active');
+        if(btnCachaceiros) btnCachaceiros.classList.remove('active');
+        if(viewArcade) viewArcade.style.display = 'block';
+        if(viewCachaceiros) viewCachaceiros.style.display = 'none';
+      } else {
+        if(btnCachaceiros) btnCachaceiros.classList.add('active');
+        if(btnArcade) btnArcade.classList.remove('active');
+        if(viewCachaceiros) viewCachaceiros.style.display = 'block';
+        if(viewArcade) viewArcade.style.display = 'none';
+      }
+    }
+
+    function createCard(item) {
+      const sName = escapeHTML(item.name);
+      const sShort = escapeHTML(item.short || item.name);
+      const sPrice = escapeHTML(item.price);
+      const isPromoClass = item.isPromo ? 'promo-destaque' : '';
+      const promoFlag = item.isPromo ? '<span class="promo-flag">🔥 R$ 10 PROMO</span>' : '';
+
+      return `
+        <div class="product-card glass-panel ${isPromoClass}" onclick="openMenuModalObj(${item.id})">
+          ${promoFlag}
+          <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
+          <h4 class="m-title">${item.name}</h4>
+          <p class="m-short">${sShort}</p>
+          <div class="menu-price">R$ ${item.price}</div>
+        </div>`;
+    }
+
+    function openMenuModalObj(id) {
+      const item = appData.menu.find(i => i.id === id);
+      if(!item) return;
+
+      const mTitle = document.getElementById('modalTitle');
+      const mDesc = document.getElementById('modalDesc');
+      const mPrice = document.getElementById('modalPrice');
+      const mImg = document.getElementById('modalImg');
+
+      if(mTitle) mTitle.innerText = item.name.replace('PROMO', '').trim();
+      if(mDesc) mDesc.innerText = item.full || item.short;
+      if(mPrice) mPrice.innerText = 'R$ ' + item.price;
+      if(mImg) mImg.src = item.img;
+
+      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      const canEdit = isMaster || perms.canEdit !== false;
+      const canDel = isMaster || perms.canDel !== false;
+
+      const editBox = document.getElementById('modal-adm-edit-box');
+
+      if(isLoggedIn && (canEdit || canDel)) {
+        if(editBox) editBox.style.display = 'block';
+        const eId = document.getElementById('modal-edit-id');
+        const eCat = document.getElementById('modal-edit-category');
+        const eName = document.getElementById('modal-edit-name');
+        const ePrice = document.getElementById('modal-edit-price');
+        const eShort = document.getElementById('modal-edit-short');
+        const eFull = document.getElementById('modal-edit-full');
+        const eImg = document.getElementById('modal-edit-img');
+        const eDel = document.getElementById('modal-item-del-btn');
+
+        if(eId) eId.value = item.id;
+        if(eCat) eCat.value = item.type;
+        if(eName) eName.value = item.name;
+        if(ePrice) ePrice.value = item.price;
+        if(eShort) eShort.value = item.short || '';
+        if(eFull) eFull.value = item.full || '';
+        if(eImg) eImg.value = item.img;
+        if(eDel) eDel.style.display = canDel ? 'inline-block' : 'none';
+      } else {
+        if(editBox) editBox.style.display = 'none';
+      }
+
+      const pModal = document.getElementById('productModal');
+      if(pModal) pModal.style.display = 'flex';
+    }
+
+    function renderApp() {
+      try {
+        const cHome = appData.home || defaultHome;
+        const cMenu = (Array.isArray(appData.menu) && appData.menu.length > 0) ? appData.menu : defaultMenu;
+        const cAgenda = (Array.isArray(appData.agenda) && appData.agenda.length > 0) ? appData.agenda : defaultAgenda;
+        const cTeam = (Array.isArray(appData.team) && appData.team.length > 0) ? appData.team : defaultTeam;
+        const cArcade = (Array.isArray(appData.arcade) && appData.arcade.length > 0) ? appData.arcade : defaultArcade;
+        const cCach = (Array.isArray(appData.cachaceiros) && appData.cachaceiros.length > 0) ? appData.cachaceiros : defaultCachaceiros;
+        const cFlyer = appData.flyer || defaultFlyer;
+
+        // Página Inicial
+        const hTitle = document.getElementById('h-title');
+        const hDesc1 = document.getElementById('h-desc1');
+        const hDesc2 = document.getElementById('h-desc2');
+        const hPromoTitle = document.getElementById('h-promo-title');
+        const hPromo1 = document.getElementById('h-promo1');
+        const hPromo2 = document.getElementById('h-promo2');
+        const hPromo3 = document.getElementById('h-promo3');
+
+        if(hTitle) hTitle.innerText = cHome.title;
+        if(hDesc1) hDesc1.innerText = cHome.desc1;
+        if(hDesc2) hDesc2.innerText = cHome.desc2;
+        if(hPromoTitle) hPromoTitle.innerText = cHome.promoTitle;
+        if(hPromo1) hPromo1.innerText = cHome.promo1;
+        if(hPromo2) hPromo2.innerText = cHome.promo2;
+        if(hPromo3) hPromo3.innerText = cHome.promo3;
+
+        const statusDot = document.getElementById('status-dot-el');
+        const statusText = document.getElementById('status-text-el');
+        if(statusDot && statusText) {
+          if(cHome.isOpen !== false) {
+            statusDot.className = 'status-dot open';
+            statusText.innerText = 'BARGUNÇADOS ABERTO';
+            statusText.style.color = '#00e676';
+          } else {
+            statusDot.className = 'status-dot closed';
+            statusText.innerText = 'BARGUNÇADOS FECHADO';
+            statusText.style.color = '#ff1744';
+          }
+        }
+
+        const homeImg = document.getElementById('home-img');
+        if(homeImg) {
+          if(cHome.img) { 
+            homeImg.style.display = 'block'; 
+            homeImg.src = cHome.img; 
+          } else { 
+            homeImg.style.display = 'none'; 
+          }
+        }
+
+        const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+        const perms = appData.permissions || {};
+        const canAdd = isMaster || perms.canAdd !== false;
+
+        const bHome = document.getElementById('bar-action-home');
+        const bBebidas = document.getElementById('bar-action-bebidas');
+        const bPorcoes = document.getElementById('bar-action-porcoes');
+        const bAgenda = document.getElementById('bar-action-agenda');
+
+        if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
+        if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+        if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+        if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+
+        // Renderização de Bebidas por Categorias
+        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
+        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
+        if(drinksContainer) drinksContainer.innerHTML = ''; 
+        if(portionsContainer) portionsContainer.innerHTML = '';
+
+        const drinkCategories = [
+          { key: 'caipirinha', label: '🍋 Linha Caipirinha' },
+          { key: 'vodka', label: '🍸 Linha Vodka' },
+          { key: 'rum', label: '🍹 Linha Rum' },
+          { key: 'tequila', label: '🌵 Linha Tequila' },
+          { key: 'gin', label: '🌿 Linha Gin' },
+          { key: 'whisky', label: '🥃 Linha Whisky' },
+          { key: 'beer', label: '🍺 Cervejas' },
+          { key: 'noalcohol', label: '🥤 Sem Álcool / Sucos / Refris' }
+        ];
+
+        if(drinksContainer) {
+          drinkCategories.forEach(cat => {
+            const items = cMenu.filter(i => {
+              if (i.type === cat.key) return true;
+              if (cat.key === 'caipirinha' && (i.type === 'drink' || (i.name && i.name.toLowerCase().includes('caipirinha')))) return true;
+              if (cat.key === 'vodka' && i.name && (i.name.toLowerCase().includes('vodka') || i.name.toLowerCase().includes('caipiroska') || i.name.toLowerCase().includes('mule'))) return true;
+              if (cat.key === 'whisky' && i.name && i.name.toLowerCase().includes('whisky')) return true;
+              return false;
+            });
+
+            if(items.length > 0) {
+              let catHtml = `
+                <div class="menu-cat-header" id="cat-hdr-${cat.key}" onclick="toggleMenuCategory('${cat.key}')">
+                  <span>${cat.label} (${items.length})</span>
+                  <span class="cat-arrow">▼</span>
+                </div>
+                <div class="menu-cat-content" id="cat-cnt-${cat.key}">
+                  <div class="menu-grid">`;
+              items.forEach(it => { catHtml += createCard(it); });
+              catHtml += `</div></div>`;
+              drinksContainer.innerHTML += catHtml;
+            }
+          });
+        }
+
+        // Porções
+        if(portionsContainer) {
+          const portionItems = cMenu.filter(i => i.type === 'portion');
+          let portionsStr = '<div class="menu-grid">';
+          portionItems.forEach(i => { portionsStr += createCard(i); });
+          portionsStr += '</div>';
+          portionsContainer.innerHTML = portionsStr;
+        }
+
+        // Agenda
+        const agendaList = document.getElementById('dynamic-agenda-list');
+        if(agendaList) {
+          agendaList.innerHTML = '';
+          cAgenda.forEach(ev => {
+            const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+            agendaList.innerHTML += `
+              <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+                <div class="mf-content">
+                  <div class="mf-date">${ev.date}</div>
+                  <div class="mf-title">${ev.title}</div>
+                </div>
+              </div>`;
+          });
+        }
+
+        const fImg = document.getElementById('featured-flyer-img');
+        const fTag = document.getElementById('adm-f-tag');
+        const fTitle = document.getElementById('adm-f-title');
+        const fSub = document.getElementById('adm-f-sub');
+        const fDesc = document.getElementById('adm-f-desc');
+
+        if(fImg) fImg.src = cFlyer.img;
+        if(fTag) fTag.value = cFlyer.tag || '';
+        if(fTitle) fTitle.value = cFlyer.title || '';
+        if(fSub) fSub.value = cFlyer.sub || '';
+        if(fDesc) fDesc.value = cFlyer.desc || '';
+
+        // Diretoria
+        const dirContainer = document.getElementById('dynamic-dir-list');
+        const proContainer = document.getElementById('dynamic-pro-list');
+        if(dirContainer) dirContainer.innerHTML = ''; 
+        if(proContainer) proContainer.innerHTML = '';
+        
+        if(dirContainer) {
+          cTeam.filter(t => t.type === 'dir').forEach(t => {
+            let cColor = 'var(--c-pink)';
+            if(t.id === 'dir2') cColor = 'var(--c-cyan)';
+            if(t.id === 'dir3') cColor = 'var(--c-yellow)';
+            dirContainer.innerHTML += `
+              <div class="glass-panel dir-card" style="--card-color: ${cColor};">
+                <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
+                <h3 class="dir-name">${t.name}</h3>
+                <p class="dir-role" style="color:${cColor};">${t.role}</p>
+                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+                <p class="dir-desc">${t.desc}</p>
+              </div>`;
+          });
+        }
+
+        if(proContainer) {
+          cTeam.filter(t => t.type === 'pro').forEach(t => {
+            proContainer.innerHTML += `
+              <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
+                <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
+                <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
+                <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
+                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+                <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
+              </div>`;
+          });
+        }
+
+        // Rankings
+        const arcList = document.getElementById('dynamic-arcade-list');
+        if(arcList) {
+          arcList.innerHTML = cArcade.map((i, index) => {
+            const isTop3 = index < 3;
+            const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
+            const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
+            const honorTitle = getHonorTitle(index, 'arcade');
+            const displayIg = i.ig || '@jogador';
+            
+            return `
+            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+              <div class="lb-info">
+                <span class="lb-name">${i.name}</span>
+                <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+                <span class="lb-title-badge">${honorTitle}</span>
+                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+              </div>
+              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+            </div>`;
+          }).join('');
+        }
+
+        const cachList = document.getElementById('dynamic-cachaceiros-list');
+        if(cachList) {
+          cachList.innerHTML = cCach.map((i, index) => {
+            const isTop3 = index < 3;
+            const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
+            const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
+            const honorTitle = getHonorTitle(index, 'cachaceiro');
+            const displayIg = i.sub || i.ig || '@cachaceiro';
+            
+            return `
+            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+              <div class="lb-info">
+                <span class="lb-name">${i.name}</span>
+                <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+                <span class="lb-title-badge">${honorTitle}</span>
+                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+              </div>
+              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+            </div>`;
+          }).join('');
+        }
+
+        renderAdminLists();
+      } catch(e) {}
+    }
+
+    function recordTrafficAnalytics() {
+      try {
+        let deviceId = localStorage.getItem('brg_device_id');
+        if(!deviceId) {
+          deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+          localStorage.setItem('brg_device_id', deviceId);
+        }
+
+        if(!appData.traffic) {
+          appData.traffic = { totalViews: 0, devices: [], daily: {} };
+        }
+        if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') {
+          appData.traffic.daily = {};
+        }
+
+        const todayStr = new Date().toISOString().split('T')[0];
+        if(!Array.isArray(appData.traffic.daily[todayStr])) {
+          appData.traffic.daily[todayStr] = [];
+        }
+
+        if(!appData.traffic.daily[todayStr].includes(deviceId)) {
+          appData.traffic.daily[todayStr].push(deviceId);
+        }
+
+        appData.traffic.totalViews = (Number(appData.traffic.totalViews) || 0) + 1;
+
+        if(!Array.isArray(appData.traffic.devices)) {
+          appData.traffic.devices = [];
+        }
+        if(!appData.traffic.devices.includes(deviceId)) {
+          appData.traffic.devices.push(deviceId);
+        }
+
+        updateTrafficUI();
+      } catch(e) {}
+    }
+
+    function updateTrafficUI() {
+      try {
+        const viewsEl = document.getElementById('adm-stat-views');
+        const devEl = document.getElementById('adm-stat-devices');
+        const todayEl = document.getElementById('adm-stat-today');
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayCount = (appData.traffic && appData.traffic.daily && Array.isArray(appData.traffic.daily[todayStr])) ? appData.traffic.daily[todayStr].length : 0;
+
+        if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+        if(devEl && appData.traffic) devEl.innerText = (Array.isArray(appData.traffic.devices) ? appData.traffic.devices.length : 0);
+        if(todayEl) todayEl.innerText = todayCount;
+      } catch(e) {}
+    }
+
+    async function fetchBinData() {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+        return;
+      }
+      try {
+        const res = await fetch(`${BIN_URL}/latest`, {
+          headers: { 'X-Master-Key': MASTER_KEY }
+        });
+        if(res.ok) {
+          const json = await res.json();
+          if(json && json.record) {
+            const r = json.record;
+            if(r.home) appData.home = { ...defaultHome, ...r.home };
+            if(Array.isArray(r.menu) && r.menu.length >= defaultMenu.length) {
+              appData.menu = r.menu;
+            }
+            if(Array.isArray(r.team) && r.team.length >= defaultTeam.length) {
+              appData.team = r.team;
+            }
+            if(Array.isArray(r.agenda) && r.agenda.length > 0) {
+              appData.agenda = r.agenda;
+            }
+            if(Array.isArray(r.arcade) && r.arcade.length > 0) {
+              appData.arcade = r.arcade;
+            }
+            if(Array.isArray(r.cachaceiros) && r.cachaceiros.length > 0) {
+              appData.cachaceiros = r.cachaceiros;
+            }
+            if(r.flyer && r.flyer.title) {
+              appData.flyer = r.flyer;
+            }
+            if(Array.isArray(r.customTabs)) appData.customTabs = r.customTabs;
+            if(Array.isArray(r.customAdmins)) appData.customAdmins = r.customAdmins;
+            if(Array.isArray(r.adminLogs)) appData.adminLogs = r.adminLogs;
+            if(r.permissions) appData.permissions = r.permissions;
+            if(r.traffic) {
+              appData.traffic.totalViews = Math.max(appData.traffic.totalViews || 0, r.traffic.totalViews || 0);
+              if(Array.isArray(r.traffic.devices)) {
+                appData.traffic.devices = Array.from(new Set([...(appData.traffic.devices || []), ...r.traffic.devices]));
+              }
+              if(r.traffic.daily) {
+                appData.traffic.daily = { ...(appData.traffic.daily || {}), ...r.traffic.daily };
+              }
+            }
+            renderApp();
+            updateTrafficUI();
+          }
+        }
+      } catch(e) {}
+    }
+
+    async function saveBinData(actionDesc = '') {
+      try {
+        if(actionDesc) {
+          const loggedName = localStorage.getItem('brg_adm_name') || 'Administrador';
+          const now = new Date().toLocaleString('pt-BR');
+          if(!appData.adminLogs) appData.adminLogs = [];
+          appData.adminLogs.unshift({
+            id: Date.now(),
+            admin: loggedName,
+            action: actionDesc,
+            date: now
+          });
+        }
+        renderApp();
+        updateTrafficUI();
+        await fetch(BIN_URL, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': MASTER_KEY
+          },
+          body: JSON.stringify(appData)
+        });
+      } catch(e) {}
+    }
+
+    function processSecureLogin() {
+      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
+      const passInput = document.getElementById('manual-pass-input').value.trim();
+
+      if (!emailInput || !passInput) {
+        alert("Preencha o e-mail e a senha.");
+        return;
+      }
+
+      let matchedAcc = null;
+      for (let acc of AUTH_ACCOUNTS) {
+        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
+          matchedAcc = acc;
+          break;
+        }
+      }
+
+      if (!matchedAcc && appData.customAdmins) {
+        const found = appData.customAdmins.find(a => a.email.toLowerCase() === emailInput && a.pass === passInput);
+        if (found) {
+          matchedAcc = { email: found.email, pass: found.pass, name: found.name, isMaster: false };
+          appData.permissions = found.perms || appData.permissions;
+        }
+      }
+
+      if (matchedAcc) {
+        localStorage.setItem('brg_adm_logged', 'true');
+        localStorage.setItem('brg_adm_email', matchedAcc.email);
+        localStorage.setItem('brg_adm_name', matchedAcc.name);
+        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
+
+        const logBox = document.getElementById('admin-login');
+        const dashBox = document.getElementById('admin-dashboard');
+        if(logBox) logBox.style.display = 'none';
+        if(dashBox) dashBox.style.display = 'block';
+
+        updateAdminGreeting();
+        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
+        renderApp();
+      } else {
+        alert('Acesso Negado. E-mail ou Senha incorretos.');
+      }
+    }
+
+    function updateAdminGreeting() {
+      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const greetingEl = document.getElementById('adm-welcome-text');
+      const masterTabsSec = document.getElementById('master-tabs-section');
+      const masterCtrlSec = document.getElementById('master-control-section');
+      const clearLogsBtn = document.getElementById('clear-logs-btn');
+
+      if(greetingEl) {
+        if(name === 'Touru') {
+          greetingEl.innerText = '👑 Conectado como: Touru (Master)';
+        } else if(name === 'Alisson') {
+          greetingEl.innerText = '🍻 Conectado como: Alisson (Colaborador)';
+        } else {
+          greetingEl.innerText = '⚙️ Conectado como: ' + name;
+        }
+      }
+
+      if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
+      if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
+      if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
+    }
+
+    function processLogout() {
+      localStorage.removeItem('brg_adm_logged');
+      localStorage.removeItem('brg_adm_email');
+      localStorage.removeItem('brg_adm_name');
+      localStorage.removeItem('brg_adm_is_master');
+      const logBox = document.getElementById('admin-login');
+      const dashBox = document.getElementById('admin-dashboard');
+      if(logBox) logBox.style.display = 'block';
+      if(dashBox) dashBox.style.display = 'none';
+      renderApp();
+    }
+
+    function toggleAdminSection(id) {
+      const content = document.getElementById(id);
+      const btn = content.previousElementSibling;
+      if (content.style.display === "block") {
+        content.style.display = "none";
+        btn.classList.remove("active");
+      } else {
+        content.style.display = "block";
+        btn.classList.add("active");
+      }
+    }
+
+    function openPlayerModal(type, id, name, sub, score, prize, quote, ig, imgUrl) {
+      const pName = document.getElementById('playerName');
+      const pIg = document.getElementById('playerIg');
+      const pQuote = document.getElementById('playerQuote');
+      const pImg = document.getElementById('playerModalImg');
+
+      if(pName) pName.innerText = name;
+      if(pIg) {
+        pIg.innerText = ig;
+        pIg.href = "https://instagram.com/" + ig.replace('@','');
+      }
+      if(pQuote) pQuote.innerText = `"${quote}"`;
+      if(pImg) pImg.src = imgUrl;
+
+      const pModal = document.getElementById('playerModal');
+      if(pModal) pModal.style.display = 'flex';
+    }
+
+    function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
+      if(type === 'featured') {
+        const eTag = document.getElementById('e-tag');
+        const eTitle = document.getElementById('e-title');
+        const eSub = document.getElementById('e-sub');
+        const eDesc = document.getElementById('e-desc');
+        const eImg = document.getElementById('eventModalImg');
+
+        if(eTag) eTag.innerText = appData.flyer.tag;
+        if(eTitle) eTitle.innerText = appData.flyer.title;
+        if(eSub) eSub.innerText = appData.flyer.sub;
+        if(eDesc) eDesc.innerText = appData.flyer.desc;
+        if(eImg) eImg.src = appData.flyer.img;
+      }
+      const eModal = document.getElementById('eventModal');
+      if(eModal) eModal.style.display = 'flex';
+    }
+
+    function openAgendaModalFromList(title, date, desc, img, id) {
+      const eTag = document.getElementById('e-tag');
+      const eTitle = document.getElementById('e-title');
+      const eSub = document.getElementById('e-sub');
+      const eDesc = document.getElementById('e-desc');
+      const eImg = document.getElementById('eventModalImg');
+
+      if(eTag) eTag.innerText = date;
+      if(eTitle) eTitle.innerText = title;
+      if(eSub) eSub.innerText = "Agenda Mensal";
+      if(eDesc) eDesc.innerText = desc;
+      if(eImg) eImg.src = img;
+
+      const eModal = document.getElementById('eventModal');
+      if(eModal) eModal.style.display = 'flex';
+    }
+
+    // Inicialização direta e garantida
+    document.addEventListener('DOMContentLoaded', () => {
+      renderApp();
+      recordTrafficAnalytics();
+      fetchBinData();
+
+      if(localStorage.getItem('brg_adm_logged') === 'true') {
+        const logBox = document.getElementById('admin-login');
+        const dashBox = document.getElementById('admin-dashboard');
+        if(logBox) logBox.style.display = 'none';
+        if(dashBox) dashBox.style.display = 'block';
+        updateAdminGreeting();
+      }
+
+      setInterval(fetchBinData, 15000);
+    });
+  </script>
+</body>
+</html>
