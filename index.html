@@ -1040,6 +1040,7 @@
     const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
     const BIN_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
+    const IMGDB_UPLOAD_URL = "https://imgdb.io/api/v1/upload?ttl=0";
 
     function escapeHTML(str) {
       if (!str) return '';
@@ -2068,67 +2069,120 @@
           return false;
         }
 
-        // O arquivo é enviado diretamente ao ImgBB. Nenhum Base64/data URI é
-        // criado ou salvo no JSONBin.
-        const formData = new FormData();
-        formData.append('image', file, file.name || 'imagem');
+        /*
+         * Backup duplo: a mesma foto é enviada para ImgBB e ImgDB.
+         * O site continua preferindo ImgBB. Se ImgBB falhar, usa a URL
+         * permanente do ImgDB. Nenhum arquivo/Base64 é gravado no JSONBin.
+         */
+        const uploadImgBB = async () => {
+          try {
+            const formData = new FormData();
+            formData.append('image', file, file.name || 'imagem');
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_KEY)}`, {
+              method: 'POST',
+              body: formData,
+              cache: 'no-store'
+            });
+            let json = null;
+            try { json = await res.json(); } catch (e) {}
+            const url = json && json.data && typeof json.data.url === 'string' ? json.data.url.trim() : '';
+            const valid = res.ok && json && json.success === true && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url);
+            if (!valid) {
+              console.warn('ImgBB falhou:', {status: res.status, response: json});
+              return '';
+            }
+            return url;
+          } catch (e) {
+            console.warn('ImgBB indisponível:', e);
+            return '';
+          }
+        };
 
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_KEY)}`, {
-          method: 'POST',
-          body: formData,
-          cache: 'no-store'
+        const uploadImgDB = async () => {
+          try {
+            const formData = new FormData();
+            formData.append('file', file, file.name || 'imagem');
+            const res = await fetch(IMGDB_UPLOAD_URL, {
+              method: 'POST',
+              body: formData,
+              cache: 'no-store'
+            });
+            let json = null;
+            try { json = await res.json(); } catch (e) {}
+            const url = json && typeof json.url === 'string' ? json.url.trim() : '';
+            const valid = res.ok && /^https:\/\/imgdb\.io\/i\/[^\s]+$/i.test(url);
+            if (!valid) {
+              console.warn('ImgDB falhou:', {status: res.status, response: json});
+              return '';
+            }
+            return url;
+          } catch (e) {
+            console.warn('ImgDB indisponível:', e);
+            return '';
+          }
+        };
+
+        // Os dois uploads são independentes. Uma falha não impede o outro.
+        const [imgbbUrl, imgdbUrl] = await Promise.all([uploadImgBB(), uploadImgDB()]);
+
+        // ImgBB é a URL principal; ImgDB é o plano B.
+        const hostedUrl = imgbbUrl || imgdbUrl;
+
+        if (!hostedUrl) {
+          alert('⚠️ A foto não conseguiu ser enviada para nenhum dos dois serviços (ImgBB e ImgDB). Nada foi salvo no banco de dados.');
+          return false;
+        }
+
+        // Confirma que a URL escolhida realmente entrega uma imagem antes de salvar.
+        const verified = await new Promise(resolve => {
+          const probe = new Image();
+          let settled = false;
+          const finish = value => {
+            if (settled) return;
+            settled = true;
+            probe.onload = null;
+            probe.onerror = null;
+            resolve(value);
+          };
+          const timer = setTimeout(() => finish(false), 15000);
+          probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
+          probe.onerror = () => { clearTimeout(timer); finish(false); };
+          probe.src = hostedUrl + (hostedUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
         });
 
-        let json = null;
-        const contentType = res.headers.get('content-type') || '';
-        if (contentType.toLowerCase().includes('application/json')) {
-          try { json = await res.json(); } catch (e) { json = null; }
-        } else {
-          try {
-            const raw = await res.text();
-            console.error('ImgBB: resposta não-JSON.', { status: res.status, response: raw });
-          } catch (e) {}
-        }
-
-        const hostedUrl = json && json.data && typeof json.data.url === 'string' ? json.data.url.trim() : '';
-        const isHostedUrl = /^https:\/\/i.ibb.co\/[^\s]+$/i.test(hostedUrl);
-
-        if (res.ok && json && json.success === true && isHostedUrl) {
-          // Confirma que a URL retornada pelo ImgBB realmente entrega uma imagem
-          // antes de permitir que ela seja gravada no JSONBin.
-          const verified = await new Promise(resolve => {
-            const probe = new Image();
-            let settled = false;
-            const finish = value => {
-              if (settled) return;
-              settled = true;
-              probe.onload = null;
-              probe.onerror = null;
-              resolve(value);
-            };
-            const timer = setTimeout(() => finish(false), 15000);
-            probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
-            probe.onerror = () => { clearTimeout(timer); finish(false); };
-            probe.src = hostedUrl + (hostedUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
-          });
-
-          if (!verified) {
-            console.error('ImgBB: a URL foi retornada, mas a imagem não pôde ser carregada.', hostedUrl);
-            alert('⚠️ O ImgBB recebeu a foto, mas a imagem não pôde ser confirmada. Nada foi salvo no site.');
-            return false;
+        if (!verified) {
+          // Se a primeira URL não carregar, tenta a segunda que já foi enviada.
+          const backupUrl = hostedUrl === imgbbUrl ? imgdbUrl : imgbbUrl;
+          if (backupUrl) {
+            const backupVerified = await new Promise(resolve => {
+              const probe = new Image();
+              let settled = false;
+              const finish = value => {
+                if (settled) return;
+                settled = true;
+                probe.onload = null;
+                probe.onerror = null;
+                resolve(value);
+              };
+              const timer = setTimeout(() => finish(false), 15000);
+              probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
+              probe.onerror = () => { clearTimeout(timer); finish(false); };
+              probe.src = backupUrl + (backupUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
+            });
+            if (backupVerified) {
+              if (typeof callback === 'function') callback(backupUrl);
+              return true;
+            }
           }
-
-          if (typeof callback === 'function') callback(hostedUrl);
-          return true;
+          alert('⚠️ Os serviços receberam a tentativa, mas nenhuma URL de imagem pôde ser confirmada. Nada foi salvo no banco de dados.');
+          return false;
         }
 
-        console.error('ImgBB: upload recusado ou resposta inválida.', { status: res.status, response: json });
-        const apiError = json && json.error && json.error.message ? `\n\n${json.error.message}` : '';
-        alert(`⚠️ Não foi possível enviar a foto para o ImgBB. A imagem não foi salva no site.${apiError}`);
-        return false;
+        if (typeof callback === 'function') callback(hostedUrl);
+        return true;
       } catch (e) {
-        console.error('ImgBB: erro no upload.', e);
-        alert('⚠️ Erro ao enviar a foto para o ImgBB. A imagem não foi salva no site. Verifique sua conexão e tente novamente.');
+        console.error('Upload duplo de imagem: erro inesperado.', e);
+        alert('⚠️ Erro ao enviar a foto. Nada foi salvo no banco de dados.');
         return false;
       }
     }
