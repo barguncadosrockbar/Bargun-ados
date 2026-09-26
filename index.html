@@ -323,6 +323,7 @@
 
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
         <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size:0.75rem; color:#ffd740; display:flex; align-items:center; gap:6px; margin:4px 0 6px; cursor:pointer;"><input type="checkbox" id="modal-edit-allow-duplicate" style="accent-color:#ffd740;"> Permitir nome duplicado neste item</label>
         
         <label style="font-size: 0.75rem; color: #aaa;">Preço (R$):</label>
         <input type="text" id="modal-edit-price" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
@@ -381,6 +382,7 @@
 
       <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
       <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Cerveja IPA ou Suco Natural">
+      <label style="font-size:0.75rem; color:#ffd740; display:flex; align-items:center; gap:6px; margin:4px 0 6px; cursor:pointer;"><input type="checkbox" id="create-item-allow-duplicate" style="accent-color:#ffd740;"> Permitir nome duplicado</label>
 
       <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
       <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
@@ -1062,13 +1064,29 @@
       {id:1034,type:'drink',drinkLine:'whisky',name:'Whisky com cola',short:'Whisky e refrigerante de cola.',full:'Whisky com cola, servido bem gelado.',price:'18,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'}
     ];
 
+    function ensureDeletedCatalogRegistry() {
+      if(!appData.deletedCatalogItems || typeof appData.deletedCatalogItems !== 'object') appData.deletedCatalogItems = {};
+      if(!Array.isArray(appData.deletedCatalogItems.ids)) appData.deletedCatalogItems.ids = [];
+      if(!Array.isArray(appData.deletedCatalogItems.names)) appData.deletedCatalogItems.names = [];
+      return appData.deletedCatalogItems;
+    }
+
+    function markCatalogItemDeleted(item) {
+      const reg = ensureDeletedCatalogRegistry();
+      if(item && item.id !== undefined && item.id !== null && !reg.ids.some(v => String(v) === String(item.id))) reg.ids.push(item.id);
+      const name = String(item && item.name || '').trim().toLowerCase();
+      if(name && !reg.names.includes(name)) reg.names.push(name);
+    }
+
     function ensureDrinkCatalog() {
       if(!Array.isArray(appData.menu)) appData.menu = [];
       let changed = false;
+      const reg = ensureDeletedCatalogRegistry();
       const existingNames = new Set(appData.menu.map(i => String(i.name || '').trim().toLowerCase()));
       EXTRA_DRINK_CATALOG.forEach(item => {
         const key = item.name.trim().toLowerCase();
-        if(!existingNames.has(key)) {
+        const deleted = reg.ids.some(v => String(v) === String(item.id)) || reg.names.includes(key);
+        if(!existingNames.has(key) && !deleted) {
           appData.menu.push({...item});
           existingNames.add(key);
           changed = true;
@@ -1095,6 +1113,7 @@
     let appData = {
       home: defaultHome,
       menu: defaultMenu,
+      deletedCatalogItems: { ids: [], names: [] },
       agenda: defaultAgenda,
       team: defaultTeam,
       arcade: defaultArcade,
@@ -1243,6 +1262,7 @@
       
       await fetchBinData();
       ensureAdminSystem();
+      ensureDeletedCatalogRegistry();
       const catalogChanged = ensureDrinkCatalog();
       if(catalogChanged) await saveBinData();
       recordTrafficAnalytics();
@@ -1291,6 +1311,7 @@
             appData = { ...appData, ...json.record };
             ensureAdminSystem();
             ensureMenuCategoryLabels();
+            ensureDeletedCatalogRegistry();
             ensureDrinkCatalog();
             renderApp();
             updateTrafficUI();
@@ -1851,6 +1872,8 @@
         document.getElementById('modal-edit-category').value = item.type;
         document.getElementById('modal-edit-line').value = item.drinkLine || '';
         document.getElementById('modal-edit-name').value = item.name;
+        const dupEdit = document.getElementById('modal-edit-allow-duplicate');
+        if(dupEdit) dupEdit.checked = false;
         document.getElementById('modal-edit-price').value = item.price;
         document.getElementById('modal-edit-short').value = item.short;
         document.getElementById('modal-edit-full').value = item.full;
@@ -1913,10 +1936,11 @@
       const newName = document.getElementById('modal-edit-name').value.trim();
       const newCat = document.getElementById('modal-edit-category').value;
 
-      if(newName.toLowerCase() !== oldName.toLowerCase()) {
-        const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
+      const allowDuplicateEdit = !!document.getElementById('modal-edit-allow-duplicate')?.checked;
+      if(newName.toLowerCase() !== oldName.toLowerCase() && !allowDuplicateEdit) {
+        const exists = appData.menu.some(i => i.id !== id && i.name.trim().toLowerCase() === newName.toLowerCase());
         if(exists) {
-          return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+          return alert("⚠️ Item já existente! Marque 'Permitir nome duplicado' se quiser cadastrar mesmo assim.");
         }
       }
 
@@ -1943,6 +1967,7 @@
       if(!item) return;
 
       if(confirm(`Tem certeza que deseja EXCLUIR "${item.name}" do cardápio?`)) {
+        markCatalogItemDeleted(item);
         appData.menu = appData.menu.filter(i => i.id !== id);
         closeModal('productModal');
         await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}" (Preço R$ ${item.price})`);
@@ -1958,6 +1983,8 @@
       document.getElementById('create-item-category').value = defaultCategory;
       document.getElementById('create-item-line').value = '';
       document.getElementById('create-item-name').value = '';
+      const dupCreate = document.getElementById('create-item-allow-duplicate');
+      if(dupCreate) dupCreate.checked = false;
       document.getElementById('create-item-price').value = '';
       document.getElementById('create-item-short').value = '';
       document.getElementById('create-item-full').value = '';
@@ -1992,9 +2019,10 @@
         return alert("Por favor, preencha o Nome e o Preço do produto!");
       }
 
+      const allowDuplicateCreate = !!document.getElementById('create-item-allow-duplicate')?.checked;
       const exists = appData.menu.some(i => i.name.trim().toLowerCase() === name.toLowerCase());
-      if(exists) {
-        return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
+      if(exists && !allowDuplicateCreate) {
+        return alert("⚠️ Item já existente! Marque 'Permitir nome duplicado' se quiser cadastrar mesmo assim.");
       }
 
       appData.menu.push({
