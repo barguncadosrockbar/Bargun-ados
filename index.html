@@ -114,24 +114,22 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.2); }
 
-    /* CATEGORIAS EM ACORDEOM / SANFONA */
-    .menu-cat-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
-    .menu-cat-header:hover { background: rgba(255,255,255,0.08); border-color: var(--c-yellow); }
-    .menu-cat-header .cat-arrow { font-size: 0.9rem; transition: transform 0.3s; color: var(--c-yellow); }
-    .menu-cat-header.collapsed .cat-arrow { transform: rotate(-90deg); }
-    .menu-cat-content { display: block; }
-    .menu-cat-content.collapsed { display: none; }
+    .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
+    .menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
 
-    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-
-    .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 10px; cursor: pointer; position: relative; overflow: hidden; height: 292px; min-height: 292px; box-sizing: border-box; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    .product-card.promo-destaque { border: 2px solid var(--c-yellow); box-shadow: 0 0 15px rgba(255, 235, 59, 0.35); }
-    .promo-flag { position: absolute; top: 8px; left: 8px; background: var(--c-red); color: #fff; font-size: 0.65rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
-
-    .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
-    .product-card:hover .product-img { transform: scale(1.02); }
+    .product-img { width: 100%; height: 150px; flex: 0 0 150px; object-fit: cover; object-position: center; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); background: #09090c; display: block; }
+    .product-card .m-short { width: 100%; min-height: 30px; margin-bottom: 4px; }
+    .product-card .menu-price { width: 100%; margin-top: auto; }
+    .menu-grid > .product-card, .drink-featured-grid > .product-card { width: 100%; }
+    .menu-grid > .product-card:nth-child(n), .drink-featured-grid > .product-card:nth-child(n) { align-self: stretch; }
+    .product-card:hover .product-img { transform: none; }
+    .drink-featured { margin-bottom: 22px; }
+    .drink-featured-title { font-family: var(--font-title); font-size: 1.65rem; color: var(--c-yellow); margin: 0 0 10px; border-bottom: 1px dashed rgba(255,235,59,0.35); padding-bottom: 5px; }
+    .drink-featured-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
+    .drink-line-title { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.35rem 0 0.75rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     
     .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
@@ -144,7 +142,7 @@
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: fill; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg, #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: contain; background: #09090c; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
@@ -238,16 +236,16 @@
 
     .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
 
-    .traffic-counter-box { display: flex; gap: 12px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
-    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 10px 15px; text-align: center; flex: 1; min-width: 120px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-    .counter-stat-val { font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
-    .counter-stat-lbl { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
+    .traffic-counter-box { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 12px 20px; text-align: center; flex: 1; min-width: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
+    .counter-stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
 
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
     @media (max-width: 600px) {
       .tab-btn { flex: 1 1 calc(33.333% - 6px); font-size: 0.95rem; padding: 8px 2px; }
-      .product-img { height: 120px; } 
+      .product-img { height: 150px; flex-basis: 150px; } 
       .dir-card { flex: 1 1 100%; }
       .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .agenda-mini-grid { grid-template-columns: repeat(2, 1fr); }
@@ -256,11 +254,8 @@
       .modal-content { max-height: 82vh; padding-bottom: 50px; }
       .featured-flyer-img { min-height: 420px; max-height: 520px; }
     }
-    /* ADIÇÃO — DESTAQUES DO BAR */
-    #cat-hdr-destaques { border-left-color: var(--c-yellow); background: rgba(255,235,59,0.08); box-shadow: 0 0 14px rgba(255,235,59,0.12); }
-    #cat-hdr-destaques span:first-child { color: var(--c-yellow); }
-    #cat-cnt-destaques .product-card { border: 2px solid var(--c-yellow); box-shadow: 0 0 18px rgba(255,235,59,0.30); }
   </style>
+<script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 </head>
 <body>
 
@@ -287,16 +282,14 @@
         
         <label style="font-size: 0.75rem; color: #aaa;">Categoria do Item:</label>
         <select id="modal-edit-category" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
-          <option value="caipirinha">🍋 Linha Caipirinha</option>
-          <option value="destaques">⭐ DESTAQUES DO BAR</option>
-          <option value="vodka">🍸 Linha Vodka</option>
-          <option value="rum">🍹 Linha Rum</option>
-          <option value="tequila">🌵 Linha Tequila</option>
-          <option value="gin">🌿 Linha Gin</option>
-          <option value="whisky">🥃 Linha Whisky</option>
+          <option value="drink">🔥 Destilados & Clássicos</option>
           <option value="beer">🍺 Cervejas</option>
           <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
           <option value="portion">🍟 Porções & Larica</option>
+        </select>
+        <label style="font-size: 0.75rem; color: #aaa;">Linha da Bebida:</label>
+        <select id="modal-edit-line" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+          <option value="">Destilados & Clássicos</option><option value="caipirinha">🍋 Caipirinha</option><option value="vodka">🍸 Vodka</option><option value="rum">🍹 Rum</option><option value="tequila">🌵 Tequila</option><option value="gin">🌿 Gin</option><option value="whisky">🥃 Whisky</option>
         </select>
 
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
@@ -305,10 +298,10 @@
         <label style="font-size: 0.75rem; color: #aaa;">Preço (R$):</label>
         <input type="text" id="modal-edit-price" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
         
-        <label style="font-size: 0.75rem; color: #aaa;">Resumo / Ingredientes Rápidos:</label>
+        <label style="font-size: 0.75rem; color: #aaa;">Resumo Curto:</label>
         <input type="text" id="modal-edit-short" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
         
-        <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa (Ingredientes):</label>
+        <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa:</label>
         <textarea id="modal-edit-full" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
         
         <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
@@ -325,6 +318,18 @@
     </div>
   </div>
 
+  <!-- MODAL DE EDIÇÃO RÁPIDA DE CATEGORIAS -->
+  <div id="categoryQuickEditModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color:var(--c-yellow); text-align:left; max-width:520px;">
+      <span class="close-btn" onclick="closeModal('categoryQuickEditModal')">×</span>
+      <h3 style="font-family:var(--font-title); font-size:1.7rem; color:var(--c-yellow); margin-bottom:6px; text-align:center;">✏️ Editar Categorias da Página</h3>
+      <p id="category-edit-page-label" style="color:#aaa; font-size:.85rem; text-align:center; margin-bottom:14px;"></p>
+      <input type="hidden" id="category-edit-page">
+      <div id="category-edit-fields" style="display:flex; flex-direction:column; gap:8px;"></div>
+      <button class="action-btn" onclick="saveCategoryQuickEdit()" style="width:100%; margin-top:14px; background:var(--c-cyan); color:#000; padding:11px; font-family:var(--font-title);">💾 Salvar Categorias / Títulos</button>
+    </div>
+  </div>
+
   <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
   <div id="itemCreateModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
@@ -335,29 +340,27 @@
       
       <label style="font-size: 0.8rem; color: #aaa;">Categoria:</label>
       <select id="create-item-category" class="interaction-input" style="padding: 8px;">
-        <option value="caipirinha">🍋 Linha Caipirinha</option>
-        <option value="destaques">⭐ DESTAQUES DO BAR</option>
-        <option value="vodka">🍸 Linha Vodka</option>
-        <option value="rum">🍹 Linha Rum</option>
-        <option value="tequila">🌵 Linha Tequila</option>
-        <option value="gin">🌿 Linha Gin</option>
-        <option value="whisky">🥃 Linha Whisky</option>
+        <option value="drink">🔥 Destilados & Clássicos</option>
         <option value="beer">🍺 Cervejas</option>
         <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
         <option value="portion">🍟 Porções & Larica</option>
       </select>
+      <label style="font-size: 0.8rem; color: #aaa;">Linha da Bebida:</label>
+      <select id="create-item-line" class="interaction-input" style="padding: 8px;">
+        <option value="">Destilados & Clássicos</option><option value="caipirinha">🍋 Linha Caipirinha</option><option value="vodka">🍸 Linha Vodka</option><option value="rum">🍹 Linha Rum</option><option value="tequila">🌵 Linha Tequila</option><option value="gin">🌿 Linha Gin</option><option value="whisky">🥃 Linha Whisky</option>
+      </select>
 
       <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
-      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Caipirinha de Morango ou Moscow Mule">
+      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Cerveja IPA ou Suco Natural">
 
       <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
       <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
 
-      <label style="font-size: 0.8rem; color: #aaa;">Resumo / Ingredientes:</label>
-      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Vodka, morangos frescos e açúcar">
+      <label style="font-size: 0.8rem; color: #aaa;">Resumo Curto:</label>
+      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Lata 350ml gelada ao extremo">
 
-      <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada dos Ingredientes:</label>
-      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Descreva os ingredientes completos do coquetel ou porção..."></textarea>
+      <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada:</label>
+      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Detalhes dos ingredientes ou procedência..."></textarea>
 
       <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
         <span>📷 Upar Foto do Item (ImgBB)</span>
@@ -501,7 +504,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- ABAS COM TODOS OS EMOTICONS E NOMES ORIGINAIS RESTAURADOS -->
+    <!-- ABAS COM TODOS OS EMOTICONS E NOMES RESTAURADOS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
@@ -536,7 +539,7 @@
               <span style="font-family: var(--font-body); font-size: 0.8rem; color: var(--c-yellow); font-weight: 600; margin-left: 18px;">⏰ Bar aberto desde as 17:00 (Esquenta) | Som & Promoções das 21:00 às 03:00</span>
             </div>
 
-            <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1); object-fit:fill;">
+            <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1); object-fit:contain;">
             <h3 id="h-title" style="font-family:var(--font-title); font-size:1.6rem; color:var(--c-cyan); margin-bottom:10px;">SOM PESADO & BEBIDA TRINCANDO</h3>
             <p id="h-desc1" style="color:#ddd; line-height:1.5; margin-bottom:10px;">Bem-vindo ao <strong>Bargunçados Rock Bar</strong>. Aqui a regra é clara: som no talo, copo cheio e zero frescura.</p>
             <p id="h-desc2" style="color:#ddd; line-height:1.5;">O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.</p>
@@ -556,16 +559,17 @@
       <section id="bebidas" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
-          <button class="action-btn" onclick="openCreateItemModal('caipirinha')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Bebida / Drink</button>
+          <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
-        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NAS CATEGORIAS ABAIXO PARA EXPANDIR 👇</p>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
       <section id="porcoes" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-porcoes">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
+          <button class="action-btn" onclick="openCategoryQuickEdit('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias</button>
           <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
         </div>
         <h2 class="section-title">Larica Pesada</h2>
@@ -688,19 +692,15 @@
             <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
           </div>
 
-          <!-- CONTADOR DE VISITAS DIÁRIAS E DISPOSITIVOS -->
+          <!-- CONTADOR DE VISITAS E DISPOSITIVOS RESTAURADO -->
           <div class="traffic-counter-box">
             <div class="counter-stat-card">
-              <div class="counter-stat-val" id="adm-stat-today">0</div>
-              <div class="counter-stat-lbl">Dispositivos Únicos Hoje</div>
-            </div>
-            <div class="counter-stat-card" style="border-color: var(--c-cyan);">
-              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-cyan);">0</div>
-              <div class="counter-stat-lbl">Dispositivos Registrados</div>
+              <div class="counter-stat-val" id="adm-stat-views">0</div>
+              <div class="counter-stat-lbl">Visitas Totais (Cliques)</div>
             </div>
             <div class="counter-stat-card" style="border-color: var(--c-pink);">
-              <div class="counter-stat-val" id="adm-stat-views" style="color: var(--c-pink);">0</div>
-              <div class="counter-stat-lbl">Total Geral de Visitas</div>
+              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-pink);">0</div>
+              <div class="counter-stat-lbl">Dispositivos Únicos Conectados</div>
             </div>
           </div>
 
@@ -780,56 +780,49 @@
             </div>
           </div>
 
-          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - CONTROLE MODULAR TOTAL & CADASTRO DE ADMS) -->
+          <!-- ADMINISTRAÇÃO MASTER — GERENCIAMENTO DE CONTAS E PERMISSÕES -->
           <div id="master-control-section" style="display:none;">
-            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Cadastrar ADMs & Permissões)</button>
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master — Administradores & Permissões</button>
             <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
-              
-              <!-- NOVO CADASTRO DE ADMINISTRADOR POR EMAIL E SENHA -->
-              <div class="admin-card" style="border-color: var(--c-cyan); margin-bottom: 20px;">
-                <h5 style="color:var(--c-cyan); font-family:var(--font-title); font-size:1.3rem; margin-bottom:5px;">➕ Cadastrar Novo Administrador</h5>
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Cadastre o e-mail e senha de um novo administrador e defina as permissões dele:</p>
-                <div class="admin-card-row">
-                  <input type="text" class="admin-input" id="new-adm-name" placeholder="Nome do Administrador (ex: Carlos)">
-                  <input type="email" class="admin-input" id="new-adm-email" placeholder="E-mail (ex: carlos@gmail.com)">
-                  <input type="password" class="admin-input" id="new-adm-pass" placeholder="Senha de Acesso">
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px;">
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-add" checked> Adicionar Itens</label>
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-edit" checked> Editar Itens/Preços</label>
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-del"> Excluir Itens</label>
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-agenda" checked> Gerenciar Agenda</label>
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-rank" checked> Alterar Rankings</label>
-                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-mod" checked> Moderar Som/Mural</label>
-                </div>
-                <button class="btn-fire" onclick="registerNewAdmin()" style="background: var(--c-cyan); color:#000; margin-top:10px; padding: 10px;">+ Cadastrar Administrador</button>
-              </div>
-
-              <!-- GESTÃO DOS ADMS CADASTRADOS -->
               <div class="admin-card" style="border-color: var(--c-red);">
-                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Gerenciar Permissões de Colaboradores</h5>
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Permissões ativas para Alisson (Rafa369@gmail.com):</p>
-                <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
-                  <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px;">
-                    <div>
-                      <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador Padrão)</strong>
-                      <span style="color: var(--c-cyan); font-size: 0.8rem;">Rafa369@gmail.com</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 5px;">
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Pode Alterar Rankings</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Pode Alterar Agenda & Flyer</label>
-                      <label style="color: #fff; font-size: 0.85rem; cursor: pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Pode Alterar Equipe</label>
-                    </div>
-                  </div>
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Selecionar administrador cadastrado</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Selecione um administrador já cadastrado para consultar e alterar as permissões dele.</p>
+                <select id="master-admin-select" class="interaction-input" onchange="loadManagedAdminPermissions()" style="padding:9px;"></select>
+                <div id="managed-admin-info" style="color:#aaa; font-size:0.8rem; margin:8px 0 12px;"></div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-rank" onchange="savePermissions()"> Pode Alterar Rankings</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-agenda" onchange="savePermissions()"> Pode Alterar Agenda & Flyer</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-team" onchange="savePermissions()"> Pode Alterar Equipe</label>
                 </div>
-
-                <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.1rem; margin-top: 15px; margin-bottom: 5px;">Outros Administradores Cadastrados:</h5>
-                <div id="dynamic-custom-adms-list"></div>
+              </div>
+              <div class="admin-card" style="border-color:var(--c-cyan);">
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">➕ Cadastrar novo administrador</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Apenas o ADM Master pode criar contas e definir as permissões iniciais.</p>
+                <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="new-admin-name" placeholder="Nome do administrador">
+                  <input type="email" class="admin-input" id="new-admin-email" placeholder="E-mail">
+                  <input type="password" class="admin-input" id="new-admin-pass" placeholder="Senha">
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; margin-top:10px;">
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-add" checked> Adicionar</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-edit" checked> Editar</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-del" checked> Excluir</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-tabs"> Abas</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-mod"> Moderação</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-rank"> Rankings</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-agenda"> Agenda</label>
+                  <label style="color:#fff; font-size:.82rem;"><input type="checkbox" id="new-admin-team"> Equipe</label>
+                </div>
+                <button class="action-btn" onclick="createNewAdmin()" style="margin-top:12px; background:var(--c-cyan); color:#000;">➕ Cadastrar Administrador</button>
+              </div>
+              <div class="admin-card" style="border-color:var(--c-yellow);">
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:8px;">Administradores cadastrados</h5>
+                <div id="master-admin-list"></div>
               </div>
             </div>
           </div>
@@ -897,22 +890,16 @@
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
                 <select class="admin-input" id="new-item-type">
-                  <option value="caipirinha">🍋 Linha Caipirinha</option>
-                  <option value="destaques">⭐ DESTAQUES DO BAR</option>
-                  <option value="vodka">🍸 Linha Vodka</option>
-                  <option value="rum">🍹 Linha Rum</option>
-                  <option value="tequila">🌵 Linha Tequila</option>
-                  <option value="gin">🌿 Linha Gin</option>
-                  <option value="whisky">🥃 Linha Whisky</option>
+                  <option value="drink">🔥 Destilado</option>
                   <option value="beer">🍺 Cerveja</option>
                   <option value="noalcohol">🥤 Sem Álcool / Suco / Refri</option>
                   <option value="portion">🍟 Porção</option>
                 </select>
                 <input type="text" class="admin-input" id="new-item-name" placeholder="Nome">
-                <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 18,00)">
+                <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 15,00)">
               </div>
-              <input type="text" class="admin-input" id="new-item-short" placeholder="Resumo / Ingredientes rápidos..." style="margin-top: 10px;">
-              <textarea class="admin-textarea" id="new-item-full" rows="2" placeholder="Descrição completa dos ingredientes..." style="margin-top: 10px;"></textarea>
+              <input type="text" class="admin-input" id="new-item-short" placeholder="Resumo curto..." style="margin-top: 10px;">
+              <textarea class="admin-textarea" id="new-item-full" rows="2" placeholder="Descrição completa..." style="margin-top: 10px;"></textarea>
               <div class="admin-card-row" style="margin-top: 10px;">
                 <div class="file-upload-wrapper">
                   <span>📷 Upload Foto</span>
@@ -948,6 +935,7 @@
               <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico Detalhado de Ações dos ADMs</h5>
               <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo exato de quem alterou, o que foi editado/adicionado/excluído, data e horário.</p>
               <div id="admin-logs-list" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+              <!-- BOTÃO DE LIMPAR LOGS EXCLUSIVO PARA MASTER (TOURU) -->
               <button id="clear-logs-btn" class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content; display:none;">🗑️ Limpar Histórico de Logs (Master)</button>
             </div>
           </div>
@@ -987,102 +975,73 @@
     ];
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
-    
     const defaultMenu = [
-      { id: 1, type: 'caipirinha', isPromo: true, name: '01: Caipirinha Tradicional (PROMO)', short: 'Cachaça artesanal, limão taiti fatiado, açúcar e muito gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça da boa, limão taiti macerado e gelo trincando.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 2, type: 'caipirinha', name: '02: Caipirinha de Morango', short: 'Cachaça artesanal, morangos frescos macerados e açúcar.', full: 'Morangos selecionados esmagados com cachaça nacional premium, açúcar e bastante gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 3, type: 'caipirinha', name: '03: Caipirinha de Maracujá', short: 'Cachaça artesanal, polpa de maracujá fresco e açúcar.', full: 'Sabor tropical marcante com polpa fresca de maracujá batida com cachaça e cubos de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 4, type: 'caipirinha', name: '04: Caipirinha de Abacaxi', short: 'Cachaça artesanal, abacaxi em cubos, açúcar e gelo.', full: 'Pedaços frescos de abacaxi macerados com cachaça artesanal e toque de frescor cítrico.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
-      { id: 5, type: 'caipirinha', name: '05: Caipirinha de Kiwi', short: 'Cachaça artesanal, kiwi fresco macerado e açúcar.', full: 'Kiwi fresco bem esmagado com cachaça suave, equilibrando doçura e acidez no copo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 6, type: 'caipirinha', name: '06: Caipirinha de Laranja', short: 'Cachaça artesanal, gomos de laranja fresca e açúcar.', full: 'Cachaça artesanal batida com sumo e pedaços de laranja doce e muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-      { id: 7, type: 'caipirinha', name: '07: Caipirinha de Frutas Vermelhas', short: 'Cachaça, amora, morango e mirtilo.', full: 'Mix vibrante de frutas vermelhas maceradas na cachaça nobre com açúcar e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 8, type: 'vodka', name: '08: Caipiroska', short: 'Vodka premium, limão taiti, açúcar e gelo.', full: 'A versão russa com limão macerado, vodka trincando e açúcar no capricho.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 9, type: 'vodka', name: '09: Caipiroska de Morango', short: 'Vodka premium, morango fresco e açúcar.', full: 'Morangos frescos esmagados na vodka gelada com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 10, type: 'vodka', name: '10: Caipiroska de Maracujá', short: 'Vodka premium, polpa de maracujá e açúcar.', full: 'Maracujá doce e cítrico com dose generosa de vodka e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 11, type: 'vodka', name: '11: Screwdriver', short: 'Vodka premium e suco natural de laranja.', full: 'O clássico parafuso: vodka combinada com suco de laranja bem gelado.', price: '16,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-      { id: 12, type: 'vodka', name: '12: Sex on the Beach', short: 'Vodka, licor de pêssego, suco de laranja e xarope de groselha.', full: 'Coquetel doce e tropical em camadas com vodka, licor de pêssego, suco e groselha.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 13, type: 'vodka', name: '13: Cosmopolitan', short: 'Vodka, licor de laranja, suco de cranberry e limão.', full: 'O sofisticado coquetel rosado com vodka, triple sec, cranberry e twist de limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 14, type: 'vodka', name: '14: Moscow Mule', short: 'Vodka, suco de limão, xarope de gengibre e espuma.', full: 'Servido na caneca de cobre: vodka, limão fresco, ginger beer e espuma cremosa de gengibre, quando disponível.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
-      { id: 15, type: 'vodka', name: '15: Vodka Sour', short: 'Vodka, suco de limão, xarope simples e toque amargo.', full: 'Equilíbrio ácido e aveludado batido com vodka, limão fresco e xarope de açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 16, type: 'rum', name: '16: Cuba Libre', short: 'Rum carta branca, refrigerante de cola e limão.', full: 'Rum de qualidade com refrigerante de cola, fatias de limão e cubos de gelo.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 17, type: 'rum', name: '17: Mojito', short: 'Rum branco, folhas de hortelã, limão, açúcar e água com gás.', full: 'O mais refrescante: hortelã macerada com rum, limão e água gaseificada.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 18, type: 'rum', name: '18: Daiquiri', short: 'Rum branco, suco de limão e xarope de açúcar.', full: 'Clássico cubano batido na coqueteleira com rum, limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 19, type: 'rum', name: '19: Caipiríssima', short: 'Rum branco, limão taiti macerado e açúcar.', full: 'A versão da caipirinha preparada exclusivamente com rum caribenho.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 20, type: 'rum', name: '20: Rum Sour', short: 'Rum envelhecido, limão taiti e açúcar.', full: 'Sabor robusto de rum dourado equilibrado com acidez do limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 21, type: 'rum', name: '21: Rum Punch', short: 'Rum claro e escuro, suco de abacaxi, laranja e groselha.', full: 'Ponche tropical dos piratas com combinação de runs e frutas cítricas.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 22, type: 'tequila', name: '22: Margarita', short: 'Tequila prata, licor de laranja, suco de limão e crosta de sal.', full: 'A lenda mexicana servida na taça crustada de sal com tequila e triple sec.', price: '20,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 23, type: 'tequila', name: '23: Tequila Sunrise', short: 'Tequila prata, suco de laranja e xarope de groselha.', full: 'Visual incrível em degradê nas cores do amanhecer com tequila e laranja.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 24, type: 'tequila', name: '24: Tequila Sour', short: 'Tequila, suco de limão e xarope simples.', full: 'Potência e intensidade de tequila batida com suco de limão fresco.', price: '20,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 25, type: 'gin', name: '25: Gin-Tônica', short: 'Gin botânico, água tônica, alecrim e zimbro.', full: 'O clássico dos clássicos: gin aromático com água tônica trincando de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 26, type: 'gin', name: '26: Gin Sour', short: 'Gin, suco de limão fresco e xarope simples.', full: 'Toque herbal e botânico do gin balanceado com acidez refrescante.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 27, type: 'gin', name: '27: Gin Fizz', short: 'Gin, limão, açúcar e completado com água com gás.', full: 'Bebida efervescente e viva de gin com soda artesanal e limão.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 28, type: 'gin', name: '28: Gimlet', short: 'Gin e cordial/suco de limão adoçado.', full: 'Coquetel centenário inglês simples, seco e potente.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 29, type: 'gin', name: '29: Tom Collins', short: 'Gin, suco de limão siciliano, açúcar e club soda.', full: 'Servido no copo longo: gin, limão siciliano e soda com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-      { id: 30, type: 'whisky', name: '30: Whisky Sour', short: 'Whisky, suco de limão, açúcar e toque aromático.', full: 'O clássico norte-americano aveludado batido com whisky e limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 31, type: 'whisky', name: '31: Old Fashioned', short: 'Whisky bourbon, torrão de açúcar, angostura e casca de laranja.', full: 'O coquetel mais antigo do mundo montado no copo baixo com bourbon e angostura.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
-      { id: 32, type: 'whisky', name: '32: Whisky Highball', short: 'Whisky e água com gás bem carbonatada.', full: 'Bebida japonesa minimalista de whisky puro com água gaseificada trincando.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 33, type: 'whisky', name: '33: Whisky com limão', short: 'Whisky on the rocks com fatias de limão taiti.', full: 'Dose bruta de whisky no gelo com gotas e rodelas de limão fresco.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 34, type: 'whisky', name: '34: Whisky com Cola', short: 'Whisky e refrigerante de cola com gelo.', full: 'A mistura rockstar favorita dos pubs: whisky encorpado com cola e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 35, type: 'beer', name: 'Heineken Long Neck', short: 'Garrafa 330ml bem gelada.', full: 'A verdinha trincando na temperatura perfeita.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
-      { id: 36, type: 'beer', name: 'Budweiser Long Neck', short: 'Lager clássica 330ml.', full: 'Cerveja equilibrada e refrescante.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
-      { id: 37, type: 'beer', name: 'Skol Lata 350ml', short: 'Pilsen trincando.', full: 'Para descer redondo na resenha.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
-      { id: 38, type: 'noalcohol', name: 'Mocktail Tropical', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo e frutas frescas.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
-      { id: 39, type: 'portion', name: 'Batata Cheddar & Bacon', short: 'Batata rústica com queijo cheddar cremoso e bacon frito.', full: 'Batata frita sequinha coberta por avalanche de queijo cheddar e bacon crocante.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
-      { id: 40, type: 'portion', name: 'Calabresa Fire Flambada', short: 'Calabresa fatiada flambada na cachaça com cebola.', full: 'Calabresa acebolada servida no ponto com pão de alho e vinagrete.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
-      { id: 41, type: 'portion', name: 'Tábua Churrasco Brutal', short: 'Iscas de alcatra, fritas crocantes e chimichurri.', full: 'Tábua farta de carne bovina acebolada com batata frita e molho de ervas.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
+      { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },
+      { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
+      { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
+      { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
+      { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
+      { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
+      { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
+      { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
     ];
-    /* ADIÇÃO — DESTAQUES DO BAR. Os itens originais do cardápio não são removidos nem alterados. */
-    const requestedBarHighlights = [
-      { id: 900001, type: 'destaques', isPromo: true, name: 'Caipirinha Tradicional', short: 'Cachaça artesanal, limão taiti, açúcar e muito gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça, limão taiti, açúcar e gelo trincando.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 900002, type: 'destaques', name: 'Gin-Tônica', short: 'Gin, água tônica, gelo e botânicos.', full: 'Gin-Tônica refrescante com gin, água tônica bem gelada, gelo e botânicos.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' }
+    /* NOVO CATÁLOGO DE BEBIDAS — somente itens ausentes são adicionados.
+       Qualquer item já salvo no banco permanece intacto. */
+    const EXTRA_DRINK_CATALOG = [
+      {id:1001,type:'drink',drinkLine:'caipirinha',name:'Caipirinha tradicional',short:'Limão taiti, açúcar e cachaça.',full:'Caipirinha tradicional preparada com limão taiti, açúcar e cachaça.',price:'10,00',img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600'},
+      {id:1002,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de morango',short:'Morango, limão, açúcar e cachaça.',full:'Caipirinha de morango com fruta fresca, limão, açúcar e cachaça.',price:'12,00',img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=600'},
+      {id:1003,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de maracujá',short:'Maracujá, limão, açúcar e cachaça.',full:'Caipirinha de maracujá com polpa da fruta, limão, açúcar e cachaça.',price:'12,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1004,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de abacaxi',short:'Abacaxi, açúcar e cachaça.',full:'Caipirinha de abacaxi com fruta fresca, açúcar e cachaça.',price:'12,00',img:'https://images.unsplash.com/photo-1589723292608-3a1f6b6c4c8f?q=80&w=600'},
+      {id:1005,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de kiwi',short:'Kiwi, limão, açúcar e cachaça.',full:'Caipirinha de kiwi com fruta fresca, limão, açúcar e cachaça.',price:'13,00',img:'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=600'},
+      {id:1006,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de laranja',short:'Laranja, açúcar e cachaça.',full:'Caipirinha de laranja refrescante, preparada com fruta fresca e cachaça.',price:'11,00',img:'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?q=80&w=600'},
+      {id:1007,type:'drink',drinkLine:'caipirinha',name:'Caipirinha de frutas vermelhas',short:'Frutas vermelhas, limão e cachaça.',full:'Caipirinha de frutas vermelhas com mix de frutas, limão, açúcar e cachaça.',price:'14,00',img:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?q=80&w=600'},
+      {id:1008,type:'drink',drinkLine:'vodka',name:'Caipiroska',short:'Vodka, limão e açúcar.',full:'Caipiroska clássica preparada com vodka, limão e açúcar.',price:'14,00',img:'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600'},
+      {id:1009,type:'drink',drinkLine:'vodka',name:'Caipiroska de morango',short:'Vodka, morango, limão e açúcar.',full:'Caipiroska de morango com fruta fresca, vodka, limão e açúcar.',price:'15,00',img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=600'},
+      {id:1010,type:'drink',drinkLine:'vodka',name:'Caipiroska de maracujá',short:'Vodka, maracujá, limão e açúcar.',full:'Caipiroska de maracujá com polpa da fruta, vodka, limão e açúcar.',price:'15,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1011,type:'drink',drinkLine:'vodka',name:'Screwdriver',short:'Vodka e suco de laranja.',full:'Clássico Screwdriver: vodka e suco de laranja, servido bem gelado.',price:'16,00',img:'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?q=80&w=600'},
+      {id:1012,type:'drink',drinkLine:'vodka',name:'Sex on the Beach',short:'Vodka, laranja, cranberry e pêssego.',full:'Drink frutado com vodka, suco de laranja, cranberry e toque de pêssego.',price:'18,00',img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=600'},
+      {id:1013,type:'drink',drinkLine:'vodka',name:'Cosmopolitan',short:'Vodka, cranberry e cítricos.',full:'Cosmopolitan clássico com vodka, cranberry e notas cítricas.',price:'18,00',img:'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=600'},
+      {id:1014,type:'drink',drinkLine:'vodka',name:'Moscow Mule',short:'Vodka, limão e ginger beer.',full:'Moscow Mule refrescante com vodka, limão e ginger beer, quando disponível.',price:'20,00',img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600'},
+      {id:1015,type:'drink',drinkLine:'vodka',name:'Vodka Sour',short:'Vodka, limão, açúcar e espuma.',full:'Vodka Sour equilibrado entre acidez, doçura e a força da vodka.',price:'18,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1016,type:'drink',drinkLine:'rum',name:'Cuba Libre',short:'Rum, cola e limão.',full:'Cuba Libre clássico com rum, refrigerante de cola e limão.',price:'15,00',img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600'},
+      {id:1017,type:'drink',drinkLine:'rum',name:'Mojito',short:'Rum, hortelã, limão, açúcar e soda.',full:'Mojito refrescante com rum, hortelã, limão, açúcar e água com gás.',price:'18,00',img:'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=600'},
+      {id:1018,type:'drink',drinkLine:'rum',name:'Daiquiri',short:'Rum, limão e açúcar.',full:'Daiquiri clássico, cítrico e equilibrado, com rum, limão e açúcar.',price:'18,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1019,type:'drink',drinkLine:'rum',name:'Caipiríssima',short:'Rum, limão e açúcar.',full:'Caipiríssima preparada com rum, limão fresco e açúcar.',price:'15,00',img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600'},
+      {id:1020,type:'drink',drinkLine:'rum',name:'Rum Sour',short:'Rum, limão e açúcar.',full:'Rum Sour com rum, limão e doçura equilibrada.',price:'18,00',img:'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600'},
+      {id:1021,type:'drink',drinkLine:'rum',name:'Rum Punch',short:'Rum, frutas e cítricos.',full:'Rum Punch frutado com rum e combinação refrescante de frutas e cítricos.',price:'20,00',img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=600'},
+      {id:1022,type:'drink',drinkLine:'tequila',name:'Margarita',short:'Tequila, limão e licor cítrico.',full:'Margarita clássica com tequila, limão e licor cítrico.',price:'22,00',img:'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=600'},
+      {id:1023,type:'drink',drinkLine:'tequila',name:'Tequila Sunrise',short:'Tequila, laranja e grenadine.',full:'Tequila Sunrise com tequila, suco de laranja e grenadine.',price:'20,00',img:'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?q=80&w=600'},
+      {id:1024,type:'drink',drinkLine:'tequila',name:'Tequila Sour',short:'Tequila, limão e açúcar.',full:'Tequila Sour com tequila, limão e equilíbrio entre acidez e doçura.',price:'20,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1025,type:'drink',drinkLine:'gin',name:'Gin-Tônica',short:'Gin, água tônica e cítricos.',full:'Gin-Tônica refrescante com gin, água tônica e toque cítrico.',price:'8,00',img:'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=600'},
+      {id:1026,type:'drink',drinkLine:'gin',name:'Gin Sour',short:'Gin, limão e açúcar.',full:'Gin Sour cítrico e equilibrado com gin, limão e açúcar.',price:'18,00',img:'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=600'},
+      {id:1027,type:'drink',drinkLine:'gin',name:'Gin Fizz',short:'Gin, limão, açúcar e soda.',full:'Gin Fizz leve e refrescante com gin, limão, açúcar e soda.',price:'20,00',img:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=600'},
+      {id:1028,type:'drink',drinkLine:'gin',name:'Gimlet',short:'Gin e limão.',full:'Gimlet clássico, direto e cítrico, com gin e limão.',price:'18,00',img:'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=600'},
+      {id:1029,type:'drink',drinkLine:'gin',name:'Tom Collins',short:'Gin, limão, açúcar e soda.',full:'Tom Collins refrescante com gin, limão, açúcar e soda.',price:'20,00',img:'https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=600'},
+      {id:1030,type:'drink',drinkLine:'whisky',name:'Whisky Sour',short:'Whisky, limão e açúcar.',full:'Whisky Sour clássico, com whisky, limão e doçura equilibrada.',price:'20,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'},
+      {id:1031,type:'drink',drinkLine:'whisky',name:'Old Fashioned',short:'Whisky, açúcar e bitter.',full:'Old Fashioned clássico com whisky, açúcar e bitter.',price:'22,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'},
+      {id:1032,type:'drink',drinkLine:'whisky',name:'Whisky Highball',short:'Whisky e água com gás.',full:'Whisky Highball leve e refrescante com whisky e água com gás.',price:'18,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'},
+      {id:1033,type:'drink',drinkLine:'whisky',name:'Whisky com limão',short:'Whisky e limão.',full:'Whisky servido com limão para uma combinação simples e cítrica.',price:'18,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'},
+      {id:1034,type:'drink',drinkLine:'whisky',name:'Whisky com cola',short:'Whisky e refrigerante de cola.',full:'Whisky com cola, servido bem gelado.',price:'18,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'}
     ];
 
-    function ensureRequestedBarHighlights() {
+    function ensureDrinkCatalog() {
       if(!Array.isArray(appData.menu)) appData.menu = [];
-      requestedBarHighlights.forEach(highlight => {
-        if(!appData.menu.some(item => item.id === highlight.id)) {
-          appData.menu.push({ ...highlight });
+      let changed = false;
+      const existingNames = new Set(appData.menu.map(i => String(i.name || '').trim().toLowerCase()));
+      EXTRA_DRINK_CATALOG.forEach(item => {
+        const key = item.name.trim().toLowerCase();
+        if(!existingNames.has(key)) {
+          appData.menu.push({...item});
+          existingNames.add(key);
+          changed = true;
         }
       });
+      return changed;
     }
-
-    /* ADIÇÃO — foto de fallback somente quando um item não possuir imagem. */
-    const requestedDrinkPhotoFallback = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-    function ensureDrinkPhotos() {
-      if(!Array.isArray(appData.menu)) return;
-      appData.menu.forEach(item => {
-        if((item.type === 'caipirinha' || item.type === 'vodka' || item.type === 'rum' || item.type === 'tequila' || item.type === 'gin' || item.type === 'whisky' || item.type === 'destaques') && !item.img) {
-          item.img = requestedDrinkPhotoFallback;
-        }
-      });
-    }
-
-    /* CORREÇÃO — garante que os 34 drinks obrigatórios existam no menu persistido.
-       A lista padrão é a fonte de verdade: itens ausentes são adicionados e
-       itens 01–34 com nome/categoria/foto/descrição/preço incorretos são corrigidos. */
-    function ensureRequiredDrinks() {
-      if(!Array.isArray(appData.menu)) appData.menu = [];
-      const required = defaultMenu.filter(item => Number(item.id) >= 1 && Number(item.id) <= 34);
-      required.forEach(requiredItem => {
-        const idx = appData.menu.findIndex(item => Number(item.id) === Number(requiredItem.id));
-        if(idx === -1) {
-          appData.menu.push({ ...requiredItem });
-          return;
-        }
-        const current = appData.menu[idx] || {};
-        appData.menu[idx] = {
-          ...current,
-          id: requiredItem.id,
-          type: requiredItem.type,
-          name: requiredItem.name,
-          short: requiredItem.short,
-          full: requiredItem.full,
-          price: requiredItem.price,
-          img: current.img || requiredItem.img
-        };
-      });
-    }
-
 
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
@@ -1113,96 +1072,111 @@
       userMessages: [],
       pendingMessages: [],
       adminLogs: [],
-      customAdmins: [],
       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
-      traffic: { totalViews: 0, devices: [], daily: {} }
+      adminAccounts: [
+        { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
+        { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
+      ],
+      permissionsByAdmin: {
+        "diegotouru666@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true },
+        "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
+      },
+      menuCategoryLabels: {
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        porcoes: { title: "Larica Pesada" }
+      },
+      traffic: { totalViews: 0, devices: [] }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
     function recordTrafficAnalytics() {
-      try {
-        let deviceId = localStorage.getItem('brg_device_id');
-        if(!deviceId) {
-          deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-          localStorage.setItem('brg_device_id', deviceId);
-        }
+      let deviceId = localStorage.getItem('brg_device_id');
+      if(!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        localStorage.setItem('brg_device_id', deviceId);
+      }
 
-        if(!appData.traffic) {
-          appData.traffic = { totalViews: 0, devices: [], daily: {} };
-        }
-        if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') {
-          appData.traffic.daily = {};
-        }
+      if(!appData.traffic) {
+        appData.traffic = { totalViews: 0, devices: [] };
+      }
 
-        const todayStr = new Date().toISOString().split('T')[0];
-        if(!Array.isArray(appData.traffic.daily[todayStr])) {
-          appData.traffic.daily[todayStr] = [];
-        }
+      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
 
-        if(!appData.traffic.daily[todayStr].includes(deviceId)) {
-          appData.traffic.daily[todayStr].push(deviceId);
-        }
+      if(!Array.isArray(appData.traffic.devices)) {
+        appData.traffic.devices = [];
+      }
 
-        appData.traffic.totalViews = (Number(appData.traffic.totalViews) || 0) + 1;
+      if(!appData.traffic.devices.includes(deviceId)) {
+        appData.traffic.devices.push(deviceId);
+      }
 
-        if(!Array.isArray(appData.traffic.devices)) {
-          appData.traffic.devices = [];
-        }
-        if(!appData.traffic.devices.includes(deviceId)) {
-          appData.traffic.devices.push(deviceId);
-        }
-
-        updateTrafficUI();
-      } catch(e) {}
+      updateTrafficUI();
     }
 
     function updateTrafficUI() {
-      try {
-        const viewsEl = document.getElementById('adm-stat-views');
-        const devEl = document.getElementById('adm-stat-devices');
-        const todayEl = document.getElementById('adm-stat-today');
-        
-        const todayStr = new Date().toISOString().split('T')[0];
-        const todayCount = (appData.traffic && appData.traffic.daily && Array.isArray(appData.traffic.daily[todayStr])) ? appData.traffic.daily[todayStr].length : 0;
+      const viewsEl = document.getElementById('adm-stat-views');
+      const devEl = document.getElementById('adm-stat-devices');
+      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
+    }
 
-        if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
-        if(devEl && appData.traffic) devEl.innerText = (Array.isArray(appData.traffic.devices) ? appData.traffic.devices.length : 0);
-        if(todayEl) todayEl.innerText = todayCount;
-      } catch(e) {}
+    function ensureAdminSystem() {
+      if(!Array.isArray(appData.adminAccounts) || appData.adminAccounts.length === 0) appData.adminAccounts = AUTH_ACCOUNTS.map(a => ({...a}));
+      AUTH_ACCOUNTS.forEach(base => {
+        if(!appData.adminAccounts.some(a => String(a.email).toLowerCase() === base.email.toLowerCase())) appData.adminAccounts.push({...base});
+      });
+      if(!appData.permissionsByAdmin) appData.permissionsByAdmin = {};
+      appData.adminAccounts.forEach(acc => {
+        const key = String(acc.email || '').toLowerCase();
+        if(!appData.permissionsByAdmin[key]) {
+          appData.permissionsByAdmin[key] = acc.isMaster
+            ? {canAdd:true,canEdit:true,canDel:true,canTabs:true,canMod:true,canRank:true,canAgenda:true,canTeam:true}
+            : {...(appData.permissions || {})};
+        }
+      });
+      const loggedEmail = (localStorage.getItem('brg_adm_email') || '').toLowerCase();
+      if(loggedEmail && appData.permissionsByAdmin[loggedEmail]) appData.permissions = appData.permissionsByAdmin[loggedEmail];
+    }
+
+    function getAdminAccounts() { ensureAdminSystem(); return appData.adminAccounts || AUTH_ACCOUNTS; }
+    function getSelectedManagedAdminEmail() { return (document.getElementById('master-admin-select')?.value || '').toLowerCase(); }
+    function getManagedAdminPermissions(email) {
+      ensureAdminSystem();
+      const key = String(email || '').toLowerCase();
+      if(!appData.permissionsByAdmin[key]) appData.permissionsByAdmin[key] = {...(appData.permissions || {})};
+      return appData.permissionsByAdmin[key];
     }
 
     async function initApp() {
-      try {
-        if(githubConfig.user && githubConfig.repo && githubConfig.token) {
-          const uEl = document.getElementById('gh-user');
-          const rEl = document.getElementById('gh-repo');
-          const tEl = document.getElementById('gh-token');
-          if(uEl) uEl.value = githubConfig.user;
-          if(rEl) rEl.value = githubConfig.repo;
-          if(tEl) tEl.value = githubConfig.token;
-          updateGitHubUI(true);
-        } else {
-          updateGitHubUI(false);
-        }
-        
-        await fetchBinData();
-        ensureRequiredDrinks();
-        ensureRequestedBarHighlights();
-        ensureDrinkPhotos();
-        recordTrafficAnalytics();
-        renderApp();
-        
-        if(localStorage.getItem('brg_adm_logged') === 'true') {
-          const logBox = document.getElementById('admin-login');
-          const dashBox = document.getElementById('admin-dashboard');
-          if(logBox) logBox.style.display = 'none';
-          if(dashBox) dashBox.style.display = 'block';
-          updateAdminGreeting();
-        }
+      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+        const uEl = document.getElementById('gh-user');
+        const rEl = document.getElementById('gh-repo');
+        const tEl = document.getElementById('gh-token');
+        if(uEl) uEl.value = githubConfig.user;
+        if(rEl) rEl.value = githubConfig.repo;
+        if(tEl) tEl.value = githubConfig.token;
+        updateGitHubUI(true);
+      } else {
+        updateGitHubUI(false);
+      }
+      
+      await fetchBinData();
+      ensureAdminSystem();
+      const catalogChanged = ensureDrinkCatalog();
+      if(catalogChanged) await saveBinData();
+      recordTrafficAnalytics();
+      renderApp();
+      
+      if(localStorage.getItem('brg_adm_logged') === 'true') {
+        const logBox = document.getElementById('admin-login');
+        const dashBox = document.getElementById('admin-dashboard');
+        if(logBox) logBox.style.display = 'none';
+        if(dashBox) dashBox.style.display = 'block';
+        updateAdminGreeting();
+      }
 
-        setInterval(fetchBinData, 15000);
-      } catch(e) {}
+      setInterval(fetchBinData, 15000);
     }
 
     function updateGitHubUI(isConnected) {
@@ -1235,9 +1209,9 @@
           const json = await res.json();
           if(json.record) {
             appData = { ...appData, ...json.record };
-            ensureRequiredDrinks();
-            ensureRequestedBarHighlights();
-            ensureDrinkPhotos();
+            ensureAdminSystem();
+            ensureMenuCategoryLabels();
+            ensureDrinkCatalog();
             renderApp();
             updateTrafficUI();
           }
@@ -1257,9 +1231,6 @@
           date: now
         });
       }
-      ensureRequiredDrinks();
-      ensureRequestedBarHighlights();
-      ensureDrinkPhotos();
       renderApp();
       updateTrafficUI();
       try {
@@ -1385,305 +1356,261 @@
       }
     }
 
-    function toggleMenuCategory(catKey) {
-      const header = document.getElementById('cat-hdr-' + catKey);
-      const content = document.getElementById('cat-cnt-' + catKey);
-      if(!content) return;
-      if(content.classList.contains('collapsed')) {
-        content.classList.remove('collapsed');
-        if(header) header.classList.remove('collapsed');
-      } else {
-        content.classList.add('collapsed');
-        if(header) header.classList.add('collapsed');
-      }
+    function ensureMenuCategoryLabels() {
+      const defaults = {
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        porcoes: { title: "Larica Pesada" }
+      };
+      if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
+      Object.keys(defaults).forEach(page => {
+        if(!appData.menuCategoryLabels[page] || typeof appData.menuCategoryLabels[page] !== 'object') appData.menuCategoryLabels[page] = {};
+        Object.keys(defaults[page]).forEach(key => {
+          if(!appData.menuCategoryLabels[page][key]) appData.menuCategoryLabels[page][key] = defaults[page][key];
+        });
+      });
+    }
+
+    function openCategoryQuickEdit(page) {
+      const isLoggedIn = localStorage.getItem('brg_adm_logged') === 'true';
+      const isMaster = localStorage.getItem('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado: seu administrador não possui permissão para editar categorias.');
+      ensureMenuCategoryLabels();
+      const labels = appData.menuCategoryLabels[page];
+      const fields = document.getElementById('category-edit-fields');
+      const title = document.getElementById('category-edit-page-label');
+      const pageEl = document.getElementById('category-edit-page');
+      if(!fields || !title || !pageEl) return;
+      pageEl.value = page;
+      title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
+      const names = page === 'bebidas' ? [
+        ['featured','Destaques'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+      ] : [['title','Título da página de porções']];
+      fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
+      document.getElementById('categoryQuickEditModal').style.display = 'flex';
+    }
+
+    async function saveCategoryQuickEdit() {
+      const isLoggedIn = localStorage.getItem('brg_adm_logged') === 'true';
+      const isMaster = localStorage.getItem('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado!');
+      ensureMenuCategoryLabels();
+      const page = document.getElementById('category-edit-page').value;
+      const inputs = Array.from(document.querySelectorAll('#category-edit-fields .category-edit-input'));
+      inputs.forEach(input => {
+        const key = input.dataset.categoryKey;
+        const value = input.value.trim();
+        if(value) appData.menuCategoryLabels[page][key] = value;
+      });
+      await saveBinData(`Editou os nomes das categorias da página ${page}`);
+      closeModal('categoryQuickEditModal');
+      alert('✅ Categorias atualizadas e salvas!');
     }
 
     function renderApp() {
-      try {
-        ensureRequestedBarHighlights();
-        ensureDrinkPhotos();
-        const cHome = appData.home || defaultHome;
-        const cMenu = appData.menu || defaultMenu;
-        const cAgenda = appData.agenda || defaultAgenda;
-        const cTeam = appData.team || defaultTeam;
-        const cArcade = appData.arcade || defaultArcade;
-        const cCach = appData.cachaceiros || defaultCachaceiros;
-        const cFlyer = appData.flyer || defaultFlyer;
-        const cCustomTabs = appData.customTabs || [];
+      const cHome = appData.home;
+      const cMenu = appData.menu;
+      const cAgenda = appData.agenda;
+      const cTeam = appData.team;
+      const cArcade = appData.arcade;
+      const cCach = appData.cachaceiros;
+      const cFlyer = appData.flyer;
+      const cCustomTabs = appData.customTabs || [];
+      ensureMenuCategoryLabels();
+      const categoryLabels = appData.menuCategoryLabels;
 
-        const hTitle = document.getElementById('h-title');
-        const hDesc1 = document.getElementById('h-desc1');
-        const hDesc2 = document.getElementById('h-desc2');
-        const hPromoTitle = document.getElementById('h-promo-title');
-        const hPromo1 = document.getElementById('h-promo1');
-        const hPromo2 = document.getElementById('h-promo2');
-        const hPromo3 = document.getElementById('h-promo3');
+      document.getElementById('h-title').innerText = cHome.title;
+      document.getElementById('h-desc1').innerText = cHome.desc1;
+      document.getElementById('h-desc2').innerText = cHome.desc2;
+      document.getElementById('h-promo-title').innerText = cHome.promoTitle;
+      document.getElementById('h-promo1').innerText = cHome.promo1;
+      document.getElementById('h-promo2').innerText = cHome.promo2;
+      document.getElementById('h-promo3').innerText = cHome.promo3;
 
-        if(hTitle) hTitle.innerText = cHome.title;
-        if(hDesc1) hDesc1.innerText = cHome.desc1;
-        if(hDesc2) hDesc2.innerText = cHome.desc2;
-        if(hPromoTitle) hPromoTitle.innerText = cHome.promoTitle;
-        if(hPromo1) hPromo1.innerText = cHome.promo1;
-        if(hPromo2) hPromo2.innerText = cHome.promo2;
-        if(hPromo3) hPromo3.innerText = cHome.promo3;
-
-        const statusDot = document.getElementById('status-dot-el');
-        const statusText = document.getElementById('status-text-el');
-        if(statusDot && statusText) {
-          if(cHome.isOpen !== false) {
-            statusDot.className = 'status-dot open';
-            statusText.innerText = 'BARGUNÇADOS ABERTO';
-            statusText.style.color = '#00e676';
-          } else {
-            statusDot.className = 'status-dot closed';
-            statusText.innerText = 'BARGUNÇADOS FECHADO';
-            statusText.style.color = '#ff1744';
-          }
-        }
-
-        const homeImg = document.getElementById('home-img');
-        if(homeImg) {
-          if(cHome.img) { 
-            homeImg.style.display = 'block'; 
-            homeImg.src = cHome.img; 
-          } else { 
-            homeImg.style.display = 'none'; 
-          }
-        }
-
-        const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-        const perms = appData.permissions || {};
-        const canAdd = isMaster || perms.canAdd !== false;
-
-        const bHome = document.getElementById('bar-action-home');
-        const bBebidas = document.getElementById('bar-action-bebidas');
-        const bPorcoes = document.getElementById('bar-action-porcoes');
-        const bAgenda = document.getElementById('bar-action-agenda');
-
-        if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-        if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-
-        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
-        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
-        if(drinksContainer) drinksContainer.innerHTML = ''; 
-        if(portionsContainer) portionsContainer.innerHTML = '';
-
-        const drinkCategories = [
-          { key: 'destaques', label: '⭐ DESTAQUES DO BAR' },
-          { key: 'caipirinha', label: '🍋 Linha Caipirinha' },
-          { key: 'vodka', label: '🍸 Linha Vodka' },
-          { key: 'rum', label: '🍹 Linha Rum' },
-          { key: 'tequila', label: '🌵 Linha Tequila' },
-          { key: 'gin', label: '🌿 Linha Gin' },
-          { key: 'whisky', label: '🥃 Linha Whisky' },
-          { key: 'beer', label: '🍺 Cervejas' },
-          { key: 'noalcohol', label: '🥤 Sem Álcool / Sucos / Refris' }
-        ];
-
-        if(drinksContainer) {
-          drinkCategories.forEach(cat => {
-            const items = cMenu.filter(i => (i.type === cat.key) || (cat.key === 'caipirinha' && i.type === 'drink'));
-            if(items.length > 0) {
-              let catHtml = `
-                <div class="menu-cat-header" id="cat-hdr-${cat.key}" onclick="toggleMenuCategory('${cat.key}')">
-                  <span>${cat.label} (${items.length})</span>
-                  <span class="cat-arrow">▼</span>
-                </div>
-                <div class="menu-cat-content" id="cat-cnt-${cat.key}">
-                  <div class="menu-grid">`;
-              items.forEach(it => catHtml += createCard(it));
-              catHtml += `</div></div>`;
-              drinksContainer.innerHTML += catHtml;
-            }
-          });
-        }
-
-        if(portionsContainer) {
-          const portionItems = cMenu.filter(i => i.type === 'portion');
-          let portionsStr = '<div class="menu-grid">';
-          portionItems.forEach(i => portionsStr += createCard(i));
-          portionsStr += '</div>';
-          portionsContainer.innerHTML = portionsStr;
-        }
-
-        const agendaList = document.getElementById('dynamic-agenda-list');
-        if(agendaList) {
-          agendaList.innerHTML = '';
-          cAgenda.forEach(ev => {
-            const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-            agendaList.innerHTML += `
-              <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
-                <div class="mf-content">
-                  <div class="mf-date">${ev.date}</div>
-                  <div class="mf-title">${ev.title}</div>
-                </div>
-              </div>`;
-          });
-        }
-
-        const fImg = document.getElementById('featured-flyer-img');
-        const fTag = document.getElementById('adm-f-tag');
-        const fTitle = document.getElementById('adm-f-title');
-        const fSub = document.getElementById('adm-f-sub');
-        const fDesc = document.getElementById('adm-f-desc');
-
-        if(fImg) fImg.src = cFlyer.img;
-        if(fTag) fTag.value = cFlyer.tag;
-        if(fTitle) fTitle.value = cFlyer.title;
-        if(fSub) fSub.value = cFlyer.sub;
-        if(fDesc) fDesc.value = cFlyer.desc;
-
-        const dirContainer = document.getElementById('dynamic-dir-list');
-        const proContainer = document.getElementById('dynamic-pro-list');
-        if(dirContainer) dirContainer.innerHTML = ''; 
-        if(proContainer) proContainer.innerHTML = '';
-        
-        if(dirContainer) {
-          cTeam.filter(t => t.type === 'dir').forEach(t => {
-            let cColor = 'var(--c-pink)';
-            if(t.id === 'dir2') cColor = 'var(--c-cyan)';
-            if(t.id === 'dir3') cColor = 'var(--c-yellow)';
-            dirContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="--card-color: ${cColor};">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
-                <h3 class="dir-name">${t.name}</h3>
-                <p class="dir-role" style="color:${cColor};">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        if(proContainer) {
-          cTeam.filter(t => t.type === 'pro').forEach(t => {
-            proContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
-                <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
-                <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        const arcList = document.getElementById('dynamic-arcade-list');
-        if(arcList) {
-          arcList.innerHTML = cArcade.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-            const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'arcade');
-            const displayIg = i.ig || '@jogador';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>
-                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        const cachList = document.getElementById('dynamic-cachaceiros-list');
-        if(cachList) {
-          cachList.innerHTML = cCach.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-            const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'cachaceiro');
-            const displayIg = i.sub || i.ig || '@cachaceiro';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>
-                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        renderPublicInteractions();
-        renderCustomTabs(cCustomTabs);
-        renderAdminLists();
-        renderModerationLists();
-        renderAdminLogsList();
-        renderCustomAdminsList();
-      } catch(e) {}
-    }
-
-    function renderCustomAdminsList() {
-      const listDiv = document.getElementById('dynamic-custom-adms-list');
-      if(!listDiv) return;
-      const adms = appData.customAdmins || [];
-      if(adms.length === 0) {
-        listDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum outro administrador cadastrado manualmente.</p>';
+      const statusDot = document.getElementById('status-dot-el');
+      const statusText = document.getElementById('status-text-el');
+      if(cHome.isOpen !== false) {
+        statusDot.className = 'status-dot open';
+        statusText.innerText = 'BARGUNÇADOS ABERTO';
+        statusText.style.color = '#00e676';
       } else {
-        listDiv.innerHTML = adms.map((adm, idx) => `
-          <div style="background: rgba(0,0,0,0.6); border: 1px solid #444; padding: 10px; border-radius: 6px; margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <strong style="color:#fff;">${escapeHTML(adm.name)}</strong> (${escapeHTML(adm.email)})
-              <div style="font-size:0.75rem; color:var(--c-cyan);">Permissões: ${adm.perms ? Object.keys(adm.perms).filter(k => adm.perms[k]).join(', ') : 'Padrão'}</div>
-            </div>
-            <button class="action-btn del-btn" onclick="removeCustomAdmin(${idx})" style="padding:4px 8px; font-size:0.75rem;">Remover</button>
-          </div>
-        `).join('');
+        statusDot.className = 'status-dot closed';
+        statusText.innerText = 'BARGUNÇADOS FECHADO';
+        statusText.style.color = '#ff1744';
       }
-    }
 
-    async function registerNewAdmin() {
+      if(cHome.img) { 
+        document.getElementById('home-img').style.display = 'block'; 
+        document.getElementById('home-img').src = cHome.img; 
+      } else { 
+        document.getElementById('home-img').style.display = 'none'; 
+      }
+
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      if(!isMaster) return alert("Apenas o Master pode cadastrar administradores!");
+      const perms = appData.permissions || {};
+      const canAdd = isMaster || perms.canAdd !== false;
 
-      const name = document.getElementById('new-adm-name').value.trim();
-      const email = document.getElementById('new-adm-email').value.trim().toLowerCase();
-      const pass = document.getElementById('new-adm-pass').value.trim();
+      const bHome = document.getElementById('bar-action-home');
+      const bBebidas = document.getElementById('bar-action-bebidas');
+      const bPorcoes = document.getElementById('bar-action-porcoes');
+      const bAgenda = document.getElementById('bar-action-agenda');
 
-      if(!name || !email || !pass) {
-        return alert("Preencha Nome, E-mail e Senha para cadastrar!");
-      }
+      if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
+      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
 
-      const perms = {
-        canAdd: document.getElementById('new-adm-perm-add').checked,
-        canEdit: document.getElementById('new-adm-perm-edit').checked,
-        canDel: document.getElementById('new-adm-perm-del').checked,
-        canAgenda: document.getElementById('new-adm-perm-agenda').checked,
-        canRank: document.getElementById('new-adm-perm-rank').checked,
-        canMod: document.getElementById('new-adm-perm-mod').checked
+      const drinksContainer = document.getElementById('dynamic-menu-bebidas');
+      const portionsContainer = document.getElementById('dynamic-menu-porcoes');
+      drinksContainer.innerHTML = ''; 
+      portionsContainer.innerHTML = '';
+      
+      const lineConfig = [
+        ['caipirinha', '🍋 Linha Caipirinha'],
+        ['vodka', '🍸 Linha Vodka'],
+        ['rum', '🍹 Linha Rum'],
+        ['tequila', '🌵 Linha Tequila'],
+        ['gin', '🌿 Linha Gin'],
+        ['whisky', '🥃 Linha Whisky']
+      ];
+
+      const findDrink = (name, fallbackPrice) => {
+        const exact = cMenu.find(i => i.type === 'drink' && String(i.name || '').trim().toLowerCase() === name.toLowerCase());
+        return exact || cMenu.find(i => i.type === 'drink' && String(i.price || '') === fallbackPrice);
       };
 
-      if(!appData.customAdmins) appData.customAdmins = [];
-      appData.customAdmins.push({ name, email, pass, perms });
+      const featuredItems = [
+        findDrink('Caipirinha', '10,00'),
+        findDrink('Gin Sunset', '8,00')
+      ].filter(Boolean);
 
-      document.getElementById('new-adm-name').value = '';
-      document.getElementById('new-adm-email').value = '';
-      document.getElementById('new-adm-pass').value = '';
+      let drinksStr = `
+        <div class="drink-featured">
+          <div class="drink-featured-title">${escapeHTML(categoryLabels.bebidas.featured)}</div>
+          <div class="drink-featured-grid">${featuredItems.map(createCard).join('')}</div>
+        </div>`;
 
-      await saveBinData(`Cadastrou novo administrador: "${name}" (${email})`);
-      alert("✅ Novo administrador cadastrado com sucesso!");
-    }
+      const drinksWithLine = new Set();
+      lineConfig.forEach(([line, title]) => {
+        const items = cMenu.filter(i => i.type === 'drink' && i.drinkLine === line);
+        if(items.length) {
+          items.forEach(i => drinksWithLine.add(i.id));
+          drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas[line] || title)}</div><div class="menu-grid">${items.map(createCard).join('')}</div>`;
+        }
+      });
 
-    async function removeCustomAdmin(index) {
-      if(confirm("Deseja remover este administrador?")) {
-        const removed = appData.customAdmins.splice(index, 1);
-        await saveBinData(`Removeu o administrador: "${removed[0].name}" (${removed[0].email})`);
-        alert("Administrador removido!");
+      const legacyDrinks = cMenu.filter(i => i.type === 'drink' && !drinksWithLine.has(i.id));
+      if(legacyDrinks.length) {
+        drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.legacy)}</div><div class="menu-grid">${legacyDrinks.map(createCard).join('')}</div>`;
       }
+
+      drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.beer)}</div><div class="menu-grid">${cMenu.filter(i => i.type === 'beer').map(createCard).join('')}</div>`;
+      drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.noalcohol)}</div><div class="menu-grid">${cMenu.filter(i => i.type === 'noalcohol').map(createCard).join('')}</div>`;
+      drinksContainer.innerHTML = drinksStr;
+
+      let portionsStr = `<div class="drink-line-title">${escapeHTML(categoryLabels.porcoes.title)}</div><div class="menu-grid">`;
+      cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
+      portionsStr += '</div>';
+      portionsContainer.innerHTML = portionsStr;
+
+      const agendaList = document.getElementById('dynamic-agenda-list');
+      agendaList.innerHTML = '';
+      cAgenda.forEach(ev => {
+        const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+        agendaList.innerHTML += `
+          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+            <div class="mf-content">
+              <div class="mf-date">${ev.date}</div>
+              <div class="mf-title">${ev.title}</div>
+            </div>
+          </div>`;
+      });
+
+      document.getElementById('featured-flyer-img').src = cFlyer.img;
+      document.getElementById('adm-f-tag').value = cFlyer.tag;
+      document.getElementById('adm-f-title').value = cFlyer.title;
+      document.getElementById('adm-f-sub').value = cFlyer.sub;
+      document.getElementById('adm-f-desc').value = cFlyer.desc;
+
+      const dirContainer = document.getElementById('dynamic-dir-list');
+      const proContainer = document.getElementById('dynamic-pro-list');
+      dirContainer.innerHTML = ''; 
+      proContainer.innerHTML = '';
+      
+      cTeam.filter(t => t.type === 'dir').forEach(t => {
+        let cColor = 'var(--c-pink)';
+        if(t.id === 'dir2') cColor = 'var(--c-cyan)';
+        if(t.id === 'dir3') cColor = 'var(--c-yellow)';
+        dirContainer.innerHTML += `
+          <div class="glass-panel dir-card" style="--card-color: ${cColor};">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
+            <h3 class="dir-name">${t.name}</h3>
+            <p class="dir-role" style="color:${cColor};">${t.role}</p>
+            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+            <p class="dir-desc">${t.desc}</p>
+          </div>`;
+      });
+
+      cTeam.filter(t => t.type === 'pro').forEach(t => {
+        proContainer.innerHTML += `
+          <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
+            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
+            <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
+            <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
+            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+            <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
+          </div>`;
+      });
+
+      document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
+        const isTop3 = index < 3;
+        const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
+        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
+        const honorTitle = getHonorTitle(index, 'arcade');
+        const displayIg = i.ig || '@jogador';
+        
+        return `
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <div class="lb-info">
+            <span class="lb-name">${i.name}</span>
+            <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+            <span class="lb-title-badge">${honorTitle}</span>
+            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+          </div>
+          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
+        const isTop3 = index < 3;
+        const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
+        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
+        const honorTitle = getHonorTitle(index, 'cachaceiro');
+        const displayIg = i.sub || i.ig || '@cachaceiro';
+        
+        return `
+        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <div class="lb-info">
+            <span class="lb-name">${i.name}</span>
+            <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+            <span class="lb-title-badge">${honorTitle}</span>
+            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+          </div>
+          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+        </div>`;
+      }).join('');
+
+      renderPublicInteractions();
+      renderCustomTabs(cCustomTabs);
+      renderAdminLists();
+      renderModerationLists();
+      renderAdminLogsList();
     }
 
     function renderAdminLogsList() {
@@ -1728,17 +1655,13 @@
       const canAgenda = document.getElementById('perm-agenda').checked;
       const canTeam = document.getElementById('perm-team').checked;
 
-      if(!appData.permissions) appData.permissions = {};
-      appData.permissions.canAdd = canAdd;
-      appData.permissions.canEdit = canEdit;
-      appData.permissions.canDel = canDel;
-      appData.permissions.canTabs = canTabs;
-      appData.permissions.canMod = canMod;
-      appData.permissions.canRank = canRank;
-      appData.permissions.canAgenda = canAgenda;
-      appData.permissions.canTeam = canTeam;
-
-      await saveBinData("Atualizou todas as permissões modulares do colaborador Alisson");
+      const targetEmail=getSelectedManagedAdminEmail();
+      if(!targetEmail) return alert('Selecione um administrador para alterar as permissões.');
+      const target=getManagedAdminPermissions(targetEmail);
+      target.canAdd=canAdd;target.canEdit=canEdit;target.canDel=canDel;target.canTabs=canTabs;
+      target.canMod=canMod;target.canRank=canRank;target.canAgenda=canAgenda;target.canTeam=canTeam;
+      if((localStorage.getItem('brg_adm_email')||'').toLowerCase()===targetEmail) appData.permissions=target;
+      await saveBinData(`Atualizou as permissões do administrador ${targetEmail}`);
       alert("Permissões guardadas com sucesso!");
     }
 
@@ -1749,39 +1672,34 @@
       const songs = appData.userSongs || [];
       const msgs = appData.userMessages || [];
 
-      if(songsDiv) {
-        if(songs.length === 0) {
-          songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
-        } else {
-          songsDiv.innerHTML = songs.map(s => `
-            <div class="feed-card">
-              <div class="feed-time">Até 16h</div>
-              <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
-              <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
-            </div>
-          `).join('');
-        }
+      if(songs.length === 0) {
+        songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
+      } else {
+        songsDiv.innerHTML = songs.map(s => `
+          <div class="feed-card">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
+            <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
+          </div>
+        `).join('');
       }
 
-      if(msgsDiv) {
-        if(msgs.length === 0) {
-          msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
-        } else {
-          msgsDiv.innerHTML = msgs.map(m => `
-            <div class="feed-card" style="border-left-color: var(--c-yellow);">
-              <div class="feed-time">Até 16h</div>
-              <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
-              <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
-            </div>
-          `).join('');
-        }
+      if(msgs.length === 0) {
+        msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
+      } else {
+        msgsDiv.innerHTML = msgs.map(m => `
+          <div class="feed-card" style="border-left-color: var(--c-yellow);">
+            <div class="feed-time">Até 16h</div>
+            <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
+            <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
+          </div>
+        `).join('');
       }
     }
 
     function renderCustomTabs(tabs) {
       const navContainer = document.getElementById('dynamic-nav-tabs');
       const mainContainer = document.getElementById('dynamic-tab-panes');
-      if(!navContainer || !mainContainer) return;
 
       document.querySelectorAll('.custom-tab-btn').forEach(el => el.remove());
       document.querySelectorAll('.custom-tab-pane').forEach(el => el.remove());
@@ -1800,7 +1718,7 @@
         section.innerHTML = `
           <h2 class="section-title">${tab.title}</h2>
           <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
-            ${tab.img ? `<img src="${tab.img}" style="width:100%; max-height:300px; object-fit:fill; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);">` : ''}
+            ${tab.img ? `<img src="${tab.img}" style="width:100%; max-height:300px; object-fit:contain; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);">` : ''}
             <p style="color:#ddd; font-size:1.1rem; line-height:1.6; white-space: pre-wrap;">${tab.desc}</p>
           </div>
         `;
@@ -1809,19 +1727,12 @@
     }
 
     function createCard(item) {
-      const sName = escapeHTML(item.name);
-      const sShort = escapeHTML(item.short);
-      const sPrice = escapeHTML(item.price);
-      const isPromoClass = item.isPromo ? 'promo-destaque' : '';
-      const promoFlag = item.isPromo ? '<span class="promo-flag">🔥 R$ 10 PROMO</span>' : '';
-
       return `
-        <div class="product-card glass-panel ${isPromoClass}" onclick="openMenuModalObj(${item.id})">
-          ${promoFlag}
-          <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
-          <h4 class="m-title">${item.name}</h4>
-          <p class="m-short">${sShort}</p>
-          <div class="menu-price">R$ ${item.price}</div>
+        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id})">
+          <img src="${escapeHTML(item.img || '')}" class="product-img" onerror="fallbackImg(this)">
+          <h4 class="m-title">${escapeHTML(item.name)}</h4>
+          <div class="m-short">${escapeHTML(item.short || '')}</div>
+          <div class="menu-price">R$ ${escapeHTML(item.price)}</div>
         </div>`;
     }
 
@@ -1846,6 +1757,7 @@
         editBox.style.display = 'block';
         document.getElementById('modal-edit-id').value = item.id;
         document.getElementById('modal-edit-category').value = item.type;
+        document.getElementById('modal-edit-line').value = item.drinkLine || '';
         document.getElementById('modal-edit-name').value = item.name;
         document.getElementById('modal-edit-price').value = item.price;
         document.getElementById('modal-edit-short').value = item.short;
@@ -1905,6 +1817,7 @@
 
       const oldName = item.name;
       const oldPrice = item.price;
+      const oldCat = item.type;
       const newName = document.getElementById('modal-edit-name').value.trim();
       const newCat = document.getElementById('modal-edit-category').value;
 
@@ -1917,6 +1830,7 @@
 
       item.name = newName;
       item.type = newCat;
+      item.drinkLine = newCat === 'drink' ? document.getElementById('modal-edit-line').value : '';
       item.price = document.getElementById('modal-edit-price').value;
       item.short = document.getElementById('modal-edit-short').value;
       item.full = document.getElementById('modal-edit-full').value;
@@ -1944,12 +1858,13 @@
       }
     }
 
-    function openCreateItemModal(defaultCategory = 'caipirinha') {
+    function openCreateItemModal(defaultCategory = 'drink') {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
 
       document.getElementById('create-item-category').value = defaultCategory;
+      document.getElementById('create-item-line').value = '';
       document.getElementById('create-item-name').value = '';
       document.getElementById('create-item-price').value = '';
       document.getElementById('create-item-short').value = '';
@@ -1974,6 +1889,7 @@
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado!");
 
       const cat = document.getElementById('create-item-category').value;
+      const drinkLine = document.getElementById('create-item-line').value;
       const name = document.getElementById('create-item-name').value.trim();
       const price = document.getElementById('create-item-price').value.trim();
       const shortDesc = document.getElementById('create-item-short').value.trim();
@@ -1992,6 +1908,7 @@
       appData.menu.push({
         id: Date.now(),
         type: cat,
+        drinkLine: cat === 'drink' ? drinkLine : '',
         name: name,
         short: shortDesc || name,
         full: fullDesc || shortDesc || name,
@@ -2399,12 +2316,9 @@
     }
 
     let tempNewTabImg = '';
-    const newTabImgFile = document.getElementById('new-tab-img-file');
-    if(newTabImgFile) {
-      newTabImgFile.addEventListener('change', e => {
-        uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
-      });
-    }
+    document.getElementById('new-tab-img-file').addEventListener('change', e => {
+      uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
+    });
 
     async function saveCustomTab() {
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
@@ -2486,21 +2400,13 @@
         return;
       }
 
-      const hTitle = document.getElementById('adm-h-title');
-      const hDesc1 = document.getElementById('adm-h-desc1');
-      const hDesc2 = document.getElementById('adm-h-desc2');
-      const hPromoTitle = document.getElementById('adm-h-promo-title');
-      const hPromo1 = document.getElementById('adm-h-promo1');
-      const hPromo2 = document.getElementById('adm-h-promo2');
-      const hPromo3 = document.getElementById('adm-h-promo3');
-
-      if(hTitle) hTitle.value = appData.home.title;
-      if(hDesc1) hDesc1.value = appData.home.desc1;
-      if(hDesc2) hDesc2.value = appData.home.desc2;
-      if(hPromoTitle) hPromoTitle.value = appData.home.promoTitle;
-      if(hPromo1) hPromo1.value = appData.home.promo1;
-      if(hPromo2) hPromo2.value = appData.home.promo2;
-      if(hPromo3) hPromo3.value = appData.home.promo3;
+      document.getElementById('adm-h-title').value = appData.home.title;
+      document.getElementById('adm-h-desc1').value = appData.home.desc1;
+      document.getElementById('adm-h-desc2').value = appData.home.desc2;
+      document.getElementById('adm-h-promo-title').value = appData.home.promoTitle;
+      document.getElementById('adm-h-promo1').value = appData.home.promo1;
+      document.getElementById('adm-h-promo2').value = appData.home.promo2;
+      document.getElementById('adm-h-promo3').value = appData.home.promo3;
 
       const customTabsList = document.getElementById('admin-custom-tabs-list');
       if(customTabsList) {
@@ -2536,13 +2442,7 @@
             <div class="admin-card">
               <div class="admin-card-row">
                   <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
-                    <option value="caipirinha" ${i.type === 'caipirinha' ? 'selected' : ''}>🍋 Caipirinha</option>
-                    <option value="destaques" ${i.type === 'destaques' ? 'selected' : ''}>⭐ DESTAQUES DO BAR</option>
-                    <option value="vodka" ${i.type === 'vodka' ? 'selected' : ''}>🍸 Vodka</option>
-                    <option value="rum" ${i.type === 'rum' ? 'selected' : ''}>🍹 Rum</option>
-                    <option value="tequila" ${i.type === 'tequila' ? 'selected' : ''}>🌵 Tequila</option>
-                    <option value="gin" ${i.type === 'gin' ? 'selected' : ''}>🌿 Gin</option>
-                    <option value="whisky" ${i.type === 'whisky' ? 'selected' : ''}>🥃 Whisky</option>
+                    <option value="drink" ${i.type === 'drink' ? 'selected' : ''}>🔥 Destilado</option>
                     <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
                     <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
                     <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
@@ -2555,7 +2455,7 @@
               </div>
               <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
               <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${i.img}" style="width:40px; height:40px; object-fit:fill; border-radius:4px; border:1px solid #444;">
+                  <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
                   <div class="file-upload-wrapper" style="padding: 5px 10px;">
                     <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
                     <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
@@ -2581,7 +2481,7 @@
               </div>
               <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
               <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:fill; border-radius:4px;">
+                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
                 <div class="file-upload-wrapper" style="padding: 5px 10px;">
                     <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
                     <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
@@ -2678,19 +2578,12 @@
         return;
       }
 
+      ensureAdminSystem();
       let matchedAcc = null;
-      for (let acc of AUTH_ACCOUNTS) {
+      for (let acc of getAdminAccounts()) {
         if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
           matchedAcc = acc;
           break;
-        }
-      }
-
-      if (!matchedAcc && appData.customAdmins) {
-        const found = appData.customAdmins.find(a => a.email.toLowerCase() === emailInput && a.pass === passInput);
-        if (found) {
-          matchedAcc = { email: found.email, pass: found.pass, name: found.name, isMaster: false };
-          appData.permissions = found.perms || appData.permissions;
         }
       }
 
@@ -2699,6 +2592,7 @@
         localStorage.setItem('brg_adm_email', matchedAcc.email);
         localStorage.setItem('brg_adm_name', matchedAcc.name);
         localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
+        appData.permissions = getManagedAdminPermissions(matchedAcc.email);
 
         document.getElementById('admin-login').style.display = 'none';
         document.getElementById('admin-dashboard').style.display = 'block';
@@ -2760,6 +2654,56 @@
         if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
         if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
       }
+      if(isMaster) renderMasterAdminManager();
+    }
+
+    function renderMasterAdminManager() {
+      if(localStorage.getItem('brg_adm_is_master') !== 'true') return;
+      ensureAdminSystem();
+      const select=document.getElementById('master-admin-select');
+      const list=document.getElementById('master-admin-list');
+      if(!select || !list) return;
+      const current=select.value;
+      select.innerHTML=appData.adminAccounts.map(a=>`<option value="${escapeHTML(String(a.email).toLowerCase())}">${escapeHTML(a.name)} — ${escapeHTML(a.email)}${a.isMaster?' — MASTER':''}</option>`).join('');
+      if(current && appData.adminAccounts.some(a=>String(a.email).toLowerCase()===current)) select.value=current;
+      if(!select.value && appData.adminAccounts[0]) select.value=String(appData.adminAccounts[0].email).toLowerCase();
+      loadManagedAdminPermissions(false);
+      list.innerHTML=appData.adminAccounts.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:rgba(0,0,0,.5);border:1px solid #333;border-radius:6px;padding:10px;margin-bottom:8px;"><div><strong style="color:#fff;">${escapeHTML(a.name)}</strong><div style="color:var(--c-cyan);font-size:.8rem;">${escapeHTML(a.email)}</div></div><span style="color:${a.isMaster?'var(--c-yellow)':'#aaa'};font-size:.75rem;">${a.isMaster?'👑 MASTER':'COLABORADOR'}</span></div>`).join('');
+    }
+
+    function loadManagedAdminPermissions(showAlert=true) {
+      if(localStorage.getItem('brg_adm_is_master') !== 'true') return;
+      const email=getSelectedManagedAdminEmail();
+      if(!email) return;
+      const acc=getAdminAccounts().find(a=>String(a.email).toLowerCase()===email);
+      const perms=getManagedAdminPermissions(email);
+      const set=(id,val)=>{const el=document.getElementById(id);if(el)el.checked=val!==false;};
+      set('perm-add',perms.canAdd);set('perm-edit',perms.canEdit);set('perm-del',perms.canDel);set('perm-tabs',perms.canTabs);
+      set('perm-mod',perms.canMod);set('perm-rank',perms.canRank);set('perm-agenda',perms.canAgenda);set('perm-team',perms.canTeam);
+      const info=document.getElementById('managed-admin-info');
+      if(info) info.innerText=acc?`${acc.name} • ${acc.email}${acc.isMaster?' • Conta Master':''}`:'';
+    }
+
+    async function createNewAdmin() {
+      if(localStorage.getItem('brg_adm_is_master') !== 'true') return alert('Acesso Negado: somente o ADM Master pode cadastrar administradores.');
+      const name=document.getElementById('new-admin-name').value.trim();
+      const email=document.getElementById('new-admin-email').value.trim();
+      const pass=document.getElementById('new-admin-pass').value.trim();
+      if(!name || !email || !pass) return alert('Preencha nome, e-mail e senha.');
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Digite um e-mail válido.');
+      ensureAdminSystem();
+      if(appData.adminAccounts.some(a=>String(a.email).toLowerCase()===email.toLowerCase())) return alert('Já existe um administrador com este e-mail.');
+      const permissions={
+        canAdd:document.getElementById('new-admin-add').checked,canEdit:document.getElementById('new-admin-edit').checked,canDel:document.getElementById('new-admin-del').checked,
+        canTabs:document.getElementById('new-admin-tabs').checked,canMod:document.getElementById('new-admin-mod').checked,canRank:document.getElementById('new-admin-rank').checked,
+        canAgenda:document.getElementById('new-admin-agenda').checked,canTeam:document.getElementById('new-admin-team').checked
+      };
+      appData.adminAccounts.push({email,pass,name,isMaster:false});
+      appData.permissionsByAdmin[email.toLowerCase()]=permissions;
+      await saveBinData(`Cadastrou novo administrador: ${name} (${email})`);
+      document.getElementById('new-admin-name').value='';document.getElementById('new-admin-email').value='';document.getElementById('new-admin-pass').value='';
+      alert('✅ Administrador cadastrado com sucesso.');
+      renderMasterAdminManager();
     }
 
     function processLogout() {
