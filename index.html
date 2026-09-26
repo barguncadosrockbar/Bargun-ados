@@ -2060,39 +2060,76 @@
     }
 
     async function uploadToImgBB(file, callback) {
-      if (!file) return;
+      if (!file) return false;
 
       try {
         if (!file.type || !file.type.startsWith('image/')) {
           alert('⚠️ Selecione um arquivo de imagem válido.');
-          return;
+          return false;
         }
 
+        // O arquivo é enviado diretamente ao ImgBB. Nenhum Base64/data URI é
+        // criado ou salvo no JSONBin.
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('image', file, file.name || 'imagem');
 
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_KEY)}`, {
           method: 'POST',
-          body: formData
+          body: formData,
+          cache: 'no-store'
         });
 
         let json = null;
-        try {
-          json = await res.json();
-        } catch (e) {
-          json = null;
+        const contentType = res.headers.get('content-type') || '';
+        if (contentType.toLowerCase().includes('application/json')) {
+          try { json = await res.json(); } catch (e) { json = null; }
+        } else {
+          try {
+            const raw = await res.text();
+            console.error('ImgBB: resposta não-JSON.', { status: res.status, response: raw });
+          } catch (e) {}
         }
 
-        if (res.ok && json && json.success === true && json.data && typeof json.data.url === 'string' && /^https:\/\/i.ibb.co\//i.test(json.data.url)) {
-          callback(json.data.url);
-          return;
+        const hostedUrl = json && json.data && typeof json.data.url === 'string' ? json.data.url.trim() : '';
+        const isHostedUrl = /^https:\/\/i.ibb.co\/[^\s]+$/i.test(hostedUrl);
+
+        if (res.ok && json && json.success === true && isHostedUrl) {
+          // Confirma que a URL retornada pelo ImgBB realmente entrega uma imagem
+          // antes de permitir que ela seja gravada no JSONBin.
+          const verified = await new Promise(resolve => {
+            const probe = new Image();
+            let settled = false;
+            const finish = value => {
+              if (settled) return;
+              settled = true;
+              probe.onload = null;
+              probe.onerror = null;
+              resolve(value);
+            };
+            const timer = setTimeout(() => finish(false), 15000);
+            probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
+            probe.onerror = () => { clearTimeout(timer); finish(false); };
+            probe.src = hostedUrl + (hostedUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
+          });
+
+          if (!verified) {
+            console.error('ImgBB: a URL foi retornada, mas a imagem não pôde ser carregada.', hostedUrl);
+            alert('⚠️ O ImgBB recebeu a foto, mas a imagem não pôde ser confirmada. Nada foi salvo no site.');
+            return false;
+          }
+
+          if (typeof callback === 'function') callback(hostedUrl);
+          return true;
         }
 
         console.error('ImgBB: upload recusado ou resposta inválida.', { status: res.status, response: json });
-        alert('⚠️ Não foi possível enviar a foto para o ImgBB. A imagem não foi salva no site. Tente novamente.');
+        const apiError = json && json.error && json.error.message ? `\n\n${json.error.message}` : '';
+        alert(`⚠️ Não foi possível enviar a foto para o ImgBB. A imagem não foi salva no site.${apiError}`);
+        return false;
       } catch (e) {
         console.error('ImgBB: erro no upload.', e);
         alert('⚠️ Erro ao enviar a foto para o ImgBB. A imagem não foi salva no site. Verifique sua conexão e tente novamente.');
+        return false;
       }
     }
 
