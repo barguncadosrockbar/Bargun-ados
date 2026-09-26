@@ -114,12 +114,22 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.2); }
 
-    .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
-    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    /* CATEGORIAS EM ACORDEOM COM EMOTICONS */
+    .menu-cat-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
+    .menu-cat-header:hover { background: rgba(255,255,255,0.08); border-color: var(--c-yellow); }
+    .menu-cat-header .cat-arrow { font-size: 0.9rem; transition: transform 0.3s; color: var(--c-yellow); }
+    .menu-cat-header.collapsed .cat-arrow { transform: rotate(-90deg); }
+    .menu-cat-content { display: block; }
+    .menu-cat-content.collapsed { display: none; }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
 
     .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
+    .product-card.promo-destaque { border: 2px solid var(--c-yellow); box-shadow: 0 0 15px rgba(255, 235, 59, 0.35); }
+    .promo-flag { position: absolute; top: 8px; left: 8px; background: var(--c-red); color: #fff; font-size: 0.65rem; font-weight: 900; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; z-index: 2; }
+
     .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
     .product-card:hover .product-img { transform: scale(1.02); }
     
@@ -273,7 +283,13 @@
         
         <label style="font-size: 0.75rem; color: #aaa;">Categoria do Item:</label>
         <select id="modal-edit-category" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
-          <option value="drink">🔥 Destilados & Clássicos</option>
+          <option value="destaques">⭐ Destaques do Bar (R$ 10 / R$ 8)</option>
+          <option value="caipirinha">🍋 Linha Caipirinha</option>
+          <option value="vodka">🍸 Linha Vodka</option>
+          <option value="rum">🍹 Linha Rum</option>
+          <option value="tequila">🌵 Linha Tequila</option>
+          <option value="gin">🌿 Linha Gin</option>
+          <option value="whisky">🥃 Linha Whisky</option>
           <option value="beer">🍺 Cervejas</option>
           <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
           <option value="portion">🍟 Porções & Larica</option>
@@ -315,23 +331,29 @@
       
       <label style="font-size: 0.8rem; color: #aaa;">Categoria:</label>
       <select id="create-item-category" class="interaction-input" style="padding: 8px;">
-        <option value="drink">🔥 Destilados & Clássicos</option>
+        <option value="destaques">⭐ Destaques do Bar (R$ 10 / R$ 8)</option>
+        <option value="caipirinha">🍋 Linha Caipirinha</option>
+        <option value="vodka">🍸 Linha Vodka</option>
+        <option value="rum">🍹 Linha Rum</option>
+        <option value="tequila">🌵 Linha Tequila</option>
+        <option value="gin">🌿 Linha Gin</option>
+        <option value="whisky">🥃 Linha Whisky</option>
         <option value="beer">🍺 Cervejas</option>
         <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
         <option value="portion">🍟 Porções & Larica</option>
       </select>
 
       <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
-      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Cerveja IPA ou Suco Natural">
+      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Caipirinha de Morango ou Moscow Mule">
 
       <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
       <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
 
       <label style="font-size: 0.8rem; color: #aaa;">Resumo Curto:</label>
-      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Lata 350ml gelada ao extremo">
+      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Vodka, morangos frescos e açúcar">
 
       <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada:</label>
-      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Detalhes dos ingredientes ou procedência..."></textarea>
+      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Descreva os ingredientes completos do coquetel ou porção..."></textarea>
 
       <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
         <span>📷 Upar Foto do Item (ImgBB)</span>
@@ -475,7 +497,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- ABAS COM TODOS OS EMOTICONS E NOMES RESTAURADOS -->
+    <!-- ABAS COM TODOS OS EMOTICONS E NOMES ORIGINAIS RESTAURADOS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
@@ -530,10 +552,10 @@
       <section id="bebidas" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
-          <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
+          <button class="action-btn" onclick="openCreateItemModal('destaques')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Bebida / Drink</button>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
-        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
+        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NAS CATEGORIAS ABAIXO PARA EXPANDIR 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
@@ -662,15 +684,19 @@
             <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
           </div>
 
-          <!-- CONTADOR DE VISITAS E DISPOSITIVOS RESTAURADO -->
+          <!-- CONTADOR DE VISITAS DIÁRIAS E DISPOSITIVOS -->
           <div class="traffic-counter-box">
             <div class="counter-stat-card">
-              <div class="counter-stat-val" id="adm-stat-views">0</div>
-              <div class="counter-stat-lbl">Visitas Totais (Cliques)</div>
+              <div class="counter-stat-val" id="adm-stat-today">0</div>
+              <div class="counter-stat-lbl">Dispositivos Únicos Hoje</div>
+            </div>
+            <div class="counter-stat-card" style="border-color: var(--c-cyan);">
+              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-cyan);">0</div>
+              <div class="counter-stat-lbl">Dispositivos Registrados</div>
             </div>
             <div class="counter-stat-card" style="border-color: var(--c-pink);">
-              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-pink);">0</div>
-              <div class="counter-stat-lbl">Dispositivos Únicos Conectados</div>
+              <div class="counter-stat-val" id="adm-stat-views" style="color: var(--c-pink);">0</div>
+              <div class="counter-stat-lbl">Total Geral de Visitas</div>
             </div>
           </div>
 
@@ -750,17 +776,39 @@
             </div>
           </div>
 
-          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - CONTROLE MODULAR TOTAL) -->
+          <!-- ADMINISTRAÇÃO MASTER (EXCLUSIVO PARA TOURU - CONTROLE MODULAR TOTAL & CADASTRO DE ADMS) -->
           <div id="master-control-section" style="display:none;">
-            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Controle Total de Permissões)</button>
+            <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Cadastrar ADMs & Permissões)</button>
             <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
+              
+              <!-- NOVO CADASTRO DE ADMINISTRADOR POR EMAIL E SENHA -->
+              <div class="admin-card" style="border-color: var(--c-cyan); margin-bottom: 20px;">
+                <h5 style="color:var(--c-cyan); font-family:var(--font-title); font-size:1.3rem; margin-bottom:5px;">➕ Cadastrar Novo Administrador</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Cadastre o e-mail e senha de um novo administrador e defina as permissões dele:</p>
+                <div class="admin-card-row">
+                  <input type="text" class="admin-input" id="new-adm-name" placeholder="Nome do Administrador (ex: Carlos)">
+                  <input type="email" class="admin-input" id="new-adm-email" placeholder="E-mail (ex: carlos@gmail.com)">
+                  <input type="password" class="admin-input" id="new-adm-pass" placeholder="Senha de Acesso">
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-top: 10px;">
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-add" checked> Adicionar Itens</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-edit" checked> Editar Itens/Preços</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-del"> Excluir Itens</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-agenda" checked> Gerenciar Agenda</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-rank" checked> Alterar Rankings</label>
+                  <label style="color: #fff; font-size: 0.8rem; cursor: pointer;"><input type="checkbox" id="new-adm-perm-mod" checked> Moderar Som/Mural</label>
+                </div>
+                <button class="btn-fire" onclick="registerNewAdmin()" style="background: var(--c-cyan); color:#000; margin-top:10px; padding: 10px;">+ Cadastrar Administrador</button>
+              </div>
+
+              <!-- GESTÃO DOS ADMS CADASTRADOS -->
               <div class="admin-card" style="border-color: var(--c-red);">
-                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Gerenciar Poderes dos Administradores Colaboradores</h5>
-                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Defina exatamente o que o Alisson (Rafa369@gmail.com) tem permissão de adicionar, editar ou excluir no sistema:</p>
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Gerenciar Permissões de Colaboradores</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px;">Permissões ativas para Alisson (Rafa369@gmail.com):</p>
                 <div id="master-permissions-panel" style="display: flex; flex-direction: column; gap: 10px;">
                   <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; display: flex; flex-direction: column; gap: 10px;">
                     <div>
-                      <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador)</strong>
+                      <strong style="color: #fff; display: block; font-size: 1.05rem;">Alisson (Colaborador Padrão)</strong>
                       <span style="color: var(--c-cyan); font-size: 0.8rem;">Rafa369@gmail.com</span>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 5px;">
@@ -775,6 +823,9 @@
                     </div>
                   </div>
                 </div>
+
+                <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.1rem; margin-top: 15px; margin-bottom: 5px;">Outros Administradores Cadastrados:</h5>
+                <div id="dynamic-custom-adms-list"></div>
               </div>
             </div>
           </div>
@@ -842,16 +893,22 @@
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
                 <select class="admin-input" id="new-item-type">
-                  <option value="drink">🔥 Destilado</option>
+                  <option value="destaques">⭐ Destaques do Bar (R$ 10 / R$ 8)</option>
+                  <option value="caipirinha">🍋 Linha Caipirinha</option>
+                  <option value="vodka">🍸 Linha Vodka</option>
+                  <option value="rum">🍹 Linha Rum</option>
+                  <option value="tequila">🌵 Linha Tequila</option>
+                  <option value="gin">🌿 Linha Gin</option>
+                  <option value="whisky">🥃 Linha Whisky</option>
                   <option value="beer">🍺 Cerveja</option>
                   <option value="noalcohol">🥤 Sem Álcool / Suco / Refri</option>
                   <option value="portion">🍟 Porção</option>
                 </select>
                 <input type="text" class="admin-input" id="new-item-name" placeholder="Nome">
-                <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 15,00)">
+                <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 18,00)">
               </div>
-              <input type="text" class="admin-input" id="new-item-short" placeholder="Resumo curto..." style="margin-top: 10px;">
-              <textarea class="admin-textarea" id="new-item-full" rows="2" placeholder="Descrição completa..." style="margin-top: 10px;"></textarea>
+              <input type="text" class="admin-input" id="new-item-short" placeholder="Resumo / Ingredientes rápidos..." style="margin-top: 10px;">
+              <textarea class="admin-textarea" id="new-item-full" rows="2" placeholder="Descrição completa dos ingredientes..." style="margin-top: 10px;"></textarea>
               <div class="admin-card-row" style="margin-top: 10px;">
                 <div class="file-upload-wrapper">
                   <span>📷 Upload Foto</span>
@@ -927,24 +984,72 @@
     ];
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
+    
     const defaultMenu = [
-      { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 2, type: 'drink', name: 'Caipirinha', short: 'Limão taiti, açúcar e cachaça.', full: 'O clássico nacional.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 3, type: 'drink', name: 'Caipiroska', short: 'Vodka premium e morango.', full: 'Visual brutal e sabor letal.', price: '14,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 4, type: 'drink', name: 'Bloody Mary', short: 'Vodka, tomate, pimenta.', full: 'Para curar a ressaca.', price: '18,00', img: 'https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=400' },
-      { id: 5, type: 'drink', name: 'Fenrir Whiskey', short: 'Whiskey on the rocks.', full: 'O combustível dos rockstars.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 6, type: 'beer', name: 'Heineken (LN)', short: 'A verdinha trincando.', full: 'Garrafa 330ml gelada ao extremo.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
-      { id: 7, type: 'beer', name: 'Budweiser (LN)', short: 'Lager americana clássica.', full: 'Cerveja redonda e clássica.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
-      { id: 8, type: 'beer', name: 'Skol Lata', short: 'Pilsen pra descer redondo.', full: 'Lata 350ml trincando.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
-      { id: 9, type: 'noalcohol', name: 'Mocktail', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
-      { id: 10, type: 'portion', name: 'Batata Cheddar', short: 'Cheddar e bacon.', full: 'Batata rústica com avalanche de cheddar.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
-      { id: 11, type: 'portion', name: 'Calabresa Fire', short: 'Flambada na cachaça.', full: 'Calabresa com cebola roxa e pão de alho.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
-      { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
+      // ⭐ Destaques do Bar (R$ 10 e R$ 8)
+      { id: 1, type: 'destaques', isPromo: true, name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante e refrescante com rodelas de laranja e especiarias.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 2, type: 'destaques', isPromo: true, name: 'Caipirinha Tradicional', short: 'Cachaça artesanal, limão taiti, açúcar e gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça da boa, limão taiti macerado e gelo trincando.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+
+      // 🍋 Linha Caipirinha (01 a 07)
+      { id: 3, type: 'caipirinha', name: '01: Caipirinha Tradicional', short: 'Cachaça artesanal, limão taiti fatiado, açúcar e gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça da boa, limão taiti macerado e gelo trincando.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 4, type: 'caipirinha', name: '02: Caipirinha de Morango', short: 'Cachaça artesanal, morangos frescos macerados e açúcar.', full: 'Morangos selecionados esmagados com cachaça nacional premium, açúcar e bastante gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 5, type: 'caipirinha', name: '03: Caipirinha de Maracujá', short: 'Cachaça artesanal, polpa de maracujá fresco e açúcar.', full: 'Sabor tropical marcante com polpa fresca de maracujá batida com cachaça e cubos de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 6, type: 'caipirinha', name: '04: Caipirinha de Abacaxi', short: 'Cachaça artesanal, abacaxi em cubos, açúcar e gelo.', full: 'Pedaços frescos de abacaxi macerados com cachaça artesanal e toque de frescor cítrico.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
+      { id: 7, type: 'caipirinha', name: '05: Caipirinha de Kiwi', short: 'Cachaça artesanal, kiwi fresco macerado e açúcar.', full: 'Kiwi fresco bem esmagado com cachaça suave, equilibrando doçura e acidez no copo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 8, type: 'caipirinha', name: '06: Caipirinha de Laranja', short: 'Cachaça artesanal, gomos de laranja fresca e açúcar.', full: 'Cachaça artesanal batida com sumo e pedaços de laranja doce e muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+      { id: 9, type: 'caipirinha', name: '07: Caipirinha de Frutas Vermelhas', short: 'Cachaça, amora, morango e mirtilo.', full: 'Mix vibrante de frutas vermelhas maceradas na cachaça nobre com açúcar e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+
+      // 🍸 Linha Vodka (08 a 15)
+      { id: 10, type: 'vodka', name: '08: Caipiroska', short: 'Vodka premium, limão taiti, açúcar e gelo.', full: 'A versão russa com limão macerado, vodka trincando e açúcar no capricho.', price: '18,00', img: 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=400' },
+      { id: 11, type: 'vodka', name: '09: Caipiroska de Morango', short: 'Vodka premium, morango fresco e açúcar.', full: 'Morangos frescos esmagados na vodka gelada com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
+      { id: 12, type: 'vodka', name: '10: Caipiroska de Maracujá', short: 'Vodka premium, polpa de maracujá e açúcar.', full: 'Maracujá doce e cítrico com dose generosa de vodka e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 13, type: 'vodka', name: '11: Screwdriver', short: 'Vodka premium e suco de laranja natural.', full: 'O clássico parafuso: vodka combinada com suco de laranja bem gelado.', price: '16,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+      { id: 14, type: 'vodka', name: '12: Sex on the Beach', short: 'Vodka, licor de pêssego, suco de laranja e groselha.', full: 'Coquetel doce e tropical em camadas com vodka, licor de pêssego, suco e groselha.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 15, type: 'vodka', name: '13: Cosmopolitan', short: 'Vodka, licor de laranja, cranberry e limão.', full: 'O sofisticado coquetel rosado com vodka, triple sec, cranberry e twist de limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 16, type: 'vodka', name: '14: Moscow Mule', short: 'Vodka, suco de limão e espuma de gengibre.', full: 'Servido na caneca de cobre com ginger beer artesanal, vodka, limão fresco e espuma cremosa de gengibre.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
+      { id: 17, type: 'vodka', name: '15: Vodka Sour', short: 'Vodka, suco de limão e xarope simples.', full: 'Equilíbrio ácido e aveludado batido com vodka, limão fresco e xarope de açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+
+      // 🍹 Linha Rum (16 a 21)
+      { id: 18, type: 'rum', name: '16: Cuba Libre', short: 'Rum carta branca, refrigerante de cola e limão.', full: 'Rum de qualidade com refrigerante de cola, fatias de limão e cubos de gelo.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 19, type: 'rum', name: '17: Mojito', short: 'Rum branco, hortelã, limão, açúcar e água com gás.', full: 'O mais refrescante: hortelã macerada com rum, limão e água gaseificada.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 20, type: 'rum', name: '18: Daiquiri', short: 'Rum branco, suco de limão e açúcar.', full: 'Clássico cubano batido na coqueteleira com rum, limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 21, type: 'rum', name: '19: Caipiríssima', short: 'Rum branco, limão taiti e açúcar.', full: 'A versão da caipirinha preparada exclusivamente com rum caribenho.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 22, type: 'rum', name: '20: Rum Sour', short: 'Rum dourado, limão taiti e açúcar.', full: 'Sabor robusto de rum dourado equilibrado com acidez do limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 23, type: 'rum', name: '21: Rum Punch', short: 'Rum claro e escuro, abacaxi, laranja e groselha.', full: 'Ponche tropical dos piratas com combinação de runs e frutas cítricas.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+
+      // 🌵 Linha Tequila (22 a 24)
+      { id: 24, type: 'tequila', name: '22: Margarita', short: 'Tequila prata, licor de laranja, limão e sal.', full: 'A lenda mexicana servida na taça crustada de sal com tequila e triple sec.', price: '20,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
+      { id: 25, type: 'tequila', name: '23: Tequila Sunrise', short: 'Tequila prata, suco de laranja e groselha.', full: 'Visual incrível em degradê nas cores do amanhecer com tequila e laranja.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
+      { id: 26, type: 'tequila', name: '24: Tequila Sour', short: 'Tequila, limão e xarope simples.', full: 'Potência e intensidade de tequila batida com suco de limão fresco.', price: '20,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+
+      // 🌿 Linha Gin (25 a 29)
+      { id: 27, type: 'gin', name: '25: Gin-Tônica', short: 'Gin botânico, tônica, alecrim e zimbro.', full: 'O clássico dos clássicos: gin aromático com água tônica trincando de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 28, type: 'gin', name: '26: Gin Sour', short: 'Gin, limão fresco e açúcar.', full: 'Toque herbal e botânico do gin balanceado com acidez refrescante.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
+      { id: 29, type: 'gin', name: '27: Gin Fizz', short: 'Gin, limão, açúcar e água com gás.', full: 'Bebida efervescente e viva de gin com soda artesanal e limão.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
+      { id: 30, type: 'gin', name: '28: Gimlet', short: 'Gin e cordial de limão.', full: 'Coquetel centenário inglês simples, seco e potente.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
+      { id: 31, type: 'gin', name: '29: Tom Collins', short: 'Gin, limão siciliano, açúcar e soda.', full: 'Servido no copo longo: gin, limão siciliano e soda com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
+
+      // 🥃 Linha Whisky (30 a 34)
+      { id: 32, type: 'whisky', name: '30: Whisky Sour', short: 'Whisky, suco de limão e açúcar.', full: 'O clássico norte-americano aveludado batido com whisky e limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 33, type: 'whisky', name: '31: Old Fashioned', short: 'Whisky bourbon, açúcar, angostura e laranja.', full: 'O coquetel mais antigo do mundo montado no copo baixo com bourbon e angostura.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
+      { id: 34, type: 'whisky', name: '32: Whisky Highball', short: 'Whisky e água com gás carbonatada.', full: 'Bebida japonesa minimalista de whisky puro com água gaseificada trincando.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 35, type: 'whisky', name: '33: Whisky com Limão', short: 'Whisky on the rocks com fatias de limão.', full: 'Dose bruta de whisky no gelo com gotas e rodelas de limão fresco.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+      { id: 36, type: 'whisky', name: '34: Whisky com Cola', short: 'Whisky e refrigerante de cola com gelo.', full: 'A mistura rockstar favorita dos pubs: whisky encorpado com cola e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
+
+      // Cervejas & Sem Álcool & Porções
+      { id: 37, type: 'beer', name: 'Heineken Long Neck', short: 'Garrafa 330ml bem gelada.', full: 'A verdinha trincando na temperatura perfeita.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
+      { id: 38, type: 'beer', name: 'Budweiser Long Neck', short: 'Lager clássica 330ml.', full: 'Cerveja equilibrada e refrescante.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
+      { id: 39, type: 'beer', name: 'Skol Lata 350ml', short: 'Pilsen trincando.', full: 'Para descer redondo na resenha.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
+      { id: 40, type: 'noalcohol', name: 'Mocktail Tropical', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo e frutas frescas.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
+      { id: 41, type: 'portion', name: 'Batata Cheddar & Bacon', short: 'Batata rústica com cheddar e bacon frito.', full: 'Batata frita sequinha coberta por avalanche de queijo cheddar e bacon crocante.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
+      { id: 42, type: 'portion', name: 'Calabresa Fire Flambada', short: 'Calabresa fatiada flambada na cachaça.', full: 'Calabresa acebolada servida no ponto com pão de alho e vinagrete.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
+      { id: 43, type: 'portion', name: 'Tábua Churrasco Brutal', short: 'Iscas de alcatra, fritas e chimichurri.', full: 'Tábua farta de carne bovina acebolada com batata frita e molho de ervas.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
     ];
+
     const defaultAgenda = [
       { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
       { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
-      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
+      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?q=80&w=400' }
     ];
     const defaultTeam = [
       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
@@ -970,69 +1075,93 @@
       userMessages: [],
       pendingMessages: [],
       adminLogs: [],
+      customAdmins: [],
       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
-      traffic: { totalViews: 0, devices: [] }
+      traffic: { totalViews: 0, devices: [], daily: {} }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
     function recordTrafficAnalytics() {
-      let deviceId = localStorage.getItem('brg_device_id');
-      if(!deviceId) {
-        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        localStorage.setItem('brg_device_id', deviceId);
-      }
+      try {
+        let deviceId = localStorage.getItem('brg_device_id');
+        if(!deviceId) {
+          deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+          localStorage.setItem('brg_device_id', deviceId);
+        }
 
-      if(!appData.traffic) {
-        appData.traffic = { totalViews: 0, devices: [] };
-      }
+        if(!appData.traffic) {
+          appData.traffic = { totalViews: 0, devices: [], daily: {} };
+        }
+        if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') {
+          appData.traffic.daily = {};
+        }
 
-      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
+        const todayStr = new Date().toISOString().split('T')[0];
+        if(!Array.isArray(appData.traffic.daily[todayStr])) {
+          appData.traffic.daily[todayStr] = [];
+        }
 
-      if(!Array.isArray(appData.traffic.devices)) {
-        appData.traffic.devices = [];
-      }
+        if(!appData.traffic.daily[todayStr].includes(deviceId)) {
+          appData.traffic.daily[todayStr].push(deviceId);
+        }
 
-      if(!appData.traffic.devices.includes(deviceId)) {
-        appData.traffic.devices.push(deviceId);
-      }
+        appData.traffic.totalViews = (Number(appData.traffic.totalViews) || 0) + 1;
 
-      updateTrafficUI();
+        if(!Array.isArray(appData.traffic.devices)) {
+          appData.traffic.devices = [];
+        }
+        if(!appData.traffic.devices.includes(deviceId)) {
+          appData.traffic.devices.push(deviceId);
+        }
+
+        updateTrafficUI();
+      } catch(e) {}
     }
 
     function updateTrafficUI() {
-      const viewsEl = document.getElementById('adm-stat-views');
-      const devEl = document.getElementById('adm-stat-devices');
-      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
-      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
+      try {
+        const viewsEl = document.getElementById('adm-stat-views');
+        const devEl = document.getElementById('adm-stat-devices');
+        const todayEl = document.getElementById('adm-stat-today');
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayCount = (appData.traffic && appData.traffic.daily && Array.isArray(appData.traffic.daily[todayStr])) ? appData.traffic.daily[todayStr].length : 0;
+
+        if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+        if(devEl && appData.traffic) devEl.innerText = (Array.isArray(appData.traffic.devices) ? appData.traffic.devices.length : 0);
+        if(todayEl) todayEl.innerText = todayCount;
+      } catch(e) {}
     }
 
     async function initApp() {
-      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
-        const uEl = document.getElementById('gh-user');
-        const rEl = document.getElementById('gh-repo');
-        const tEl = document.getElementById('gh-token');
-        if(uEl) uEl.value = githubConfig.user;
-        if(rEl) rEl.value = githubConfig.repo;
-        if(tEl) tEl.value = githubConfig.token;
-        updateGitHubUI(true);
-      } else {
-        updateGitHubUI(false);
-      }
-      
-      await fetchBinData();
-      recordTrafficAnalytics();
-      renderApp();
-      
-      if(localStorage.getItem('brg_adm_logged') === 'true') {
-        const logBox = document.getElementById('admin-login');
-        const dashBox = document.getElementById('admin-dashboard');
-        if(logBox) logBox.style.display = 'none';
-        if(dashBox) dashBox.style.display = 'block';
-        updateAdminGreeting();
-      }
+      try {
+        if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+          const uEl = document.getElementById('gh-user');
+          const rEl = document.getElementById('gh-repo');
+          const tEl = document.getElementById('gh-token');
+          if(uEl) uEl.value = githubConfig.user;
+          if(rEl) rEl.value = githubConfig.repo;
+          if(tEl) tEl.value = githubConfig.token;
+          updateGitHubUI(true);
+        } else {
+          updateGitHubUI(false);
+        }
+        
+        await fetchBinData();
+        recordTrafficAnalytics();
+        renderApp();
+        
+        if(localStorage.getItem('brg_adm_logged') === 'true') {
+          const logBox = document.getElementById('admin-login');
+          const dashBox = document.getElementById('admin-dashboard');
+          if(logBox) logBox.style.display = 'none';
+          if(dashBox) dashBox.style.display = 'block';
+          updateAdminGreeting();
+        }
 
-      setInterval(fetchBinData, 15000);
+        setInterval(fetchBinData, 15000);
+      } catch(e) {}
     }
 
     function updateGitHubUI(isConnected) {
@@ -1209,180 +1338,311 @@
       }
     }
 
-    function renderApp() {
-      const cHome = appData.home;
-      const cMenu = appData.menu;
-      const cAgenda = appData.agenda;
-      const cTeam = appData.team;
-      const cArcade = appData.arcade;
-      const cCach = appData.cachaceiros;
-      const cFlyer = appData.flyer;
-      const cCustomTabs = appData.customTabs || [];
-
-      document.getElementById('h-title').innerText = cHome.title;
-      document.getElementById('h-desc1').innerText = cHome.desc1;
-      document.getElementById('h-desc2').innerText = cHome.desc2;
-      document.getElementById('h-promo-title').innerText = cHome.promoTitle;
-      document.getElementById('h-promo1').innerText = cHome.promo1;
-      document.getElementById('h-promo2').innerText = cHome.promo2;
-      document.getElementById('h-promo3').innerText = cHome.promo3;
-
-      const statusDot = document.getElementById('status-dot-el');
-      const statusText = document.getElementById('status-text-el');
-      if(cHome.isOpen !== false) {
-        statusDot.className = 'status-dot open';
-        statusText.innerText = 'BARGUNÇADOS ABERTO';
-        statusText.style.color = '#00e676';
+    function toggleMenuCategory(catKey) {
+      const header = document.getElementById('cat-hdr-' + catKey);
+      const content = document.getElementById('cat-cnt-' + catKey);
+      if(!content) return;
+      if(content.classList.contains('collapsed')) {
+        content.classList.remove('collapsed');
+        if(header) header.classList.remove('collapsed');
       } else {
-        statusDot.className = 'status-dot closed';
-        statusText.innerText = 'BARGUNÇADOS FECHADO';
-        statusText.style.color = '#ff1744';
+        content.classList.add('collapsed');
+        if(header) header.classList.add('collapsed');
       }
+    }
 
-      if(cHome.img) { 
-        document.getElementById('home-img').style.display = 'block'; 
-        document.getElementById('home-img').src = cHome.img; 
-      } else { 
-        document.getElementById('home-img').style.display = 'none'; 
-      }
+    function renderApp() {
+      try {
+        const cHome = appData.home || defaultHome;
+        const cMenu = appData.menu || defaultMenu;
+        const cAgenda = appData.agenda || defaultAgenda;
+        const cTeam = appData.team || defaultTeam;
+        const cArcade = appData.arcade || defaultArcade;
+        const cCach = appData.cachaceiros || defaultCachaceiros;
+        const cFlyer = appData.flyer || defaultFlyer;
+        const cCustomTabs = appData.customTabs || [];
 
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      const canAdd = isMaster || perms.canAdd !== false;
+        const hTitle = document.getElementById('h-title');
+        const hDesc1 = document.getElementById('h-desc1');
+        const hDesc2 = document.getElementById('h-desc2');
+        const hPromoTitle = document.getElementById('h-promo-title');
+        const hPromo1 = document.getElementById('h-promo1');
+        const hPromo2 = document.getElementById('h-promo2');
+        const hPromo3 = document.getElementById('h-promo3');
 
-      const bHome = document.getElementById('bar-action-home');
-      const bBebidas = document.getElementById('bar-action-bebidas');
-      const bPorcoes = document.getElementById('bar-action-porcoes');
-      const bAgenda = document.getElementById('bar-action-agenda');
+        if(hTitle) hTitle.innerText = cHome.title;
+        if(hDesc1) hDesc1.innerText = cHome.desc1;
+        if(hDesc2) hDesc2.innerText = cHome.desc2;
+        if(hPromoTitle) hPromoTitle.innerText = cHome.promoTitle;
+        if(hPromo1) hPromo1.innerText = cHome.promo1;
+        if(hPromo2) hPromo2.innerText = cHome.promo2;
+        if(hPromo3) hPromo3.innerText = cHome.promo3;
 
-      if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+        const statusDot = document.getElementById('status-dot-el');
+        const statusText = document.getElementById('status-text-el');
+        if(statusDot && statusText) {
+          if(cHome.isOpen !== false) {
+            statusDot.className = 'status-dot open';
+            statusText.innerText = 'BARGUNÇADOS ABERTO';
+            statusText.style.color = '#00e676';
+          } else {
+            statusDot.className = 'status-dot closed';
+            statusText.innerText = 'BARGUNÇADOS FECHADO';
+            statusText.style.color = '#ff1744';
+          }
+        }
 
-      const drinksContainer = document.getElementById('dynamic-menu-bebidas');
-      const portionsContainer = document.getElementById('dynamic-menu-porcoes');
-      drinksContainer.innerHTML = ''; 
-      portionsContainer.innerHTML = '';
-      
-      const catHTML = { 
-        drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', 
-        beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', 
-        noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL / SUCOS / REFRIS</div><div class="menu-grid">', 
-        portion: '<div class="menu-grid">' 
-      };
-      
-      let drinksStr = catHTML.drink;
-      cMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
-      drinksStr += catHTML.beer;
-      cMenu.filter(i => i.type === 'beer').forEach(i => drinksStr += createCard(i));
-      drinksStr += catHTML.noalcohol;
-      cMenu.filter(i => i.type === 'noalcohol').forEach(i => drinksStr += createCard(i));
-      drinksStr += '</div>';
-      drinksContainer.innerHTML = drinksStr;
+        const homeImg = document.getElementById('home-img');
+        if(homeImg) {
+          if(cHome.img) { 
+            homeImg.style.display = 'block'; 
+            homeImg.src = cHome.img; 
+          } else { 
+            homeImg.style.display = 'none'; 
+          }
+        }
 
-      let portionsStr = catHTML.portion;
-      cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
-      portionsStr += '</div>';
-      portionsContainer.innerHTML = portionsStr;
+        const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+        const perms = appData.permissions || {};
+        const canAdd = isMaster || perms.canAdd !== false;
 
-      const agendaList = document.getElementById('dynamic-agenda-list');
-      agendaList.innerHTML = '';
-      cAgenda.forEach(ev => {
-        const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-        agendaList.innerHTML += `
-          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
-            <div class="mf-content">
-              <div class="mf-date">${ev.date}</div>
-              <div class="mf-title">${ev.title}</div>
+        const bHome = document.getElementById('bar-action-home');
+        const bBebidas = document.getElementById('bar-action-bebidas');
+        const bPorcoes = document.getElementById('bar-action-porcoes');
+        const bAgenda = document.getElementById('bar-action-agenda');
+
+        if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
+        if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+        if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+        if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+
+        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
+        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
+        if(drinksContainer) drinksContainer.innerHTML = ''; 
+        if(portionsContainer) portionsContainer.innerHTML = '';
+
+        const drinkCategories = [
+          { key: 'destaques', label: '⭐ Destaques do Bar (R$ 10 / R$ 8)' },
+          { key: 'caipirinha', label: '🍋 Linha Caipirinha' },
+          { key: 'vodka', label: '🍸 Linha Vodka' },
+          { key: 'rum', label: '🍹 Linha Rum' },
+          { key: 'tequila', label: '🌵 Linha Tequila' },
+          { key: 'gin', label: '🌿 Linha Gin' },
+          { key: 'whisky', label: '🥃 Linha Whisky' },
+          { key: 'beer', label: '🍺 Cervejas' },
+          { key: 'noalcohol', label: '🥤 Sem Álcool / Sucos / Refris' }
+        ];
+
+        if(drinksContainer) {
+          drinkCategories.forEach(cat => {
+            const items = cMenu.filter(i => {
+              if (cat.key === 'destaques') return i.type === 'destaques' || i.isPromo === true;
+              if (i.type === cat.key) return true;
+              if (cat.key === 'caipirinha' && (i.type === 'drink' || (i.name && i.name.toLowerCase().includes('caipirinha')))) return true;
+              if (cat.key === 'vodka' && i.name && (i.name.toLowerCase().includes('vodka') || i.name.toLowerCase().includes('caipiroska') || i.name.toLowerCase().includes('mule'))) return true;
+              if (cat.key === 'whisky' && i.name && i.name.toLowerCase().includes('whisky')) return true;
+              return false;
+            });
+
+            if(items.length > 0) {
+              let catHtml = `
+                <div class="menu-cat-header" id="cat-hdr-${cat.key}" onclick="toggleMenuCategory('${cat.key}')">
+                  <span>${cat.label} (${items.length})</span>
+                  <span class="cat-arrow">▼</span>
+                </div>
+                <div class="menu-cat-content" id="cat-cnt-${cat.key}">
+                  <div class="menu-grid">`;
+              items.forEach(it => catHtml += createCard(it));
+              catHtml += `</div></div>`;
+              drinksContainer.innerHTML += catHtml;
+            }
+          });
+        }
+
+        if(portionsContainer) {
+          const portionItems = cMenu.filter(i => i.type === 'portion');
+          let portionsStr = '<div class="menu-grid">';
+          portionItems.forEach(i => portionsStr += createCard(i));
+          portionsStr += '</div>';
+          portionsContainer.innerHTML = portionsStr;
+        }
+
+        const agendaList = document.getElementById('dynamic-agenda-list');
+        if(agendaList) {
+          agendaList.innerHTML = '';
+          cAgenda.forEach(ev => {
+            const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+            agendaList.innerHTML += `
+              <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+                <div class="mf-content">
+                  <div class="mf-date">${ev.date}</div>
+                  <div class="mf-title">${ev.title}</div>
+                </div>
+              </div>`;
+          });
+        }
+
+        const fImg = document.getElementById('featured-flyer-img');
+        const fTag = document.getElementById('adm-f-tag');
+        const fTitle = document.getElementById('adm-f-title');
+        const fSub = document.getElementById('adm-f-sub');
+        const fDesc = document.getElementById('adm-f-desc');
+
+        if(fImg) fImg.src = cFlyer.img;
+        if(fTag) fTag.value = cFlyer.tag;
+        if(fTitle) fTitle.value = cFlyer.title;
+        if(fSub) fSub.value = cFlyer.sub;
+        if(fDesc) fDesc.value = cFlyer.desc;
+
+        const dirContainer = document.getElementById('dynamic-dir-list');
+        const proContainer = document.getElementById('dynamic-pro-list');
+        if(dirContainer) dirContainer.innerHTML = ''; 
+        if(proContainer) proContainer.innerHTML = '';
+        
+        if(dirContainer) {
+          cTeam.filter(t => t.type === 'dir').forEach(t => {
+            let cColor = 'var(--c-pink)';
+            if(t.id === 'dir2') cColor = 'var(--c-cyan)';
+            if(t.id === 'dir3') cColor = 'var(--c-yellow)';
+            dirContainer.innerHTML += `
+              <div class="glass-panel dir-card" style="--card-color: ${cColor};">
+                <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
+                <h3 class="dir-name">${t.name}</h3>
+                <p class="dir-role" style="color:${cColor};">${t.role}</p>
+                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+                <p class="dir-desc">${t.desc}</p>
+              </div>`;
+          });
+        }
+
+        if(proContainer) {
+          cTeam.filter(t => t.type === 'pro').forEach(t => {
+            proContainer.innerHTML += `
+              <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
+                <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
+                <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
+                <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
+                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
+                <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
+              </div>`;
+          });
+        }
+
+        const arcList = document.getElementById('dynamic-arcade-list');
+        if(arcList) {
+          arcList.innerHTML = cArcade.map((i, index) => {
+            const isTop3 = index < 3;
+            const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
+            const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
+            const honorTitle = getHonorTitle(index, 'arcade');
+            const displayIg = i.ig || '@jogador';
+            
+            return `
+            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+              <div class="lb-info">
+                <span class="lb-name">${i.name}</span>
+                <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+                <span class="lb-title-badge">${honorTitle}</span>
+                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+              </div>
+              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+            </div>`;
+          }).join('');
+        }
+
+        const cachList = document.getElementById('dynamic-cachaceiros-list');
+        if(cachList) {
+          cachList.innerHTML = cCach.map((i, index) => {
+            const isTop3 = index < 3;
+            const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
+            const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
+            const honorTitle = getHonorTitle(index, 'cachaceiro');
+            const displayIg = i.sub || i.ig || '@cachaceiro';
+            
+            return `
+            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
+              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
+              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+              <div class="lb-info">
+                <span class="lb-name">${i.name}</span>
+                <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
+                <span class="lb-title-badge">${honorTitle}</span>
+                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+              </div>
+              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
+            </div>`;
+          }).join('');
+        }
+
+        renderPublicInteractions();
+        renderCustomTabs(cCustomTabs);
+        renderAdminLists();
+        renderModerationLists();
+        renderAdminLogsList();
+        renderCustomAdminsList();
+      } catch(e) {}
+    }
+
+    function renderCustomAdminsList() {
+      const listDiv = document.getElementById('dynamic-custom-adms-list');
+      if(!listDiv) return;
+      const adms = appData.customAdmins || [];
+      if(adms.length === 0) {
+        listDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum outro administrador cadastrado manualmente.</p>';
+      } else {
+        listDiv.innerHTML = adms.map((adm, idx) => `
+          <div style="background: rgba(0,0,0,0.6); border: 1px solid #444; padding: 10px; border-radius: 6px; margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="color:#fff;">${escapeHTML(adm.name)}</strong> (${escapeHTML(adm.email)})
+              <div style="font-size:0.75rem; color:var(--c-cyan);">Permissões: ${adm.perms ? Object.keys(adm.perms).filter(k => adm.perms[k]).join(', ') : 'Padrão'}</div>
             </div>
-          </div>`;
-      });
-
-      document.getElementById('featured-flyer-img').src = cFlyer.img;
-      document.getElementById('adm-f-tag').value = cFlyer.tag;
-      document.getElementById('adm-f-title').value = cFlyer.title;
-      document.getElementById('adm-f-sub').value = cFlyer.sub;
-      document.getElementById('adm-f-desc').value = cFlyer.desc;
-
-      const dirContainer = document.getElementById('dynamic-dir-list');
-      const proContainer = document.getElementById('dynamic-pro-list');
-      dirContainer.innerHTML = ''; 
-      proContainer.innerHTML = '';
-      
-      cTeam.filter(t => t.type === 'dir').forEach(t => {
-        let cColor = 'var(--c-pink)';
-        if(t.id === 'dir2') cColor = 'var(--c-cyan)';
-        if(t.id === 'dir3') cColor = 'var(--c-yellow)';
-        dirContainer.innerHTML += `
-          <div class="glass-panel dir-card" style="--card-color: ${cColor};">
-            <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
-            <h3 class="dir-name">${t.name}</h3>
-            <p class="dir-role" style="color:${cColor};">${t.role}</p>
-            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-            <p class="dir-desc">${t.desc}</p>
-          </div>`;
-      });
-
-      cTeam.filter(t => t.type === 'pro').forEach(t => {
-        proContainer.innerHTML += `
-          <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-            <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
-            <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
-            <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
-            <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-            <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
-          </div>`;
-      });
-
-      document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
-        const isTop3 = index < 3;
-        const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
-        const honorTitle = getHonorTitle(index, 'arcade');
-        const displayIg = i.ig || '@jogador';
-        
-        return `
-        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-          <div class="lb-info">
-            <span class="lb-name">${i.name}</span>
-            <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-            <span class="lb-title-badge">${honorTitle}</span>
-            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+            <button class="action-btn del-btn" onclick="removeCustomAdmin(${idx})" style="padding:4px 8px; font-size:0.75rem;">Remover</button>
           </div>
-          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-        </div>`;
-      }).join('');
+        `).join('');
+      }
+    }
 
-      document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
-        const isTop3 = index < 3;
-        const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
-        const honorTitle = getHonorTitle(index, 'cachaceiro');
-        const displayIg = i.sub || i.ig || '@cachaceiro';
-        
-        return `
-        <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-          <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-          <div class="lb-info">
-            <span class="lb-name">${i.name}</span>
-            <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-            <span class="lb-title-badge">${honorTitle}</span>
-            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-          </div>
-          <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-        </div>`;
-      }).join('');
+    async function registerNewAdmin() {
+      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      if(!isMaster) return alert("Apenas o Master pode cadastrar administradores!");
 
-      renderPublicInteractions();
-      renderCustomTabs(cCustomTabs);
-      renderAdminLists();
-      renderModerationLists();
-      renderAdminLogsList();
+      const name = document.getElementById('new-adm-name').value.trim();
+      const email = document.getElementById('new-adm-email').value.trim().toLowerCase();
+      const pass = document.getElementById('new-adm-pass').value.trim();
+
+      if(!name || !email || !pass) {
+        return alert("Preencha Nome, E-mail e Senha para cadastrar!");
+      }
+
+      const perms = {
+        canAdd: document.getElementById('new-adm-perm-add').checked,
+        canEdit: document.getElementById('new-adm-perm-edit').checked,
+        canDel: document.getElementById('new-adm-perm-del').checked,
+        canAgenda: document.getElementById('new-adm-perm-agenda').checked,
+        canRank: document.getElementById('new-adm-perm-rank').checked,
+        canMod: document.getElementById('new-adm-perm-mod').checked
+      };
+
+      if(!appData.customAdmins) appData.customAdmins = [];
+      appData.customAdmins.push({ name, email, pass, perms });
+
+      document.getElementById('new-adm-name').value = '';
+      document.getElementById('new-adm-email').value = '';
+      document.getElementById('new-adm-pass').value = '';
+
+      await saveBinData(`Cadastrou novo administrador: "${name}" (${email})`);
+      alert("✅ Novo administrador cadastrado com sucesso!");
+    }
+
+    async function removeCustomAdmin(index) {
+      if(confirm("Deseja remover este administrador?")) {
+        const removed = appData.customAdmins.splice(index, 1);
+        await saveBinData(`Removeu o administrador: "${removed[0].name}" (${removed[0].email})`);
+        alert("Administrador removido!");
+      }
     }
 
     function renderAdminLogsList() {
@@ -1448,34 +1708,39 @@
       const songs = appData.userSongs || [];
       const msgs = appData.userMessages || [];
 
-      if(songs.length === 0) {
-        songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
-      } else {
-        songsDiv.innerHTML = songs.map(s => `
-          <div class="feed-card">
-            <div class="feed-time">Até 16h</div>
-            <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
-            <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
-          </div>
-        `).join('');
+      if(songsDiv) {
+        if(songs.length === 0) {
+          songsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem; margin-bottom:15px;">Nenhum pedido de som no ar no momento. Seja o primeiro!</p>';
+        } else {
+          songsDiv.innerHTML = songs.map(s => `
+            <div class="feed-card">
+              <div class="feed-time">Até 16h</div>
+              <div class="feed-author">${escapeHTML(s.ig)} pediu:</div>
+              <div class="feed-text">🎵 "${escapeHTML(s.text)}"</div>
+            </div>
+          `).join('');
+        }
       }
 
-      if(msgs.length === 0) {
-        msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
-      } else {
-        msgsDiv.innerHTML = msgs.map(m => `
-          <div class="feed-card" style="border-left-color: var(--c-yellow);">
-            <div class="feed-time">Até 16h</div>
-            <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
-            <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
-          </div>
-        `).join('');
+      if(msgsDiv) {
+        if(msgs.length === 0) {
+          msgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado no mural ainda. Deixe o seu!</p>';
+        } else {
+          msgsDiv.innerHTML = msgs.map(m => `
+            <div class="feed-card" style="border-left-color: var(--c-yellow);">
+              <div class="feed-time">Até 16h</div>
+              <div class="feed-author" style="color: var(--c-yellow);">${escapeHTML(m.ig)} disse:</div>
+              <div class="feed-text">💬 "${escapeHTML(m.text)}"</div>
+            </div>
+          `).join('');
+        }
       }
     }
 
     function renderCustomTabs(tabs) {
       const navContainer = document.getElementById('dynamic-nav-tabs');
       const mainContainer = document.getElementById('dynamic-tab-panes');
+      if(!navContainer || !mainContainer) return;
 
       document.querySelectorAll('.custom-tab-btn').forEach(el => el.remove());
       document.querySelectorAll('.custom-tab-pane').forEach(el => el.remove());
@@ -1506,8 +1771,12 @@
       const sName = escapeHTML(item.name);
       const sShort = escapeHTML(item.short);
       const sPrice = escapeHTML(item.price);
+      const isPromoClass = item.isPromo ? 'promo-destaque' : '';
+      const promoFlag = item.isPromo ? '<span class="promo-flag">🔥 R$ PROMO</span>' : '';
+
       return `
-        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id})">
+        <div class="product-card glass-panel ${isPromoClass}" onclick="openMenuModalObj(${item.id})">
+          ${promoFlag}
           <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
           <h4 class="m-title">${item.name}</h4>
           <p class="m-short">${sShort}</p>
@@ -1525,7 +1794,7 @@
       document.getElementById('modalImg').src = item.img;
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -1595,7 +1864,6 @@
 
       const oldName = item.name;
       const oldPrice = item.price;
-      const oldCat = item.type;
       const newName = document.getElementById('modal-edit-name').value.trim();
       const newCat = document.getElementById('modal-edit-category').value;
 
@@ -1635,8 +1903,8 @@
       }
     }
 
-    function openCreateItemModal(defaultCategory = 'drink') {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+    function openCreateItemModal(defaultCategory = 'destaques') {
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
 
@@ -1660,7 +1928,7 @@
     }
 
     async function confirmCreateItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado!");
 
@@ -1696,14 +1964,14 @@
     }
 
     function checkHomeCardClick() {
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged'] === 'true');
       if(isAdmLogged) {
         openHomeDirectEdit();
       }
     }
 
     function openHomeDirectEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão desativada pelo Master!");
 
@@ -1738,7 +2006,7 @@
     }
 
     async function saveHomeDirectEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado!");
 
@@ -1763,8 +2031,8 @@
       document.getElementById('playerQuote').innerText = `"${quote}"`;
       document.getElementById('playerModalImg').src = imgUrl;
 
-      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isLoggedIn = (localStorage.getItem('brg_adm_logged'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       const canRank = isMaster || perms.canRank !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -1798,7 +2066,7 @@
     }
 
     async function savePlayerEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canRank === false) return alert("Acesso Negado: Permissão de ranking desativada pelo Master!");
 
@@ -1823,7 +2091,7 @@
     }
 
     async function deleteModalPlayerDirect() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -1849,8 +2117,8 @@
     }
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged'] === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       const canAgenda = isMaster || perms.canAgenda !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -1913,7 +2181,7 @@
     }
 
     async function saveEventEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
@@ -1953,7 +2221,7 @@
     }
 
     async function deleteModalEventDirect() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -1987,584 +2255,8 @@
       alert("✅ Evento adicionado com sucesso!");
     }
 
-    function toggleAdminSection(id) {
-      const content = document.getElementById(id);
-      const btn = content.previousElementSibling;
-      if (content.style.display === "block") {
-        content.style.display = "none";
-        btn.classList.remove("active");
-      } else {
-        content.style.display = "block";
-        btn.classList.add("active");
-      }
-    }
-
-    function renderModerationLists() {
-      const pSongsDiv = document.getElementById('admin-pending-songs');
-      const pMsgsDiv = document.getElementById('admin-pending-msgs');
-      const counterSpan = document.getElementById('adm-notify-counter');
-
-      const pSongs = appData.pendingSongs || [];
-      const pMsgs = appData.pendingMessages || [];
-      const totalPending = pSongs.length + pMsgs.length;
-
-      if(totalPending > 0) {
-        counterSpan.innerHTML = `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>`;
-      } else {
-        counterSpan.innerHTML = '';
-      }
-
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      const modPermitted = isMaster || perms.canMod !== false;
-
-      if(!modPermitted) {
-        pSongsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
-        pMsgsDiv.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ Permissão desativada pelo Master.</p>';
-        return;
-      }
-
-      if(pSongs.length === 0) {
-        pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
-      } else {
-        pSongsDiv.innerHTML = pSongs.map(s => `
-          <div class="admin-card">
-            <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
-            <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
-            <div class="admin-card-row">
-              <button class="action-btn" onclick="approveSong(${s.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectSong(${s.id})">❌ Rejeitar</button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      if(pMsgs.length === 0) {
-        pMsgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado pendente no mural.</p>';
-      } else {
-        pMsgsDiv.innerHTML = pMsgs.map(m => `
-          <div class="admin-card">
-            <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
-            <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
-            <div class="admin-card-row">
-              <button class="action-btn" onclick="approveMsg(${m.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectMsg(${m.id})">❌ Rejeitar</button>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    async function approveSong(id) {
-      const item = appData.pendingSongs.find(s => s.id === id);
-      if(item) {
-        appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-        if(!appData.userSongs) appData.userSongs = [];
-        appData.userSongs.unshift(item);
-        await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
-        alert("Pedido aprovado e publicado no site!");
-      }
-    }
-
-    async function rejectSong(id) {
-      const item = appData.pendingSongs.find(s => s.id === id);
-      appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
-      await saveBinData(`Rejeitou o pedido de som de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
-    }
-
-    async function approveMsg(id) {
-      const item = appData.pendingMessages.find(m => m.id === id);
-      if(item) {
-        appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-        if(!appData.userMessages) appData.userMessages = [];
-        appData.userMessages.unshift(item);
-        await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
-        alert("Recado aprovado e publicado no mural!");
-      }
-    }
-
-    async function rejectMsg(id) {
-      const item = appData.pendingMessages.find(m => m.id === id);
-      appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
-      await saveBinData(`Rejeitou o recado no mural de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
-    }
-
-    let tempNewTabImg = '';
-    document.getElementById('new-tab-img-file').addEventListener('change', e => {
-      uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
-    });
-
-    async function saveCustomTab() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado: Permissão de abas desativada pelo Master!");
-
-      const originalId = document.getElementById('edit-tab-original-id').value;
-      const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
-      const name = document.getElementById('new-tab-name').value.trim();
-      const title = document.getElementById('new-tab-title').value.trim();
-      const desc = document.getElementById('new-tab-desc').value.trim();
-
-      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da aba.");
-      if(!appData.customTabs) appData.customTabs = [];
-
-      if(originalId) {
-        const tab = appData.customTabs.find(t => t.id === originalId);
-        if(tab) {
-          tab.id = id; tab.name = name; tab.title = title || name; tab.desc = desc;
-          if(tempNewTabImg) tab.img = tempNewTabImg;
-        }
-        await saveBinData("Atualizou a aba personalizada: " + name);
-        alert("Aba atualizada com sucesso!");
-      } else {
-        appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
-        await saveBinData("Criou nova aba personalizada: " + name);
-        alert("Nova aba criada com sucesso!");
-      }
-      resetCustomTabForm();
-    }
-
-    function editCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
-
-      const tab = appData.customTabs.find(t => t.id === id);
-      if(!tab) return;
-      document.getElementById('edit-tab-original-id').value = tab.id;
-      document.getElementById('new-tab-id').value = tab.id;
-      document.getElementById('new-tab-name').value = tab.name;
-      document.getElementById('new-tab-title').value = tab.title;
-      document.getElementById('new-tab-desc').value = tab.desc;
-      tempNewTabImg = tab.img || '';
-
-      document.getElementById('custom-tab-form-title').innerText = "Editar Seção / Aba do Site";
-      document.getElementById('custom-tab-submit-btn').innerText = "💾 Salvar Alterações da Aba";
-      document.getElementById('custom-tab-cancel-btn').style.display = "inline-block";
-      
-      document.getElementById('adm-new-tab').style.display = "block";
-      document.getElementById('adm-new-tab').previousElementSibling.classList.add("active");
-    }
-
-    function resetCustomTabForm() {
-      document.getElementById('edit-tab-original-id').value = '';
-      document.getElementById('new-tab-id').value = '';
-      document.getElementById('new-tab-name').value = '';
-      document.getElementById('new-tab-title').value = '';
-      document.getElementById('new-tab-desc').value = '';
-      tempNewTabImg = '';
-      document.getElementById('custom-tab-form-title').innerText = "Adicionar Nova Seção / Aba ao Site";
-      document.getElementById('custom-tab-submit-btn').innerText = "+ Criar Nova Aba no Site";
-      document.getElementById('custom-tab-cancel-btn').style.display = "none";
-    }
-
-    async function removeCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
-
-      if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
-        appData.customTabs = appData.customTabs.filter(t => t.id !== id);
-        await saveBinData("Apagou a aba personalizada ID: " + id);
-      }
-    }
-
-    function renderAdminLists() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
-        return;
-      }
-
-      document.getElementById('adm-h-title').value = appData.home.title;
-      document.getElementById('adm-h-desc1').value = appData.home.desc1;
-      document.getElementById('adm-h-desc2').value = appData.home.desc2;
-      document.getElementById('adm-h-promo-title').value = appData.home.promoTitle;
-      document.getElementById('adm-h-promo1').value = appData.home.promo1;
-      document.getElementById('adm-h-promo2').value = appData.home.promo2;
-      document.getElementById('adm-h-promo3').value = appData.home.promo3;
-
-      const customTabsList = document.getElementById('admin-custom-tabs-list');
-      if(customTabsList) {
-        const tabs = appData.customTabs || [];
-        if(tabs.length === 0) {
-          customTabsList.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhuma aba personalizada criada ainda.</p>';
-        } else {
-          customTabsList.innerHTML = tabs.map(t => `
-            <div class="admin-card" style="border-color: var(--c-yellow);">
-              <div class="admin-card-row">
-                <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
-                <div>
-                  <button class="action-btn" onclick="editCustomTab('${t.id}')" style="background:var(--c-cyan); color:#000; margin-right:5px;">✏️ Editar</button>
-                  <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar</button>
-                </div>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      const canEdit = isMaster || perms.canEdit !== false;
-      const canDel = isMaster || perms.canDel !== false;
-
-      const menuList = document.getElementById('admin-menu-list');
-      if(menuList) {
-        if(!canEdit && !canDel) {
-          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
-        } else {
-          menuList.innerHTML = appData.menu.map(i => `
-            <div class="admin-card">
-              <div class="admin-card-row">
-                  <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
-                    <option value="drink" ${i.type === 'drink' ? 'selected' : ''}>🔥 Destilado</option>
-                    <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
-                    <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
-                    <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
-                  </select>
-                  <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
-                  <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
-              </div>
-              <div class="admin-card-row" style="margin-top:5px;">
-                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
-              </div>
-              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
-              <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${i.img}" style="width:40px; height:40px; object-fit:fill; border-radius:4px; border:1px solid #444;">
-                  <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                    <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
-                    <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
-                  </div>
-                  ${canEdit ? `<button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>` : ''}
-                  ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
-              </div>
-            </div>`).join('');
-        }
-      }
-      
-      const agendaList = document.getElementById('admin-agenda-list');
-      if(agendaList) {
-        const canAgenda = isMaster || perms.canAgenda !== false;
-        if(!canAgenda) {
-          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar a agenda.</p>';
-        } else {
-          agendaList.innerHTML = appData.agenda.map(i => `
-            <div class="admin-card">
-              <div class="admin-card-row">
-                <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
-                <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
-              </div>
-              <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
-              <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:fill; border-radius:4px;">
-                <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                    <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
-                    <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
-                </div>
-                ${canEdit ? `<button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>` : ''}
-                ${canDel ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
-              </div>
-            </div>`).join('');
-        }
-      }
-
-      const teamList = document.getElementById('admin-team-list');
-      if(teamList) {
-        teamList.innerHTML = appData.team.map(t => `
-          <div class="admin-card">
-            <strong style="color:var(--c-cyan);">${t.name} (${t.type.toUpperCase()})</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="tname-${t.id}" value="${escapeHTML(t.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="trole-${t.id}" value="${escapeHTML(t.role)}" placeholder="Cargo">
-            </div>
-            <input type="text" class="admin-input" id="tig-${t.id}" value="${escapeHTML(t.ig)}" placeholder="Instagram" style="margin-top:5px;">
-            <textarea class="admin-textarea" id="tdesc-${t.id}" rows="2" style="margin-top:5px;">${escapeHTML(t.desc)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${t.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-                <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
-                  <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
-                </div>
-                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
-            </div>
-          </div>`).join('');
-      }
-
-      const arcList = document.getElementById('admin-arcade-list');
-      if(arcList) {
-        arcList.innerHTML = appData.arcade.map(i => `
-          <div class="admin-card" style="border-color:var(--c-purple);">
-            <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="arc-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="arc-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Jogo">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="arc-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Score">
-              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="arc-ig-${i.id}" value="${escapeHTML(i.ig)}" placeholder="Instagram (@)">
-            </div>
-            <textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              ${i.id <= 3 ? `<img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                <span style="font-size:0.75rem;">📷 Avatar Top 3</span>
-                <input type="file" accept="image/*" onchange="updateArcadeImg(${i.id}, this)">
-              </div>` : ''}
-              <button class="action-btn" onclick="saveArcadeData(${i.id})">💾 Salvar Jogador</button>
-            </div>
-          </div>`).join('');
-      }
-
-      const cachList = document.getElementById('admin-cachaceiros-list');
-      if(cachList) {
-        cachList.innerHTML = appData.cachaceiros.map(i => `
-          <div class="admin-card" style="border-color:#ff9800;">
-            <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="ca-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="ca-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Litros">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="ca-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Instagram (@)">
-              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
-            </div>
-            <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
-                  <input type="file" accept="image/*" onchange="updateCachaceiroImg(${i.id}, this)">
-              </div>
-              <button class="action-btn" onclick="saveCachaceiroData(${i.id})">💾 Salvar Bebedor #${i.id}</button>
-            </div>
-          </div>`).join('');
-      }
-    }
-
-    function processSecureLogin() {
-      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
-      const passInput = document.getElementById('manual-pass-input').value.trim();
-
-      if (!emailInput || !passInput) {
-        alert("Preencha o e-mail e a senha.");
-        return;
-      }
-
-      let matchedAcc = null;
-      for (let acc of AUTH_ACCOUNTS) {
-        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
-          matchedAcc = acc;
-          break;
-        }
-      }
-
-      if (matchedAcc) {
-        localStorage.setItem('brg_adm_logged', 'true');
-        localStorage.setItem('brg_adm_email', matchedAcc.email);
-        localStorage.setItem('brg_adm_name', matchedAcc.name);
-        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
-
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
-        updateAdminGreeting();
-        
-        document.getElementById('manual-email-input').value = '';
-        document.getElementById('manual-pass-input').value = '';
-        
-        document.getElementById('adm-f-tag').value = appData.flyer.tag;
-        document.getElementById('adm-f-title').value = appData.flyer.title;
-        document.getElementById('adm-f-sub').value = appData.flyer.sub;
-        document.getElementById('adm-f-desc').value = appData.flyer.desc;
-        
-        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
-        renderApp();
-      } else {
-        alert('Acesso Negado. E-mail ou Senha incorretos.');
-      }
-    }
-
-    function updateAdminGreeting() {
-      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const greetingEl = document.getElementById('adm-welcome-text');
-      const masterTabsSec = document.getElementById('master-tabs-section');
-      const masterCtrlSec = document.getElementById('master-control-section');
-      const clearLogsBtn = document.getElementById('clear-logs-btn');
-
-      if(greetingEl) {
-        if(name === 'Touru') {
-          greetingEl.innerText = '👑 Conectado como: Touru (Master)';
-        } else if(name === 'Alisson') {
-          greetingEl.innerText = '🍻 Conectado como: Alisson (Colaborador)';
-        } else {
-          greetingEl.innerText = '⚙️ Conectado como: ' + name;
-        }
-      }
-
-      if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
-      if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
-      if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
-
-      if(appData.permissions) {
-        const pAdd = document.getElementById('perm-add');
-        const pEdit = document.getElementById('perm-edit');
-        const pDel = document.getElementById('perm-del');
-        const pTabs = document.getElementById('perm-tabs');
-        const pMod = document.getElementById('perm-mod');
-        const pRank = document.getElementById('perm-rank');
-        const pAgenda = document.getElementById('perm-agenda');
-        const pTeam = document.getElementById('perm-team');
-
-        if(pAdd) pAdd.checked = appData.permissions.canAdd !== false;
-        if(pEdit) pEdit.checked = appData.permissions.canEdit !== false;
-        if(pDel) pDel.checked = appData.permissions.canDel !== false;
-        if(pTabs) pTabs.checked = appData.permissions.canTabs !== false;
-        if(pMod) pMod.checked = appData.permissions.canMod !== false;
-        if(pRank) pRank.checked = appData.permissions.canRank !== false;
-        if(pAgenda) pAgenda.checked = appData.permissions.canAgenda !== false;
-        if(pTeam) pTeam.checked = appData.permissions.canTeam !== false;
-      }
-    }
-
-    function processLogout() {
-      localStorage.removeItem('brg_adm_logged');
-      localStorage.removeItem('brg_adm_email');
-      localStorage.removeItem('brg_adm_name');
-      localStorage.removeItem('brg_adm_is_master');
-      document.getElementById('admin-dashboard').style.display = 'none';
-      document.getElementById('admin-login').style.display = 'block';
-      renderApp();
-    }
-
-    async function updateHomeImg(input) {
-      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial da página home"); alert('Banner Inicial Atualizado via ImgBB!'); });
-    }
-    async function updateFlyerMain(input) {
-      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
-    }
-    async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do produto: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
-    }
-    async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o flyer do evento: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
-    }
-    async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
-    }
-    async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
-    }
-    async function updateArcadeImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
-    }
-
-    async function saveHomeData() {
-      appData.home.title = document.getElementById('adm-h-title').value;
-      appData.home.desc1 = document.getElementById('adm-h-desc1').value;
-      appData.home.desc2 = document.getElementById('adm-h-desc2').value;
-      appData.home.promoTitle = document.getElementById('adm-h-promo-title').value;
-      appData.home.promo1 = document.getElementById('adm-h-promo1').value;
-      appData.home.promo2 = document.getElementById('adm-h-promo2').value;
-      appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      await saveBinData("Modificou os textos e descrições da Página Inicial");
-      alert('Dados do Início Salvos!');
-    }
-
-    async function saveItemData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-       const perms = appData.permissions || {};
-       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
-
-       const item = appData.menu.find(i => i.id === id);
-       if(item) {
-          const oldName = item.name;
-          const oldPrice = item.price;
-          const newName = document.getElementById(`name-${id}`).value.trim();
-          const newType = document.getElementById(`type-${id}`).value;
-
-          if(newName.toLowerCase() !== oldName.toLowerCase()) {
-            const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
-            if(exists) {
-              return alert("⚠️ Item já existente! Já existe um produto cadastrado com este nome no cardápio.");
-            }
-          }
-
-          item.name = newName;
-          item.type = newType;
-          item.price = document.getElementById(`price-${id}`).value;
-          item.short = document.getElementById(`short-${id}`).value;
-          item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Categoria: ${newType}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
-          alert('Produto Salvo!');
-       }
-    }
-
-    async function saveAgendaData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-       const perms = appData.permissions || {};
-       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
-
-       const item = appData.agenda.find(i => i.id === id);
-       if(item) {
-          const oldTitle = item.title;
-          item.date = document.getElementById(`a-date-${id}`).value;
-          item.title = document.getElementById(`a-title-${id}`).value;
-          item.desc = document.getElementById(`a-desc-${id}`).value;
-          await saveBinData(`Editou o evento de agenda "${oldTitle}" para "${item.title}" (${item.date})`);
-          alert('Evento Salvo!');
-       }
-    }
-
-    async function saveTeamData(id) {
-       const t = appData.team.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`tname-${id}`).value;
-          t.role = document.getElementById(`trole-${id}`).value;
-          t.ig = document.getElementById(`tig-${id}`).value;
-          t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveBinData("Modificou dados da equipe: " + t.name);
-          alert('Membro salvo!');
-       }
-    }
-
-    async function saveArcadeData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-       const perms = appData.permissions || {};
-       if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
-
-       const t = appData.arcade.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`arc-name-${id}`).value;
-          t.sub = document.getElementById(`arc-sub-${id}`).value;
-          t.score = document.getElementById(`arc-score-${id}`).value;
-          t.prize = document.getElementById(`arc-prize-${id}`).value;
-          t.ig = document.getElementById(`arc-ig-${id}`).value;
-          t.quote = document.getElementById(`arc-quote-${id}`).value;
-          await saveBinData(`Atualizou o ranking Arcade na posição #${id} (${t.name} - ${t.score})`);
-          alert('Jogador salvo!');
-       }
-    }
-
-    async function saveCachaceiroData(id) {
-       const t = appData.cachaceiros.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`ca-name-${id}`).value;
-          t.sub = document.getElementById(`ca-sub-${id}`).value;
-          t.score = document.getElementById(`ca-score-${id}`).value;
-          t.prize = document.getElementById(`ca-prize-${id}`).value;
-          t.quote = document.getElementById(`ca-quote-${id}`).value;
-          await saveBinData(`Atualizou o ranking de Cachaceiros na posição #${id} (${t.name} - ${t.score})`);
-          alert('Cachaceiro salvo!');
-       }
-    }
-
-    let tempNewItemImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-    let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-
     async function addMenuItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
 
@@ -2595,7 +2287,7 @@
     }
 
     async function addAgendaItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada!");
 
@@ -2608,7 +2300,7 @@
     }
 
     async function removeMenuItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -2620,7 +2312,7 @@
     }
 
     async function removeAgendaItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (localStorage.getItem('brg_adm_is_master'] === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
