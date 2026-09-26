@@ -53,6 +53,21 @@
     .spotlight.pink { right: -10vw; background: linear-gradient(to bottom, rgba(233, 30, 99, 0.35) 0%, transparent 100%); }
     .spotlight.yellow { left: 25vw; background: linear-gradient(to bottom, rgba(255, 235, 59, 0.2) 0%, transparent 100%); }
 
+    /* Bazucas de luz: efeito visual leve, movido apenas por transform/opacity */
+    .light-bazookas { position:absolute; inset:0; overflow:hidden; }
+    .bazooka { position:absolute; top:-18vh; width:clamp(70px,9vw,130px); height:125vh; transform-origin:50% 0; opacity:.22; mix-blend-mode:screen; will-change:transform,opacity; pointer-events:none; }
+    .bazooka::before { content:""; position:absolute; inset:0; clip-path:polygon(50% 0,100% 100%,0 100%); background:linear-gradient(to bottom, rgba(255,255,255,.32), rgba(255,255,255,0) 78%); }
+    .bazooka.b1 { left:5%; color:var(--c-cyan); animation: bazookaSweep1 8s ease-in-out infinite alternate; }
+    .bazooka.b2 { left:30%; color:var(--c-pink); animation: bazookaSweep2 10s ease-in-out infinite alternate; animation-delay:-3s; }
+    .bazooka.b3 { right:28%; color:var(--c-yellow); animation: bazookaSweep3 9s ease-in-out infinite alternate; animation-delay:-5s; }
+    .bazooka.b4 { right:4%; color:var(--c-purple); animation: bazookaSweep4 11s ease-in-out infinite alternate; animation-delay:-2s; }
+    .bazooka::after { content:""; position:absolute; inset:0; background:linear-gradient(to bottom, currentColor, transparent 65%); opacity:.55; }
+    @keyframes bazookaSweep1 { from { transform:rotate(-12deg); opacity:.14; } to { transform:rotate(8deg); opacity:.24; } }
+    @keyframes bazookaSweep2 { from { transform:rotate(10deg); opacity:.12; } to { transform:rotate(-9deg); opacity:.22; } }
+    @keyframes bazookaSweep3 { from { transform:rotate(-8deg); opacity:.11; } to { transform:rotate(11deg); opacity:.2; } }
+    @keyframes bazookaSweep4 { from { transform:rotate(12deg); opacity:.13; } to { transform:rotate(-10deg); opacity:.23; } }
+    @media (prefers-reduced-motion: reduce) { .bazooka { animation:none !important; opacity:.16; } }
+
     #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.5; }
 
     .glass-panel {
@@ -138,8 +153,15 @@
     
     .m-title { font-size: 0.88rem; font-weight: 900; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; text-shadow: 0 1px 3px rgba(0,0,0,0.85); }
     .m-short { font-size: 0.67rem; color: #d4d4de; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 4px; text-shadow: 0 1px 3px rgba(0,0,0,0.85); }
-    .menu-price { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); font-weight: bold; margin-top: auto; margin-bottom: 5px; line-height: 1; text-shadow: 0 0 12px rgba(255,235,59,0.38), 0 2px 4px rgba(0,0,0,0.9); background: rgba(0,0,0,0.54); border: 1px solid rgba(255,235,59,0.62); border-radius: 999px; padding: 5px 13px 4px; min-width: 78px; width: auto !important; box-shadow: 0 4px 14px rgba(0,0,0,0.34), 0 0 12px rgba(255,235,59,0.10); position:relative; bottom:3px; }
+    .menu-price { font-family: var(--font-title); font-size: clamp(1.02rem, 4.6vw, 1.32rem); color: var(--c-yellow); font-weight: 900; margin-top: auto; margin-bottom: 2px; line-height: 1; text-shadow: 0 0 8px rgba(255,235,59,0.28), 0 2px 4px rgba(0,0,0,0.9); background: rgba(0,0,0,0.56); border: 1px solid rgba(255,235,59,0.68); border-radius: 999px; padding: 4px 9px 3px; min-width: 0; max-width: calc(100% - 8px); width: auto !important; box-sizing: border-box; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 3px 9px rgba(0,0,0,0.28), 0 0 8px rgba(255,235,59,0.08); position:relative; bottom:0; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; }
 
+    .director-featured-card { position:relative; overflow:hidden; border:2px solid var(--card-color, var(--c-pink)) !important; box-shadow:0 12px 28px rgba(0,0,0,.34), 0 0 18px color-mix(in srgb, var(--card-color, var(--c-pink)) 18%, transparent); transform:translateY(-2px); }
+    .director-featured-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(255,255,255,.075), transparent 38%, rgba(255,255,255,.025)); pointer-events:none; }
+    .director-featured-badge { display:inline-flex; align-items:center; justify-content:center; width:max-content; max-width:100%; margin:0 auto 9px; padding:4px 10px; border-radius:999px; border:1px solid currentColor; background:rgba(0,0,0,.42); font-family:var(--font-title); font-size:.68rem; letter-spacing:.7px; font-weight:900; }
+    .modal-content { isolation:isolate; }
+    .modal-content::before { content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(circle at 18% 18%, rgba(0,188,212,.10), transparent 26%), radial-gradient(circle at 82% 72%, rgba(233,30,99,.08), transparent 30%), linear-gradient(135deg, rgba(255,255,255,.025), transparent 45%); opacity:.9; }
+    .modal-content::after { content:'✦'; position:absolute; right:18px; top:12px; z-index:-1; font-size:5rem; line-height:1; color:rgba(255,235,59,.035); transform:rotate(-12deg); pointer-events:none; }
+    .modal-content .close-btn, .modal-content img, .modal-content h3, .modal-content p, .modal-content a, .modal-content button, .modal-content input, .modal-content select, .modal-content textarea, .modal-content div { position:relative; }
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -208,6 +230,9 @@
     .ig-button { display: inline-block; background: rgba(0,0,0,0.5); border: 1px solid var(--card-color, var(--c-pink)); padding: 8px 15px; border-radius: 30px; color: var(--card-color, var(--c-pink)); text-decoration: none; font-family: var(--font-title); font-size: 1.1rem; letter-spacing: 1px; transition: 0.3s; margin: 10px 0 5px; }
     .ig-button span { color: #fff; font-family: var(--font-body); font-weight: bold; font-size: 0.85rem; letter-spacing: 0;}
     .ig-button:hover { background: var(--card-color, var(--c-pink)); color: #000 !important; }
+
+    .creator-signature { margin: 2px 0 10px; font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1.5px; color: rgba(255,255,255,.7); text-transform: uppercase; }
+    .creator-signature strong { color: var(--c-yellow); text-shadow: 0 0 8px rgba(255,235,59,.22); }
 
     .contact-card { text-align: center; padding: 3rem 1rem; }
     .contact-link { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; text-decoration: none; color: #fff; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
@@ -297,6 +322,9 @@
     <div class="spotlight cyan"></div>
     <div class="spotlight yellow"></div>
     <div class="spotlight pink"></div>
+    <div class="light-bazookas" aria-hidden="true">
+      <span class="bazooka b1"></span><span class="bazooka b2"></span><span class="bazooka b3"></span><span class="bazooka b4"></span>
+    </div>
   </div>
   <div class="bg-watermark"></div>
   <canvas id="sparks-canvas"></canvas>
@@ -995,6 +1023,7 @@
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
       <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via JSONBin.io & ImgBB API.</p>
+      <p class="creator-signature">Criado por : <strong>TOURU</strong></p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
 
@@ -1660,7 +1689,7 @@
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
       const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
