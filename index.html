@@ -136,11 +136,25 @@
     .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 8px; cursor: pointer; position: relative; overflow: hidden; height: 220px; min-height: 220px; box-sizing: border-box; isolation: isolate; background: rgba(12,12,16,0.20); transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg, rgba(255,255,255,0.045), rgba(8,8,12,0.16)); pointer-events: none; }
     .product-image-wrap { width: 100%; height: 118px; flex: 0 0 118px; position: relative; overflow: hidden; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(8,8,12,0.12); isolation: isolate; }
-    .product-image-wrap::before { content: ''; position: absolute; inset: -6px; z-index: 0; background-image: var(--card-photo, none); background-position: center; background-size: cover; background-repeat: no-repeat; transform: scale(1.06); opacity: 0.20; }
-    .product-image-wrap::after { content: ''; position: absolute; inset: 0; z-index: 1; background: rgba(255,255,255,0.035); pointer-events: none; }
+    .product-image-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: var(--card-photo);
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      border-radius: 7px;
+      pointer-events: none;
+    }
+    .product-image-wrap::after { content: none; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
     .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
+    .menu-modal-description { margin: 16px 0 14px; padding: 14px 15px; border: 1px solid rgba(0,188,212,0.38); border-left: 4px solid var(--c-cyan); border-radius: 10px; background: rgba(0,188,212,0.08); color: #fff; text-align: left; line-height: 1.65; font-size: 0.98rem; box-shadow: inset 0 0 18px rgba(0,188,212,0.05); }
+    .menu-modal-description-label { display:block; color:var(--c-yellow); font-family:var(--font-title); font-size:0.82rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
+    .menu-modal-description-text { color:#f4f4f4; font-weight:500; white-space:pre-wrap; overflow-wrap:anywhere; }
     .product-card .m-short { width: 100%; min-height: 30px; margin-bottom: 4px; }
     .product-card .menu-price { width: 100%; margin-top: auto; }
     .menu-grid > .product-card, .drink-featured-grid > .product-card { width: 100%; }
@@ -2247,7 +2261,13 @@
       if(!item) return;
 
       document.getElementById('modalTitle').innerText = item.name.replace('PROMO', '').trim();
-      document.getElementById('modalDesc').innerText = item.full || item.short;
+      const modalDescEl = document.getElementById('modalDesc');
+      const itemDescription = String(item.full || item.short || '').trim();
+      if(modalDescEl){
+        modalDescEl.innerHTML = itemDescription
+          ? `<div class="menu-modal-description"><span class="menu-modal-description-label">📝 Descrição</span><div class="menu-modal-description-text">${escapeHTML(itemDescription)}</div></div>`
+          : '';
+      }
       document.getElementById('modalPrice').innerText = 'R$ ' + item.price;
       document.getElementById('modalImg').src = item.img;
 
