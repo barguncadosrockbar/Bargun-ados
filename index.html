@@ -2062,28 +2062,38 @@
     async function uploadToImgBB(file, callback) {
       if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = async function() {
-        const base64Data = reader.result.split(',')[1];
-        try {
-          const bodyData = new URLSearchParams();
-          bodyData.append('image', base64Data);
-
-          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-            method: 'POST',
-            body: bodyData
-          });
-          const json = await res.json();
-          if (json.success && json.data && json.data.url) {
-            callback(json.data.url);
-          } else {
-            callback(reader.result);
-          }
-        } catch (e) {
-          callback(reader.result);
+      try {
+        if (!file.type || !file.type.startsWith('image/')) {
+          alert('⚠️ Selecione um arquivo de imagem válido.');
+          return;
         }
-      };
-      reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+          method: 'POST',
+          body: formData
+        });
+
+        let json = null;
+        try {
+          json = await res.json();
+        } catch (e) {
+          json = null;
+        }
+
+        if (res.ok && json && json.success === true && json.data && typeof json.data.url === 'string' && /^https:\/\/i.ibb.co\//i.test(json.data.url)) {
+          callback(json.data.url);
+          return;
+        }
+
+        console.error('ImgBB: upload recusado ou resposta inválida.', { status: res.status, response: json });
+        alert('⚠️ Não foi possível enviar a foto para o ImgBB. A imagem não foi salva no site. Tente novamente.');
+      } catch (e) {
+        console.error('ImgBB: erro no upload.', e);
+        alert('⚠️ Erro ao enviar a foto para o ImgBB. A imagem não foi salva no site. Verifique sua conexão e tente novamente.');
+      }
     }
 
     async function modalUploadImg(input) {
