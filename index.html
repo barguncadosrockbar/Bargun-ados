@@ -114,26 +114,26 @@
     .btn-fire { display: inline-block; background: linear-gradient(90deg, var(--c-pink), var(--c-purple)); color: #fff; font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; padding: 10px 20px; border: none; border-radius: 6px; text-decoration: none; text-transform: uppercase; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(233,30,99,0.3); width: 100%; text-align: center; margin-top: 10px; }
     .btn-fire:hover { filter: brightness(1.2); }
 
-    .menu-category { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
+    .menu-category { font-family: var(--font-title); font-size: 1.12rem; color: var(--c-yellow); margin: 1.5rem 0 0.8rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     .menu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
 
-    .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 10px; cursor: pointer; position: relative; overflow: hidden; height: 292px; min-height: 292px; box-sizing: border-box; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
+    .product-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 8px; cursor: pointer; position: relative; overflow: hidden; height: 248px; min-height: 248px; box-sizing: border-box; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    .product-img { width: 100%; height: 150px; flex: 0 0 150px; object-fit: cover; object-position: center; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); background: #09090c; display: block; }
+    .product-img { width: 100%; height: 118px; flex: 0 0 118px; object-fit: contain; object-position: center; border-radius: 7px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); background: #09090c; display: block; }
     .product-card .m-short { width: 100%; min-height: 30px; margin-bottom: 4px; }
     .product-card .menu-price { width: 100%; margin-top: auto; }
     .menu-grid > .product-card, .drink-featured-grid > .product-card { width: 100%; }
     .menu-grid > .product-card:nth-child(n), .drink-featured-grid > .product-card:nth-child(n) { align-self: stretch; }
     .product-card:hover .product-img { transform: none; }
     .drink-featured { margin-bottom: 22px; }
-    .drink-featured-title { font-family: var(--font-title); font-size: 1.65rem; color: var(--c-yellow); margin: 0 0 10px; border-bottom: 1px dashed rgba(255,235,59,0.35); padding-bottom: 5px; }
+    .drink-featured-title { font-family: var(--font-title); font-size: 1.15rem; color: var(--c-yellow); margin: 0 0 10px; border-bottom: 1px dashed rgba(255,235,59,0.35); padding-bottom: 5px; }
     .drink-featured-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; align-items: stretch; gap: 10px; }
-    .drink-line-title { font-family: var(--font-title); font-size: 1.5rem; color: var(--c-yellow); margin: 1.35rem 0 0.75rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
+    .drink-line-title { font-family: var(--font-title); font-size: 1.08rem; color: var(--c-yellow); margin: 1.35rem 0 0.75rem; border-bottom: 1px dashed rgba(255,235,59,0.3); padding-bottom: 5px; }
     
-    .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
-    .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
-    .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
+    .m-title { font-size: 0.84rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
+    .m-short { font-size: 0.67rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
+    .menu-price { font-family: var(--font-title); font-size: 1.15rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -142,7 +142,8 @@
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: contain; background: #09090c; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg { width: 100%; height: 200px; object-fit: fill; object-position:center; background:#09090c; border-radius:8px; border:1px solid var(--c-cyan); margin-bottom:12px; }
+    #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: contain; background: #09090c; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
@@ -241,17 +242,38 @@
     .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
     .counter-stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
 
+    .menu-collapse { margin: 0 0 12px; border: 1px solid rgba(255,235,59,0.12); border-radius: 10px; overflow: hidden; background: rgba(0,0,0,0.12); }
+    .menu-collapse > summary { list-style: none; cursor: pointer; padding: 8px 10px; color: var(--c-yellow); font-family: var(--font-title); font-size: 1.02rem; border-bottom: 1px dashed rgba(255,235,59,0.25); user-select: none; }
+    .menu-collapse > summary::-webkit-details-marker { display:none; }
+    .menu-collapse > summary::before { content:'▾'; display:inline-block; margin-right:7px; transition:transform .2s ease; }
+    .menu-collapse:not([open]) > summary::before { transform:rotate(-90deg); }
+    .menu-collapse-body { padding: 8px 0 2px; }
+    .traffic-dashboard { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:15px; }
+    .traffic-mini { background:rgba(0,0,0,.72); border:1px solid rgba(0,188,212,.45); border-radius:9px; padding:10px 8px; text-align:center; }
+    .traffic-mini-val { font-family:var(--font-title); font-size:1.45rem; color:var(--c-yellow); line-height:1; }
+    .traffic-mini-label { font-size:.66rem; color:#aaa; text-transform:uppercase; margin-top:5px; line-height:1.15; }
+    .traffic-detail-box { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:8px; }
+    .traffic-detail { background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.08); border-radius:7px; padding:8px; color:#ccc; font-size:.72rem; }
+
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
     @media (max-width: 600px) {
       .tab-btn { flex: 1 1 calc(33.333% - 6px); font-size: 0.95rem; padding: 8px 2px; }
-      .product-img { height: 150px; flex-basis: 150px; } 
+      .product-card { height: 238px; min-height: 238px; padding: 7px; }
+      .product-img { height: 108px; flex-basis: 108px; }
+      .m-title { font-size: 0.78rem; }
+      .m-short { font-size: 0.63rem; }
+      .menu-price { font-size: 1.05rem; }
+      .drink-line-title, .drink-featured-title { font-size: 0.98rem; } 
       .dir-card { flex: 1 1 100%; }
       .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
       .agenda-mini-grid { grid-template-columns: repeat(2, 1fr); }
       .admin-card-row { flex-direction: column; align-items: stretch; }
       .admin-input { width: 100%; }
       .modal-content { max-height: 82vh; padding-bottom: 50px; }
+      .traffic-dashboard { grid-template-columns: repeat(2, 1fr); gap: 7px; }
+      .traffic-mini-val { font-size: 1.2rem; }
+      .traffic-mini-label { font-size: .6rem; }
       .featured-flyer-img { min-height: 420px; max-height: 520px; }
     }
   </style>
@@ -559,7 +581,10 @@
       <section id="bebidas" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
-          <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="action-btn" onclick="openCategoryQuickEdit('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias / Destaques</button>
+            <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
+          </div>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
@@ -692,16 +717,18 @@
             <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
           </div>
 
-          <!-- CONTADOR DE VISITAS E DISPOSITIVOS RESTAURADO -->
-          <div class="traffic-counter-box">
-            <div class="counter-stat-card">
-              <div class="counter-stat-val" id="adm-stat-views">0</div>
-              <div class="counter-stat-lbl">Visitas Totais (Cliques)</div>
-            </div>
-            <div class="counter-stat-card" style="border-color: var(--c-pink);">
-              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-pink);">0</div>
-              <div class="counter-stat-lbl">Dispositivos Únicos Conectados</div>
-            </div>
+          <!-- ANALYTICS DO SITE -->
+          <div class="traffic-dashboard">
+            <div class="traffic-mini"><div class="traffic-mini-val" id="adm-stat-views">0</div><div class="traffic-mini-label">Visitas totais</div></div>
+            <div class="traffic-mini"><div class="traffic-mini-val" id="adm-stat-today">0</div><div class="traffic-mini-label">Visitas hoje</div></div>
+            <div class="traffic-mini"><div class="traffic-mini-val" id="adm-stat-devices">0</div><div class="traffic-mini-label">Dispositivos únicos</div></div>
+            <div class="traffic-mini"><div class="traffic-mini-val" id="adm-stat-clicks">0</div><div class="traffic-mini-label">Cliques totais</div></div>
+          </div>
+          <div class="traffic-detail-box">
+            <div class="traffic-detail">📱 <b>Dispositivos hoje:</b> <span id="adm-stat-devices-today">0</span></div>
+            <div class="traffic-detail">🖱️ <b>Cliques hoje:</b> <span id="adm-stat-clicks-today">0</span></div>
+            <div class="traffic-detail">🗓️ <b>Último registro:</b> <span id="adm-stat-last-visit">--</span></div>
+            <div class="traffic-detail">📊 <b>Média por visita:</b> <span id="adm-stat-click-rate">0</span> cliques</div>
           </div>
 
           <!-- BANCO DE DADOS E SINCRONIZAÇÃO COMPLETA -->
@@ -1082,44 +1109,90 @@
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada" }
       },
-      traffic: { totalViews: 0, devices: [] }
+      traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' }
     };
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
-    function recordTrafficAnalytics() {
-      let deviceId = localStorage.getItem('brg_device_id');
-      if(!deviceId) {
-        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-        localStorage.setItem('brg_device_id', deviceId);
-      }
+    function getTodayKey(){ return new Date().toISOString().slice(0,10); }
 
-      if(!appData.traffic) {
-        appData.traffic = { totalViews: 0, devices: [] };
-      }
-
-      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
-
-      if(!Array.isArray(appData.traffic.devices)) {
-        appData.traffic.devices = [];
-      }
-
-      if(!appData.traffic.devices.includes(deviceId)) {
-        appData.traffic.devices.push(deviceId);
-      }
-
-      updateTrafficUI();
+    function ensureTrafficData(){
+      if(!appData.traffic || typeof appData.traffic !== 'object') appData.traffic = {};
+      if(!Number.isFinite(Number(appData.traffic.totalViews))) appData.traffic.totalViews = 0;
+      if(!Number.isFinite(Number(appData.traffic.totalClicks))) appData.traffic.totalClicks = 0;
+      if(!Array.isArray(appData.traffic.devices)) appData.traffic.devices = [];
+      if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') appData.traffic.daily = {};
+      const d=getTodayKey();
+      if(!appData.traffic.daily[d]) appData.traffic.daily[d]={views:0,clicks:0,devices:[]};
+      if(!Array.isArray(appData.traffic.daily[d].devices)) appData.traffic.daily[d].devices=[];
     }
 
-    function updateTrafficUI() {
-      const viewsEl = document.getElementById('adm-stat-views');
-      const devEl = document.getElementById('adm-stat-devices');
-      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
-      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
+    function recordTrafficAnalytics(){
+      try{
+        ensureTrafficData();
+        let deviceId=localStorage.getItem('brg_device_id');
+        if(!deviceId){ deviceId='dev_'+Math.random().toString(36).substring(2,9)+'_'+Date.now(); localStorage.setItem('brg_device_id',deviceId); }
+        const d=getTodayKey(), day=appData.traffic.daily[d];
+        appData.traffic.totalViews=Number(appData.traffic.totalViews||0)+1;
+        day.views=Number(day.views||0)+1;
+        if(!appData.traffic.devices.includes(deviceId)) appData.traffic.devices.push(deviceId);
+        if(!day.devices.includes(deviceId)) day.devices.push(deviceId);
+        appData.traffic.lastVisit=new Date().toLocaleString('pt-BR');
+        updateTrafficUI(); scheduleTrafficSync();
+      }catch(e){}
     }
+
+    let trafficDirty = false;
+    let trafficSyncTimer = null;
+
+    function scheduleTrafficSync(){
+      trafficDirty = true;
+      if(trafficSyncTimer) return;
+      trafficSyncTimer = setTimeout(()=>{ trafficSyncTimer=null; flushTrafficAnalytics(); }, 30000);
+    }
+
+    async function flushTrafficAnalytics(){
+      if(!trafficDirty) return;
+      try{
+        ensureTrafficData();
+        await fetch(BIN_URL, {method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY}, body:JSON.stringify(appData)});
+        trafficDirty=false;
+      }catch(e){}
+    }
+
+    function recordSiteClick(){
+      try{
+        ensureTrafficData(); const d=getTodayKey(), day=appData.traffic.daily[d];
+        appData.traffic.totalClicks=Number(appData.traffic.totalClicks||0)+1;
+        day.clicks=Number(day.clicks||0)+1; updateTrafficUI(); scheduleTrafficSync();
+      }catch(e){}
+    }
+
+    function updateTrafficUI(){
+      try{
+        ensureTrafficData(); const d=getTodayKey(), day=appData.traffic.daily[d];
+        const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
+        set('adm-stat-views',Number(appData.traffic.totalViews||0));
+        set('adm-stat-today',Number(day.views||0));
+        set('adm-stat-devices',appData.traffic.devices.length);
+        set('adm-stat-clicks',Number(appData.traffic.totalClicks||0));
+        set('adm-stat-devices-today',day.devices.length);
+        set('adm-stat-clicks-today',Number(day.clicks||0));
+        set('adm-stat-last-visit',appData.traffic.lastVisit||'--');
+        const rate=(Number(appData.traffic.totalViews||0)>0)?(Number(appData.traffic.totalClicks||0)/Number(appData.traffic.totalViews||1)).toFixed(1):'0';
+        set('adm-stat-click-rate',rate);
+      }catch(e){}
+    }
+
+    document.addEventListener('click', function(e){
+      if(e.target.closest('#admin-dashboard')) return;
+      recordSiteClick();
+    }, {passive:true});
+
+    window.addEventListener('beforeunload', function(){ try{ localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{})); fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},body:JSON.stringify(appData),keepalive:true}).catch(()=>{}); }catch(e){} });
 
     function ensureAdminSystem() {
       if(!Array.isArray(appData.adminAccounts) || appData.adminAccounts.length === 0) appData.adminAccounts = AUTH_ACCOUNTS.map(a => ({...a}));
@@ -1358,7 +1431,7 @@
 
     function ensureMenuCategoryLabels() {
       const defaults = {
-        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada" }
       };
       if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
@@ -1384,9 +1457,17 @@
       pageEl.value = page;
       title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
       const names = page === 'bebidas' ? [
-        ['featured','Destaques'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+        ['featured','Título dos Destaques'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
       ] : [['title','Título da página de porções']];
       fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
+      if(page === 'bebidas'){
+        const menu = Array.isArray(appData.menu) ? appData.menu.filter(i=>i.type==='drink') : [];
+        const ids = Array.isArray(labels.featuredIds) ? labels.featuredIds : [];
+        fields.innerHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px;">
+          <label style="font-size:.78rem;color:#aaa;">Destaque 1<select class="interaction-input featured-id-select" data-featured-index="0" style="padding:8px;margin-top:4px;">${menu.map(i=>`<option value="${i.id}" ${String(ids[0])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
+          <label style="font-size:.78rem;color:#aaa;">Destaque 2<select class="interaction-input featured-id-select" data-featured-index="1" style="padding:8px;margin-top:4px;">${menu.map(i=>`<option value="${i.id}" ${String(ids[1])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
+        </div>`;
+      }
       document.getElementById('categoryQuickEditModal').style.display = 'flex';
     }
 
@@ -1403,7 +1484,10 @@
         const value = input.value.trim();
         if(value) appData.menuCategoryLabels[page][key] = value;
       });
-      await saveBinData(`Editou os nomes das categorias da página ${page}`);
+      if(page === 'bebidas'){
+        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-id-select')).map(s=>Number(s.value)).filter(Boolean);
+      }
+      await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
       closeModal('categoryQuickEditModal');
       alert('✅ Categorias atualizadas e salvas!');
     }
@@ -1481,38 +1565,37 @@
         return exact || cMenu.find(i => i.type === 'drink' && String(i.price || '') === fallbackPrice);
       };
 
-      const featuredItems = [
-        findDrink('Caipirinha', '10,00'),
-        findDrink('Gin Sunset', '8,00')
-      ].filter(Boolean);
+      const configuredFeaturedIds = Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds : [2,1];
+      let featuredItems = configuredFeaturedIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).filter(Boolean);
+      if(!featuredItems.length){ featuredItems = [findDrink('Caipirinha', '10,00'), findDrink('Gin Sunset', '8,00')].filter(Boolean); }
 
       let drinksStr = `
-        <div class="drink-featured">
-          <div class="drink-featured-title">${escapeHTML(categoryLabels.bebidas.featured)}</div>
-          <div class="drink-featured-grid">${featuredItems.map(createCard).join('')}</div>
-        </div>`;
+        <details class="menu-collapse drink-featured" open>
+          <summary>${escapeHTML(categoryLabels.bebidas.featured)}</summary>
+          <div class="menu-collapse-body"><div class="drink-featured-grid">${featuredItems.map(createCard).join('')}</div></div>
+        </details>`;
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
         const items = cMenu.filter(i => i.type === 'drink' && i.drinkLine === line);
         if(items.length) {
           items.forEach(i => drinksWithLine.add(i.id));
-          drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas[line] || title)}</div><div class="menu-grid">${items.map(createCard).join('')}</div>`;
+          drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas[line] || title)}</summary><div class="menu-collapse-body"><div class="menu-grid">${items.map(createCard).join('')}</div></div></details>`;
         }
       });
 
       const legacyDrinks = cMenu.filter(i => i.type === 'drink' && !drinksWithLine.has(i.id));
       if(legacyDrinks.length) {
-        drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.legacy)}</div><div class="menu-grid">${legacyDrinks.map(createCard).join('')}</div>`;
+        drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.legacy)}</summary><div class="menu-collapse-body"><div class="menu-grid">${legacyDrinks.map(createCard).join('')}</div></div></details>`;
       }
 
-      drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.beer)}</div><div class="menu-grid">${cMenu.filter(i => i.type === 'beer').map(createCard).join('')}</div>`;
-      drinksStr += `<div class="drink-line-title">${escapeHTML(categoryLabels.bebidas.noalcohol)}</div><div class="menu-grid">${cMenu.filter(i => i.type === 'noalcohol').map(createCard).join('')}</div>`;
+      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.beer)}</summary><div class="menu-collapse-body"><div class="menu-grid">${cMenu.filter(i => i.type === 'beer').map(createCard).join('')}</div></div></details>`;
+      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.noalcohol)}</summary><div class="menu-collapse-body"><div class="menu-grid">${cMenu.filter(i => i.type === 'noalcohol').map(createCard).join('')}</div></div></details>`;
       drinksContainer.innerHTML = drinksStr;
 
-      let portionsStr = `<div class="drink-line-title">${escapeHTML(categoryLabels.porcoes.title)}</div><div class="menu-grid">`;
+      let portionsStr = `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid">`;
       cMenu.filter(i => i.type === 'portion').forEach(i => portionsStr += createCard(i));
-      portionsStr += '</div>';
+      portionsStr += '</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
 
       const agendaList = document.getElementById('dynamic-agenda-list');
