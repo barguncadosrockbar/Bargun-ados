@@ -13,7 +13,7 @@
     /* =========================================
        1. RESET E VARIÁVEIS (Otimizado 120 FPS)
        ========================================= */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
 
     :root {
       --bg-dark: #050505;
@@ -45,16 +45,15 @@
       background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s");
       background-position: center; background-size: cover; background-repeat: no-repeat;
       opacity: 0.12; filter: grayscale(10%) contrast(150%);
-      pointer-events: none !important;
     }
     
-    .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -2; overflow: hidden; transform: translateZ(0); }
-    .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; pointer-events: none !important; }
+    .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -2; overflow: hidden; transform: translateZ(0); }
+    .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; }
     .spotlight.cyan { left: -10vw; background: linear-gradient(to bottom, rgba(0, 188, 212, 0.35) 0%, transparent 100%); }
     .spotlight.pink { right: -10vw; background: linear-gradient(to bottom, rgba(233, 30, 99, 0.35) 0%, transparent 100%); }
     .spotlight.yellow { left: 25vw; background: linear-gradient(to bottom, rgba(255, 235, 59, 0.2) 0%, transparent 100%); }
 
-    #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -1; opacity: 0.5; }
+    #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.5; }
 
     .glass-panel {
       background: var(--glass-bg);
@@ -66,7 +65,7 @@
       border-radius: 10px; 
     }
 
-    .app-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
+    .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; background: rgba(10, 10, 15, 0.95); }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -76,7 +75,7 @@
     .radio-station-name { color: var(--c-yellow); font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; }
     .radio-now-playing { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
     .radio-now-playing span { color: var(--c-cyan); text-transform: uppercase;}
-    .play-pause-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); color: var(--c-cyan); font-family: var(--font-title); font-size: 1rem; padding: 6px 15px; border-radius: 20px; transition: 0.2s; cursor:pointer; pointer-events: auto !important; }
+    .play-pause-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); color: var(--c-cyan); font-family: var(--font-title); font-size: 1rem; padding: 6px 15px; border-radius: 20px; transition: 0.2s; cursor:pointer;}
     .play-pause-btn:hover { background: var(--c-cyan); color: #000; }
     audio { display: none; }
 
@@ -86,19 +85,19 @@
     header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
     .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.4); border: 2px solid rgba(255,255,255,0.2); display: block; margin: 0 auto; }
 
-    .nav-container { background: rgba(5, 5, 8, 0.98); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+    .nav-container { background: rgba(5, 5, 8, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
-    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 10px 4px; border-radius: 6px; transition: 0.2s; text-align: center; cursor: pointer; text-transform: uppercase; pointer-events: auto !important; }
+    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.2s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
-    .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.35); border-color: var(--c-pink); box-shadow: 0 0 10px rgba(233,30,99,0.5); }
+    .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.25); border-color: var(--c-pink); }
 
-    main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; position: relative; z-index: 20; }
+    main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; }
     
-    .tab-pane { display: none !important; opacity: 0; }
-    .tab-pane.active { display: block !important; opacity: 1; animation: slideDownFade 0.25s forwards; }
+    .tab-pane { display: none; opacity: 0; transform: translateY(-15px) scale(0.98); }
+    .tab-pane.active { display: block; animation: slideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideDownFade {
-      0% { opacity: 0; transform: translateY(-8px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% { opacity: 0; transform: translateY(-15px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
@@ -120,32 +119,34 @@
 
     .product-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 12px; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
-    .product-img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
-    .product-card:hover .product-img { transform: scale(1.04); }
+    
+    .product-img { width: 100%; height: 125px; object-fit: fill; object-position: center; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); transition: transform 0.3s ease; }
+    .product-card:hover .product-img { transform: scale(1.02); }
     
     .m-title { font-size: 0.95rem; font-weight: 800; color: #fff; margin-bottom: 3px; text-transform: uppercase; line-height: 1.1; }
     .m-short { font-size: 0.75rem; color: var(--text-muted); line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 5px; }
     .menu-price { font-family: var(--font-title); font-size: 1.4rem; color: var(--c-cyan); font-weight: bold; margin-top: auto; }
 
-    .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 400px; width: 100%; padding: 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 90vh; overflow-y: auto; }
+    .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg, #eventModalImg, #playerModalImg { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
+    #modalImg, #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: fill; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
     #modalPrice { font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 15px; }
 
-    .featured-flyer-img { width: 100%; max-height: 400px; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; border-radius: 12px; border: 2px solid var(--c-red); box-shadow: 0 10px 30px rgba(211,47,47,0.5); cursor: pointer; transition: transform 0.3s; }
-    .featured-flyer-img:hover { transform: scale(1.01); }
+    .featured-flyer-container { width: 100%; border-radius: 12px; border: 2px solid var(--c-red); overflow: hidden; box-shadow: 0 10px 30px rgba(211,47,47,0.5); margin-bottom: 15px; cursor: pointer; }
+    .featured-flyer-img { width: 100%; min-height: 380px; max-height: 560px; height: auto; object-fit: fill; object-position: center; display: block; transition: transform 0.3s ease; }
+    .featured-flyer-container:hover .featured-flyer-img { transform: scale(1.01); }
 
-    #eventModalImg { border-color: var(--c-purple); max-height: 250px; }
+    #eventModalImg { width: 100%; min-height: 320px; max-height: 480px; object-fit: fill; object-position: center; border-radius: 8px; border: 2px solid var(--c-purple); margin-bottom: 12px; }
     #e-title { font-family: var(--font-title); font-size: 2.5rem; color: #fff; line-height: 1;}
 
-    #playerModalImg { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; }
+    #playerModalImg { width: 110px; height: 110px; border-radius: 50%; border: 3px solid var(--c-yellow); margin: 0 auto 15px; object-fit: cover; background: #111; }
     #playerQuote { font-style: italic; color: #fff; font-size: 1.1rem; border-left: 3px solid var(--c-pink); padding-left: 10px; margin: 15px 0; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 4px; }
 
     .rankings-switch { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
@@ -169,10 +170,10 @@
     .lb-prize { font-size: 0.65rem; background: #111; color: var(--c-cyan); padding: 2px 5px; border-radius: 3px; border: 1px solid var(--c-cyan); text-align: center; display: block; margin-top: 3px;}
     .lb-title-badge { font-size: 0.65rem; background: rgba(233, 30, 99, 0.2); color: var(--c-yellow); border: 1px solid var(--c-pink); padding: 1px 6px; border-radius: 10px; display: inline-block; margin-top: 4px; font-weight: 700; width: fit-content; text-transform: uppercase; }
 
-    .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 15px; }
-    .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 1 / 1; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: cover; background-position: center; transition: transform 0.3s; }
+    .agenda-mini-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 15px; }
+    .mini-flyer { position: relative; border-radius: 8px; overflow: hidden; aspect-ratio: 3 / 4; cursor: pointer; border: 1px solid var(--glass-border-top); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background-size: 100% 100%; background-position: center; transition: transform 0.3s; }
     .mini-flyer:hover { transform: scale(1.03); }
-    .mini-flyer::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 100%); z-index: 1; }
+    .mini-flyer::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.1) 60%); z-index: 1; }
     .mf-content { position: absolute; bottom: 0; left: 0; width: 100%; padding: 10px; z-index: 2; text-align: center; }
     .mf-date { background: var(--c-red); color: #fff; font-family: var(--font-title); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; display: inline-block; margin-bottom: 5px; }
     .mf-title { font-family: var(--font-title); font-size: 1.1rem; color: #fff; line-height: 1.1; text-transform: uppercase; text-shadow: 1px 1px 2px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -225,6 +226,13 @@
     .db-status-box { background: rgba(0,0,0,0.6); border: 1px solid #333; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; }
     .db-status-indicator { display: inline-flex; align-items: center; gap: 6px; font-weight: bold; font-size: 0.9rem; margin-bottom: 8px; }
 
+    .tab-admin-action-bar { display: none; background: rgba(0,0,0,0.85); border: 1px dashed var(--c-cyan); border-radius: 8px; padding: 10px 15px; margin-bottom: 15px; justify-content: space-between; align-items: center; }
+
+    .traffic-counter-box { display: flex; gap: 15px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+    .counter-stat-card { background: rgba(0,0,0,0.7); border: 1px solid var(--c-cyan); border-radius: 8px; padding: 12px 20px; text-align: center; flex: 1; min-width: 140px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .counter-stat-val { font-family: var(--font-title); font-size: 2rem; color: var(--c-yellow); line-height: 1; margin-bottom: 4px; }
+    .counter-stat-lbl { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: bold; }
+
     footer { background: rgba(5,5,8,0.85); border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; }
     
     @media (max-width: 600px) {
@@ -235,6 +243,8 @@
       .agenda-mini-grid { grid-template-columns: repeat(2, 1fr); }
       .admin-card-row { flex-direction: column; align-items: stretch; }
       .admin-input { width: 100%; }
+      .modal-content { max-height: 82vh; padding-bottom: 50px; }
+      .featured-flyer-img { min-height: 420px; max-height: 520px; }
     }
   </style>
 </head>
@@ -248,7 +258,7 @@
   <div class="bg-watermark"></div>
   <canvas id="sparks-canvas"></canvas>
 
-  <!-- MODAL DE DETALHES / EDIÇÃO DE CARDÁPIO -->
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE CARDÁPIO -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
       <span class="close-btn" onclick="closeModal('productModal')">×</span>
@@ -258,27 +268,119 @@
       <div id="modalPrice">R$ 00,00</div>
 
       <div id="modal-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
-        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Edição Rápida (Cardápio)</h5>
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Item (Cardápio)</h5>
         <input type="hidden" id="modal-edit-id">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Categoria do Item:</label>
+        <select id="modal-edit-category" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+          <option value="drink">🔥 Destilados & Clássicos</option>
+          <option value="beer">🍺 Cervejas</option>
+          <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+          <option value="portion">🍟 Porções & Larica</option>
+        </select>
+
         <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
         <input type="text" id="modal-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Preço (R$):</label>
         <input type="text" id="modal-edit-price" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Resumo Curto:</label>
         <input type="text" id="modal-edit-short" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
         <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa:</label>
         <textarea id="modal-edit-full" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        
         <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
           <span>📷 Mudar Foto do Item</span>
           <input type="file" accept="image/*" onchange="modalUploadImg(this)">
         </div>
         <input type="hidden" id="modal-edit-img">
-        <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; width: 100%; padding: 8px; font-family: var(--font-title); font-size: 1rem;">💾 Salvar Alteração</button>
+        
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar Alterações</button>
+          <button id="modal-item-del-btn" class="action-btn del-btn" onclick="deleteModalItemDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL DE DETALHES DE RANKINGS -->
+  <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
+  <div id="itemCreateModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
+      <span class="close-btn" onclick="closeModal('itemCreateModal')">×</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); margin-bottom: 12px; text-align: center;">✨ Adicionar Novo Item</h3>
+      
+      <img id="create-item-img-preview" src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80" alt="Preview">
+      
+      <label style="font-size: 0.8rem; color: #aaa;">Categoria:</label>
+      <select id="create-item-category" class="interaction-input" style="padding: 8px;">
+        <option value="drink">🔥 Destilados & Clássicos</option>
+        <option value="beer">🍺 Cervejas</option>
+        <option value="noalcohol">🥤 Sem Álcool / Sucos / Refris</option>
+        <option value="portion">🍟 Porções & Larica</option>
+      </select>
+
+      <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
+      <input type="text" id="create-item-name" class="interaction-input" placeholder="Ex: Cerveja IPA ou Suco Natural">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Preço (R$):</label>
+      <input type="text" id="create-item-price" class="interaction-input" placeholder="Ex: 18,00">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Resumo Curto:</label>
+      <input type="text" id="create-item-short" class="interaction-input" placeholder="Ex: Lata 350ml gelada ao extremo">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Descrição Detalhada:</label>
+      <textarea id="create-item-full" class="interaction-textarea" rows="2" placeholder="Detalhes dos ingredientes ou procedência..."></textarea>
+
+      <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
+        <span>📷 Upar Foto do Item (ImgBB)</span>
+        <input type="file" accept="image/*" onchange="createUploadImg(this)">
+      </div>
+      <input type="hidden" id="create-item-img" value="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80">
+
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button class="btn-fire" onclick="confirmCreateItem()" style="background: var(--c-yellow); color:#000; padding: 12px; font-size: 1.15rem;">+ Confirmar e Cadastrar Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DIRETA DA ABA HOME ("O BAR") -->
+  <div id="homeDirectEditModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color: var(--c-cyan); text-align: left;">
+      <span class="close-btn" onclick="closeModal('homeDirectEditModal')">×</span>
+      <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-cyan); margin-bottom: 12px; text-align: center;">🏠 Gerenciar Conteúdo da Home</h3>
+      
+      <img id="home-edit-img-preview" src="" alt="Banner Home Preview" style="display:none;">
+
+      <div class="file-upload-wrapper" style="padding: 8px; margin-bottom: 10px;">
+        <span>🖼️ Alterar Banner Central da Home</span>
+        <input type="file" accept="image/*" onchange="homeDirectUploadImg(this)">
+      </div>
+      <input type="hidden" id="home-edit-img">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Título Principal:</label>
+      <input type="text" id="home-edit-title" class="interaction-input">
+
+      <label style="font-size: 0.8rem; color: #aaa;">Primeiro Parágrafo:</label>
+      <textarea id="home-edit-desc1" class="interaction-textarea" rows="2"></textarea>
+
+      <label style="font-size: 0.8rem; color: #aaa;">Segundo Parágrafo:</label>
+      <textarea id="home-edit-desc2" class="interaction-textarea" rows="2"></textarea>
+
+      <h5 style="color:var(--c-yellow); font-family:var(--font-title); font-size:1.1rem; margin: 10px 0 5px;">🔥 Destaques da Casa:</h5>
+      <input type="text" id="home-edit-promo-title" class="interaction-input" placeholder="Título dos Destaques">
+      <input type="text" id="home-edit-promo1" class="interaction-input" placeholder="Item 1">
+      <input type="text" id="home-edit-promo2" class="interaction-input" placeholder="Item 2">
+      <input type="text" id="home-edit-promo3" class="interaction-input" placeholder="Item 3">
+
+      <div style="margin-top: 10px; margin-bottom: 10px;">
+        <button class="btn-fire" onclick="saveHomeDirectEdit()" style="background: var(--c-cyan); color:#000; padding: 12px; font-size: 1.15rem;">💾 Salvar Alterações da Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE RANKINGS -->
   <div id="playerModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
       <span class="close-btn" onclick="closeModal('playerModal')">×</span>
@@ -286,10 +388,35 @@
       <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
       <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
       <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
+
+      <div id="player-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-yellow); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Jogador (Ranking)</h5>
+        <input type="hidden" id="player-edit-type">
+        <input type="hidden" id="player-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Nome:</label>
+        <input type="text" id="player-edit-name" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo / Instagram (@):</label>
+        <input type="text" id="player-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Score / Litros:</label>
+        <input type="text" id="player-edit-score" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Prêmio:</label>
+        <input type="text" id="player-edit-prize" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Frase de Provocação:</label>
+        <input type="text" id="player-edit-quote" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Avatar</span>
+          <input type="file" accept="image/*" onchange="playerUploadImg(this)">
+        </div>
+        <input type="hidden" id="player-edit-img">
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="savePlayerEdit()" style="background: var(--c-yellow); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar Jogador</button>
+          <button id="modal-player-del-btn" class="action-btn del-btn" onclick="deleteModalPlayerDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- MODAL DE DETALHES DE AGENDA -->
+  <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE AGENDA -->
   <div id="eventModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
       <span class="close-btn" onclick="closeModal('eventModal')">×</span>
@@ -298,12 +425,35 @@
       <h3 id="e-title" style="font-family: var(--font-title); font-size: 2.2rem; color: #fff; margin-bottom: 5px; text-transform: uppercase;">TITULO</h3>
       <p id="e-sub" style="color: var(--c-yellow); font-weight: bold; font-size: 1rem; margin-bottom: 15px;">SUBTITULO</p>
       <p id="e-desc" style="color: #ccc; font-size: 1rem; line-height: 1.5; margin-bottom: 20px; text-align: left;">DESCRIÇÃO</p>
+
+      <div id="event-adm-edit-box" style="display:none; margin-top: 15px; border-top: 1px dashed rgba(255,255,255,0.2); padding-top: 12px; text-align: left;">
+        <h5 style="color: var(--c-cyan); font-family: var(--font-title); font-size: 1.1rem; margin-bottom: 8px;">⚙️ Gerenciar Evento (Agenda)</h5>
+        <input type="hidden" id="event-edit-type">
+        <input type="hidden" id="event-edit-id">
+        <label style="font-size: 0.75rem; color: #aaa;">Tag / Data:</label>
+        <input type="text" id="event-edit-tag" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Título / Banda:</label>
+        <input type="text" id="event-edit-title" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Subtítulo:</label>
+        <input type="text" id="event-edit-sub" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        <label style="font-size: 0.75rem; color: #aaa;">Descrição:</label>
+        <textarea id="event-edit-desc" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
+        <div class="file-upload-wrapper" style="padding: 6px; font-size: 0.75rem; margin-bottom: 8px;">
+          <span>📷 Mudar Flyer / Imagem</span>
+          <input type="file" accept="image/*" onchange="eventUploadImg(this)">
+        </div>
+        <input type="hidden" id="event-edit-img">
+        <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
+          <button class="action-btn" onclick="saveEventEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar</button>
+          <button id="modal-event-del-btn" class="action-btn del-btn" onclick="deleteModalEventDirect()" style="flex: 1; padding: 10px; font-family: var(--font-title); font-size: 0.95rem;">🗑️ Excluir</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="app-wrapper">
     
-    <div class="radio-player-bar glass-panel">
+    <div class="radio-player-bar glass-panel" style="border-radius: 0; border-top: none; border-left: none; border-right: none;">
       <div class="radio-info-wrapper">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" id="radio-cover" class="radio-cover" alt="Logo">
         <div class="radio-text">
@@ -325,7 +475,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- ABAS PRINCIPAIS COM OS EMOTICONS ORIGINAIS -->
+    <!-- ABAS COM TODOS OS EMOTICONS E NOMES ORIGINAIS RESTAURADOS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
@@ -344,9 +494,14 @@
     <main id="dynamic-tab-panes">
       
       <section id="inicio" class="tab-pane active">
+        <div class="tab-admin-action-bar" id="bar-action-home">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Página Inicial</span>
+          <button class="action-btn" onclick="openHomeDirectEdit()" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">✏️ Editar Card da Home</button>
+        </div>
+
         <h2 class="section-title">O Templo da Bargunça</h2>
         <div class="grid">
-          <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 15px;">
+          <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 15px; cursor: pointer;" onclick="checkHomeCardClick()">
             <div id="home-status-badge" class="status-badge-container">
               <div class="status-row">
                 <span id="status-dot-el" class="status-dot open"></span>
@@ -355,7 +510,7 @@
               <span style="font-family: var(--font-body); font-size: 0.8rem; color: var(--c-yellow); font-weight: 600; margin-left: 18px;">⏰ Bar aberto desde as 17:00 (Esquenta) | Som & Promoções das 21:00 às 03:00</span>
             </div>
 
-            <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1);">
+            <img id="home-img" src="" style="display:none; width:100%; border-radius:8px; margin-bottom:15px; border:1px solid rgba(255,255,255,0.1); object-fit:fill;">
             <h3 id="h-title" style="font-family:var(--font-title); font-size:1.6rem; color:var(--c-cyan); margin-bottom:10px;">SOM PESADO & BEBIDA TRINCANDO</h3>
             <p id="h-desc1" style="color:#ddd; line-height:1.5; margin-bottom:10px;">Bem-vindo ao <strong>Bargunçados Rock Bar</strong>. Aqui a regra é clara: som no talo, copo cheio e zero frescura.</p>
             <p id="h-desc2" style="color:#ddd; line-height:1.5;">O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.</p>
@@ -373,12 +528,19 @@
       </section>
 
       <section id="bebidas" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-bebidas">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
+          <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Bebida</button>
+        </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
-        <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
       <section id="porcoes" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-porcoes">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
+          <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
+        </div>
         <h2 class="section-title">Larica Pesada</h2>
         <div id="dynamic-menu-porcoes"></div>
       </section>
@@ -393,21 +555,27 @@
 
         <div id="rankings-view-arcade">
           <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" style="width: 100%; height: 140px; object-fit: cover; border-radius: 8px; border: 1px solid var(--glass-border-top); margin-bottom: 15px;" alt="Fliperama">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver a provocação!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver provocação, editar ou excluir!)</p>
           <div class="leaderboard-list" id="dynamic-arcade-list"></div>
         </div>
 
         <div id="rankings-view-cachaceiros" style="display: none;">
-          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes TOP 3 para ver o recado!)</p>
+          <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem; text-align: center;">(Clique nos líderes para ver o recado, editar ou excluir!)</p>
           <div class="leaderboard-list" id="dynamic-cachaceiros-list"></div>
         </div>
       </section>
 
       <section id="shows" class="tab-pane">
+        <div class="tab-admin-action-bar" id="bar-action-agenda">
+          <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Agenda</span>
+          <button class="action-btn" onclick="openInlineAddEvent()" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Evento Aqui</button>
+        </div>
         <h2 class="section-title">Agenda do Mês</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO FLYER PARA VER DETALHES 👇</p>
         
-        <img src="" id="featured-flyer-img" class="featured-flyer-img" onclick="openAgendaModal('featured')" alt="Evento Destaque">
+        <div class="featured-flyer-container" onclick="openAgendaModal('featured')">
+          <img src="" id="featured-flyer-img" class="featured-flyer-img" alt="Evento Destaque">
+        </div>
         
         <h3 style="font-family: var(--font-title); font-size: 1.5rem; color: #fff; margin-top: 2rem; border-bottom: 1px dashed #333; padding-bottom: 5px;">PRÓXIMOS EVENTOS</h3>
         <div id="dynamic-agenda-list" class="agenda-mini-grid"></div>
@@ -492,10 +660,35 @@
             <button onclick="processLogout()" class="action-btn del-btn" style="padding: 4px 10px; font-size: 0.8rem;">Sair</button>
           </div>
 
-          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados (GitHub)</button>
+          <div class="traffic-counter-box">
+            <div class="counter-stat-card">
+              <div class="counter-stat-val" id="adm-stat-views">0</div>
+              <div class="counter-stat-lbl">Visitas Totais (Cliques)</div>
+            </div>
+            <div class="counter-stat-card" style="border-color: var(--c-pink);">
+              <div class="counter-stat-val" id="adm-stat-devices" style="color: var(--c-pink);">0</div>
+              <div class="counter-stat-lbl">Dispositivos Únicos Conectados</div>
+            </div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados & Sincronização em Tempo Real</button>
           <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
-            <div id="gh-status" class="gh-status offline">Status: Salvando Apenas Localmente no Navegador</div>
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para sincronizar com o GitHub, insira seu Personal Access Token com permissão 'repo'.</p>
+            <div class="db-status-box">
+              <div class="db-status-indicator" style="color: #00e676;">
+                <span class="status-dot open" style="width:8px; height:8px;"></span>
+                <span>Banco de Dados Global (JSONBin.io): CONECTADO & SINCRONIZANDO ✅</span>
+              </div>
+              <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
+                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
+              </p>
+              
+              <div id="gh-status-indicator" class="db-status-indicator" style="color: var(--c-cyan); margin-top: 10px;">
+                <span id="gh-status-dot" class="status-dot" style="width:8px; height:8px; background:#aaa;"></span>
+                <span id="gh-status-text">GitHub Pages: Verificando Configuração...</span>
+              </div>
+            </div>
+
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para sincronizar ou salvar versões no repositório GitHub, insira o seu Personal Access Token com permissão 'repo':</p>
             <div class="admin-card">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
@@ -525,26 +718,6 @@
 
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-top:20px; margin-bottom:10px;">Recados Pendentes no Mural</h5>
             <div id="admin-pending-msgs"></div>
-          </div>
-
-          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-inicio')">🏠 Gerenciar Início</button>
-          <div id="adm-inicio" class="admin-accordion-content" style="border-color: var(--c-cyan);">
-            <div class="admin-card">
-              <div class="file-upload-wrapper">
-                <span>🖼️ UPLOAD BANNER CENTRAL (Opcional)</span>
-                <input type="file" accept="image/*" onchange="updateHomeImg(this)">
-              </div>
-              <input type="text" class="admin-input" id="adm-h-title" placeholder="Título Principal" style="margin-top:10px;">
-              <textarea class="admin-textarea" id="adm-h-desc1" rows="2" placeholder="Parágrafo 1" style="margin-top:10px;"></textarea>
-              <textarea class="admin-textarea" id="adm-h-desc2" rows="2" placeholder="Parágrafo 2" style="margin-top:10px;"></textarea>
-              
-              <h5 style="color:#fff; margin-top:15px;">Destaques (Lista)</h5>
-              <input type="text" class="admin-input" id="adm-h-promo-title" placeholder="Título Destaques" style="margin-top:10px;">
-              <input type="text" class="admin-input" id="adm-h-promo1" placeholder="Item 1" style="margin-top:10px;">
-              <input type="text" class="admin-input" id="adm-h-promo2" placeholder="Item 2" style="margin-top:10px;">
-              <input type="text" class="admin-input" id="adm-h-promo3" placeholder="Item 3" style="margin-top:10px;">
-              <button class="action-btn" onclick="saveHomeData()" style="margin-top:15px; background: var(--c-cyan);">💾 Salvar Página Inicial</button>
-            </div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-yellow);" onclick="toggleAdminSection('adm-agenda')">📅 Gerenciar Agenda</button>
@@ -590,10 +763,10 @@
             <div class="admin-card" style="border-color: var(--c-pink);">
               <div class="admin-card-row">
                 <select class="admin-input" id="new-item-type">
-                  <option value="drink">Destilado</option>
-                  <option value="beer">Cerveja</option>
-                  <option value="noalcohol">Sem Álcool</option>
-                  <option value="portion">Porção</option>
+                  <option value="drink">🔥 Destilado</option>
+                  <option value="beer">🍺 Cerveja</option>
+                  <option value="noalcohol">🥤 Sem Álcool</option>
+                  <option value="portion">🍟 Porção</option>
                 </select>
                 <input type="text" class="admin-input" id="new-item-name" placeholder="Nome">
                 <input type="text" class="admin-input" id="new-item-price" placeholder="Preço (Ex: 15,00)">
@@ -626,6 +799,16 @@
           <button class="admin-accordion-btn" style="border-color: #ff9800;" onclick="toggleAdminSection('adm-cachaceiros')">🍻 Gerenciar Cachaceiros Top 10</button>
           <div id="adm-cachaceiros" class="admin-accordion-content" style="border-color: #ff9800;">
             <div id="admin-cachaceiros-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-logs')">📋 Relatório de Alterações (Logs ADM)</button>
+          <div id="adm-logs" class="admin-accordion-content" style="border-color: var(--c-yellow);">
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">Histórico Detalhado de Ações dos ADMs</h5>
+              <p style="color:#aaa; font-size:0.85rem; margin-bottom:10px;">Registo exato de quem alterou, o que foi editado/adicionado/excluído, data e horário.</p>
+              <div id="admin-logs-list" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+              <button id="clear-logs-btn" class="action-btn del-btn" onclick="clearLogs()" style="margin-top: 10px; width: fit-content; display:none;">🗑️ Limpar Histórico de Logs (Master)</button>
+            </div>
           </div>
 
         </div>
@@ -678,7 +861,7 @@
       { id: 12, type: 'portion', name: 'Tábua Churras', short: 'Iscas de carne e fritas.', full: 'A tábua cooperativa de respeito com chimichurri.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
     ];
     const defaultAgenda = [
-      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&q=80' },
+      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
       { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
@@ -710,6 +893,37 @@
 
     let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
 
+    function recordTrafficAnalytics() {
+      let deviceId = localStorage.getItem('brg_device_id');
+      if(!deviceId) {
+        deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
+        localStorage.setItem('brg_device_id', deviceId);
+      }
+
+      if(!appData.traffic) {
+        appData.traffic = { totalViews: 0, devices: [] };
+      }
+
+      appData.traffic.totalViews = (appData.traffic.totalViews || 0) + 1;
+
+      if(!Array.isArray(appData.traffic.devices)) {
+        appData.traffic.devices = [];
+      }
+
+      if(!appData.traffic.devices.includes(deviceId)) {
+        appData.traffic.devices.push(deviceId);
+      }
+
+      updateTrafficUI();
+    }
+
+    function updateTrafficUI() {
+      const viewsEl = document.getElementById('adm-stat-views');
+      const devEl = document.getElementById('adm-stat-devices');
+      if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
+      if(devEl && appData.traffic) devEl.innerText = (appData.traffic.devices ? appData.traffic.devices.length : 0);
+    }
+
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         const uEl = document.getElementById('gh-user');
@@ -718,11 +932,10 @@
         if(uEl) uEl.value = githubConfig.user;
         if(rEl) rEl.value = githubConfig.repo;
         if(tEl) tEl.value = githubConfig.token;
-        document.getElementById('gh-status').className = 'gh-status online';
-        document.getElementById('gh-status').innerText = 'Status: CONECTADO AO GITHUB ✅';
       }
       
       await fetchBinData();
+      recordTrafficAnalytics();
       renderApp();
       
       if(localStorage.getItem('brg_adm_logged') === 'true') {
@@ -735,7 +948,7 @@
     }
 
     async function fetchBinData() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
       try {
@@ -747,6 +960,7 @@
           if(json.record) {
             appData = { ...appData, ...json.record };
             renderApp();
+            updateTrafficUI();
           }
         }
       } catch(e) {}
@@ -765,6 +979,7 @@
         });
       }
       renderApp();
+      updateTrafficUI();
       try {
         await fetch(BIN_URL, {
           method: 'PUT',
@@ -790,7 +1005,7 @@
       githubConfig.repo = document.getElementById('gh-repo').value.trim();
       githubConfig.token = document.getElementById('gh-token').value.trim();
       localStorage.setItem('brg_gh_config', JSON.stringify(githubConfig));
-      alert("Credenciais Vinculadas com sucesso!");
+      alert("Credenciais Vinculadas com sucesso! Repositório conectado.");
       initApp();
     }
 
@@ -854,39 +1069,6 @@
       alert("✅ Recado enviado para o mural do ADM!");
     }
 
-    function getHonorTitle(index, type) {
-      if(type === 'arcade') {
-        if(index === 0) return '👑 Lenda Viva do Arcade';
-        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
-        if(index === 2) return '🕹️ Mestre dos Controles';
-        return '🎮 Veterano do Fliperama';
-      } else {
-        if(index === 0) return '🏆 Campeão Supremo do Fígado';
-        if(index === 1) return '🍻 Senhor dos Destilados';
-        if(index === 2) return '🥃 Gladiador do Copo Cheio';
-        return '🍷 Guerreiro da Cachaça';
-      }
-    }
-
-    function switchRankingView(view) {
-      const btnArcade = document.getElementById('btn-switch-arcade');
-      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
-      const viewArcade = document.getElementById('rankings-view-arcade');
-      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
-
-      if(view === 'arcade') {
-        btnArcade.classList.add('active');
-        btnCachaceiros.classList.remove('active');
-        viewArcade.style.display = 'block';
-        viewCachaceiros.style.display = 'none';
-      } else {
-        btnCachaceiros.classList.add('active');
-        btnArcade.classList.remove('active');
-        viewCachaceiros.style.display = 'block';
-        viewArcade.style.display = 'none';
-      }
-    }
-
     function renderApp() {
       const cHome = appData.home;
       const cMenu = appData.menu;
@@ -917,13 +1099,23 @@
         statusText.style.color = '#ff1744';
       }
 
-      if(cHome.img) { document.getElementById('home-img').style.display = 'block'; document.getElementById('home-img').src = cHome.img; } 
-      else { document.getElementById('home-img').style.display = 'none'; }
+      if(cHome.img) { 
+        document.getElementById('home-img').style.display = 'block'; 
+        document.getElementById('home-img').src = cHome.img; 
+      } else { 
+        document.getElementById('home-img').style.display = 'none'; 
+      }
 
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
       drinksContainer.innerHTML = ''; portionsContainer.innerHTML = '';
-      const catHTML = { drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL</div><div class="menu-grid">', portion: '<div class="menu-grid">' };
+      
+      const catHTML = { 
+        drink: '<div class="menu-category">🔥 DESTILADOS & CLÁSSICOS</div><div class="menu-grid">', 
+        beer: '</div><div class="menu-category">🍺 CERVEJAS</div><div class="menu-grid">', 
+        noalcohol: '</div><div class="menu-category">🥤 SEM ÁLCOOL / SUCOS / REFRIS</div><div class="menu-grid">', 
+        portion: '<div class="menu-grid">' 
+      };
       
       let drinksStr = catHTML.drink;
       cMenu.filter(i => i.type === 'drink').forEach(i => drinksStr += createCard(i));
@@ -944,7 +1136,7 @@
       cAgenda.forEach(ev => {
         const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
         agendaList.innerHTML += `
-          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}',${ev.id})">
             <div class="mf-content">
               <div class="mf-date">${ev.date}</div>
               <div class="mf-title">${ev.title}</div>
@@ -975,6 +1167,7 @@
             <p class="dir-desc">${t.desc}</p>
           </div>`;
       });
+
       cTeam.filter(t => t.type === 'pro').forEach(t => {
         proContainer.innerHTML += `
           <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
@@ -989,7 +1182,7 @@
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
+        const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub \vert{}\vert{} '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize \vert{}\vert{} '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig \vert{}\vert{} '@jogador')}', '${i.img}')"`;
         const honorTitle = getHonorTitle(index, 'arcade');
         const displayIg = i.ig || '@jogador';
         
@@ -1000,8 +1193,7 @@
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-            <span class="lb-title-badge">${honorTitle}</span>
-            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+            <span class="lb-title-badge">${honorTitle}</span>${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
           <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
         </div>`;
@@ -1010,7 +1202,7 @@
       document.getElementById('dynamic-cachaceiros-list').innerHTML = cCach.map((i, index) => {
         const isTop3 = index < 3;
         const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
+        const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub \vert{}\vert{} '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize \vert{}\vert{} '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub \vert{}\vert{} '@cachaceiro')}', '${i.img}')"`;
         const honorTitle = getHonorTitle(index, 'cachaceiro');
         const displayIg = i.sub || i.ig || '@cachaceiro';
         
@@ -1021,8 +1213,7 @@
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-            <span class="lb-title-badge">${honorTitle}</span>
-            ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
+            <span class="lb-title-badge">${honorTitle}</span>${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
           </div>
           <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
         </div>`;
@@ -1107,7 +1298,7 @@
         const btn = document.createElement('button');
         btn.className = 'tab-btn custom-tab-btn';
         btn.setAttribute('onclick', `switchTab('${tab.id}')`);
-        btn.innerText = tab.name;
+        btn.innerText = `📑 ${tab.name}`;
         const comoChegarBtn = Array.from(navContainer.children).find(b => b.getAttribute('onclick')?.includes('como-chegar'));
         navContainer.insertBefore(btn, comoChegarBtn || navContainer.lastElementChild);
 
@@ -1127,11 +1318,10 @@
 
     function createCard(item) {
       const sName = escapeHTML(item.name);
-      const sFull = escapeHTML(item.full);
       const sShort = escapeHTML(item.short);
       const sPrice = escapeHTML(item.price);
       return `
-        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id}, '${sName}', '${sFull}', '${sPrice}', '${item.img}')">
+        <div class="product-card glass-panel" onclick="openMenuModalObj(${item.id})">
           <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
           <h4 class="m-title">${item.name}</h4>
           <p class="m-short">${sShort}</p>
@@ -1139,23 +1329,27 @@
         </div>`;
     }
 
-    function openMenuModalObj(id, name, desc, price, img) {
-      document.getElementById('modalTitle').innerText = name.replace('PROMO', '').trim();
-      document.getElementById('modalDesc').innerText = desc;
-      document.getElementById('modalPrice').innerText = 'R$ ' + price;
-      document.getElementById('modalImg').src = img;
+    function openMenuModalObj(id) {
+      const item = appData.menu.find(i => i.id === id);
+      if(!item) return;
+
+      document.getElementById('modalTitle').innerText = item.name.replace('PROMO', '').trim();
+      document.getElementById('modalDesc').innerText = item.full || item.short;
+      document.getElementById('modalPrice').innerText = 'R$ ' + item.price;
+      document.getElementById('modalImg').src = item.img;
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
       const editBox = document.getElementById('modal-adm-edit-box');
 
       if(isLoggedIn) {
         editBox.style.display = 'block';
-        document.getElementById('modal-edit-id').value = id;
-        document.getElementById('modal-edit-name').value = name;
-        document.getElementById('modal-edit-price').value = price;
-        document.getElementById('modal-edit-short').value = desc;
-        document.getElementById('modal-edit-full').value = desc;
-        document.getElementById('modal-edit-img').value = img;
+        document.getElementById('modal-edit-id').value = item.id;
+        document.getElementById('modal-edit-category').value = item.type;
+        document.getElementById('modal-edit-name').value = item.name;
+        document.getElementById('modal-edit-price').value = item.price;
+        document.getElementById('modal-edit-short').value = item.short;
+        document.getElementById('modal-edit-full').value = item.full;
+        document.getElementById('modal-edit-img').value = item.img;
       } else {
         editBox.style.display = 'none';
       }
@@ -1163,15 +1357,42 @@
       document.getElementById('productModal').style.display = 'flex';
     }
 
+    async function uploadToImgBB(file, callback) {
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async function() {
+        const base64Data = reader.result.split(',')[1];
+        try {
+          const bodyData = new URLSearchParams();
+          bodyData.append('image', base64Data);
+
+          const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+            method: 'POST',
+            body: bodyData
+          });
+          const json = await res.json();
+          if (json.success && json.data && json.data.url) {
+            callback(json.data.url);
+          } else {
+            callback(reader.result);
+          }
+        } catch (e) {
+          callback(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
     async function modalUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
         document.getElementById('modal-edit-img').value = res;
-        alert("Nova foto carregada com sucesso!");
+        document.getElementById('modalImg').src = res;
+        alert("Foto carregada com sucesso!");
       });
     }
 
     async function saveModalEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const id = Number(document.getElementById('modal-edit-id').value);
       const item = appData.menu.find(i => i.id === id);
       if(!item) return;
@@ -1180,14 +1401,128 @@
       const oldPrice = item.price;
 
       item.name = document.getElementById('modal-edit-name').value;
+      item.type = document.getElementById('modal-edit-category').value;
       item.price = document.getElementById('modal-edit-price').value;
       item.short = document.getElementById('modal-edit-short').value;
       item.full = document.getElementById('modal-edit-full').value;
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
       closeModal('productModal');
-      await saveBinData(`Editou diretamente no modal o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
+      await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Preço alterado de R$ ${oldPrice} para R$ ${item.price})`);
       alert("✅ Item atualizado com sucesso!");
+    }
+
+    async function deleteModalItemDirect() {
+      const id = Number(document.getElementById('modal-edit-id').value);
+      const item = appData.menu.find(i => i.id === id);
+      if(!item) return;
+
+      if(confirm(`Tem certeza que deseja EXCLUIR "${item.name}" do cardápio?`)) {
+        appData.menu = appData.menu.filter(i => i.id !== id);
+        closeModal('productModal');
+        await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}"`);
+        alert("✅ Item excluído com sucesso!");
+      }
+    }
+
+    function openCreateItemModal(defaultCategory = 'drink') {
+      document.getElementById('create-item-category').value = defaultCategory;
+      document.getElementById('create-item-name').value = '';
+      document.getElementById('create-item-price').value = '';
+      document.getElementById('create-item-short').value = '';
+      document.getElementById('create-item-full').value = '';
+      document.getElementById('create-item-img').value = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+      document.getElementById('create-item-img-preview').src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+
+      document.getElementById('itemCreateModal').style.display = 'flex';
+    }
+
+    async function createUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('create-item-img').value = res;
+        document.getElementById('create-item-img-preview').src = res;
+        alert("Foto ilustrativa carregada com sucesso!");
+      });
+    }
+
+    async function confirmCreateItem() {
+      const cat = document.getElementById('create-item-category').value;
+      const name = document.getElementById('create-item-name').value.trim();
+      const price = document.getElementById('create-item-price').value.trim();
+      const shortDesc = document.getElementById('create-item-short').value.trim();
+      const fullDesc = document.getElementById('create-item-full').value.trim();
+      const img = document.getElementById('create-item-img').value;
+
+      if(!name || !price) {
+        return alert("Por favor, preencha o Nome e o Preço do produto!");
+      }
+
+      appData.menu.push({
+        id: Date.now(),
+        type: cat,
+        name: name,
+        short: shortDesc || name,
+        full: fullDesc || shortDesc || name,
+        price: price,
+        img: img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
+      });
+
+      closeModal('itemCreateModal');
+      await saveBinData(`Adicionou novo item: "${name}" (${cat}) por R$ ${price}`);
+      alert("✅ Item cadastrado com sucesso no cardápio!");
+    }
+
+    function checkHomeCardClick() {
+      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+      if(isAdmLogged) {
+        openHomeDirectEdit();
+      }
+    }
+
+    function openHomeDirectEdit() {
+      document.getElementById('home-edit-title').value = appData.home.title;
+      document.getElementById('home-edit-desc1').value = appData.home.desc1;
+      document.getElementById('home-edit-desc2').value = appData.home.desc2;
+      document.getElementById('home-edit-promo-title').value = appData.home.promoTitle;
+      document.getElementById('home-edit-promo1').value = appData.home.promo1;
+      document.getElementById('home-edit-promo2').value = appData.home.promo2;
+      document.getElementById('home-edit-promo3').value = appData.home.promo3;
+      document.getElementById('home-edit-img').value = appData.home.img || '';
+
+      const prev = document.getElementById('home-edit-img-preview');
+      if(appData.home.img) {
+        prev.style.display = 'block';
+        prev.src = appData.home.img;
+      } else {
+        prev.style.display = 'none';
+      }
+
+      document.getElementById('homeDirectEditModal').style.display = 'flex';
+    }
+
+    async function homeDirectUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('home-edit-img').value = res;
+        const prev = document.getElementById('home-edit-img-preview');
+        prev.style.display = 'block';
+        prev.src = res;
+        alert("Banner carregado com sucesso!");
+      });
+    }
+
+    async function saveHomeDirectEdit() {
+      appData.home.title = document.getElementById('home-edit-title').value;
+      appData.home.desc1 = document.getElementById('home-edit-desc1').value;
+      appData.home.desc2 = document.getElementById('home-edit-desc2').value;
+      appData.home.promoTitle = document.getElementById('home-edit-promo-title').value;
+      appData.home.promo1 = document.getElementById('home-edit-promo1').value;
+      appData.home.promo2 = document.getElementById('home-edit-promo2').value;
+      appData.home.promo3 = document.getElementById('home-edit-promo3').value;
+      appData.home.img = document.getElementById('home-edit-img').value;
+
+      closeModal('homeDirectEditModal');
+      await saveBinData("Editou diretamente na aba Home o conteúdo do bar");
+      alert("✅ Conteúdo da Home atualizado com sucesso!");
     }
 
     function openPlayerModal(type, id, name, sub, score, prize, quote, ig, imgUrl) {
@@ -1196,7 +1531,75 @@
       document.getElementById('playerIg').href = "https://instagram.com/" + ig.replace('@','');
       document.getElementById('playerQuote').innerText = `"${quote}"`;
       document.getElementById('playerModalImg').src = imgUrl;
+
+      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
+      const editBox = document.getElementById('player-adm-edit-box');
+
+      if(isLoggedIn) {
+        editBox.style.display = 'block';
+        document.getElementById('player-edit-type').value = type;
+        document.getElementById('player-edit-id').value = id;
+        document.getElementById('player-edit-name').value = name;
+        document.getElementById('player-edit-sub').value = sub;
+        document.getElementById('player-edit-score').value = score;
+        document.getElementById('player-edit-prize').value = prize;
+        document.getElementById('player-edit-quote').value = quote;
+        document.getElementById('player-edit-img').value = imgUrl;
+      } else {
+        editBox.style.display = 'none';
+      }
+
       document.getElementById('playerModal').style.display = 'flex';
+    }
+
+    async function playerUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('player-edit-img').value = res;
+        document.getElementById('playerModalImg').src = res;
+        alert("Avatar atualizado com sucesso!");
+      });
+    }
+
+    async function savePlayerEdit() {
+      const type = document.getElementById('player-edit-type').value;
+      const id = Number(document.getElementById('player-edit-id').value);
+      
+      const list = type === 'arcade' ? appData.arcade : appData.cachaceiros;
+      const player = list.find(i => i.id === id);
+      if(!player) return;
+
+      const oldName = player.name;
+      player.name = document.getElementById('player-edit-name').value;
+      player.sub = document.getElementById('player-edit-sub').value;
+      player.score = document.getElementById('player-edit-score').value;
+      player.prize = document.getElementById('player-edit-prize').value;
+      player.quote = document.getElementById('player-edit-quote').value;
+      player.img = document.getElementById('player-edit-img').value || player.img;
+
+      closeModal('playerModal');
+      await saveBinData(`Editou o ranking ${type} na posição #${id} ("${oldName}" alterado para "${player.name}")`);
+      alert("✅ Jogador atualizado com sucesso!");
+    }
+
+    async function deleteModalPlayerDirect() {
+      const type = document.getElementById('player-edit-type').value;
+      const id = Number(document.getElementById('player-edit-id').value);
+      const list = type === 'arcade' ? appData.arcade : appData.cachaceiros;
+      const player = list.find(i => i.id === id);
+      if(!player) return;
+
+      if(confirm(`Tem certeza que deseja limpar/excluir o registro de "${player.name}" da posição #${id}?`)) {
+        player.name = `Jogador ${id}`;
+        player.sub = `@rocker`;
+        player.score = `0`;
+        player.prize = ``;
+        player.quote = ``;
+        player.img = `https://ui-avatars.com/api/?name=P${id}&background=222&color=fff`;
+
+        closeModal('playerModal');
+        await saveBinData(`Resetou o registro na posição #${id} do ranking ${type}`);
+        alert("✅ Registro removido com sucesso!");
+      }
     }
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
@@ -1220,241 +1623,155 @@
       openAgendaModal('mini', title, date, desc, img, id);
     }
 
-    function toggleAdminSection(id) {
-      const content = document.getElementById(id);
-      const btn = content.previousElementSibling;
-      if (content.style.display === "block") {
-        content.style.display = "none";
-        btn.classList.remove("active");
-      } else {
-        content.style.display = "block";
-        btn.classList.add("active");
-      }
-    }
-
-    let tempNewTabImg = '';
-    const newTabImgFile = document.getElementById('new-tab-img-file');
-    if(newTabImgFile) {
-      newTabImgFile.addEventListener('change', e => {
-        uploadToImgBB(e.target.files[0], res => { tempNewTabImg = res; alert('Foto da aba enviada com sucesso!'); });
+    async function eventUploadImg(input) {
+      uploadToImgBB(input.files[0], res => {
+        document.getElementById('event-edit-img').value = res;
+        document.getElementById('eventModalImg').src = res;
+        alert("Flyer atualizado com sucesso!");
       });
     }
 
-    async function saveCustomTab() {
-      const originalId = document.getElementById('edit-tab-original-id').value;
-      const id = document.getElementById('new-tab-id').value.trim().toLowerCase().replace(/\s+/g, '-');
-      const name = document.getElementById('new-tab-name').value.trim();
-      const title = document.getElementById('new-tab-title').value.trim();
-      const desc = document.getElementById('new-tab-desc').value.trim();
+    async function saveEventEdit() {
+      const type = document.getElementById('event-edit-type').value;
+      const newTag = document.getElementById('event-edit-tag').value;
+      const newTitle = document.getElementById('event-edit-title').value;
+      const newSub = document.getElementById('event-edit-sub').value;
+      const newDesc = document.getElementById('event-edit-desc').value;
+      const newImg = document.getElementById('event-edit-img').value;
 
-      if(!id || !name) return alert("Preencha ao menos o ID e o Nome da aba.");
-      if(!appData.customTabs) appData.customTabs = [];
+      if(type === 'featured') {
+        appData.flyer.tag = newTag;
+        appData.flyer.title = newTitle;
+        appData.flyer.sub = newSub;
+        appData.flyer.desc = newDesc;
+        if(newImg) appData.flyer.img = newImg;
 
-      if(originalId) {
-        const tab = appData.customTabs.find(t => t.id === originalId);
-        if(tab) {
-          tab.id = id; tab.name = name; tab.title = title || name; tab.desc = desc;
-          if(tempNewTabImg) tab.img = tempNewTabImg;
-        }
-        await saveBinData("Atualizou a aba personalizada: " + name);
-        alert("Aba atualizada com sucesso!");
+        closeModal('eventModal');
+        await saveBinData("Editou o Flyer de Destaque Principal");
+        alert("✅ Flyer de Destaque atualizado com sucesso!");
       } else {
-        appData.customTabs.push({ id, name, title: title || name, desc, img: tempNewTabImg });
-        await saveBinData("Criou nova aba personalizada: " + name);
-        alert("Nova aba criada com sucesso!");
-      }
-      resetCustomTabForm();
-    }
+        const id = Number(document.getElementById('event-edit-id').value);
+        const item = appData.agenda.find(i => i.id === id);
+        if(!item) return;
 
-    function editCustomTab(id) {
-      const tab = appData.customTabs.find(t => t.id === id);
-      if(!tab) return;
-      document.getElementById('edit-tab-original-id').value = tab.id;
-      document.getElementById('new-tab-id').value = tab.id;
-      document.getElementById('new-tab-name').value = tab.name;
-      document.getElementById('new-tab-title').value = tab.title;
-      document.getElementById('new-tab-desc').value = tab.desc;
-      tempNewTabImg = tab.img || '';
+        item.date = newTag;
+        item.title = newTitle;
+        item.desc = newDesc;
+        if(newImg) item.img = newImg;
 
-      document.getElementById('custom-tab-form-title').innerText = "Editar Seção / Aba do Site";
-      document.getElementById('custom-tab-submit-btn').innerText = "💾 Salvar Alterações da Aba";
-      document.getElementById('custom-tab-cancel-btn').style.display = "inline-block";
-      
-      document.getElementById('adm-new-tab').style.display = "block";
-      document.getElementById('adm-new-tab').previousElementSibling.classList.add("active");
-    }
-
-    function resetCustomTabForm() {
-      document.getElementById('edit-tab-original-id').value = '';
-      document.getElementById('new-tab-id').value = '';
-      document.getElementById('new-tab-name').value = '';
-      document.getElementById('new-tab-title').value = '';
-      document.getElementById('new-tab-desc').value = '';
-      tempNewTabImg = '';
-      document.getElementById('custom-tab-form-title').innerText = "Adicionar Nova Seção / Aba ao Site";
-      document.getElementById('custom-tab-submit-btn').innerText = "+ Criar Nova Aba no Site";
-      document.getElementById('custom-tab-cancel-btn').style.display = "none";
-    }
-
-    async function removeCustomTab(id) {
-      if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
-        appData.customTabs = appData.customTabs.filter(t => t.id !== id);
-        await saveBinData("Apagou a aba personalizada ID: " + id);
+        closeModal('eventModal');
+        await saveBinData("Editou o evento da agenda: " + item.title);
+        alert("✅ Evento atualizado com sucesso!");
       }
     }
 
-    function renderAdminLists() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
-        return;
+    async function deleteModalEventDirect() {
+      const id = Number(document.getElementById('event-edit-id').value);
+      const ev = appData.agenda.find(i => i.id === id);
+      if(!ev) return;
+
+      if(confirm(`Tem certeza que deseja EXCLUIR "${ev.title}" da agenda?`)) {
+        appData.agenda = appData.agenda.filter(i => i.id !== id);
+        closeModal('eventModal');
+        await saveBinData("Excluiu o evento da agenda: " + ev.title);
+        alert("✅ Evento excluído com sucesso!");
+      }
+    }
+
+    function openInlineAddEvent() {
+      const title = prompt("Título do evento / Nome da banda:");
+      if(!title || !title.trim()) return;
+      const date = prompt("Data (ex: 20/Out):") || "Em Breve";
+      const desc = prompt("Descrição do show:") || "";
+
+      appData.agenda.push({
+        id: Date.now(),
+        date: date,
+        title: title.trim(),
+        desc: desc,
+        img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
+      });
+
+      saveBinData("Adicionou novo evento à agenda: " + title.trim());
+      alert("✅ Evento adicionado com sucesso!");
+    }
+
+    function renderModerationLists() {
+      const pSongsDiv = document.getElementById('admin-pending-songs');
+      const pMsgsDiv = document.getElementById('admin-pending-msgs');
+      const counterSpan = document.getElementById('adm-notify-counter');
+
+      const pSongs = appData.pendingSongs || [];
+      const pMsgs = appData.pendingMessages || [];
+      const totalPending = pSongs.length + pMsgs.length;
+
+      if(totalPending > 0) {
+        counterSpan.innerHTML = `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>`;
+      } else {
+        counterSpan.innerHTML = '';
       }
 
-      document.getElementById('adm-h-title').value = appData.home.title;
-      document.getElementById('adm-h-desc1').value = appData.home.desc1;
-      document.getElementById('adm-h-desc2').value = appData.home.desc2;
-      document.getElementById('adm-h-promo-title').value = appData.home.promoTitle;
-      document.getElementById('adm-h-promo1').value = appData.home.promo1;
-      document.getElementById('adm-h-promo2').value = appData.home.promo2;
-      document.getElementById('adm-h-promo3').value = appData.home.promo3;
-
-      const customTabsList = document.getElementById('admin-custom-tabs-list');
-      if(customTabsList) {
-        const tabs = appData.customTabs || [];
-        if(tabs.length === 0) {
-          customTabsList.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhuma aba personalizada criada ainda.</p>';
-        } else {
-          customTabsList.innerHTML = tabs.map(t => `
-            <div class="admin-card" style="border-color: var(--c-yellow);">
-              <div class="admin-card-row">
-                <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
-                <div>
-                  <button class="action-btn" onclick="editCustomTab('${t.id}')" style="background:var(--c-cyan); color:#000; margin-right:5px;">✏️ Editar</button>
-                  <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar</button>
-                </div>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-
-      const menuList = document.getElementById('admin-menu-list');
-      if(menuList) {
-        menuList.innerHTML = appData.menu.map(i => `
+      if(pSongs.length === 0) {
+        pSongsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum pedido de som pendente.</p>';
+      } else {
+        pSongsDiv.innerHTML = pSongs.map(s => `
           <div class="admin-card">
+            <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
+            <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
             <div class="admin-card-row">
-                <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
-                <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
+              <button class="action-btn" onclick="approveSong(${s.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${s.id})">❌ Rejeitar</button>
             </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
-            </div>
-            <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-                <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
-                  <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
-                </div>
-                <button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>
-                <button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>
-            </div>
-          </div>`).join('');
+          </div>
+        `).join('');
       }
-      
-      const agendaList = document.getElementById('admin-agenda-list');
-      if(agendaList) {
-        agendaList.innerHTML = appData.agenda.map(i => `
+
+      if(pMsgs.length === 0) {
+        pMsgsDiv.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhum recado pendente no mural.</p>';
+      } else {
+        pMsgsDiv.innerHTML = pMsgs.map(m => `
           <div class="admin-card">
+            <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
+            <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
             <div class="admin-card-row">
-              <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
-              <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
+              <button class="action-btn" onclick="approveMsg(${m.id})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${m.id})">❌ Rejeitar</button>
             </div>
-            <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
-                  <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
-              </div>
-              <button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>
-              <button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>
-            </div>
-          </div>`).join('');
+          </div>
+        `).join('');
       }
+    }
 
-      const teamList = document.getElementById('admin-team-list');
-      if(teamList) {
-        teamList.innerHTML = appData.team.map(t => `
-          <div class="admin-card">
-            <strong style="color:var(--c-cyan);">${t.name} (${t.type.toUpperCase()})</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="tname-${t.id}" value="${escapeHTML(t.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="trole-${t.id}" value="${escapeHTML(t.role)}" placeholder="Cargo">
-            </div>
-            <input type="text" class="admin-input" id="tig-${t.id}" value="${escapeHTML(t.ig)}" placeholder="Instagram" style="margin-top:5px;">
-            <textarea class="admin-textarea" id="tdesc-${t.id}" rows="2" style="margin-top:5px;">${escapeHTML(t.desc)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${t.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-                <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
-                  <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
-                </div>
-                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
-            </div>
-          </div>`).join('');
+    async function approveSong(id) {
+      const item = appData.pendingSongs.find(s => s.id === id);
+      if(item) {
+        appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+        if(!appData.userSongs) appData.userSongs = [];
+        appData.userSongs.unshift(item);
+        await saveBinData("Aprovou pedido de som de: " + item.ig);
+        alert("Pedido aprovado e publicado no site!");
       }
+    }
 
-      const arcList = document.getElementById('admin-arcade-list');
-      if(arcList) {
-        arcList.innerHTML = appData.arcade.map(i => `
-          <div class="admin-card" style="border-color:var(--c-purple);">
-            <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="arc-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="arc-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Jogo">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="arc-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Score">
-              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="arc-ig-${i.id}" value="${escapeHTML(i.ig)}" placeholder="Instagram (@)">
-            </div>
-            <textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              ${i.id <= 3 ? `<img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                <span style="font-size:0.75rem;">📷 Avatar Top 3</span>
-                <input type="file" accept="image/*" onchange="updateArcadeImg(${i.id}, this)">
-              </div>` : ''}
-              <button class="action-btn" onclick="saveArcadeData(${i.id})">💾 Salvar Jogador</button>
-            </div>
-          </div>`).join('');
-      }
+    async function rejectSong(id) {
+      appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+      await saveBinData("Rejeitou pedido de som");
+    }
 
-      const cachList = document.getElementById('admin-cachaceiros-list');
-      if(cachList) {
-        cachList.innerHTML = appData.cachaceiros.map(i => `
-          <div class="admin-card" style="border-color:#ff9800;">
-            <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
-            <div class="admin-card-row">
-              <input type="text" class="admin-input" id="ca-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
-              <input type="text" class="admin-input" id="ca-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Litros">
-            </div>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <input type="text" class="admin-input" id="ca-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Instagram (@)">
-              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
-            </div>
-            <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
-            <div class="admin-card-row" style="margin-top:5px;">
-              <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-              <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
-                  <input type="file" accept="image/*" onchange="updateCachaceiroImg(${i.id}, this)">
-              </div>
-              <button class="action-btn" onclick="saveCachaceiroData(${i.id})">💾 Salvar Bebedor #${i.id}</button>
-            </div>
-          </div>`).join('');
+    async function approveMsg(id) {
+      const item = appData.pendingMessages.find(m => m.id === id);
+      if(item) {
+        appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+        if(!appData.userMessages) appData.userMessages = [];
+        appData.userMessages.unshift(item);
+        await saveBinData("Aprovou recado no mural de: " + item.ig);
+        alert("Recado aprovado e publicado no mural!");
       }
+    }
+
+    async function rejectMsg(id) {
+      appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+      await saveBinData("Rejeitou recado no mural");
     }
 
     function processSecureLogin() {
@@ -1527,165 +1844,58 @@
       renderApp();
     }
 
-    async function updateHomeImg(input) {
-      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial da página home"); alert('Banner Inicial Atualizado via ImgBB!'); });
-    }
-    async function updateFlyerMain(input) {
-      uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
-    }
-    async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do produto: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
-    }
-    async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o flyer do evento: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
-    }
-    async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
-    }
-    async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
-    }
-    async function updateArcadeImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(tab => { tab.classList.remove('active'); });
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const targetPane = document.getElementById(tabId);
+      if (targetPane) targetPane.classList.add('active');
+      const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => btn.getAttribute('onclick')?.includes(tabId));
+      if (clickedBtn) clickedBtn.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    async function saveHomeData() {
-      appData.home.title = document.getElementById('adm-h-title').value;
-      appData.home.desc1 = document.getElementById('adm-h-desc1').value;
-      appData.home.desc2 = document.getElementById('adm-h-desc2').value;
-      appData.home.promoTitle = document.getElementById('adm-h-promo-title').value;
-      appData.home.promo1 = document.getElementById('adm-h-promo1').value;
-      appData.home.promo2 = document.getElementById('adm-h-promo2').value;
-      appData.home.promo3 = document.getElementById('adm-h-promo3').value;
-      await saveBinData("Modificou os textos e descrições da Página Inicial");
-      alert('Dados do Início Salvos!');
+    function triggerEasterEgg() {
+      alert("🔥 Easter Egg Encontrado! Você ativou o modo Grand Master. +50 AP liberado no MegaMU!");
+      document.getElementById('skull-btn').innerText = "⚔️";
+      document.getElementById('skull-btn2').innerText = "⚔️";
     }
 
-    async function saveItemData(id) {
-       const item = appData.menu.find(i => i.id === id);
-       if(item) {
-          item.name = document.getElementById(`name-${id}`).value;
-          item.price = document.getElementById(`price-${id}`).value;
-          item.short = document.getElementById(`short-${id}`).value;
-          item.full = document.getElementById(`full-${id}`).value;
-          await saveBinData("Editou o item do cardápio: " + item.name);
-          alert('Produto Salvo!');
-       }
+    const eFooter = document.getElementById('easter-footer');
+    if (eFooter) {
+      eFooter.addEventListener('dblclick', () => alert("Desenvolvido com ódio e magia de Soul Wizard."));
     }
 
-    async function saveAgendaData(id) {
-       const item = appData.agenda.find(i => i.id === id);
-       if(item) {
-          item.date = document.getElementById(`a-date-${id}`).value;
-          item.title = document.getElementById(`a-title-${id}`).value;
-          item.desc = document.getElementById(`a-desc-${id}`).value;
-          await saveBinData("Editou o evento da agenda: " + item.title);
-          alert('Evento Salvo!');
-       }
-    }
-
-    async function saveTeamData(id) {
-       const t = appData.team.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`tname-${id}`).value;
-          t.role = document.getElementById(`trole-${id}`).value;
-          t.ig = document.getElementById(`tig-${id}`).value;
-          t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveBinData("Modificou dados da equipe: " + t.name);
-          alert('Membro salvo!');
-       }
-    }
-
-    async function saveArcadeData(id) {
-       const t = appData.arcade.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`arc-name-${id}`).value;
-          t.sub = document.getElementById(`arc-sub-${id}`).value;
-          t.score = document.getElementById(`arc-score-${id}`).value;
-          t.prize = document.getElementById(`arc-prize-${id}`).value;
-          t.ig = document.getElementById(`arc-ig-${id}`).value;
-          t.quote = document.getElementById(`arc-quote-${id}`).value;
-          await saveBinData("Atualizou o ranking Arcade: " + t.name);
-          alert('Jogador salvo!');
-       }
-    }
-
-    async function saveCachaceirosData(id) {
-       const t = appData.cachaceiros.find(i => i.id === id);
-       if(t) {
-          t.name = document.getElementById(`ca-name-${id}`).value;
-          t.sub = document.getElementById(`ca-sub-${id}`).value;
-          t.score = document.getElementById(`ca-score-${id}`).value;
-          t.prize = document.getElementById(`ca-prize-${id}`).value;
-          t.quote = document.getElementById(`ca-quote-${id}`).value;
-          await saveBinData("Atualizou o ranking Cachaceiros: " + t.name);
-          alert('Bebedor salvo!');
-       }
-    }
-
-    async function addMenuItem() {
-      const name = document.getElementById('new-item-name').value;
-      const price = document.getElementById('new-item-price').value;
-      if(!name || !price) return alert("Preencha nome e preço.");
-      appData.menu.push({
-        id: Date.now(), type: document.getElementById('new-item-type').value,
-        name: name, short: document.getElementById('new-item-short').value,
-        full: document.getElementById('new-item-full').value, price: price, img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'
-      });
-      await saveBinData("Adicionou novo item ao cardápio: " + name);
-      alert('Produto Adicionado!');
-    }
-
-    async function addAgendaItem() {
-      const title = document.getElementById('new-ev-title').value;
-      const date = document.getElementById('new-ev-date').value;
-      if(!title || !date) return alert("Preencha data e título.");
-      appData.agenda.push({ id: Date.now(), date: date, title: title, desc: document.getElementById('new-ev-desc').value, img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' });
-      await saveBinData("Adicionou novo evento à agenda: " + title);
-      alert('Evento Adicionado!');
-    }
-
-    async function removeMenuItem(id) { 
-      if(confirm('Tem certeza que deseja excluir o item?')) { 
-        appData.menu = appData.menu.filter(i => i.id !== id); 
-        await saveBinData("Excluiu item do cardápio ID: " + id); 
-      } 
-    }
-
-    async function removeAgendaItem(id) { 
-      if(confirm('Tem certeza que deseja excluir o evento?')) { 
-        appData.agenda = appData.agenda.filter(i => i.id !== id); 
-        await saveBinData("Excluiu evento da agenda ID: " + id); 
-      } 
-    }
-
-    async function saveFlyerData() {
-      appData.flyer.tag = document.getElementById('adm-f-tag').value;
-      appData.flyer.title = document.getElementById('adm-f-title').value;
-      appData.flyer.sub = document.getElementById('adm-f-sub').value;
-      appData.flyer.desc = document.getElementById('adm-f-desc').value;
-      await saveBinData("Modificou o flyer principal");
-      alert("Dados do Destaque Salvos!");
-    }
-
-    async function uploadToImgBB(file, callback) {
-      if (!file) return;
-      const formData = new FormData();
-      formData.append('image', file);
-      try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
-          method: 'POST',
-          body: formData
-        });
-        const json = await res.json();
-        if (json.success) callback(json.data.url);
-        else alert("Erro ao enviar imagem.");
-      } catch (e) {
-        alert("Falha de conexão ao enviar imagem.");
+    const canvas = document.getElementById('sparks-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    class Ember {
+      constructor() { this.reset(true); }
+      reset(initial = false) {
+        this.x = Math.random() * width; this.y = initial ? Math.random() * height : height + Math.random() * 50;
+        this.size = Math.random() * 1.5 + 0.5; this.speedY = Math.random() * 0.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.5 + 0.1; this.fade = Math.random() * 0.008 + 0.002;
+        const colors = ['233, 30, 99', '0, 188, 212', '255, 235, 59'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      update() {
+        this.y -= this.speedY; this.x += this.speedX; this.opacity -= this.fade;
+        if (this.opacity <= 0 || this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`; ctx.fill();
       }
     }
+    const embers = Array.from({ length: 12 }, () => new Ember());
+    function animateEmbers() {
+      ctx.clearRect(0, 0, width, height);
+      embers.forEach(ember => { ember.update(); ember.draw(); });
+      requestAnimationFrame(animateEmbers);
+    }
+    animateEmbers();
 
-    // INICIALIZAÇÃO BLINDADA
     window.addEventListener('DOMContentLoaded', () => {
       initApp();
     });
