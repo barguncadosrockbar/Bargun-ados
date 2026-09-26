@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -14,7 +13,7 @@
     /* =========================================
        1. RESET E VARIÁVEIS (Otimizado 120 FPS)
        ========================================= */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; cursor: default; }
 
     :root {
       --bg-dark: #050505;
@@ -46,16 +45,15 @@
       background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s");
       background-position: center; background-size: cover; background-repeat: no-repeat;
       opacity: 0.12; filter: grayscale(10%) contrast(150%);
-      pointer-events: none !important;
     }
     
-    .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -2; overflow: hidden; transform: translateZ(0); }
-    .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; pointer-events: none !important; }
+    .stage-lights { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -2; overflow: hidden; transform: translateZ(0); }
+    .spotlight { position: absolute; top: -15vh; width: 50vw; height: 130vh; clip-path: polygon(50% 0%, 100% 100%, 0% 100%); mix-blend-mode: screen; opacity: 0.45; }
     .spotlight.cyan { left: -10vw; background: linear-gradient(to bottom, rgba(0, 188, 212, 0.35) 0%, transparent 100%); }
     .spotlight.pink { right: -10vw; background: linear-gradient(to bottom, rgba(233, 30, 99, 0.35) 0%, transparent 100%); }
     .spotlight.yellow { left: 25vw; background: linear-gradient(to bottom, rgba(255, 235, 59, 0.2) 0%, transparent 100%); }
 
-    #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none !important; z-index: -1; opacity: 0.5; }
+    #sparks-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: -1; opacity: 0.5; }
 
     .glass-panel {
       background: var(--glass-bg);
@@ -67,7 +65,7 @@
       border-radius: 10px; 
     }
 
-    .app-wrapper { position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh; }
+    .app-wrapper { position: relative; z-index: 2; display: flex; flex-direction: column; min-height: 100vh; }
 
     .radio-player-bar { border-radius: 0; border-top: none; border-left: none; border-right: none; border-bottom: 2px solid var(--c-cyan); display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; position: relative; z-index: 100; flex-wrap: wrap; gap: 10px; background: rgba(10, 10, 15, 0.95); }
     .radio-info-wrapper { display: flex; align-items: center; gap: 10px; flex: 1; }
@@ -77,7 +75,7 @@
     .radio-station-name { color: var(--c-yellow); font-family: var(--font-title); font-size: 1.2rem; letter-spacing: 1px; }
     .radio-now-playing { color: #fff; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
     .radio-now-playing span { color: var(--c-cyan); text-transform: uppercase;}
-    .play-pause-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); color: var(--c-cyan); font-family: var(--font-title); font-size: 1rem; padding: 6px 15px; border-radius: 20px; transition: 0.2s; cursor: pointer; pointer-events: auto !important; }
+    .play-pause-btn { background: rgba(0,0,0,0.6); border: 1px solid var(--c-cyan); color: var(--c-cyan); font-family: var(--font-title); font-size: 1rem; padding: 6px 15px; border-radius: 20px; transition: 0.2s; cursor:pointer;}
     .play-pause-btn:hover { background: var(--c-cyan); color: #000; }
     audio { display: none; }
 
@@ -87,19 +85,19 @@
     header { padding: 1.5rem 1rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
     .logo-img { max-width: 180px; width: 180px; height: 180px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 25px rgba(233,30,99,0.4); border: 2px solid rgba(255,255,255,0.2); display: block; margin: 0 auto; }
 
-    .nav-container { background: rgba(5, 5, 8, 0.98); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1000; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
+    .nav-container { background: rgba(5, 5, 8, 0.95); border-bottom: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.6); }
     nav.nav-tabs { display: flex; flex-wrap: wrap; justify-content: center; padding: 8px; gap: 6px; max-width: 900px; margin: 0 auto; }
-    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 10px 4px; border-radius: 6px; transition: 0.2s; text-align: center; cursor: pointer; text-transform: uppercase; pointer-events: auto !important; }
+    .tab-btn { flex: 1 1 calc(20% - 6px); background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1px; padding: 8px 2px; border-radius: 6px; transition: 0.2s; text-align: center; cursor: pointer; text-transform: uppercase; }
     .tab-btn:hover { background: rgba(255,255,255,0.15); color: var(--text-main); }
-    .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.35); border-color: var(--c-pink); box-shadow: 0 0 10px rgba(233,30,99,0.5); }
+    .tab-btn.active { color: #fff; background: rgba(233, 30, 99, 0.25); border-color: var(--c-pink); }
 
-    main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; position: relative; z-index: 20; }
+    main { flex: 1; max-width: 1000px; margin: 0 auto; width: 100%; padding: 1.5rem 5% 3rem; }
     
-    .tab-pane { display: none !important; opacity: 0; }
-    .tab-pane.active { display: block !important; opacity: 1; animation: slideDownFade 0.25s forwards; }
+    .tab-pane { display: none; opacity: 0; transform: translateY(-15px) scale(0.98); }
+    .tab-pane.active { display: block; animation: slideDownFade 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes slideDownFade {
-      0% { opacity: 0; transform: translateY(-8px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% { opacity: 0; transform: translateY(-15px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .section-title { font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 5px; display: flex; align-items: center; gap: 8px; }
@@ -117,8 +115,8 @@
     .btn-fire:hover { filter: brightness(1.2); }
 
     /* CATEGORIAS EM ACORDEOM */
-    .menu-cat-header { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
-    .menu-cat-header:hover { background: rgba(255,255,255,0.12); border-color: var(--c-yellow); }
+    .menu-cat-header { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-left: 4px solid var(--c-yellow); padding: 12px 16px; border-radius: 8px; margin: 15px 0 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-title); font-size: 1.35rem; color: #fff; transition: 0.2s; }
+    .menu-cat-header:hover { background: rgba(255,255,255,0.08); border-color: var(--c-yellow); }
     .menu-cat-header .cat-arrow { font-size: 0.9rem; transition: transform 0.3s; color: var(--c-yellow); }
     .menu-cat-header.collapsed .cat-arrow { transform: rotate(-90deg); }
     .menu-cat-content { display: block; }
@@ -475,7 +473,7 @@
 
   <div class="app-wrapper">
     
-    <div class="radio-player-bar glass-panel">
+    <div class="radio-player-bar glass-panel" style="border-radius: 0; border-top: none; border-left: none; border-right: none;">
       <div class="radio-info-wrapper">
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" id="radio-cover" class="radio-cover" alt="Logo">
         <div class="radio-text">
@@ -497,7 +495,7 @@
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
 
-    <!-- ABAS PRINCIPAIS COM OS EMOTICONS ORIGINAIS RESTAURADOS -->
+    <!-- ABAS PRINCIPAIS COM OS EMOTICONS ORIGINAIS -->
     <div class="nav-container">
       <nav class="nav-tabs" id="dynamic-nav-tabs">
         <button class="tab-btn active" onclick="switchTab('inicio')">🏠 O Bar</button>
@@ -737,7 +735,7 @@
             </div>
           </div>
 
-          <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
+          <button class="admin-accordion-btn" style="border-color: var(--c-pink); border-left: 4px solid var(--c-pink);" onclick="toggleAdminSection('adm-moderation')">🛡️ Moderação de Recados & Músicas <span id="adm-notify-counter"></span></button>
           <div id="adm-moderation" class="admin-accordion-content" style="border-color: var(--c-pink);">
             <button class="action-btn" onclick="fetchBinData()" style="margin-bottom: 15px; background: var(--c-yellow); color:#000; width: 100%;">🔄 Atualizar Pedidos da Nuvem</button>
             <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:10px;">Pedidos de Som Pendentes</h5>
@@ -747,6 +745,7 @@
             <div id="admin-pending-msgs"></div>
           </div>
 
+          <!-- SEÇÃO MASTER: CRIAR ABAS -->
           <div id="master-tabs-section" style="display:none;">
             <button class="admin-accordion-btn" style="border-color: var(--c-yellow); border-left: 4px solid var(--c-yellow);" onclick="toggleAdminSection('adm-new-tab')">📑 Criar / Gerenciar / Editar Abas (Master)</button>
             <div id="adm-new-tab" class="admin-accordion-content" style="border-color: var(--c-yellow);">
@@ -772,6 +771,7 @@
             </div>
           </div>
 
+          <!-- ADMINISTRAÇÃO MASTER -->
           <div id="master-control-section" style="display:none;">
             <button class="admin-accordion-btn" style="border-color: var(--c-red); border-left: 4px solid var(--c-red);" onclick="toggleAdminSection('adm-master-ctrl')">👑 Administração Master (Cadastrar ADMs & Permissões)</button>
             <div id="adm-master-ctrl" class="admin-accordion-content" style="border-color: var(--c-red);">
@@ -953,816 +953,256 @@
   </div>
 
   <script>
-    function escapeHTML(str) {
-      if (!str) return '';
-      return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
-    }
-
-    function b64Decode(str) {
-      return decodeURIComponent(escape(window.atob(str)));
-    }
-
-    const BIN_ID = "6ab5ac11ac6210605af28b20";
-    const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
-    const BIN_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
-    const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
-
-    const AUTH_ACCOUNTS = [
-      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
-      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
-    ];
-
-    const defaultHome = {
-      title: "SOM PESADO & BEBIDA TRINCANDO",
-      desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.",
-      desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.",
-      promoTitle: "🔥 DIVERSÃO GARANTIDA",
-      promo1: "🎸 Agenda de Shows Coberta o Mês Todo",
-      promo2: "🕹️ Fliperama Arcades Liberados",
-      promo3: "🍻 Bebidas Baratas & Porções Brutas",
-      isOpen: true,
-      img: ""
-    };
-
-    const defaultMenu = [
-      // 🍋 Linha Caipirinha (01 a 07)
-      { id: 1, type: 'caipirinha', isPromo: true, name: '01: Caipirinha Tradicional (PROMO)', short: 'Cachaça artesanal, limão taiti, açúcar e gelo.', full: 'A clássica caipirinha brasileira da casa com cachaça da boa, limão taiti macerado e gelo trincando.', price: '10,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 2, type: 'caipirinha', name: '02: Caipirinha de Morango', short: 'Cachaça artesanal, morangos frescos macerados e açúcar.', full: 'Morangos selecionados esmagados com cachaça nacional premium, açúcar e bastante gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 3, type: 'caipirinha', name: '03: Caipirinha de Maracujá', short: 'Cachaça artesanal, polpa de maracujá fresco e açúcar.', full: 'Sabor tropical marcante com polpa fresca de maracujá batida com cachaça e cubos de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 4, type: 'caipirinha', name: '04: Caipirinha de Abacaxi', short: 'Cachaça artesanal, abacaxi em cubos, açúcar e gelo.', full: 'Pedaços frescos de abacaxi macerados com cachaça artesanal e toque de frescor cítrico.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
-      { id: 5, type: 'caipirinha', name: '05: Caipirinha de Kiwi', short: 'Cachaça artesanal, kiwi fresco macerado e açúcar.', full: 'Kiwi fresco bem esmagado com cachaça suave, equilibrando doçura e acidez no copo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 6, type: 'caipirinha', name: '06: Caipirinha de Laranja', short: 'Cachaça artesanal, gomos de laranja doce e açúcar.', full: 'Cachaça artesanal batida com sumo e pedaços de laranja doce e muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-      { id: 7, type: 'caipirinha', name: '07: Caipirinha de Frutas Vermelhas', short: 'Cachaça, amora, morango e mirtilo.', full: 'Mix vibrante de frutas vermelhas maceradas na cachaça nobre com açúcar e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-
-      // 🍸 Linha Vodka (08 a 15)
-      { id: 8, type: 'vodka', name: '08: Caipiroska Tradicional', short: 'Vodka premium, limão taiti, açúcar e gelo.', full: 'A versão russa com limão macerado, vodka trincando e açúcar no capricho.', price: '18,00', img: 'https://images.unsplash.com/photo-1556881286-fc6915169721?q=80&w=400' },
-      { id: 9, type: 'vodka', name: '09: Caipiroska de Morango', short: 'Vodka premium, morango fresco e açúcar.', full: 'Morangos frescos esmagados na vodka gelada com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1587223081156-610c14b2d5f8?q=80&w=400' },
-      { id: 10, type: 'vodka', name: '10: Caipiroska de Maracujá', short: 'Vodka premium, polpa de maracujá e açúcar.', full: 'Maracujá doce e cítrico com dose generosa de vodka e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 11, type: 'vodka', name: '11: Screwdriver', short: 'Vodka premium e suco de laranja natural.', full: 'O clássico parafuso: vodka combinada com suco de laranja bem gelado.', price: '16,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-      { id: 12, type: 'vodka', name: '12: Sex on the Beach', short: 'Vodka, licor de pêssego, suco de laranja e groselha.', full: 'Coquetel doce e tropical em camadas com vodka, licor de pêssego, suco e groselha.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 13, type: 'vodka', name: '13: Cosmopolitan', short: 'Vodka, licor de laranja, cranberry e limão.', full: 'O sofisticado coquetel rosado com vodka, triple sec, cranberry e twist de limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 14, type: 'vodka', name: '14: Moscow Mule', short: 'Vodka, suco de limão e espuma de gengibre.', full: 'Servido na caneca de cobre: vodka, limão fresco, ginger e espuma cremosa de gengibre.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
-      { id: 15, type: 'vodka', name: '15: Vodka Sour', short: 'Vodka, suco de limão e xarope simples.', full: 'Equilíbrio ácido e aveludado batido com vodka, limão fresco e xarope de açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-
-      // 🍹 Linha Rum (16 a 21)
-      { id: 16, type: 'rum', name: '16: Cuba Libre', short: 'Rum carta branca, refrigerante de cola e limão.', full: 'Rum de qualidade com refrigerante de cola, fatias de limão e cubos de gelo.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 17, type: 'rum', name: '17: Mojito', short: 'Rum branco, hortelã, limão, açúcar e água com gás.', full: 'O mais refrescante: hortelã macerada com rum, limão e água gaseificada.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 18, type: 'rum', name: '18: Daiquiri', short: 'Rum branco, suco de limão e açúcar.', full: 'Clássico cubano batido na coqueteleira com rum, limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 19, type: 'rum', name: '19: Caipiríssima', short: 'Rum branco, limão taiti e açúcar.', full: 'A versão da caipirinha preparada exclusivamente com rum caribenho.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 20, type: 'rum', name: '20: Rum Sour', short: 'Rum dourado, limão taiti e açúcar.', full: 'Sabor robusto de rum dourado equilibrado com acidez do limão e açúcar.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 21, type: 'rum', name: '21: Rum Punch', short: 'Rum claro e escuro, abacaxi, laranja e groselha.', full: 'Ponche tropical dos piratas com combinação de runs e frutas cítricas.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-
-      // 🌵 Linha Tequila (22 a 24)
-      { id: 22, type: 'tequila', name: '22: Margarita', short: 'Tequila prata, licor de laranja, limão e sal.', full: 'A lenda mexicana servida na taça crustada de sal com tequila e triple sec.', price: '20,00', img: 'https://images.unsplash.com/photo-1546171753-97d7676e4602?q=80&w=400' },
-      { id: 23, type: 'tequila', name: '23: Tequila Sunrise', short: 'Tequila prata, suco de laranja e groselha.', full: 'Visual incrível em degradê nas cores do amanhecer com tequila e laranja.', price: '20,00', img: 'https://images.unsplash.com/photo-1536935338788-846bb9981813?q=80&w=400' },
-      { id: 24, type: 'tequila', name: '24: Tequila Sour', short: 'Tequila, limão e xarope simples.', full: 'Potência e intensidade de tequila batida com suco de limão fresco.', price: '20,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-
-      // 🌿 Linha Gin (25 a 29)
-      { id: 25, type: 'gin', name: '25: Gin-Tônica', short: 'Gin botânico, tônica, alecrim e zimbro.', full: 'O clássico dos clássicos: gin aromático com água tônica trincando de gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 26, type: 'gin', name: '26: Gin Sour', short: 'Gin, limão fresco e açúcar.', full: 'Toque herbal e botânico do gin balanceado com acidez refrescante.', price: '18,00', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=400' },
-      { id: 27, type: 'gin', name: '27: Gin Fizz', short: 'Gin, limão, açúcar e água com gás.', full: 'Bebida efervescente e viva de gin com soda artesanal e limão.', price: '18,00', img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?q=80&w=400' },
-      { id: 28, type: 'gin', name: '28: Gimlet', short: 'Gin e cordial de limão.', full: 'Coquetel centenário inglês simples, seco e potente.', price: '18,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
-      { id: 29, type: 'gin', name: '29: Tom Collins', short: 'Gin, limão siciliano, açúcar e soda.', full: 'Servido no copo longo: gin, limão siciliano e soda com muito gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?q=80&w=400' },
-
-      // 🥃 Linha Whisky (30 a 34)
-      { id: 30, type: 'whisky', name: '30: Whisky Sour', short: 'Whisky, suco de limão e açúcar.', full: 'O clássico norte-americano aveludado batido com whisky e limão.', price: '20,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 31, type: 'whisky', name: '31: Old Fashioned', short: 'Whisky bourbon, açúcar, angostura e laranja.', full: 'O coquetel mais antigo do mundo montado no copo baixo com bourbon e angostura.', price: '22,00', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
-      { id: 32, type: 'whisky', name: '32: Whisky Highball', short: 'Whisky e água com gás carbonatada.', full: 'Bebida japonesa minimalista de whisky puro com água gaseificada trincando.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 33, type: 'whisky', name: '33: Whisky com Limão', short: 'Whisky on the rocks com fatias de limão.', full: 'Dose bruta de whisky no gelo com gotas e rodelas de limão fresco.', price: '16,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-      { id: 34, type: 'whisky', name: '34: Whisky com Cola', short: 'Whisky e refrigerante de cola com gelo.', full: 'A mistura rockstar favorita dos pubs: whisky encorpado com cola e gelo.', price: '18,00', img: 'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=400' },
-
-      // Cervejas & Sem Álcool
-      { id: 35, type: 'beer', name: 'Heineken Long Neck', short: 'Garrafa 330ml bem gelada.', full: 'A verdinha trincando na temperatura perfeita.', price: '12,00', img: 'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?q=80&w=400' },
-      { id: 36, type: 'beer', name: 'Budweiser Long Neck', short: 'Lager clássica 330ml.', full: 'Cerveja equilibrada e refrescante.', price: '10,00', img: 'https://images.unsplash.com/photo-1620228892404-5858b9fbd81b?q=80&w=400' },
-      { id: 37, type: 'beer', name: 'Skol Lata 350ml', short: 'Pilsen trincando.', full: 'Para descer redondo na resenha.', price: '8,00', img: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=400' },
-      { id: 38, type: 'noalcohol', name: 'Mocktail Tropical', short: 'Morango, limão e soda.', full: 'Sem álcool. Muito gelo e frutas frescas.', price: '15,00', img: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?q=80&w=400' },
-
-      // Porções
-      { id: 39, type: 'portion', name: 'Batata Cheddar & Bacon', short: 'Batata rústica com cheddar e bacon frito.', full: 'Batata frita sequinha coberta por avalanche de queijo cheddar e bacon crocante.', price: '36,00', img: 'https://images.unsplash.com/photo-1576107232684-1279f390859f?q=80&w=400' },
-      { id: 40, type: 'portion', name: 'Calabresa Fire Flambada', short: 'Calabresa fatiada flambada na cachaça.', full: 'Calabresa acebolada servida no ponto com pão de alho e vinagrete.', price: '38,00', img: 'https://images.unsplash.com/photo-1595295333158-4742f28fbd85?q=80&w=400' },
-      { id: 41, type: 'portion', name: 'Tábua Churrasco Brutal', short: 'Iscas de alcatra, fritas e chimichurri.', full: 'Tábua farta de carne bovina acebolada com batata frita e molho de ervas.', price: '65,00', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800' }
-    ];
-
-    const defaultAgenda = [
-      { id: 1, date: '15/Out', title: 'Quinta Grunge', desc: 'Nirvana, Pearl Jam e Arctic Monkeys.', img: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80' },
-      { id: 2, date: '16/Out', title: 'Sexta Classic', desc: 'AC/DC, Guns e Queen.', img: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?q=80&w=400' },
-      { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
-    ];
-
-    const defaultTeam = [
-      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
-      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
-      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
-      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
-    ];
-
-    const defaultArcade = Array.from({length: 10}, (_, i) => ({
-      id: i+1,
-      name: i===0 ? 'Rodrigo "KOF-GOD"' : `Player ${i+1}`,
-      sub: 'KOF 2002',
-      score: (1000 - i*50) + 'K',
-      prize: i===0 ? 'TORRE CHOPP' : '',
-      quote: i<3 ? 'Aqui ninguém me ganha, traga sua ficha e chore!' : '',
-      ig: '@rocker',
-      img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff'
-    }));
-
-    const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({
-      id: i+1,
-      name: i===0 ? 'Alex "Tanque"' : `Bebedor ${i+1}`,
-      sub: '@rocker',
-      score: (40 - i*2) + ' L',
-      prize: i===0 ? 'JACK DANIELS' : '',
-      quote: i<3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '',
-      ig: '@cachaceiro_pro',
-      img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff'
-    }));
-
-    const defaultFlyer = {
-      tag: 'SÁBADO INSANO',
-      title: 'BANDA HELLFIRE',
-      sub: 'ESPECIAL METALLICA E SLIPKNOT',
-      desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!',
-      img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80'
-    };
-
-    let appData = {
-      home: defaultHome,
-      menu: defaultMenu,
-      agenda: defaultAgenda,
-      team: defaultTeam,
-      arcade: defaultArcade,
-      cachaceiros: defaultCachaceiros,
-      flyer: defaultFlyer,
-      customTabs: [],
-      userSongs: [],
-      pendingSongs: [],
-      userMessages: [],
-      pendingMessages: [],
-      adminLogs: [],
-      customAdmins: [],
-      permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
-      traffic: { totalViews: 0, devices: [], daily: {} }
-    };
-
-    let githubConfig = JSON.parse(localStorage.getItem('brg_gh_config')) || { user: '', repo: '', token: '' };
-
-    function switchTab(tabId) {
-      const panes = document.querySelectorAll('.tab-pane');
-      panes.forEach(tab => {
-        tab.classList.remove('active');
-      });
-      
-      const btns = document.querySelectorAll('.tab-btn');
-      btns.forEach(btn => btn.classList.remove('active'));
-      
-      const targetPane = document.getElementById(tabId);
-      if (targetPane) {
-        targetPane.classList.add('active');
+    function renderAdminLists() {
+      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+        return;
       }
-      
-      const clickedBtn = Array.from(document.querySelectorAll('.tab-btn')).find(btn => {
-        const attr = btn.getAttribute('onclick');
-        return attr && attr.includes("'" + tabId + "'");
-      });
-      if (clickedBtn) clickedBtn.classList.add('active');
-      
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 
-    function toggleMenuCategory(catKey) {
-      const header = document.getElementById('cat-hdr-' + catKey);
-      const content = document.getElementById('cat-cnt-' + catKey);
-      if(!content) return;
-      if(content.classList.contains('collapsed')) {
-        content.classList.remove('collapsed');
-        if(header) header.classList.remove('collapsed');
-      } else {
-        content.classList.add('collapsed');
-        if(header) header.classList.add('collapsed');
+      const hTitle = document.getElementById('adm-h-title');
+      const hDesc1 = document.getElementById('adm-h-desc1');
+      const hDesc2 = document.getElementById('adm-h-desc2');
+      const hPromoTitle = document.getElementById('adm-h-promo-title');
+      const hPromo1 = document.getElementById('adm-h-promo1');
+      const hPromo2 = document.getElementById('adm-h-promo2');
+      const hPromo3 = document.getElementById('adm-h-promo3');
+
+      if(hTitle) hTitle.value = appData.home.title || '';
+      if(hDesc1) hDesc1.value = appData.home.desc1 || '';
+      if(hDesc2) hDesc2.value = appData.home.desc2 || '';
+      if(hPromoTitle) hPromoTitle.value = appData.home.promoTitle || '';
+      if(hPromo1) hPromo1.value = appData.home.promo1 || '';
+      if(hPromo2) hPromo2.value = appData.home.promo2 || '';
+      if(hPromo3) hPromo3.value = appData.home.promo3 || '';
+
+      const customTabsList = document.getElementById('admin-custom-tabs-list');
+      if(customTabsList) {
+        const tabs = appData.customTabs || [];
+        if(tabs.length === 0) {
+          customTabsList.innerHTML = '<p style="color:#777; font-size:0.85rem;">Nenhuma aba personalizada criada ainda.</p>';
+        } else {
+          customTabsList.innerHTML = tabs.map(t => `
+            <div class="admin-card" style="border-color: var(--c-yellow);">
+              <div class="admin-card-row">
+                <span style="color:#fff; font-weight:bold;">Aba: ${t.name} (ID: ${t.id})</span>
+                <div>
+                  <button class="action-btn" onclick="editCustomTab('${t.id}')" style="background:var(--c-cyan); color:#000; margin-right:5px;">✏️ Editar</button>
+                  <button class="action-btn del-btn" onclick="removeCustomTab('${t.id}')">🗑️ Apagar</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
       }
-    }
 
-    function getHonorTitle(index, type) {
-      if(type === 'arcade') {
-        if(index === 0) return '👑 Lenda Viva do Arcade';
-        if(index === 1) return '⚔️ Vice-Campeão da Madruga';
-        if(index === 2) return '🕹️ Mestre dos Controles';
-        return '🎮 Veterano do Fliperama';
-      } else {
-        if(index === 0) return '🏆 Campeão Supremo do Fígado';
-        if(index === 1) return '🍻 Senhor dos Destilados';
-        if(index === 2) return '🥃 Gladiador do Copo Cheio';
-        return '🍷 Guerreiro da Cachaça';
-      }
-    }
-
-    function switchRankingView(view) {
-      const btnArcade = document.getElementById('btn-switch-arcade');
-      const btnCachaceiros = document.getElementById('btn-switch-cachaceiros');
-      const viewArcade = document.getElementById('rankings-view-arcade');
-      const viewCachaceiros = document.getElementById('rankings-view-cachaceiros');
-
-      if(view === 'arcade') {
-        if(btnArcade) btnArcade.classList.add('active');
-        if(btnCachaceiros) btnCachaceiros.classList.remove('active');
-        if(viewArcade) viewArcade.style.display = 'block';
-        if(viewCachaceiros) viewCachaceiros.style.display = 'none';
-      } else {
-        if(btnCachaceiros) btnCachaceiros.classList.add('active');
-        if(btnArcade) btnArcade.classList.remove('active');
-        if(viewCachaceiros) viewCachaceiros.style.display = 'block';
-        if(viewArcade) viewArcade.style.display = 'none';
-      }
-    }
-
-    function createCard(item) {
-      const sName = escapeHTML(item.name);
-      const sShort = escapeHTML(item.short || item.name);
-      const sPrice = escapeHTML(item.price);
-      const isPromoClass = item.isPromo ? 'promo-destaque' : '';
-      const promoFlag = item.isPromo ? '<span class="promo-flag">🔥 R$ 10 PROMO</span>' : '';
-
-      return `
-        <div class="product-card glass-panel ${isPromoClass}" onclick="openMenuModalObj(${item.id})">
-          ${promoFlag}
-          <img src="${item.img}" class="product-img" onerror="fallbackImg(this)">
-          <h4 class="m-title">${item.name}</h4>
-          <p class="m-short">${sShort}</p>
-          <div class="menu-price">R$ ${item.price}</div>
-        </div>`;
-    }
-
-    function openMenuModalObj(id) {
-      const item = appData.menu.find(i => i.id === id);
-      if(!item) return;
-
-      const mTitle = document.getElementById('modalTitle');
-      const mDesc = document.getElementById('modalDesc');
-      const mPrice = document.getElementById('modalPrice');
-      const mImg = document.getElementById('modalImg');
-
-      if(mTitle) mTitle.innerText = item.name.replace('PROMO', '').trim();
-      if(mDesc) mDesc.innerText = item.full || item.short;
-      if(mPrice) mPrice.innerText = 'R$ ' + item.price;
-      if(mImg) mImg.src = item.img;
-
-      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
 
-      const editBox = document.getElementById('modal-adm-edit-box');
-
-      if(isLoggedIn && (canEdit || canDel)) {
-        if(editBox) editBox.style.display = 'block';
-        const eId = document.getElementById('modal-edit-id');
-        const eCat = document.getElementById('modal-edit-category');
-        const eName = document.getElementById('modal-edit-name');
-        const ePrice = document.getElementById('modal-edit-price');
-        const eShort = document.getElementById('modal-edit-short');
-        const eFull = document.getElementById('modal-edit-full');
-        const eImg = document.getElementById('modal-edit-img');
-        const eDel = document.getElementById('modal-item-del-btn');
-
-        if(eId) eId.value = item.id;
-        if(eCat) eCat.value = item.type;
-        if(eName) eName.value = item.name;
-        if(ePrice) ePrice.value = item.price;
-        if(eShort) eShort.value = item.short || '';
-        if(eFull) eFull.value = item.full || '';
-        if(eImg) eImg.value = item.img;
-        if(eDel) eDel.style.display = canDel ? 'inline-block' : 'none';
-      } else {
-        if(editBox) editBox.style.display = 'none';
-      }
-
-      const pModal = document.getElementById('productModal');
-      if(pModal) pModal.style.display = 'flex';
-    }
-
-    function renderApp() {
-      try {
-        const cHome = appData.home || defaultHome;
-        const cMenu = (Array.isArray(appData.menu) && appData.menu.length > 0) ? appData.menu : defaultMenu;
-        const cAgenda = (Array.isArray(appData.agenda) && appData.agenda.length > 0) ? appData.agenda : defaultAgenda;
-        const cTeam = (Array.isArray(appData.team) && appData.team.length > 0) ? appData.team : defaultTeam;
-        const cArcade = (Array.isArray(appData.arcade) && appData.arcade.length > 0) ? appData.arcade : defaultArcade;
-        const cCach = (Array.isArray(appData.cachaceiros) && appData.cachaceiros.length > 0) ? appData.cachaceiros : defaultCachaceiros;
-        const cFlyer = appData.flyer || defaultFlyer;
-
-        // Página Inicial
-        const hTitle = document.getElementById('h-title');
-        const hDesc1 = document.getElementById('h-desc1');
-        const hDesc2 = document.getElementById('h-desc2');
-        const hPromoTitle = document.getElementById('h-promo-title');
-        const hPromo1 = document.getElementById('h-promo1');
-        const hPromo2 = document.getElementById('h-promo2');
-        const hPromo3 = document.getElementById('h-promo3');
-
-        if(hTitle) hTitle.innerText = cHome.title;
-        if(hDesc1) hDesc1.innerText = cHome.desc1;
-        if(hDesc2) hDesc2.innerText = cHome.desc2;
-        if(hPromoTitle) hPromoTitle.innerText = cHome.promoTitle;
-        if(hPromo1) hPromo1.innerText = cHome.promo1;
-        if(hPromo2) hPromo2.innerText = cHome.promo2;
-        if(hPromo3) hPromo3.innerText = cHome.promo3;
-
-        const statusDot = document.getElementById('status-dot-el');
-        const statusText = document.getElementById('status-text-el');
-        if(statusDot && statusText) {
-          if(cHome.isOpen !== false) {
-            statusDot.className = 'status-dot open';
-            statusText.innerText = 'BARGUNÇADOS ABERTO';
-            statusText.style.color = '#00e676';
-          } else {
-            statusDot.className = 'status-dot closed';
-            statusText.innerText = 'BARGUNÇADOS FECHADO';
-            statusText.style.color = '#ff1744';
-          }
-        }
-
-        const homeImg = document.getElementById('home-img');
-        if(homeImg) {
-          if(cHome.img) { 
-            homeImg.style.display = 'block'; 
-            homeImg.src = cHome.img; 
-          } else { 
-            homeImg.style.display = 'none'; 
-          }
-        }
-
-        const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-        const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-        const perms = appData.permissions || {};
-        const canAdd = isMaster || perms.canAdd !== false;
-
-        const bHome = document.getElementById('bar-action-home');
-        const bBebidas = document.getElementById('bar-action-bebidas');
-        const bPorcoes = document.getElementById('bar-action-porcoes');
-        const bAgenda = document.getElementById('bar-action-agenda');
-
-        if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-        if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-        if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-
-        // Renderização de Bebidas por Categorias
-        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
-        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
-        if(drinksContainer) drinksContainer.innerHTML = ''; 
-        if(portionsContainer) portionsContainer.innerHTML = '';
-
-        const drinkCategories = [
-          { key: 'caipirinha', label: '🍋 Linha Caipirinha' },
-          { key: 'vodka', label: '🍸 Linha Vodka' },
-          { key: 'rum', label: '🍹 Linha Rum' },
-          { key: 'tequila', label: '🌵 Linha Tequila' },
-          { key: 'gin', label: '🌿 Linha Gin' },
-          { key: 'whisky', label: '🥃 Linha Whisky' },
-          { key: 'beer', label: '🍺 Cervejas' },
-          { key: 'noalcohol', label: '🥤 Sem Álcool / Sucos / Refris' }
-        ];
-
-        if(drinksContainer) {
-          drinkCategories.forEach(cat => {
-            const items = cMenu.filter(i => {
-              if (i.type === cat.key) return true;
-              if (cat.key === 'caipirinha' && (i.type === 'drink' || (i.name && i.name.toLowerCase().includes('caipirinha')))) return true;
-              if (cat.key === 'vodka' && i.name && (i.name.toLowerCase().includes('vodka') || i.name.toLowerCase().includes('caipiroska') || i.name.toLowerCase().includes('mule'))) return true;
-              if (cat.key === 'whisky' && i.name && i.name.toLowerCase().includes('whisky')) return true;
-              return false;
-            });
-
-            if(items.length > 0) {
-              let catHtml = `
-                <div class="menu-cat-header" id="cat-hdr-${cat.key}" onclick="toggleMenuCategory('${cat.key}')">
-                  <span>${cat.label} (${items.length})</span>
-                  <span class="cat-arrow">▼</span>
-                </div>
-                <div class="menu-cat-content" id="cat-cnt-${cat.key}">
-                  <div class="menu-grid">`;
-              items.forEach(it => { catHtml += createCard(it); });
-              catHtml += `</div></div>`;
-              drinksContainer.innerHTML += catHtml;
-            }
-          });
-        }
-
-        // Porções
-        if(portionsContainer) {
-          const portionItems = cMenu.filter(i => i.type === 'portion');
-          let portionsStr = '<div class="menu-grid">';
-          portionItems.forEach(i => { portionsStr += createCard(i); });
-          portionsStr += '</div>';
-          portionsContainer.innerHTML = portionsStr;
-        }
-
-        // Agenda
-        const agendaList = document.getElementById('dynamic-agenda-list');
-        if(agendaList) {
-          agendaList.innerHTML = '';
-          cAgenda.forEach(ev => {
-            const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
-            agendaList.innerHTML += `
-              <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
-                <div class="mf-content">
-                  <div class="mf-date">${ev.date}</div>
-                  <div class="mf-title">${ev.title}</div>
-                </div>
-              </div>`;
-          });
-        }
-
-        const fImg = document.getElementById('featured-flyer-img');
-        const fTag = document.getElementById('adm-f-tag');
-        const fTitle = document.getElementById('adm-f-title');
-        const fSub = document.getElementById('adm-f-sub');
-        const fDesc = document.getElementById('adm-f-desc');
-
-        if(fImg) fImg.src = cFlyer.img;
-        if(fTag) fTag.value = cFlyer.tag || '';
-        if(fTitle) fTitle.value = cFlyer.title || '';
-        if(fSub) fSub.value = cFlyer.sub || '';
-        if(fDesc) fDesc.value = cFlyer.desc || '';
-
-        // Diretoria
-        const dirContainer = document.getElementById('dynamic-dir-list');
-        const proContainer = document.getElementById('dynamic-pro-list');
-        if(dirContainer) dirContainer.innerHTML = ''; 
-        if(proContainer) proContainer.innerHTML = '';
-        
-        if(dirContainer) {
-          cTeam.filter(t => t.type === 'dir').forEach(t => {
-            let cColor = 'var(--c-pink)';
-            if(t.id === 'dir2') cColor = 'var(--c-cyan)';
-            if(t.id === 'dir3') cColor = 'var(--c-yellow)';
-            dirContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="--card-color: ${cColor};">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" onerror="fallbackImg(this)">
-                <h3 class="dir-name">${t.name}</h3>
-                <p class="dir-role" style="color:${cColor};">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:${cColor}; color:${cColor};" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        if(proContainer) {
-          cTeam.filter(t => t.type === 'pro').forEach(t => {
-            proContainer.innerHTML += `
-              <div class="glass-panel dir-card" style="width:100%; max-width:450px; margin:0 auto; padding:2rem; --card-color: var(--c-purple);">
-                <img src="${t.img}" class="dir-img" alt="${t.name}" style="width:130px; height:130px; border-color:var(--c-purple);" onerror="fallbackImg(this)">
-                <h3 class="dir-name" style="font-size:2.5rem;">${t.name}</h3>
-                <p class="dir-role" style="color:var(--c-purple); font-size:1rem;">${t.role}</p>
-                <a href="https://instagram.com/${t.ig.replace('@','')}" class="ig-button" style="border-color:var(--c-purple); color:var(--c-purple); font-size: 1.1rem;" target="_blank">📸 INSTAGRAM: <span style="color:#fff;">${t.ig}</span></a>
-                <p class="dir-desc" style="font-size:1rem; margin-top:15px;">${t.desc}</p>
-              </div>`;
-          });
-        }
-
-        // Rankings
-        const arcList = document.getElementById('dynamic-arcade-list');
-        if(arcList) {
-          arcList.innerHTML = cArcade.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Traga sua ficha e tente a sorte!' : '');
-            const clickHTML = `onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig || '@jogador')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'arcade');
-            const displayIg = i.ig || '@jogador';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>
-                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        const cachList = document.getElementById('dynamic-cachaceiros-list');
-        if(cachList) {
-          cachList.innerHTML = cCach.map((i, index) => {
-            const isTop3 = index < 3;
-            const safeQuote = i.quote || (isTop3 ? 'Água é pro fígado fraco, desce mais uma dose!' : '');
-            const clickHTML = `onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub || '')}', '${escapeHTML(i.score || '')}', '${escapeHTML(i.prize || '')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub || '@cachaceiro')}', '${i.img}')"`;
-            const honorTitle = getHonorTitle(index, 'cachaceiro');
-            const displayIg = i.sub || i.ig || '@cachaceiro';
-            
-            return `
-            <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
-              <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-              <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
-              <div class="lb-info">
-                <span class="lb-name">${i.name}</span>
-                <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
-                <span class="lb-title-badge">${honorTitle}</span>
-                ${isTop3 && safeQuote ? `<span class="lb-inline-quote">"${safeQuote}"</span>` : ''}
-              </div>
-              <div><div class="lb-score">${i.score}</div>${i.prize ? `<span class="lb-prize">${i.prize}</span>` : ''}</div>
-            </div>`;
-          }).join('');
-        }
-
-        renderAdminLists();
-      } catch(e) {}
-    }
-
-    function recordTrafficAnalytics() {
-      try {
-        let deviceId = localStorage.getItem('brg_device_id');
-        if(!deviceId) {
-          deviceId = 'dev_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now();
-          localStorage.setItem('brg_device_id', deviceId);
-        }
-
-        if(!appData.traffic) {
-          appData.traffic = { totalViews: 0, devices: [], daily: {} };
-        }
-        if(!appData.traffic.daily || typeof appData.traffic.daily !== 'object') {
-          appData.traffic.daily = {};
-        }
-
-        const todayStr = new Date().toISOString().split('T')[0];
-        if(!Array.isArray(appData.traffic.daily[todayStr])) {
-          appData.traffic.daily[todayStr] = [];
-        }
-
-        if(!appData.traffic.daily[todayStr].includes(deviceId)) {
-          appData.traffic.daily[todayStr].push(deviceId);
-        }
-
-        appData.traffic.totalViews = (Number(appData.traffic.totalViews) || 0) + 1;
-
-        if(!Array.isArray(appData.traffic.devices)) {
-          appData.traffic.devices = [];
-        }
-        if(!appData.traffic.devices.includes(deviceId)) {
-          appData.traffic.devices.push(deviceId);
-        }
-
-        updateTrafficUI();
-      } catch(e) {}
-    }
-
-    function updateTrafficUI() {
-      try {
-        const viewsEl = document.getElementById('adm-stat-views');
-        const devEl = document.getElementById('adm-stat-devices');
-        const todayEl = document.getElementById('adm-stat-today');
-        
-        const todayStr = new Date().toISOString().split('T')[0];
-        const todayCount = (appData.traffic && appData.traffic.daily && Array.isArray(appData.traffic.daily[todayStr])) ? appData.traffic.daily[todayStr].length : 0;
-
-        if(viewsEl && appData.traffic) viewsEl.innerText = appData.traffic.totalViews || 0;
-        if(devEl && appData.traffic) devEl.innerText = (Array.isArray(appData.traffic.devices) ? appData.traffic.devices.length : 0);
-        if(todayEl) todayEl.innerText = todayCount;
-      } catch(e) {}
-    }
-
-    async function fetchBinData() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
-        return;
-      }
-      try {
-        const res = await fetch(`${BIN_URL}/latest`, {
-          headers: { 'X-Master-Key': MASTER_KEY }
-        });
-        if(res.ok) {
-          const json = await res.json();
-          if(json && json.record) {
-            const r = json.record;
-            if(r.home) appData.home = { ...defaultHome, ...r.home };
-            if(Array.isArray(r.menu) && r.menu.length >= defaultMenu.length) {
-              appData.menu = r.menu;
-            }
-            if(Array.isArray(r.team) && r.team.length >= defaultTeam.length) {
-              appData.team = r.team;
-            }
-            if(Array.isArray(r.agenda) && r.agenda.length > 0) {
-              appData.agenda = r.agenda;
-            }
-            if(Array.isArray(r.arcade) && r.arcade.length > 0) {
-              appData.arcade = r.arcade;
-            }
-            if(Array.isArray(r.cachaceiros) && r.cachaceiros.length > 0) {
-              appData.cachaceiros = r.cachaceiros;
-            }
-            if(r.flyer && r.flyer.title) {
-              appData.flyer = r.flyer;
-            }
-            if(Array.isArray(r.customTabs)) appData.customTabs = r.customTabs;
-            if(Array.isArray(r.customAdmins)) appData.customAdmins = r.customAdmins;
-            if(Array.isArray(r.adminLogs)) appData.adminLogs = r.adminLogs;
-            if(r.permissions) appData.permissions = r.permissions;
-            if(r.traffic) {
-              appData.traffic.totalViews = Math.max(appData.traffic.totalViews || 0, r.traffic.totalViews || 0);
-              if(Array.isArray(r.traffic.devices)) {
-                appData.traffic.devices = Array.from(new Set([...(appData.traffic.devices || []), ...r.traffic.devices]));
-              }
-              if(r.traffic.daily) {
-                appData.traffic.daily = { ...(appData.traffic.daily || {}), ...r.traffic.daily };
-              }
-            }
-            renderApp();
-            updateTrafficUI();
-          }
-        }
-      } catch(e) {}
-    }
-
-    async function saveBinData(actionDesc = '') {
-      try {
-        if(actionDesc) {
-          const loggedName = localStorage.getItem('brg_adm_name') || 'Administrador';
-          const now = new Date().toLocaleString('pt-BR');
-          if(!appData.adminLogs) appData.adminLogs = [];
-          appData.adminLogs.unshift({
-            id: Date.now(),
-            admin: loggedName,
-            action: actionDesc,
-            date: now
-          });
-        }
-        renderApp();
-        updateTrafficUI();
-        await fetch(BIN_URL, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': MASTER_KEY
-          },
-          body: JSON.stringify(appData)
-        });
-      } catch(e) {}
-    }
-
-    function processSecureLogin() {
-      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
-      const passInput = document.getElementById('manual-pass-input').value.trim();
-
-      if (!emailInput || !passInput) {
-        alert("Preencha o e-mail e a senha.");
-        return;
-      }
-
-      let matchedAcc = null;
-      for (let acc of AUTH_ACCOUNTS) {
-        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
-          matchedAcc = acc;
-          break;
-        }
-      }
-
-      if (!matchedAcc && appData.customAdmins) {
-        const found = appData.customAdmins.find(a => a.email.toLowerCase() === emailInput && a.pass === passInput);
-        if (found) {
-          matchedAcc = { email: found.email, pass: found.pass, name: found.name, isMaster: false };
-          appData.permissions = found.perms || appData.permissions;
-        }
-      }
-
-      if (matchedAcc) {
-        localStorage.setItem('brg_adm_logged', 'true');
-        localStorage.setItem('brg_adm_email', matchedAcc.email);
-        localStorage.setItem('brg_adm_name', matchedAcc.name);
-        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
-
-        const logBox = document.getElementById('admin-login');
-        const dashBox = document.getElementById('admin-dashboard');
-        if(logBox) logBox.style.display = 'none';
-        if(dashBox) dashBox.style.display = 'block';
-
-        updateAdminGreeting();
-        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
-        renderApp();
-      } else {
-        alert('Acesso Negado. E-mail ou Senha incorretos.');
-      }
-    }
-
-    function updateAdminGreeting() {
-      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
-      const greetingEl = document.getElementById('adm-welcome-text');
-      const masterTabsSec = document.getElementById('master-tabs-section');
-      const masterCtrlSec = document.getElementById('master-control-section');
-      const clearLogsBtn = document.getElementById('clear-logs-btn');
-
-      if(greetingEl) {
-        if(name === 'Touru') {
-          greetingEl.innerText = '👑 Conectado como: Touru (Master)';
-        } else if(name === 'Alisson') {
-          greetingEl.innerText = '🍻 Conectado como: Alisson (Colaborador)';
+      const menuList = document.getElementById('admin-menu-list');
+      if(menuList) {
+        if(!canEdit && !canDel) {
+          menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
         } else {
-          greetingEl.innerText = '⚙️ Conectado como: ' + name;
+          menuList.innerHTML = appData.menu.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                  <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
+                    <option value="caipirinha" ${i.type === 'caipirinha' ? 'selected' : ''}>🍋 Caipirinha</option>
+                    <option value="vodka" ${i.type === 'vodka' ? 'selected' : ''}>🍸 Vodka</option>
+                    <option value="rum" ${i.type === 'rum' ? 'selected' : ''}>🍹 Rum</option>
+                    <option value="tequila" ${i.type === 'tequila' ? 'selected' : ''}>🌵 Tequila</option>
+                    <option value="gin" ${i.type === 'gin' ? 'selected' : ''}>🌿 Gin</option>
+                    <option value="whisky" ${i.type === 'whisky' ? 'selected' : ''}>🥃 Whisky</option>
+                    <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
+                    <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
+                    <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
+                  </select>
+                  <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
+                  <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
+              </div>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short || '')}">
+              </div>
+              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full || '')}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                  <img src="${i.img}" style="width:40px; height:40px; object-fit:fill; border-radius:4px; border:1px solid #444;">
+                  <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
+                    <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
+                  </div>
+                  ${canEdit ? `<button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>` : ''}
+                  ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
+              </div>
+            </div>`).join('');
+        }
+      }
+      
+      const agendaList = document.getElementById('admin-agenda-list');
+      if(agendaList) {
+        const canAgenda = isMaster || perms.canAgenda !== false;
+        if(!canAgenda) {
+          agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar a agenda.</p>';
+        } else {
+          agendaList.innerHTML = appData.agenda.map(i => `
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
+                <input type="text" class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title)}">
+              </div>
+              <textarea class="admin-textarea" id="a-desc-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.desc)}</textarea>
+              <div class="admin-card-row" style="margin-top:5px;">
+                <img src="${i.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'}" style="width:40px; height:40px; object-fit:fill; border-radius:4px;">
+                <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                    <span style="font-size:0.75rem;">📷 Upar Mini Flyer</span>
+                    <input type="file" accept="image/*" onchange="updateAgendaImg(${i.id}, this)">
+                </div>
+                ${canEdit ? `<button class="action-btn" onclick="saveAgendaData(${i.id})">💾 Salvar</button>` : ''}
+                ${canDel ? `<button class="action-btn del-btn" onclick="removeAgendaItem(${i.id})">🗑️ Excluir</button>` : ''}
+              </div>
+            </div>`).join('');
         }
       }
 
-      if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
-      if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
-      if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
-    }
+      const teamList = document.getElementById('admin-team-list');
+      if(teamList) {
+        teamList.innerHTML = appData.team.map(t => `
+          <div class="admin-card">
+            <strong style="color:var(--c-cyan);">${t.name} (${t.type.toUpperCase()})</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="tname-${t.id}" value="${escapeHTML(t.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="trole-${t.id}" value="${escapeHTML(t.role)}" placeholder="Cargo">
+            </div>
+            <input type="text" class="admin-input" id="tig-${t.id}" value="${escapeHTML(t.ig)}" placeholder="Instagram" style="margin-top:5px;">
+            <textarea class="admin-textarea" id="tdesc-${t.id}" rows="2" style="margin-top:5px;">${escapeHTML(t.desc)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+                <img src="${t.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
+                  <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
+                </div>
+                <button class="action-btn" onclick="saveTeamData('${t.id}')">💾 Salvar</button>
+            </div>
+          </div>`).join('');
+      }
 
-    function processLogout() {
-      localStorage.removeItem('brg_adm_logged');
-      localStorage.removeItem('brg_adm_email');
-      localStorage.removeItem('brg_adm_name');
-      localStorage.removeItem('brg_adm_is_master');
-      const logBox = document.getElementById('admin-login');
-      const dashBox = document.getElementById('admin-dashboard');
-      if(logBox) logBox.style.display = 'block';
-      if(dashBox) dashBox.style.display = 'none';
-      renderApp();
-    }
+      const arcList = document.getElementById('admin-arcade-list');
+      if(arcList) {
+        arcList.innerHTML = appData.arcade.map(i => `
+          <div class="admin-card" style="border-color:var(--c-purple);">
+            <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="arc-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="arc-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Jogo">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="arc-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Score">
+              <input type="text" class="admin-input" id="arc-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="arc-ig-${i.id}" value="${escapeHTML(i.ig)}" placeholder="Instagram (@)">
+            </div>
+            <textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+              ${i.id <= 3 ? `<img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+              <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                <span style="font-size:0.75rem;">📷 Avatar Top 3</span>
+                <input type="file" accept="image/*" onchange="updateArcadeImg(${i.id}, this)">
+              </div>` : ''}
+              <button class="action-btn" onclick="saveArcadeData(${i.id})">💾 Salvar Jogador</button>
+            </div>
+          </div>`).join('');
+      }
 
-    function toggleAdminSection(id) {
-      const content = document.getElementById(id);
-      const btn = content.previousElementSibling;
-      if (content.style.display === "block") {
-        content.style.display = "none";
-        btn.classList.remove("active");
-      } else {
-        content.style.display = "block";
-        btn.classList.add("active");
+      const cachList = document.getElementById('admin-cachaceiros-list');
+      if(cachList) {
+        cachList.innerHTML = appData.cachaceiros.map(i => `
+          <div class="admin-card" style="border-color:#ff9800;">
+            <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
+            <div class="admin-card-row">
+              <input type="text" class="admin-input" id="ca-name-${i.id}" value="${escapeHTML(i.name)}" placeholder="Nome">
+              <input type="text" class="admin-input" id="ca-score-${i.id}" value="${escapeHTML(i.score)}" placeholder="Litros">
+            </div>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <input type="text" class="admin-input" id="ca-sub-${i.id}" value="${escapeHTML(i.sub)}" placeholder="Instagram (@)">
+              <input type="text" class="admin-input" id="ca-prize-${i.id}" value="${escapeHTML(i.prize)}" placeholder="Prêmio (vazio=sem prêmio)">
+            </div>
+            <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
+            <div class="admin-card-row" style="margin-top:5px;">
+              <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+              <div class="file-upload-wrapper" style="padding: 5px 10px;">
+                  <span style="font-size:0.75rem;">📷 Upar Avatar</span>
+                  <input type="file" accept="image/*" onchange="updateCachaceiroImg(${i.id}, this)">
+              </div>
+              <button class="action-btn" onclick="saveCachaceiroData(${i.id})">💾 Salvar Bebedor #${i.id}</button>
+            </div>
+          </div>`).join('');
       }
     }
 
-    function openPlayerModal(type, id, name, sub, score, prize, quote, ig, imgUrl) {
-      const pName = document.getElementById('playerName');
-      const pIg = document.getElementById('playerIg');
-      const pQuote = document.getElementById('playerQuote');
-      const pImg = document.getElementById('playerModalImg');
-
-      if(pName) pName.innerText = name;
-      if(pIg) {
-        pIg.innerText = ig;
-        pIg.href = "https://instagram.com/" + ig.replace('@','');
+    const canvas = document.getElementById('sparks-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    function resize() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    class Ember {
+      constructor() { this.reset(true); }
+      reset(initial = false) {
+        this.x = Math.random() * width; this.y = initial ? Math.random() * height : height + Math.random() * 50;
+        this.size = Math.random() * 1.5 + 0.5; this.speedY = Math.random() * 0.8 + 0.2; this.speedX = (Math.random() - 0.5) * 0.4;
+        this.opacity = Math.random() * 0.5 + 0.1; this.fade = Math.random() * 0.008 + 0.002;
+        const colors = ['233, 30, 99', '0, 188, 212', '255, 235, 59'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
       }
-      if(pQuote) pQuote.innerText = `"${quote}"`;
-      if(pImg) pImg.src = imgUrl;
+      update() {
+        this.y -= this.speedY; this.x += this.speedX; this.opacity -= this.fade;
+        if (this.opacity <= 0 || this.y < -10) this.reset();
+      }
+      draw() {
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`; ctx.fill();
+      }
+    }
+    const embers = Array.from({ length: 12 }, () => new Ember());
+    function animateEmbers() {
+      ctx.clearRect(0, 0, width, height);
+      embers.forEach(ember => { ember.update(); ember.draw(); });
+      requestAnimationFrame(animateEmbers);
+    }
+    animateEmbers();
 
-      const pModal = document.getElementById('playerModal');
-      if(pModal) pModal.style.display = 'flex';
+    async function initApp() {
+      try {
+        if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+          const uEl = document.getElementById('gh-user');
+          const rEl = document.getElementById('gh-repo');
+          const tEl = document.getElementById('gh-token');
+          if(uEl) uEl.value = githubConfig.user;
+          if(rEl) rEl.value = githubConfig.repo;
+          if(tEl) tEl.value = githubConfig.token;
+          updateGitHubUI(true);
+        } else {
+          updateGitHubUI(false);
+        }
+
+        renderApp();
+        recordTrafficAnalytics();
+        await fetchBinData();
+        
+        if(localStorage.getItem('brg_adm_logged') === 'true') {
+          const logBox = document.getElementById('admin-login');
+          const dashBox = document.getElementById('admin-dashboard');
+          if(logBox) logBox.style.display = 'none';
+          if(dashBox) dashBox.style.display = 'block';
+          updateAdminGreeting();
+        }
+
+        setInterval(fetchBinData, 15000);
+      } catch(e) {}
     }
 
-    function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
-      if(type === 'featured') {
-        const eTag = document.getElementById('e-tag');
-        const eTitle = document.getElementById('e-title');
-        const eSub = document.getElementById('e-sub');
-        const eDesc = document.getElementById('e-desc');
-        const eImg = document.getElementById('eventModalImg');
-
-        if(eTag) eTag.innerText = appData.flyer.tag;
-        if(eTitle) eTitle.innerText = appData.flyer.title;
-        if(eSub) eSub.innerText = appData.flyer.sub;
-        if(eDesc) eDesc.innerText = appData.flyer.desc;
-        if(eImg) eImg.src = appData.flyer.img;
-      }
-      const eModal = document.getElementById('eventModal');
-      if(eModal) eModal.style.display = 'flex';
-    }
-
-    function openAgendaModalFromList(title, date, desc, img, id) {
-      const eTag = document.getElementById('e-tag');
-      const eTitle = document.getElementById('e-title');
-      const eSub = document.getElementById('e-sub');
-      const eDesc = document.getElementById('e-desc');
-      const eImg = document.getElementById('eventModalImg');
-
-      if(eTag) eTag.innerText = date;
-      if(eTitle) eTitle.innerText = title;
-      if(eSub) eSub.innerText = "Agenda Mensal";
-      if(eDesc) eDesc.innerText = desc;
-      if(eImg) eImg.src = img;
-
-      const eModal = document.getElementById('eventModal');
-      if(eModal) eModal.style.display = 'flex';
-    }
-
-    // Inicialização direta e garantida
-    document.addEventListener('DOMContentLoaded', () => {
-      renderApp();
-      recordTrafficAnalytics();
-      fetchBinData();
-
-      if(localStorage.getItem('brg_adm_logged') === 'true') {
-        const logBox = document.getElementById('admin-login');
-        const dashBox = document.getElementById('admin-dashboard');
-        if(logBox) logBox.style.display = 'none';
-        if(dashBox) dashBox.style.display = 'block';
-        updateAdminGreeting();
-      }
-
-      setInterval(fetchBinData, 15000);
+    window.addEventListener('DOMContentLoaded', () => {
+      initApp();
     });
   </script>
 </body>
