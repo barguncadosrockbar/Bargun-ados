@@ -1218,6 +1218,44 @@
       }catch(e){}
     }
 
+    // Controle central de gravações: todos os PUTs passam pela mesma fila.
+    // Isso impede que uma gravação antiga chegue depois de uma edição nova e a sobrescreva.
+    let binWriteChain = Promise.resolve();
+    let binWriteBusy = false;
+    let binWriteGeneration = 0;
+
+    function queueBinWrite(snapshot, keepalive=false){
+      const payload = JSON.stringify(snapshot);
+      const generation = ++binWriteGeneration;
+      const run = async () => {
+        binWriteBusy = true;
+        try {
+          const res = await fetch(BIN_URL, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Master-Key': MASTER_KEY
+            },
+            body: payload,
+            keepalive: !!keepalive
+          });
+          if(!res.ok) {
+            console.error('JSONBin: falha ao salvar', res.status, 'geração', generation);
+            return false;
+          }
+          return true;
+        } catch(e) {
+          console.error('JSONBin: erro de rede ao salvar', e);
+          return false;
+        } finally {
+          binWriteBusy = false;
+        }
+      };
+      const result = binWriteChain.then(run, run);
+      binWriteChain = result.catch(()=>false);
+      return result;
+    }
+
     let trafficDirty = false;
     let trafficSyncTimer = null;
 
@@ -1229,11 +1267,9 @@
 
     async function flushTrafficAnalytics(){
       if(!trafficDirty) return;
-      try{
-        ensureTrafficData();
-        await fetch(BIN_URL, {method:'PUT', headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY}, body:JSON.stringify(appData)});
-        trafficDirty=false;
-      }catch(e){}
+      ensureTrafficData();
+      const saved = await queueBinWrite(appData);
+      if(saved) trafficDirty=false;
     }
 
     function recordSiteClick(){
@@ -1265,7 +1301,14 @@
       recordSiteClick();
     }, {passive:true});
 
-    window.addEventListener('beforeunload', function(){ try{ localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{})); fetch(BIN_URL,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':MASTER_KEY},body:JSON.stringify(appData),keepalive:true}).catch(()=>{}); }catch(e){} });
+    window.addEventListener('beforeunload', function(){
+      try{
+        localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{}));
+        // Só usa keepalive quando não existe outra gravação em andamento.
+        // Assim o encerramento da página nunca sobrescreve uma edição mais nova.
+        if(!binWriteBusy) queueBinWrite(appData, true);
+      }catch(e){}
+    });
 
     function ensureAdminSystem() {
       if(!Array.isArray(appData.adminAccounts) || appData.adminAccounts.length === 0) appData.adminAccounts = AUTH_ACCOUNTS.map(a => ({...a}));
@@ -1348,12 +1391,20 @@
       if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
+      // Não substitui o estado local enquanto existe uma gravação pendente.
+      // O snapshot remoto pode ter sido iniciado antes da edição atual.
+      if(binWriteBusy) return;
+      const readGeneration = binWriteGeneration;
       try {
         const res = await fetch(`${BIN_URL}/latest`, {
+          cache: 'no-store',
           headers: { 'X-Master-Key': MASTER_KEY }
         });
         if(res.ok) {
           const json = await res.json();
+          // Se uma gravação começou enquanto a leitura estava em trânsito,
+          // descarta essa resposta antiga em vez de restaurar dados anteriores.
+          if(readGeneration !== binWriteGeneration || binWriteBusy) return;
           if(json.record) {
             appData = { ...appData, ...json.record };
             ensureAdminSystem();
@@ -1382,24 +1433,10 @@
       }
       renderApp();
       updateTrafficUI();
-      try {
-        const res = await fetch(BIN_URL, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': MASTER_KEY
-          },
-          body: JSON.stringify(appData)
-        });
-        if(!res.ok) {
-          console.error('JSONBin: falha ao salvar', res.status);
-          return false;
-        }
-        return true;
-      } catch(e) {
-        console.error('JSONBin: erro de rede ao salvar', e);
-        return false;
-      }
+      // O snapshot é criado no momento da solicitação e entra na fila central.
+      // Outra edição feita enquanto esta gravação estiver em trânsito será
+      // enfileirada depois e nunca poderá ser sobrescrita por esta gravação antiga.
+      return await queueBinWrite(appData);
     }
 
     async function updateBarStatus(status) {
@@ -1460,15 +1497,8 @@
           if(!pending.some(s => Number(s.id) === Number(newItem.id))) pending.push(newItem);
           merged.pendingSongs = pending;
 
-          const putRes = await fetch(BIN_URL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-Master-Key': MASTER_KEY
-            },
-            body: JSON.stringify(merged)
-          });
-          if(!putRes.ok) throw new Error(`Gravação na nuvem falhou (${putRes.status})`);
+          const putSaved = await queueBinWrite(merged);
+          if(!putSaved) throw new Error('Gravação na nuvem falhou');
 
           // Confirma que o pedido realmente chegou ao registro remoto.
           const verifyRes = await fetch(`${BIN_URL}/latest`, {
