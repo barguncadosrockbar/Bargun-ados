@@ -2069,11 +2069,8 @@
           return false;
         }
 
-        /*
-         * Backup duplo: a mesma foto é enviada para ImgBB e ImgDB.
-         * O site continua preferindo ImgBB. Se ImgBB falhar, usa a URL
-         * permanente do ImgDB. Nenhum arquivo/Base64 é gravado no JSONBin.
-         */
+        // O arquivo é enviado separadamente para os dois serviços.
+        // Nenhum Base64 ou arquivo é salvo no JSONBin.
         const uploadImgBB = async () => {
           try {
             const formData = new FormData();
@@ -2089,12 +2086,12 @@
             const valid = res.ok && json && json.success === true && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url);
             if (!valid) {
               console.warn('ImgBB falhou:', {status: res.status, response: json});
-              return '';
+              return {url:'', error:(json && (json.error && (json.error.message || json.error) || json.message)) || `HTTP ${res.status}`};
             }
-            return url;
+            return {url:url, error:''};
           } catch (e) {
             console.warn('ImgBB indisponível:', e);
-            return '';
+            return {url:'', error:e && e.message ? e.message : 'Erro de rede'};
           }
         };
 
@@ -2113,69 +2110,35 @@
             const valid = res.ok && /^https:\/\/imgdb\.io\/i\/[^\s]+$/i.test(url);
             if (!valid) {
               console.warn('ImgDB falhou:', {status: res.status, response: json});
-              return '';
+              return {url:'', error:(json && (json.error || json.message)) || `HTTP ${res.status}`};
             }
-            return url;
+            return {url:url, error:''};
           } catch (e) {
             console.warn('ImgDB indisponível:', e);
-            return '';
+            return {url:'', error:e && e.message ? e.message : 'Erro de rede'};
           }
         };
 
-        // Os dois uploads são independentes. Uma falha não impede o outro.
-        const [imgbbUrl, imgdbUrl] = await Promise.all([uploadImgBB(), uploadImgDB()]);
-
-        // ImgBB é a URL principal; ImgDB é o plano B.
+        // Os dois uploads começam juntos e são avaliados separadamente.
+        const [imgbbResult, imgdbResult] = await Promise.all([uploadImgBB(), uploadImgDB()]);
+        const imgbbUrl = imgbbResult.url;
+        const imgdbUrl = imgdbResult.url;
         const hostedUrl = imgbbUrl || imgdbUrl;
 
         if (!hostedUrl) {
-          alert('⚠️ A foto não conseguiu ser enviada para nenhum dos dois serviços (ImgBB e ImgDB). Nada foi salvo no banco de dados.');
+          console.error('Upload de imagem falhou nos dois serviços.', {imgbb: imgbbResult, imgdb: imgdbResult});
+          alert(`⚠️ A foto não foi hospedada.\n\nImgBB: ${imgbbResult.error || 'sem resposta válida'}\nImgDB: ${imgdbResult.error || 'sem resposta válida'}\n\nNada foi salvo no banco de dados.`);
           return false;
         }
 
-        // Confirma que a URL escolhida realmente entrega uma imagem antes de salvar.
-        const verified = await new Promise(resolve => {
-          const probe = new Image();
-          let settled = false;
-          const finish = value => {
-            if (settled) return;
-            settled = true;
-            probe.onload = null;
-            probe.onerror = null;
-            resolve(value);
-          };
-          const timer = setTimeout(() => finish(false), 15000);
-          probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
-          probe.onerror = () => { clearTimeout(timer); finish(false); };
-          probe.src = hostedUrl + (hostedUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
-        });
-
-        if (!verified) {
-          // Se a primeira URL não carregar, tenta a segunda que já foi enviada.
-          const backupUrl = hostedUrl === imgbbUrl ? imgdbUrl : imgbbUrl;
-          if (backupUrl) {
-            const backupVerified = await new Promise(resolve => {
-              const probe = new Image();
-              let settled = false;
-              const finish = value => {
-                if (settled) return;
-                settled = true;
-                probe.onload = null;
-                probe.onerror = null;
-                resolve(value);
-              };
-              const timer = setTimeout(() => finish(false), 15000);
-              probe.onload = () => { clearTimeout(timer); finish(probe.naturalWidth > 0 && probe.naturalHeight > 0); };
-              probe.onerror = () => { clearTimeout(timer); finish(false); };
-              probe.src = backupUrl + (backupUrl.includes('?') ? '&' : '?') + '_verify=' + Date.now();
-            });
-            if (backupVerified) {
-              if (typeof callback === 'function') callback(backupUrl);
-              return true;
-            }
-          }
-          alert('⚠️ Os serviços receberam a tentativa, mas nenhuma URL de imagem pôde ser confirmada. Nada foi salvo no banco de dados.');
-          return false;
+        // A confirmação de sucesso vem da própria resposta HTTP/JSON das APIs.
+        // Não fazemos uma segunda requisição nem alteramos a URL com parâmetros.
+        if (imgbbUrl && imgdbUrl) {
+          console.info('Imagem hospedada nos dois serviços.', {imgbbUrl, imgdbUrl});
+        } else if (imgbbUrl) {
+          console.warn('Imagem hospedada somente no ImgBB.', {imgbbUrl, imgdbError: imgdbResult.error});
+        } else {
+          console.warn('Imagem hospedada somente no ImgDB.', {imgdbUrl, imgbbError: imgbbResult.error});
         }
 
         if (typeof callback === 'function') callback(hostedUrl);
@@ -2186,6 +2149,7 @@
         return false;
       }
     }
+
 
     async function modalUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
