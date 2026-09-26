@@ -316,6 +316,22 @@
       .traffic-mini-label { font-size: .6rem; }
       .featured-flyer-img { min-height: 420px; max-height: 520px; }
     }
+  .menu-organizer-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,214,0,.35);border-radius:10px;background:rgba(255,214,0,.06)}
+  .menu-organizer-bar.active{display:flex}
+  .menu-organizer-hint{color:#ccc;font-size:.78rem;flex:1 1 220px}
+  .menu-organizer-save{display:none}
+  .menu-organizer-save.pending{display:inline-flex}
+  .menu-organizer-discard{display:none}
+  .menu-organizer-discard.pending{display:inline-flex}
+  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px}
+  .menu-organizer-active .menu-grid .product-card:active{cursor:grabbing}
+  .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:.42;transform:scale(.98)}
+  .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:2px solid var(--c-yellow);outline-offset:2px}
+  .menu-organizer-active .menu-grid{min-height:45px}
+  .menu-move-controls{position:absolute;top:5px;right:5px;z-index:5;display:flex;gap:3px}
+  .menu-move-controls button{border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.78);color:#fff;border-radius:5px;min-width:30px;height:30px;font-weight:900;cursor:pointer}
+  .menu-move-controls button:active{transform:scale(.94)}
+  @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
   </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 </head>
@@ -631,22 +647,36 @@
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
           <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+            <button class="action-btn" onclick="toggleMenuOrganizer('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
             <button class="action-btn" onclick="openCategoryQuickEdit('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias / Destaques</button>
             <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
           </div>
         </div>
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
+        <div id="menu-organizer-bebidas" class="menu-organizer-bar">
+          <span class="menu-organizer-hint">Arraste os quadrados para mudar a ordem dentro de cada categoria. A mudança só fica permanente depois de salvar.</span>
+          <button id="menu-organizer-save-bebidas" class="action-btn menu-organizer-save" onclick="saveMenuPositions('bebidas')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
+          <button id="menu-organizer-discard-bebidas" class="action-btn menu-organizer-discard" onclick="discardMenuPositions('bebidas')" style="background:#555;color:#fff;">↩ Descartar</button>
+          <button class="action-btn" onclick="toggleMenuOrganizer('bebidas',false)" style="background:#333;color:#fff;">✖ Fechar</button>
+        </div>
         <div id="dynamic-menu-bebidas"></div>
       </section>
 
       <section id="porcoes" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-porcoes">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
+          <button class="action-btn" onclick="toggleMenuOrganizer('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
           <button class="action-btn" onclick="openCategoryQuickEdit('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias / Destaques</button>
           <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
         </div>
         <h2 class="section-title">Larica Pesada</h2>
+        <div id="menu-organizer-porcoes" class="menu-organizer-bar">
+          <span class="menu-organizer-hint">Arraste os quadrados para mudar a ordem. A mudança só fica permanente depois de salvar.</span>
+          <button id="menu-organizer-save-porcoes" class="action-btn menu-organizer-save" onclick="saveMenuPositions('porcoes')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
+          <button id="menu-organizer-discard-porcoes" class="action-btn menu-organizer-discard" onclick="discardMenuPositions('porcoes')" style="background:#555;color:#fff;">↩ Descartar</button>
+          <button class="action-btn" onclick="toggleMenuOrganizer('porcoes',false)" style="background:#333;color:#fff;">✖ Fechar</button>
+        </div>
         <div id="dynamic-menu-porcoes"></div>
       </section>
 
@@ -1663,6 +1693,157 @@
       alert('✅ Categorias atualizadas e salvas!');
     }
 
+    // Organizador visual do cardápio — somente ADM.
+    // A ordem é guardada separadamente por categoria para não alterar os dados dos itens.
+    let menuOrganizerPage = '';
+    let menuOrganizerActive = false;
+    let menuOrganizerDirty = false;
+    let menuOrganizerSnapshot = null;
+
+    function ensureMenuOrderData(){
+      if(!appData.menuOrder || typeof appData.menuOrder !== 'object' || Array.isArray(appData.menuOrder)) appData.menuOrder = {};
+    }
+
+    function menuOrderKeyForItem(item){
+      if(!item) return 'legacy';
+      if(item.type === 'portion') return 'portion';
+      if(item.type === 'beer') return 'beer';
+      if(item.type === 'noalcohol') return 'noalcohol';
+      if(item.type === 'drink' && item.drinkLine) return String(item.drinkLine);
+      return 'legacy';
+    }
+
+    function sortMenuItemsBySavedOrder(items, key){
+      ensureMenuOrderData();
+      const order = Array.isArray(appData.menuOrder[key]) ? appData.menuOrder[key].map(Number) : [];
+      const positions = new Map(order.map((id,index)=>[Number(id),index]));
+      return items.map((item,index)=>({item,index,pos:positions.has(Number(item.id)) ? positions.get(Number(item.id)) : 1000000 + index}))
+        .sort((a,b)=>a.pos-b.pos || a.index-b.index).map(x=>x.item);
+    }
+
+    function isMenuOrganizerAllowed(){
+      const logged = localStorage.getItem('brg_adm_logged') === 'true';
+      const master = localStorage.getItem('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      return logged && (master || perms.canEdit !== false);
+    }
+
+    function captureMenuOrderFromDOM(page){
+      ensureMenuOrderData();
+      const root = document.getElementById(page === 'bebidas' ? 'dynamic-menu-bebidas' : 'dynamic-menu-porcoes');
+      if(!root) return;
+      root.querySelectorAll('.menu-grid[data-order-key]').forEach(grid=>{
+        const key = grid.getAttribute('data-order-key');
+        const ids = Array.from(grid.querySelectorAll('.product-card[data-menu-id]')).map(card=>Number(card.getAttribute('data-menu-id'))).filter(Number.isFinite);
+        if(ids.length) appData.menuOrder[key] = ids;
+      });
+      menuOrganizerDirty = true;
+      updateMenuOrganizerUI(page);
+    }
+
+    function updateMenuOrganizerUI(page){
+      const bar=document.getElementById('menu-organizer-'+page);
+      const save=document.getElementById('menu-organizer-save-'+page);
+      const discard=document.getElementById('menu-organizer-discard-'+page);
+      if(bar) bar.classList.toggle('active', menuOrganizerActive && menuOrganizerPage===page);
+      if(save) save.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
+      if(discard) discard.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
+      document.body.classList.toggle('menu-organizer-active', menuOrganizerActive);
+    }
+
+    function setupMenuOrganizerDragAndDrop(page){
+      if(!menuOrganizerActive || menuOrganizerPage!==page) return;
+      const root=document.getElementById(page === 'bebidas' ? 'dynamic-menu-bebidas' : 'dynamic-menu-porcoes');
+      if(!root) return;
+      root.querySelectorAll('.menu-grid[data-order-key]').forEach(grid=>{
+        grid.addEventListener('dragover', e=>{
+          e.preventDefault();
+          const dragging=root.querySelector('.menu-dragging');
+          if(!dragging || dragging.parentElement!==grid) return;
+          const target=e.target.closest('.product-card[data-menu-id]');
+          grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
+          if(target && target!==dragging) target.classList.add('menu-drag-over');
+        });
+        grid.addEventListener('drop', e=>{
+          e.preventDefault();
+          const dragging=root.querySelector('.menu-dragging');
+          if(!dragging || dragging.parentElement!==grid) return;
+          const target=e.target.closest('.product-card[data-menu-id]');
+          if(!target || target===dragging) return;
+          const rect=target.getBoundingClientRect();
+          if(e.clientX < rect.left + rect.width/2) grid.insertBefore(dragging,target); else grid.insertBefore(dragging,target.nextSibling);
+          grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
+          captureMenuOrderFromDOM(page);
+        });
+      });
+      root.querySelectorAll('.menu-grid .product-card[data-menu-id]').forEach(card=>{
+        card.setAttribute('draggable','true');
+        card.addEventListener('dragstart', e=>{
+          card.classList.add('menu-dragging');
+          if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+        });
+        card.addEventListener('dragend', ()=>{
+          card.classList.remove('menu-dragging');
+          root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
+        });
+      });
+    }
+
+    function moveMenuCard(id, direction){
+      if(!menuOrganizerActive || !isMenuOrganizerAllowed()) return;
+      const root=document.getElementById(menuOrganizerPage === 'bebidas' ? 'dynamic-menu-bebidas' : 'dynamic-menu-porcoes');
+      if(!root) return;
+      const card=Array.from(root.querySelectorAll('.menu-grid .product-card[data-menu-id]')).find(el=>Number(el.getAttribute('data-menu-id'))===Number(id));
+      if(!card) return;
+      const grid=card.closest('.menu-grid');
+      if(!grid) return;
+      if(direction==='up' && card.previousElementSibling) grid.insertBefore(card,card.previousElementSibling);
+      if(direction==='down' && card.nextElementSibling) grid.insertBefore(card.nextElementSibling,card);
+      captureMenuOrderFromDOM(menuOrganizerPage);
+    }
+
+    function handleOrganizerCardClick(event,id){
+      if(menuOrganizerActive){ event.preventDefault(); event.stopPropagation(); return false; }
+      openMenuModalObj(id);
+    }
+
+    function toggleMenuOrganizer(page, force){
+      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado: somente administradores com permissão de edição podem organizar o cardápio.');
+      const next = typeof force === 'boolean' ? force : !(menuOrganizerActive && menuOrganizerPage===page);
+      if(!next){
+        if(menuOrganizerDirty && !confirm('Existem mudanças de posição não salvas. Fechar sem salvar?')) return;
+        menuOrganizerActive=false; menuOrganizerPage=''; menuOrganizerDirty=false; menuOrganizerSnapshot=null;
+        renderApp();
+        return;
+      }
+      ensureMenuOrderData();
+      menuOrganizerPage=page; menuOrganizerActive=true; menuOrganizerDirty=false;
+      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
+      renderApp();
+      updateMenuOrganizerUI(page);
+    }
+
+    function discardMenuPositions(page){
+      if(!menuOrganizerDirty) return;
+      ensureMenuOrderData();
+      appData.menuOrder=menuOrganizerSnapshot ? JSON.parse(JSON.stringify(menuOrganizerSnapshot)) : {};
+      menuOrganizerDirty=false;
+      renderApp();
+      updateMenuOrganizerUI(page);
+    }
+
+    async function saveMenuPositions(page){
+      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado.');
+      captureMenuOrderFromDOM(page);
+      if(!menuOrganizerDirty) return alert('Nenhuma mudança de posição para salvar.');
+      const saved=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
+      if(saved===false) return alert('⚠️ Não foi possível salvar as posições. Tente novamente.');
+      menuOrganizerDirty=false;
+      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
+      updateMenuOrganizerUI(page);
+      alert('✅ Posições salvas com sucesso!');
+    }
+
     function renderApp() {
       const cHome = appData.home;
       const cMenu = appData.menu;
@@ -1748,24 +1929,28 @@
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
-        const items = cMenu.filter(i => i.type === 'drink' && i.drinkLine === line);
+        const items = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && i.drinkLine === line), line);
         if(items.length) {
           items.forEach(i => drinksWithLine.add(i.id));
-          drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas[line] || title)}</summary><div class="menu-collapse-body"><div class="menu-grid">${items.map(createCard).join('')}</div></div></details>`;
+          drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas[line] || title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="${line}">${items.map(createCard).join('')}</div></div></details>`;
         }
       });
 
-      const legacyDrinks = cMenu.filter(i => i.type === 'drink' && !drinksWithLine.has(i.id));
+      const legacyDrinks = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && !drinksWithLine.has(i.id)), 'legacy');
       if(legacyDrinks.length) {
-        drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.legacy)}</summary><div class="menu-collapse-body"><div class="menu-grid">${legacyDrinks.map(createCard).join('')}</div></div></details>`;
+        drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.legacy)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="legacy">${legacyDrinks.map(createCard).join('')}</div></div></details>`;
       }
 
-      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.beer)}</summary><div class="menu-collapse-body"><div class="menu-grid">${cMenu.filter(i => i.type === 'beer').map(createCard).join('')}</div></div></details>`;
-      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.noalcohol)}</summary><div class="menu-collapse-body"><div class="menu-grid">${cMenu.filter(i => i.type === 'noalcohol').map(createCard).join('')}</div></div></details>`;
+      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.beer)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="beer">${sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'beer'), 'beer').map(createCard).join('')}</div></div></details>`;
+      drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.noalcohol)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="noalcohol">${sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'noalcohol'), 'noalcohol').map(createCard).join('')}</div></div></details>`;
       drinksContainer.innerHTML = drinksStr;
 
-      const portionFeaturedIds=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds:[]; const portionFeaturedItems=portionFeaturedIds.map(id=>cMenu.find(i=>Number(i.id)===Number(id))).filter(Boolean); let portionsStr=''; if(portionFeaturedItems.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured)}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${portionFeaturedItems.map(createCard).join('')}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid">`; cMenu.filter(i=>i.type==='portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
+      const portionFeaturedIds=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds:[]; const portionFeaturedItems=portionFeaturedIds.map(id=>cMenu.find(i=>Number(i.id)===Number(id))).filter(Boolean); let portionsStr=''; if(portionFeaturedItems.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured)}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${portionFeaturedItems.map(createCard).join('')}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
+      setupMenuOrganizerDragAndDrop('bebidas');
+      setupMenuOrganizerDragAndDrop('porcoes');
+      updateMenuOrganizerUI('bebidas');
+      updateMenuOrganizerUI('porcoes');
 
       const agendaList = document.getElementById('dynamic-agenda-list');
       agendaList.innerHTML = '';
@@ -2051,7 +2236,11 @@
       });
     }
 
-    function createCard(item) { const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id))); return `<div class="product-card glass-panel" style="--card-photo:url('${escapeHTML(item.img||'')}')" onclick="openMenuModalObj(${item.id})"><div class="product-image-wrap"><img src="${escapeHTML(item.img||'')}" class="product-img" onerror="fallbackImg(this)">${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
+    function createCard(item) {
+      const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
+      const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${item.id})` : `openMenuModalObj(${item.id})`;
+      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${item.id},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${item.id},'down')">↓</button></div>` : '';
+      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(item.img||'')}')" onclick="${organizerClick}"><div class="product-image-wrap"><img src="${escapeHTML(item.img||'')}" class="product-img" onerror="fallbackImg(this)">${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => i.id === id);
