@@ -270,7 +270,43 @@
 
     .adm-notify-badge { background: var(--c-red); color: #fff; font-size: 0.75rem; padding: 2px 6px; border-radius: 10px; font-weight: bold; margin-left: 6px; }
 
-    .admin-login-box { text-align: center; padding: 40px 15px; }
+    .admin-login-box { text-align: center; padding: 40px 15px; position: relative; overflow: hidden; isolation: isolate; }
+    .admin-login-box::before { content:""; position:absolute; inset:-2px; z-index:-2; background:conic-gradient(from 180deg, transparent 0deg, rgba(0,188,212,.55) 55deg, transparent 110deg, rgba(255,0,128,.45) 190deg, transparent 250deg, rgba(255,235,59,.35) 310deg, transparent 360deg); animation:authBorderSpin 7s linear infinite; opacity:.8; }
+    .admin-login-box::after { content:""; position:absolute; inset:1px; z-index:-1; border-radius:inherit; background:radial-gradient(circle at 50% 0%, rgba(0,188,212,.12), transparent 45%), linear-gradient(180deg, rgba(5,10,16,.96), rgba(0,0,0,.94)); pointer-events:none; }
+    .auth-tech-header { position:relative; display:inline-flex; align-items:center; gap:9px; margin-bottom:16px; padding:7px 12px; border:1px solid rgba(0,188,212,.38); border-radius:999px; color:var(--c-cyan); background:rgba(0,188,212,.055); font-family:var(--font-title); font-size:.72rem; letter-spacing:2px; text-transform:uppercase; box-shadow:0 0 20px rgba(0,188,212,.08); overflow:hidden; }
+    .auth-tech-header::after { content:""; position:absolute; top:0; left:-45%; width:35%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent); transform:skewX(-20deg); animation:authSweep 2.8s ease-in-out infinite; }
+    .auth-tech-dot { width:7px; height:7px; border-radius:50%; background:var(--c-cyan); box-shadow:0 0 8px var(--c-cyan), 0 0 16px rgba(0,188,212,.55); animation:authPulse 1.4s ease-in-out infinite; }
+    .auth-form-shell { max-width:340px; margin:0 auto; position:relative; }
+    .auth-input-wrap { position:relative; margin:0 auto 10px; max-width:300px; }
+    .auth-input-wrap::before { content:""; position:absolute; left:50%; bottom:0; width:0; height:1px; background:var(--c-cyan); box-shadow:0 0 10px var(--c-cyan); transform:translateX(-50%); transition:width .3s ease; z-index:3; }
+    .auth-input-wrap:focus-within::before { width:100%; }
+    .auth-input-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); color:#6f7d86; font-size:.95rem; pointer-events:none; transition:color .25s ease, text-shadow .25s ease; z-index:2; }
+    .auth-input-wrap:focus-within .auth-input-icon { color:var(--c-cyan); text-shadow:0 0 8px rgba(0,188,212,.55); }
+    .auth-login-input { box-sizing:border-box; width:100% !important; max-width:none !important; padding:12px 13px 12px 38px !important; margin:0 !important; border-color:rgba(0,188,212,.48) !important; border-radius:7px !important; transition:border-color .25s ease, box-shadow .25s ease, transform .25s ease; }
+    .auth-login-input:focus { outline:none; border-color:var(--c-cyan) !important; box-shadow:0 0 0 2px rgba(0,188,212,.09), 0 0 22px rgba(0,188,212,.12); transform:translateY(-1px); }
+    .auth-login-button { position:relative; overflow:hidden; letter-spacing:1px; box-shadow:0 0 0 rgba(0,188,212,0); transition:transform .25s ease, box-shadow .25s ease, filter .25s ease; }
+    .auth-login-button::before { content:""; position:absolute; top:0; left:-65%; width:42%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,.62),transparent); transform:skewX(-20deg); animation:authButtonSweep 3.4s ease-in-out infinite; }
+    .auth-login-button:hover { transform:translateY(-2px); box-shadow:0 0 24px rgba(0,188,212,.28); filter:brightness(1.08); }
+    .auth-login-button:disabled { cursor:wait; opacity:.72; transform:none; }
+    .auth-status { min-height:21px; margin:13px auto 0; color:#8d9aa2; font-size:.72rem; letter-spacing:1px; font-family:var(--font-title); text-transform:uppercase; transition:color .25s ease, opacity .25s ease; }
+    .auth-status.auth-working { color:var(--c-cyan); animation:authTextPulse 1s ease-in-out infinite; }
+    .auth-status.auth-success { color:#00e676; text-shadow:0 0 10px rgba(0,230,118,.35); }
+    .auth-status.auth-error { color:#ff5252; text-shadow:0 0 10px rgba(255,82,82,.28); }
+    .auth-scanline { position:absolute; left:7%; right:7%; top:18%; height:1px; background:linear-gradient(90deg,transparent,rgba(0,188,212,.55),transparent); opacity:.18; pointer-events:none; animation:authScan 4.5s linear infinite; }
+    .auth-success-flash { animation:authSuccessFlash .65s ease-out 1; }
+    .auth-shake { animation:authShake .42s ease-in-out 1; }
+    @keyframes authBorderSpin { to { transform:rotate(360deg); } }
+    @keyframes authSweep { 0%,20% { left:-45%; } 65%,100% { left:125%; } }
+    @keyframes authButtonSweep { 0%,22% { left:-65%; } 58%,100% { left:125%; } }
+    @keyframes authPulse { 0%,100% { transform:scale(.8); opacity:.55; } 50% { transform:scale(1.2); opacity:1; } }
+    @keyframes authTextPulse { 0%,100% { opacity:.55; } 50% { opacity:1; } }
+    @keyframes authScan { 0% { top:18%; opacity:0; } 10% { opacity:.22; } 90% { opacity:.22; } 100% { top:82%; opacity:0; } }
+    @keyframes authSuccessFlash { 0% { box-shadow:0 0 0 rgba(0,230,118,0); } 45% { box-shadow:0 0 45px rgba(0,230,118,.22); } 100% { box-shadow:0 0 0 rgba(0,230,118,0); } }
+    @keyframes authShake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-7px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(3px); } }
+    @media (prefers-reduced-motion: reduce) {
+      .admin-login-box::before, .auth-tech-header::after, .auth-login-button::before, .auth-tech-dot, .auth-scanline, .auth-status.auth-working { animation:none !important; }
+      .auth-login-input, .auth-login-button { transition:none !important; }
+    }
     .admin-accordion-btn { background: rgba(0,0,0,0.8); color: #fff; cursor: pointer; padding: 15px 20px; width: 100%; border: none; text-align: left; outline: none; font-family: var(--font-title); font-size: 1.5rem; border-left: 4px solid var(--c-pink); border-radius: 8px; margin-bottom: 8px; transition: 0.3s; }
     .admin-accordion-btn:hover { filter: brightness(1.2); }
     .admin-accordion-btn.active { border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0; border-bottom: 1px dashed rgba(255,255,255,0.2); }
@@ -348,6 +384,7 @@
   @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
   </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -795,13 +832,22 @@
         <h2 class="section-title" style="color: var(--c-red);">Painel ADM Completo</h2>
         
         <div id="admin-login" class="glass-panel admin-login-box">
-          <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px;">Acesso Restrito</h3>
+          <div class="auth-scanline" aria-hidden="true"></div>
+          <div class="auth-tech-header"><span class="auth-tech-dot"></span><span>SECURE ADMIN GATEWAY</span></div>
+          <h3 style="font-family: var(--font-title); font-size: 2rem; color: #fff; margin-bottom: 10px; text-shadow:0 0 18px rgba(0,188,212,.12);">Acesso Restrito</h3>
           <p style="color: #ccc; font-size: 1rem; margin-bottom: 25px;">Insira o E-mail e Senha para liberar o painel.</p>
-          <input type="email" id="manual-email-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 10px; background: #000; color: #fff; text-align: center;" placeholder="E-mail Autorizado" autocomplete="off">
-          <br>
-          <input type="password" id="manual-pass-input" style="width: 100%; max-width: 300px; padding: 12px; font-size: 1rem; border: 1px solid var(--c-cyan); border-radius: 4px; margin-bottom: 15px; background: #000; color: #fff; text-align: center;" placeholder="Senha de Acesso" autocomplete="off">
-          <br>
-          <button class="btn-fire" onclick="processSecureLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">Acessar Painel</button>
+          <div class="auth-form-shell">
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">✉</span>
+              <input type="email" id="manual-email-input" class="auth-login-input" placeholder="E-mail Autorizado" autocomplete="username" aria-label="E-mail autorizado">
+            </div>
+            <div class="auth-input-wrap">
+              <span class="auth-input-icon" aria-hidden="true">⌁</span>
+              <input type="password" id="manual-pass-input" class="auth-login-input" placeholder="Senha de Acesso" autocomplete="current-password" aria-label="Senha de acesso">
+            </div>
+            <button id="auth-login-button" class="btn-fire auth-login-button" onclick="processSecureLogin()" style="width: 100%; max-width: 300px; background: var(--c-cyan); color: #000;">⚡ Acessar Painel</button>
+            <div id="auth-status" class="auth-status" aria-live="polite">SISTEMA PRONTO • AGUARDANDO CREDENCIAIS</div>
+          </div>
         </div>
 
         <div id="admin-dashboard" style="display: none;">
@@ -1072,7 +1118,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via JSONBin.io & ImgBB API.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via API segura & ImgBB API.</p>
       <p class="creator-signature">Criado por : <strong>TOURU</strong></p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
@@ -1080,25 +1126,70 @@
   </div>
 
   <script>
+    const SUPABASE_URL = "https://fhlcdojhfnsdxdrbcxzt.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_FKkqz0P7GP2iCh1e9oUIuA_XynOpnxC";
+    const SUPABASE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/jsonbin-api";
     const BIN_ID = "6ab5ac11ac6210605af28b20";
-    const MASTER_KEY = "$2a$10$oq82PX3JHxdKfelz6aD4b.7OoKfJ424HuOR//62Eb37IN4fCO594W";
-    const BIN_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
     const IMGDB_UPLOAD_URL = "https://imgdb.io/api/v1/upload?ttl=0";
+
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false }
+    });
+    let supabaseAccessToken = null;
+    let adminSecurityMigrationNeeded = false;
 
     function escapeHTML(str) {
       if (!str) return '';
       return str.toString().replace(/'/g, "\\'").replace(/"/g, '&quot;');
     }
 
-    function b64Decode(str) {
-      return decodeURIComponent(escape(window.atob(str)));
+    const AUTH_ACCOUNTS = [
+      { email: "diegotouru666@gmail.com", name: "Touru", isMaster: true },
+      { email: "Rafa369@gmail.com", name: "Alisson", isMaster: false },
+      { email: "usobar@gmail.com", name: "Usobar", isMaster: false },
+      { email: "eds.atento@gmail.com", name: "Edson", isMaster: false }
+    ];
+
+    function getAuthAccountByEmail(email) {
+      const key = String(email || '').trim().toLowerCase();
+      return AUTH_ACCOUNTS.find(a => String(a.email).toLowerCase() === key) || null;
     }
 
-    const AUTH_ACCOUNTS = [
-      { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
-      { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
-    ];
+    async function getCurrentSupabaseSession() {
+      try {
+        const { data, error } = await supabaseClient.auth.getSession();
+        if(error) throw error;
+        const session = data && data.session ? data.session : null;
+        supabaseAccessToken = session ? session.access_token : null;
+        return session;
+      } catch(e) {
+        supabaseAccessToken = null;
+        return null;
+      }
+    }
+
+    async function getAdminAccessToken() {
+      const session = await getCurrentSupabaseSession();
+      if(!session || !session.user || !session.user.email) return null;
+      const account = getAuthAccountByEmail(session.user.email);
+      if(!account) {
+        await supabaseClient.auth.signOut();
+        supabaseAccessToken = null;
+        return null;
+      }
+      return session.access_token;
+    }
+
+    function applySupabaseAdminSession(user, account) {
+      localStorage.setItem('brg_adm_logged', 'true');
+      localStorage.setItem('brg_adm_email', account.email);
+      localStorage.setItem('brg_adm_name', account.name);
+      localStorage.setItem('brg_adm_is_master', account.isMaster ? 'true' : 'false');
+      appData.permissions = getManagedAdminPermissions(account.email);
+      supabaseAccessToken = null;
+      if(user && user.id) localStorage.setItem('brg_supabase_user_id', user.id);
+    }
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
@@ -1258,6 +1349,7 @@
         if(!appData.traffic.devices.includes(deviceId)) appData.traffic.devices.push(deviceId);
         if(!day.devices.includes(deviceId)) day.devices.push(deviceId);
         appData.traffic.lastVisit=new Date().toLocaleString('pt-BR');
+        trafficPendingEvents.views=Number(trafficPendingEvents.views||0)+1;
         updateTrafficUI(); scheduleTrafficSync();
       }catch(e){}
     }
@@ -1274,17 +1366,25 @@
       const run = async () => {
         binWriteBusy = true;
         try {
-          const res = await fetch(BIN_URL, {
+          const token = supabaseAccessToken || await getAdminAccessToken();
+          if(!token) {
+            console.error('JSONBin: gravação administrativa bloqueada; sessão Supabase ausente.');
+            return false;
+          }
+          const res = await fetch(SUPABASE_FUNCTION_URL, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
-              'X-Master-Key': MASTER_KEY
+              'apikey': SUPABASE_PUBLISHABLE_KEY,
+              'Authorization': 'Bearer ' + token
             },
             body: payload,
             keepalive: !!keepalive
           });
           if(!res.ok) {
-            console.error('JSONBin: falha ao salvar', res.status, 'geração', generation);
+            let detail = '';
+            try { const j = await res.json(); detail = j && j.error ? j.error : ''; } catch(e) {}
+            console.error('JSONBin: falha ao salvar', res.status, detail, 'geração', generation);
             return false;
           }
           return true;
@@ -1300,8 +1400,24 @@
       return result;
     }
 
+    async function publicJsonbinAction(action, payload={}) {
+      const res = await fetch(SUPABASE_FUNCTION_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY
+        },
+        body: JSON.stringify({ action, ...payload })
+      });
+      let json = null;
+      try { json = await res.json(); } catch(e) {}
+      if(!res.ok) throw new Error(json && json.error ? json.error : `Servidor respondeu ${res.status}`);
+      return json || { ok:true };
+    }
+
     let trafficDirty = false;
     let trafficSyncTimer = null;
+    let trafficPendingEvents = { views: 0, clicks: 0 };
 
     function scheduleTrafficSync(){
       trafficDirty = true;
@@ -1312,15 +1428,34 @@
     async function flushTrafficAnalytics(){
       if(!trafficDirty) return;
       ensureTrafficData();
-      const saved = await queueBinWrite(appData);
-      if(saved) trafficDirty=false;
+      const pending = { ...trafficPendingEvents };
+      if(!pending.views && !pending.clicks) { trafficDirty=false; return; }
+      const deviceId = localStorage.getItem('brg_device_id') || '';
+      try {
+        await publicJsonbinAction('traffic', {
+          views: Number(pending.views || 0),
+          clicks: Number(pending.clicks || 0),
+          deviceId,
+          dateKey: getTodayKey(),
+          lastVisit: appData.traffic.lastVisit || new Date().toLocaleString('pt-BR')
+        });
+        trafficPendingEvents.views = Math.max(0, Number(trafficPendingEvents.views || 0) - Number(pending.views || 0));
+        trafficPendingEvents.clicks = Math.max(0, Number(trafficPendingEvents.clicks || 0) - Number(pending.clicks || 0));
+        trafficDirty = Boolean(trafficPendingEvents.views || trafficPendingEvents.clicks);
+        if(trafficDirty) scheduleTrafficSync();
+      } catch(e) {
+        console.warn('Analytics: não foi possível sincronizar agora.', e);
+        if(!trafficSyncTimer) trafficSyncTimer = setTimeout(()=>{ trafficSyncTimer=null; flushTrafficAnalytics(); }, 30000);
+      }
     }
 
     function recordSiteClick(){
       try{
         ensureTrafficData(); const d=getTodayKey(), day=appData.traffic.daily[d];
         appData.traffic.totalClicks=Number(appData.traffic.totalClicks||0)+1;
-        day.clicks=Number(day.clicks||0)+1; updateTrafficUI(); scheduleTrafficSync();
+        day.clicks=Number(day.clicks||0)+1;
+        trafficPendingEvents.clicks=Number(trafficPendingEvents.clicks||0)+1;
+        updateTrafficUI(); scheduleTrafficSync();
       }catch(e){}
     }
 
@@ -1348,17 +1483,35 @@
     window.addEventListener('beforeunload', function(){
       try{
         localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{}));
-        // Só usa keepalive quando não existe outra gravação em andamento.
-        // Assim o encerramento da página nunca sobrescreve uma edição mais nova.
-        if(!binWriteBusy) queueBinWrite(appData, true);
+        // Só envia o snapshot completo se houver sessão administrativa.
+        // Eventos públicos de analytics usam a fila própria do endpoint seguro.
+        if(!binWriteBusy && supabaseAccessToken) queueBinWrite(appData, true);
       }catch(e){}
     });
 
     function ensureAdminSystem() {
-      if(!Array.isArray(appData.adminAccounts) || appData.adminAccounts.length === 0) appData.adminAccounts = AUTH_ACCOUNTS.map(a => ({...a}));
-      AUTH_ACCOUNTS.forEach(base => {
-        if(!appData.adminAccounts.some(a => String(a.email).toLowerCase() === base.email.toLowerCase())) appData.adminAccounts.push({...base});
+      if(!Array.isArray(appData.adminAccounts)) appData.adminAccounts = [];
+
+      // Migra contas antigas sem manter senhas no navegador/banco.
+      appData.adminAccounts.forEach(acc => {
+        if(acc && Object.prototype.hasOwnProperty.call(acc,'pass')) {
+          delete acc.pass;
+          adminSecurityMigrationNeeded = true;
+        }
       });
+
+      AUTH_ACCOUNTS.forEach(base => {
+        const existing = appData.adminAccounts.find(a => String(a.email || '').toLowerCase() === base.email.toLowerCase());
+        if(existing) {
+          existing.email = base.email;
+          existing.name = base.name;
+          existing.isMaster = !!base.isMaster;
+          if(Object.prototype.hasOwnProperty.call(existing,'pass')) delete existing.pass;
+        } else {
+          appData.adminAccounts.push({...base});
+        }
+      });
+
       if(!appData.permissionsByAdmin) appData.permissionsByAdmin = {};
       appData.adminAccounts.forEach(acc => {
         const key = String(acc.email || '').toLowerCase();
@@ -1381,6 +1534,41 @@
       return appData.permissionsByAdmin[key];
     }
 
+    async function restoreSupabaseAdminSession() {
+      const session = await getCurrentSupabaseSession();
+      if(!session || !session.user || !session.user.email) {
+        localStorage.removeItem('brg_adm_logged');
+        localStorage.removeItem('brg_adm_email');
+        localStorage.removeItem('brg_adm_name');
+        localStorage.removeItem('brg_adm_is_master');
+        localStorage.removeItem('brg_supabase_user_id');
+        return null;
+      }
+
+      const account = getAuthAccountByEmail(session.user.email);
+      if(!account) {
+        await supabaseClient.auth.signOut();
+        supabaseAccessToken = null;
+        localStorage.removeItem('brg_adm_logged');
+        localStorage.removeItem('brg_adm_email');
+        localStorage.removeItem('brg_adm_name');
+        localStorage.removeItem('brg_adm_is_master');
+        localStorage.removeItem('brg_supabase_user_id');
+        return null;
+      }
+
+      localStorage.setItem('brg_adm_logged','true');
+      localStorage.setItem('brg_adm_email',account.email);
+      localStorage.setItem('brg_adm_name',account.name);
+      localStorage.setItem('brg_adm_is_master',account.isMaster?'true':'false');
+      localStorage.setItem('brg_supabase_user_id',session.user.id || '');
+      return account;
+    }
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      supabaseAccessToken = session ? session.access_token : null;
+    });
+
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         const uEl = document.getElementById('gh-user');
@@ -1394,11 +1582,16 @@
         updateGitHubUI(false);
       }
       
+      await restoreSupabaseAdminSession();
       await fetchBinData();
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       const catalogChanged = ensureDrinkCatalog();
       if(catalogChanged) await saveBinData();
+      if(adminSecurityMigrationNeeded && supabaseAccessToken) {
+        const migrated = await saveBinData('Migrou contas administrativas para autenticação segura do Supabase');
+        if(migrated) adminSecurityMigrationNeeded = false;
+      }
       recordTrafficAnalytics();
       renderApp();
       
@@ -1440,9 +1633,9 @@
       if(binWriteBusy) return;
       const readGeneration = binWriteGeneration;
       try {
-        const res = await fetch(`${BIN_URL}/latest`, {
+        const res = await fetch(SUPABASE_FUNCTION_URL, {
           cache: 'no-store',
-          headers: { 'X-Master-Key': MASTER_KEY }
+          headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY }
         });
         if(res.ok) {
           const json = await res.json();
@@ -1513,67 +1706,27 @@
         timestamp: Date.now()
       };
 
-      const igEl = document.getElementById('user-song-ig');
-      const reqEl = document.getElementById('user-song-req');
-      if(igEl) igEl.value = '';
-      if(reqEl) reqEl.value = '';
-
-      // Pedidos de música são gravados com leitura + mesclagem + confirmação.
-      // Isso evita que um pedido seja perdido quando outra gravação/sincronização
-      // acontece no mesmo período, algo especialmente importante em acessos simultâneos.
       let saved = false;
       let lastError = '';
-
-      for(let attempt = 1; attempt <= 3 && !saved; attempt++) {
+      for(let attempt=1; attempt<=3 && !saved; attempt++) {
         try {
-          const res = await fetch(`${BIN_URL}/latest`, {
-            cache: 'no-store',
-            headers: { 'X-Master-Key': MASTER_KEY }
-          });
-          if(!res.ok) throw new Error(`Leitura da nuvem falhou (${res.status})`);
-
-          const json = await res.json();
-          const latest = json && json.record ? json.record : {};
-          const merged = { ...appData, ...latest };
-          const pending = Array.isArray(latest.pendingSongs) ? [...latest.pendingSongs] : [];
-
-          // Evita duplicar o mesmo pedido em uma tentativa de reenvio.
-          if(!pending.some(s => Number(s.id) === Number(newItem.id))) pending.push(newItem);
-          merged.pendingSongs = pending;
-
-          const putSaved = await queueBinWrite(merged);
-          if(!putSaved) throw new Error('Gravação na nuvem falhou');
-
-          // Confirma que o pedido realmente chegou ao registro remoto.
-          const verifyRes = await fetch(`${BIN_URL}/latest`, {
-            cache: 'no-store',
-            headers: { 'X-Master-Key': MASTER_KEY }
-          });
-          if(!verifyRes.ok) throw new Error(`Confirmação da nuvem falhou (${verifyRes.status})`);
-          const verifyJson = await verifyRes.json();
-          const verifySongs = verifyJson && verifyJson.record && Array.isArray(verifyJson.record.pendingSongs)
-            ? verifyJson.record.pendingSongs : [];
-
-          if(verifySongs.some(s => Number(s.id) === Number(newItem.id))) {
-            appData = { ...appData, ...verifyJson.record };
-            saved = true;
-          } else {
-            lastError = 'A nuvem não confirmou o pedido.';
-          }
+          await publicJsonbinAction('submit_song', { item: newItem });
+          if(!Array.isArray(appData.pendingSongs)) appData.pendingSongs=[];
+          if(!appData.pendingSongs.some(s=>Number(s.id)===Number(newItem.id))) appData.pendingSongs.push(newItem);
+          saved=true;
         } catch(e) {
-          lastError = e && e.message ? e.message : 'Erro desconhecido ao salvar.';
-          if(attempt < 3) await new Promise(r => setTimeout(r, 500 * attempt));
+          lastError=e && e.message ? e.message : 'Erro desconhecido ao salvar.';
+          if(attempt<3) await new Promise(r=>setTimeout(r,500*attempt));
         }
       }
 
       if(!saved) {
-        // Não fingimos sucesso: o usuário recebe uma mensagem clara para tentar novamente.
-        if(igEl) igEl.value = ig;
-        if(reqEl) reqEl.value = req;
-        alert("⚠️ Não foi possível confirmar o envio do pedido para a nuvem. O pedido não foi considerado enviado. Tente novamente.\n\n" + lastError);
+        alert("⚠️ Não foi possível enviar o pedido para a nuvem. Tente novamente.\n\n"+lastError);
         return;
       }
 
+      document.getElementById('user-song-ig').value='';
+      document.getElementById('user-song-req').value='';
       renderApp();
       updateTrafficUI();
       alert("✅ Pedido enviado com sucesso! O pedido já está na fila de moderação do DJ.");
@@ -1583,30 +1736,25 @@
       const ig = document.getElementById('user-msg-ig').value.trim();
       const text = document.getElementById('user-msg-text').value.trim();
       if(!ig || !text) return alert("Preencha seu Instagram e o recado.");
-      
+
       const newItem = {
         id: Date.now(),
         ig: ig.startsWith('@') ? ig : '@' + ig,
-        text: text,
+        text,
         timestamp: Date.now()
       };
 
-      document.getElementById('user-msg-ig').value = '';
-      document.getElementById('user-msg-text').value = '';
-      
       try {
-        const res = await fetch(`${BIN_URL}/latest`, { headers: { 'X-Master-Key': MASTER_KEY } });
-        if(res.ok) {
-          const json = await res.json();
-          if(json.record) appData = { ...appData, ...json.record };
-        }
-      } catch(e) {}
-
-      if(!appData.pendingMessages) appData.pendingMessages = [];
-      appData.pendingMessages.push(newItem);
-      
-      await saveBinData();
-      alert("✅ Recado enviado para o mural do ADM!");
+        await publicJsonbinAction('submit_message', { item: newItem });
+        if(!Array.isArray(appData.pendingMessages)) appData.pendingMessages=[];
+        if(!appData.pendingMessages.some(m=>Number(m.id)===Number(newItem.id))) appData.pendingMessages.push(newItem);
+        document.getElementById('user-msg-ig').value='';
+        document.getElementById('user-msg-text').value='';
+        renderApp();
+        alert("✅ Recado enviado para o mural do ADM!");
+      } catch(e) {
+        alert("⚠️ Não foi possível enviar o recado para a nuvem. Tente novamente.\n\n" + (e && e.message ? e.message : 'Erro desconhecido.'));
+      }
     }
 
     function getHonorTitle(index, type) {
@@ -3197,49 +3345,93 @@
       }
     }
 
-    function processSecureLogin() {
-      const emailInput = document.getElementById('manual-email-input').value.trim().toLowerCase();
-      const passInput = document.getElementById('manual-pass-input').value.trim();
+    async function processSecureLogin() {
+      const emailEl = document.getElementById('manual-email-input');
+      const passEl = document.getElementById('manual-pass-input');
+      const loginBox = document.getElementById('admin-login');
+      const loginBtn = document.getElementById('auth-login-button');
+      const statusEl = document.getElementById('auth-status');
+      const emailInput = emailEl.value.trim().toLowerCase();
+      const passInput = passEl.value;
 
-      if (!emailInput || !passInput) {
+      const setAuthStatus = (text, state='') => {
+        if(!statusEl) return;
+        statusEl.className = 'auth-status' + (state ? ' auth-' + state : '');
+        statusEl.textContent = text;
+      };
+      const failAnimation = () => {
+        if(!loginBox) return;
+        loginBox.classList.remove('auth-shake');
+        void loginBox.offsetWidth;
+        loginBox.classList.add('auth-shake');
+        setTimeout(() => loginBox.classList.remove('auth-shake'), 500);
+      };
+
+      if(!emailInput || !passInput) {
+        setAuthStatus('ERRO • PREENCHA E-MAIL E SENHA', 'error');
+        failAnimation();
         alert("Preencha o e-mail e a senha.");
         return;
       }
 
-      ensureAdminSystem();
-      let matchedAcc = null;
-      for (let acc of getAdminAccounts()) {
-        if (emailInput === acc.email.toLowerCase() && passInput === acc.pass) {
-          matchedAcc = acc;
-          break;
-        }
+      const account = getAuthAccountByEmail(emailInput);
+      if(!account) {
+        setAuthStatus('ACESSO NEGADO • E-MAIL NÃO AUTORIZADO', 'error');
+        failAnimation();
+        alert('Acesso Negado. Este e-mail não está autorizado como administrador.');
+        return;
       }
 
-      if (matchedAcc) {
-        localStorage.setItem('brg_adm_logged', 'true');
-        localStorage.setItem('brg_adm_email', matchedAcc.email);
-        localStorage.setItem('brg_adm_name', matchedAcc.name);
-        localStorage.setItem('brg_adm_is_master', matchedAcc.isMaster ? 'true' : 'false');
-        appData.permissions = getManagedAdminPermissions(matchedAcc.email);
+      try {
+        if(loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '◌ AUTENTICANDO...'; }
+        setAuthStatus('VALIDANDO CREDENCIAIS • CONEXÃO SEGURA', 'working');
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailInput, password: passInput });
+        if(error) throw error;
+        if(!data || !data.user) throw new Error('O Supabase não retornou um usuário autenticado.');
 
-        document.getElementById('admin-login').style.display = 'none';
-        document.getElementById('admin-dashboard').style.display = 'block';
+        const authenticatedAccount = getAuthAccountByEmail(data.user.email);
+        if(!authenticatedAccount) {
+          await supabaseClient.auth.signOut();
+          throw new Error('Usuário autenticado sem permissão de administrador.');
+        }
+
+        applySupabaseAdminSession(data.user, authenticatedAccount);
+        ensureAdminSystem();
+        setAuthStatus('ACESSO AUTORIZADO • IDENTIDADE CONFIRMADA', 'success');
+        if(loginBox) {
+          loginBox.classList.remove('auth-success-flash');
+          void loginBox.offsetWidth;
+          loginBox.classList.add('auth-success-flash');
+        }
+        if(loginBtn) loginBtn.textContent = '✓ ACESSO AUTORIZADO';
+        await new Promise(resolve => setTimeout(resolve, 650));
+        document.getElementById('admin-login').style.display='none';
+        document.getElementById('admin-dashboard').style.display='block';
         updateAdminGreeting();
-        
-        document.getElementById('manual-email-input').value = '';
-        document.getElementById('manual-pass-input').value = '';
-        
-        document.getElementById('adm-f-tag').value = appData.flyer.tag;
-        document.getElementById('adm-f-title').value = appData.flyer.title;
-        document.getElementById('adm-f-sub').value = appData.flyer.sub;
-        document.getElementById('adm-f-desc').value = appData.flyer.desc;
-        
-        alert('Acesso Concedido. Bem-vindo, ' + matchedAcc.name + '!');
+        document.getElementById('manual-email-input').value='';
+        document.getElementById('manual-pass-input').value='';
+        document.getElementById('adm-f-tag').value=appData.flyer.tag;
+        document.getElementById('adm-f-title').value=appData.flyer.title;
+        document.getElementById('adm-f-sub').value=appData.flyer.sub;
+        document.getElementById('adm-f-desc').value=appData.flyer.desc;
+        alert('Acesso Concedido. Bem-vindo, ' + authenticatedAccount.name + '!');
         renderApp();
-      } else {
-        alert('Acesso Negado. E-mail ou Senha incorretos.');
+      } catch(e) {
+        document.getElementById('manual-pass-input').value='';
+        if(loginBtn) { loginBtn.disabled = false; loginBtn.textContent = '⚡ Acessar Painel'; }
+        const msg = e && e.message ? e.message : 'Falha na autenticação.';
+        setAuthStatus('ACESSO NEGADO • CREDENCIAIS INVÁLIDAS', 'error');
+        failAnimation();
+        alert('Acesso Negado. E-mail ou senha incorretos.\n\n' + msg);
       }
     }
+
+    ['manual-email-input','manual-pass-input'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.addEventListener('keydown', e => {
+        if(e.key === 'Enter') processSecureLogin();
+      });
+    });
 
     function updateAdminGreeting() {
       const name = localStorage.getItem('brg_adm_name') || 'Administrador';
@@ -3326,21 +3518,24 @@
         canTabs:document.getElementById('new-admin-tabs').checked,canMod:document.getElementById('new-admin-mod').checked,canRank:document.getElementById('new-admin-rank').checked,
         canAgenda:document.getElementById('new-admin-agenda').checked,canTeam:document.getElementById('new-admin-team').checked
       };
-      appData.adminAccounts.push({email,pass,name,isMaster:false});
-      appData.permissionsByAdmin[email.toLowerCase()]=permissions;
-      await saveBinData(`Cadastrou novo administrador: ${name} (${email})`);
-      document.getElementById('new-admin-name').value='';document.getElementById('new-admin-email').value='';document.getElementById('new-admin-pass').value='';
-      alert('✅ Administrador cadastrado com sucesso.');
-      renderMasterAdminManager();
+      // As contas agora são autenticadas pelo Supabase Auth.
+      // O cadastro da identidade/senha deve ser feito no painel do Supabase;
+      // este painel continua reservado para permissões e identificação local.
+      if(getAuthAccountByEmail(email)) return alert('Este e-mail já está na lista de administradores.');
+      alert('🔐 A autenticação agora é feita pelo Supabase Auth. Crie primeiro o usuário em Authentication > Users e depois podemos adicioná-lo às permissões do painel. A senha não é mais armazenada no site.');
+      document.getElementById('new-admin-pass').value='';
     }
 
-    function processLogout() {
+    async function processLogout() {
+      try { await supabaseClient.auth.signOut(); } catch(e) {}
+      supabaseAccessToken=null;
       localStorage.removeItem('brg_adm_logged');
       localStorage.removeItem('brg_adm_email');
       localStorage.removeItem('brg_adm_name');
       localStorage.removeItem('brg_adm_is_master');
-      document.getElementById('admin-dashboard').style.display = 'none';
-      document.getElementById('admin-login').style.display = 'block';
+      localStorage.removeItem('brg_supabase_user_id');
+      document.getElementById('admin-dashboard').style.display='none';
+      document.getElementById('admin-login').style.display='block';
       renderApp();
     }
 
