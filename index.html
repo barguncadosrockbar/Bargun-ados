@@ -177,7 +177,7 @@
     .modal-content::after { content:'✦'; position:absolute; right:18px; top:12px; z-index:-1; font-size:5rem; line-height:1; color:rgba(255,235,59,.035); transform:rotate(-12deg); pointer-events:none; }
     .modal-content .close-btn, .modal-content img, .modal-content h3, .modal-content p, .modal-content a, .modal-content button, .modal-content input, .modal-content select, .modal-content textarea, .modal-content div { position:relative; }
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, siteModalGlow 6s ease-in-out .25s infinite; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
@@ -303,57 +303,6 @@
     @keyframes authScan { 0% { top:18%; opacity:0; } 10% { opacity:.22; } 90% { opacity:.22; } 100% { top:82%; opacity:0; } }
     @keyframes authSuccessFlash { 0% { box-shadow:0 0 0 rgba(0,230,118,0); } 45% { box-shadow:0 0 45px rgba(0,230,118,.22); } 100% { box-shadow:0 0 0 rgba(0,230,118,0); } }
     @keyframes authShake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-7px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(3px); } }
-
-    /* === POLIMENTO VISUAL GLOBAL — MESMA LINGUAGEM DO LOGIN ADM === */
-    .glass-panel, .product-card, .feed-card, .admin-card, .portal-card, .counter-stat-card, .status-badge-container, .home-agenda-card, .dir-card {
-      position: relative;
-      isolation: isolate;
-      will-change: box-shadow, transform;
-    }
-    .glass-panel, .feed-card, .admin-card, .portal-card, .counter-stat-card, .status-badge-container, .home-agenda-card, .dir-card {
-      animation: siteCardGlow 6.5s ease-in-out infinite;
-    }
-    .product-card { animation: siteProductGlow 7s ease-in-out infinite; }
-    .product-card:hover, .dir-card:hover, .home-agenda-card:hover {
-      transform: translateY(-5px) scale(1.008);
-    }
-    .portal-card:hover, .admin-card:hover, .feed-card:hover, .counter-stat-card:hover, .status-badge-container:hover {
-      transform: translateY(-2px);
-      border-color: rgba(0,188,212,.45);
-      box-shadow: 0 10px 30px rgba(0,0,0,.42), 0 0 24px rgba(0,188,212,.12), 0 0 18px rgba(233,30,99,.06);
-    }
-    .tab-btn, .action-btn, .btn-fire, .ig-button, .play-pause-btn {
-      position: relative;
-      overflow: hidden;
-      transition: transform .25s ease, box-shadow .25s ease, filter .25s ease, border-color .25s ease, background .25s ease;
-    }
-    .tab-btn:hover, .action-btn:hover, .btn-fire:hover, .ig-button:hover, .play-pause-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 22px rgba(0,188,212,.16), 0 6px 18px rgba(0,0,0,.35);
-      filter: brightness(1.06);
-    }
-    .tab-btn.active {
-      box-shadow: 0 0 18px rgba(233,30,99,.16), inset 0 0 18px rgba(233,30,99,.06);
-    }
-    .modal-content {
-      animation: popUpScale .25s cubic-bezier(.175,.885,.32,1.275) forwards, siteModalGlow 6s ease-in-out .25s infinite;
-    }
-    @keyframes siteCardGlow {
-      0%,100% { box-shadow: var(--glass-shadow), 0 0 0 rgba(0,188,212,0); }
-      50% { box-shadow: var(--glass-shadow), 0 0 20px rgba(0,188,212,.055), 0 0 10px rgba(233,30,99,.035); }
-    }
-    @keyframes siteProductGlow {
-      0%,100% { box-shadow: 0 4px 16px rgba(0,0,0,.32), 0 0 0 rgba(0,188,212,0); }
-      50% { box-shadow: 0 7px 22px rgba(0,0,0,.38), 0 0 16px rgba(0,188,212,.07); }
-    }
-    @keyframes siteModalGlow {
-      0%,100% { box-shadow: 0 15px 35px rgba(0,0,0,.9), 0 0 0 rgba(0,188,212,0); }
-      50% { box-shadow: 0 18px 42px rgba(0,0,0,.92), 0 0 24px rgba(0,188,212,.08), 0 0 14px rgba(233,30,99,.05); }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .glass-panel, .product-card, .feed-card, .admin-card, .portal-card, .counter-stat-card, .status-badge-container, .home-agenda-card, .dir-card { animation:none !important; }
-      .product-card:hover, .dir-card:hover, .home-agenda-card:hover, .portal-card:hover, .admin-card:hover, .feed-card:hover, .counter-stat-card:hover, .status-badge-container:hover, .tab-btn:hover, .action-btn:hover, .btn-fire:hover, .ig-button:hover, .play-pause-btn:hover { transform:none !important; }
-    }
     @media (prefers-reduced-motion: reduce) {
       .admin-login-box::before, .auth-tech-header::after, .auth-login-button::before, .auth-tech-dot, .auth-scanline, .auth-status.auth-working { animation:none !important; }
       .auth-login-input, .auth-login-button { transition:none !important; }
@@ -464,7 +413,111 @@
     @media (max-width: 650px) {
       .product-img { contain-intrinsic-size: 108px 108px; }
     }
-  </style>
+  
+/* V43 — efeitos somente na Página do Bar (Início), Diretoria e Promoters.
+   Bebidas, Porções e demais páginas permanecem exatamente com o visual da V36. */
+
+@keyframes v43SoftShine {
+  from { transform: translateX(-145%) skewX(-18deg); }
+  to   { transform: translateX(145%) skewX(-18deg); }
+}
+
+@keyframes v43HomeFloat {
+  0%,100% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(12px,-8px,0); }
+}
+
+/* Página do Bar: brilho discreto nos painéis existentes. */
+#inicio .glass-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+#inicio .glass-panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 25%;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255,255,255,.045) 50%,
+    transparent 100%
+  );
+  transform: translateX(-145%) skewX(-18deg);
+  opacity: 0;
+}
+
+#inicio .glass-panel:hover::after {
+  opacity: 1;
+  animation: v43SoftShine .75s ease-out 1;
+}
+
+/* Um movimento ambiente quase imperceptível apenas nos elementos da Home. */
+#inicio #home-status-badge {
+  animation: v43HomeFloat 9s ease-in-out infinite;
+}
+
+/* Diretoria e Promoters: brilho sutil nos cards, sem neon ou sombra pesada. */
+#diretoria .dir-card,
+#promoters .dir-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform .16s ease, filter .16s ease;
+}
+
+#diretoria .dir-card::after,
+#promoters .dir-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 24%;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255,255,255,.045) 50%,
+    transparent 100%
+  );
+  transform: translateX(-145%) skewX(-18deg);
+  opacity: 0;
+}
+
+#diretoria .dir-card:hover,
+#promoters .dir-card:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.035);
+}
+
+#diretoria .dir-card:hover::after,
+#promoters .dir-card:hover::after {
+  opacity: 1;
+  animation: v43SoftShine .75s ease-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #inicio #home-status-badge {
+    animation: none !important;
+  }
+
+  #inicio .glass-panel::after,
+  #diretoria .dir-card::after,
+  #promoters .dir-card::after {
+    display: none !important;
+  }
+
+  #diretoria .dir-card,
+  #promoters .dir-card {
+    transition: none !important;
+  }
+}
+
+</style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
   <link rel="preconnect" href="https://i.ibb.co" crossorigin>
   <link rel="dns-prefetch" href="//i.ibb.co">
