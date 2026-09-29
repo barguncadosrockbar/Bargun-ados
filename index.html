@@ -404,8 +404,21 @@
   .menu-move-controls button{border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.78);color:#fff;border-radius:5px;min-width:30px;height:30px;font-weight:900;cursor:pointer}
   .menu-move-controls button:active{transform:scale(.94)}
   @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
+  
+    /* === OTIMIZAÇÃO DE IMAGENS V36 === */
+    .product-img {
+      content-visibility: auto;
+      contain-intrinsic-size: 118px 118px;
+    }
+    @media (max-width: 650px) {
+      .product-img { contain-intrinsic-size: 108px 108px; }
+    }
   </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
+  <link rel="preconnect" href="https://i.ibb.co" crossorigin>
+  <link rel="dns-prefetch" href="//i.ibb.co">
+  <link rel="preconnect" href="https://imgdb.io" crossorigin>
+  <link rel="dns-prefetch" href="//imgdb.io">
 </head>
 <body>
 
@@ -1146,7 +1159,7 @@
     <footer class="glass-panel" style="border-radius: 0; border-top: 1px solid var(--glass-border-top); padding: 1.5rem 1rem; text-align: center; margin-top: auto; border-bottom: none; border-left: none; border-right: none;">
       <p style="font-size: 1.4rem; font-family: var(--font-title); color: #fff; letter-spacing: 1px; margin-bottom: 5px;">BARGUNÇADOS ROCK BAR © <span id="easter-footer">2026</span></p>
       <p style="color: #aaa; font-size: 0.8rem; margin-bottom: 10px;">Rua Assis Abude, 197 - Guarulhos, SP</p>
-      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado a 120 FPS via API segura & ImgBB API.</p>
+      <p style="color: #555; font-size: 0.75rem; font-family: 'Courier New', monospace; margin-bottom: 8px;">Otimizado via API segura & carregamento inteligente de imagens.</p>
       <p class="creator-signature">Criado por : <strong>TOURU</strong></p>
       <button onclick="switchTab('admin')" style="background: transparent; border: none; color: var(--c-red); font-size: 0.75rem; font-weight: bold; cursor: pointer; opacity: 0.6; transition: 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">⚙️ Área Administrativa</button>
     </footer>
@@ -1421,37 +1434,109 @@
     // quando o dado remoto veio sem URL, vazio ou inválido.
     // Resolve somente imagens já hospedadas/salvas nos dados do sistema.
     // Não cria imagens novas e não substitui URLs hospedadas por Unsplash/avatars.
-    function getStoredImageUrl(item){
-      if(!item || typeof item !== 'object') return '';
-      const candidates = [
-        item.img,
-        item.imageUrl,
-        item.imageURL,
-        item.image,
-        item.photoUrl,
-        item.photoURL,
-        item.photo,
-        item.imgbbUrl,
-        item.imgbbURL,
-        item.imgbb,
-        item.imgdbUrl,
-        item.imgdbURL,
-        item.imgdb,
-        item.hostedUrl,
-        item.url
+    function normalizeHostedImageUrl(value){
+      const raw = String(value || '').trim();
+      if(!raw) return '';
+      const url = raw.startsWith('//') ? ('https:' + raw) : raw;
+      if(!/^https?:\/\//i.test(url)) return '';
+      // Nunca transforma/substitui uma foto hospedada por Unsplash/avatars.
+      if(/images\.unsplash\.com|ui-avatars\.com/i.test(url)) return '';
+      return url;
+    }
+
+    function getStoredImageCandidates(item){
+      if(!item || typeof item !== 'object') return [];
+      const values = [];
+      const push = value => {
+        const url = normalizeHostedImageUrl(value);
+        if(url && !values.includes(url)) values.push(url);
+      };
+
+      const directKeys = [
+        'img','imageUrl','imageURL','photoUrl','photoURL','imgbbUrl','imgbbURL',
+        'imgbb','imgdbUrl','imgdbURL','imgdb','hostedUrl','directUrl','directURL','url'
       ];
-      for(const value of candidates){
-        const url = String(value || '').trim();
-        if(/^https?:\/\//i.test(url) && !/images\.unsplash\.com|ui-avatars\.com/i.test(url)) return url;
-      }
-      return '';
+      directKeys.forEach(key => {
+        const value = item[key];
+        if(typeof value === 'string') push(value);
+        else if(value && typeof value === 'object'){
+          push(value.url);
+          push(value.display_url);
+          push(value.displayUrl);
+          push(value.direct_url);
+          push(value.directUrl);
+          push(value.image_url);
+          push(value.imageUrl);
+        }
+      });
+
+      // Algumas versões antigas podem ter guardado os dados da hospedagem
+      // dentro de objetos aninhados. Recuperamos somente chaves de imagem
+      // conhecidas, sem varrer textos/descrições aleatórias.
+      const nested = [item.image, item.photo, item.hostedImage, item.imageData];
+      nested.forEach(value => {
+        if(!value || typeof value !== 'object') return;
+        push(value.url);
+        push(value.display_url);
+        push(value.displayUrl);
+        push(value.direct_url);
+        push(value.directUrl);
+        push(value.image_url);
+        push(value.imageUrl);
+        push(value.link);
+      });
+
+      return values;
+    }
+
+    function getStoredImageUrl(item){
+      return getStoredImageCandidates(item)[0] || '';
     }
 
     function normalizeStoredImage(item){
       if(!item || typeof item !== 'object') return '';
-      const hosted = getStoredImageUrl(item);
+      const candidates = getStoredImageCandidates(item);
+      const hosted = candidates[0] || '';
+      // Mantém a primeira URL hospedada no campo principal para compatibilidade
+      // com o restante do site, sem apagar nenhuma das outras URLs existentes.
       if(hosted && item.img !== hosted) item.img = hosted;
       return hosted;
+    }
+
+    function setStoredImageWithFallback(el, item){
+      if(!el) return false;
+      const candidates = getStoredImageCandidates(item);
+      el.onerror = null;
+      if(!candidates.length){
+        el.removeAttribute('src');
+        el.style.visibility = 'hidden';
+        return false;
+      }
+
+      let index = 0;
+      const tryCurrent = () => {
+        const url = candidates[index];
+        if(!url){
+          el.removeAttribute('src');
+          el.style.visibility = 'hidden';
+          return;
+        }
+        el.style.visibility = 'visible';
+        el.src = url;
+      };
+
+      el.onerror = () => {
+        index += 1;
+        if(index < candidates.length){
+          tryCurrent();
+        } else {
+          el.onerror = null;
+          el.style.visibility = 'hidden';
+        }
+      };
+
+      tryCurrent();
+      return true;
     }
 
     function getCatalogFallbackImage(item){
@@ -1485,10 +1570,7 @@
     function fallbackMenuImg(el, id){
       if(!el) return;
       const item = Array.isArray(appData?.menu) ? appData.menu.find(x => String(x?.id) === String(id)) : null;
-      const hosted = normalizeStoredImage(item);
-      el.onerror = null;
-      if(hosted && el.src !== hosted) el.src = hosted;
-      else el.style.visibility = 'hidden';
+      setStoredImageWithFallback(el, item);
     }
 
     function ensureDeletedCatalogRegistry() {
@@ -2305,6 +2387,30 @@
       alert('✅ Posições salvas com sucesso!');
     }
 
+    function optimizeMenuImageLoading(){
+      try {
+        const root = document;
+        const images = Array.from(root.querySelectorAll('#dynamic-menu-bebidas .product-img, #dynamic-menu-porcoes .product-img'));
+        images.forEach(img => {
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.fetchPriority = 'low';
+        });
+
+        // As primeiras fotos do cardápio são carregadas com prioridade para
+        // que o cliente veja conteúdo visual imediatamente. As demais ficam
+        // sob lazy loading e só são requisitadas conforme entram no campo
+        // de visão do navegador.
+        const priorityImages = images.slice(0, 6);
+        priorityImages.forEach(img => {
+          img.loading = 'eager';
+          img.fetchPriority = 'high';
+        });
+      } catch(e) {
+        console.warn('[Bargunçados] otimização de carregamento das imagens:', e);
+      }
+    }
+
     function renderEmergencyMenu(){
       try {
         const drinksContainer = document.getElementById('dynamic-menu-bebidas');
@@ -2314,12 +2420,13 @@
         const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         const card = item => {
           const hostedImg = normalizeStoredImage(item);
-          return `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(hostedImg || '')}" class="product-img" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+          return `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(hostedImg || '')}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
         };
         const drinks = source.filter(i => i && ['drink','beer','noalcohol'].includes(i.type));
         const portions = source.filter(i => i && i.type === 'portion');
         drinksContainer.innerHTML = `<div class="menu-grid emergency-menu-grid">${drinks.map(card).join('')}</div>`;
         portionsContainer.innerHTML = `<div class="menu-grid emergency-menu-grid">${portions.map(card).join('')}</div>`;
+        optimizeMenuImageLoading();
       } catch(e) {
         console.error('[Bargunçados] Falha também no render de emergência.', e);
       }
@@ -2448,6 +2555,7 @@
 
       const portionFeaturedIds=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds:[]; const portionFeaturedItems=portionFeaturedIds.map(id=>cMenu.find(i=>Number(i.id)===Number(id))).filter(Boolean); let portionsStr=''; if(portionFeaturedItems.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured)}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${portionFeaturedItems.map(createCard).join('')}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
+      optimizeMenuImageLoading();
       setupMenuOrganizerDragAndDrop('bebidas');
       setupMenuOrganizerDragAndDrop('porcoes');
       updateMenuOrganizerUI('bebidas');
@@ -2742,7 +2850,10 @@
       const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${item.id})` : `openMenuModalObj(${item.id})`;
       const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${item.id},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${item.id},'down')">↓</button></div>` : '';
-      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap"><img src="${escapeHTML(hostedImg||'')}" class="product-img" onerror="fallbackMenuImg(this,${Number(item.id)||0})">${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
+      const imageMarkup = hostedImg
+        ? `<img src="${escapeHTML(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
+        : `<img src="" class="product-img" loading="lazy" decoding="async" fetchpriority="low" data-no-image="true" onerror="fallbackMenuImg(this,${Number(item.id)||0})" style="visibility:hidden">`;
+      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => i.id === id);
@@ -2757,7 +2868,8 @@
           : '';
       }
       document.getElementById('modalPrice').innerText = 'R$ ' + item.price;
-      document.getElementById('modalImg').src = normalizeStoredImage(item) || '';
+      const modalImage = document.getElementById('modalImg');
+      setStoredImageWithFallback(modalImage, item);
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
