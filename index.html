@@ -1303,40 +1303,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     // Autenticação Supabase via REST: não depende de CDN/SDK externo no navegador.
     // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
     const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
-    const PENDING_CLOUD_CHANGES_KEY = 'brg_pending_cloud_changes_v2';
-    let pendingCloudChanges = null;
-
-    function readPendingCloudChanges(){
-      try {
-        const raw = localStorage.getItem(PENDING_CLOUD_CHANGES_KEY);
-        if(!raw) return {};
-        const parsed = JSON.parse(raw);
-        return (parsed && typeof parsed === 'object') ? parsed : {};
-      } catch(e) {
-        return {};
-      }
-    }
-
-    function mergePendingCloudChanges(changes){
-      const current = readPendingCloudChanges();
-      const merged = { ...current, ...(cloneForSync(changes) || {}) };
-      pendingCloudChanges = merged;
-      try { localStorage.setItem(PENDING_CLOUD_CHANGES_KEY, JSON.stringify(merged)); } catch(e) {}
-    }
-
-    function clearPendingCloudChangesIfPersisted(changes){
-      const current = readPendingCloudChanges();
-      const next = { ...current };
-      Object.keys(changes || {}).forEach(key => {
-        if(stableEqual(next[key], changes[key])) delete next[key];
-      });
-      pendingCloudChanges = next;
-      try {
-        if(Object.keys(next).length) localStorage.setItem(PENDING_CLOUD_CHANGES_KEY, JSON.stringify(next));
-        else localStorage.removeItem(PENDING_CLOUD_CHANGES_KEY);
-      } catch(e) {}
-    }
-
+    // O estado do site é persistido exclusivamente no backend (Supabase Edge Function -> JSONBin).
+    // Nenhuma alteração administrativa é tratada como "salva" em localStorage.
 
     let supabaseAccessToken = null;
     let supabaseRefreshToken = null;
@@ -1879,7 +1847,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function sendAdminPatch(changes, baseRevision, keepalive=false, retryOnConflict=true){
-      mergePendingCloudChanges(changes);
+      // Toda gravação administrativa é remota. Sem uma sessão Supabase válida,
+      // a operação é recusada e NUNCA é considerada salva localmente.
       let token = await getAdminAccessToken();
       if(!token) {
         console.error('JSONBin: gravação bloqueada; sessão Supabase ausente ou expirada.');
@@ -1978,7 +1947,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
 
         remoteRevision = verifiedRevision;
         remoteSnapshot = verifiedRecord;
-        clearPendingCloudChangesIfPersisted(changes);
         return true;
       } catch(e) {
         console.error('JSONBin: não foi possível verificar a gravação:', e);
@@ -2196,17 +2164,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       await restoreSupabaseAdminSession();
       await fetchBinData();
 
-      // Se uma gravação anterior falhou por rede/token/timeout, restaura a edição
-      // local e tenta sincronizar novamente. Assim uma falha temporária não perde
-      // o trabalho do administrador nem permite que o JSONBin antigo o apague.
-      const pending = readPendingCloudChanges();
-      if(Object.keys(pending).length && supabaseAccessToken) {
-        Object.keys(pending).forEach(k => { appData[k] = cloneForSync(pending[k]); });
-        remoteSnapshot = remoteSnapshot && typeof remoteSnapshot === 'object' ? remoteSnapshot : {};
-        const pendingSave = await queueBinWrite(pending, remoteRevision, false);
-        if(!pendingSave) console.warn('[Bargunçados] Há alterações locais aguardando nova sincronização.');
-      }
-
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
@@ -2227,7 +2184,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
         startAdminSessionClock();
       }
 
-      setInterval(fetchBinData, 15000);
+      // A sincronização remota é iniciada por startRemoteSync() após o DOM carregar.
     }
 
     function updateGitHubUI(isConnected) {
@@ -2308,6 +2265,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function saveBinData(actionDesc = '') {
+      // REGRA: clicar em Salvar significa persistir no backend compartilhado.
+      // Se não houver sessão autenticada, não existe "salvo localmente".
+      const token = await getAdminAccessToken();
+      if(!token) {
+        throw new Error('Sessão administrativa não está autenticada. Faça login novamente para salvar na nuvem.');
+      }
+
       if(actionDesc) {
         const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
         const now = new Date().toLocaleString('pt-BR');
@@ -2319,14 +2283,36 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
           date: now
         });
       }
+
       renderApp();
       updateTrafficUI();
+
       const changes = getChangedTopLevelFields();
-      if(!Object.keys(changes).length) return true;
+      if(!Object.keys(changes).length) {
+        // Não há diferença em relação ao último estado confirmado no servidor.
+        return true;
+      }
+
       const baseRevision = remoteRevision;
-      // Only the fields changed since the last successful cloud read are sent.
-      // This prevents an old full snapshot from rolling back newer data.
-      return await queueBinWrite(changes, baseRevision);
+      const saved = await queueBinWrite(changes, baseRevision);
+
+      if(!saved) {
+        // O estado editado não é promovido a "salvo". O servidor continua sendo
+        // a fonte da verdade e será consultado novamente.
+        throw new Error('O servidor não confirmou a gravação. A alteração NÃO foi salva na nuvem.');
+      }
+
+      // Confirma uma segunda leitura do mesmo backend antes de liberar o sucesso.
+      // Isso garante que outro dispositivo verá exatamente o estado confirmado.
+      await fetchBinData();
+      const confirmed = Object.keys(changes).every(key =>
+        stableEqual(remoteSnapshot?.[key], changes[key])
+      );
+      if(!confirmed) {
+        throw new Error('A gravação foi enviada, mas a confirmação remota divergiu. A alteração NÃO foi considerada salva.');
+      }
+
+      return true;
     }
 
     async function updateBarStatus(status) {
@@ -4628,15 +4614,27 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
     animateEmbers();
 
-    window.addEventListener('beforeunload', () => {
-      try {
-        const changes = getChangedTopLevelFields();
-        if(Object.keys(changes).length) mergePendingCloudChanges(changes);
-      } catch(e) {}
+    // Sincronização entre dispositivos: além do intervalo periódico, uma aba que
+    // volta ao foco consulta imediatamente o mesmo estado remoto compartilhado.
+    let syncIntervalId = null;
+    function startRemoteSync() {
+      if(syncIntervalId) clearInterval(syncIntervalId);
+      syncIntervalId = setInterval(() => {
+        if(!binWriteBusy) fetchBinData();
+      }, 5000);
+    }
+
+    window.addEventListener('focus', () => {
+      if(!binWriteBusy) fetchBinData();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if(document.visibilityState === 'visible' && !binWriteBusy) fetchBinData();
     });
 
     window.addEventListener('DOMContentLoaded', () => {
       initApp();
+      startRemoteSync();
     });
   </script>
 
