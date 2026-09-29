@@ -1910,9 +1910,40 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
 
       let responseJson = null;
       try { responseJson = await res.json(); } catch(e) {}
-      remoteRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
-      if(!remoteSnapshot || typeof remoteSnapshot !== 'object') remoteSnapshot = {};
-      Object.keys(changes).forEach(k => { remoteSnapshot[k] = cloneForSync(changes[k]); });
+      const acknowledgedRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
+
+      // Confirma no servidor o registro realmente gravado. HTTP 200 do PUT
+      // sozinho não é suficiente para considerar a alteração persistida.
+      const verifyToken = await getAdminAccessToken();
+      if(!verifyToken) return false;
+      const verifyRes = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
+        cache:'no-store',
+        headers:{
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization':'Bearer ' + verifyToken
+        }
+      }, 15000);
+      if(!verifyRes.ok) {
+        console.error('JSONBin: PUT aceito, mas a confirmação da gravação falhou.', verifyRes.status);
+        return false;
+      }
+      const verifyJson = await verifyRes.json();
+      const verifiedRecord = verifyJson?.record;
+      if(!verifiedRecord || typeof verifiedRecord !== 'object') return false;
+      const verifiedRevision = Number(verifiedRecord?.__sync?.revision || 0);
+      const allVerified = Object.keys(changes).every(k => stableEqual(verifiedRecord[k], changes[k]));
+      if(!allVerified) {
+        console.error('JSONBin: servidor não contém exatamente as alterações enviadas.', Object.keys(changes));
+        remoteRevision = verifiedRevision;
+        const clean = cloneForSync(verifiedRecord) || {};
+        delete clean.__sync;
+        remoteSnapshot = clean;
+        return false;
+      }
+      remoteRevision = verifiedRevision || acknowledgedRevision;
+      const cleanVerified = cloneForSync(verifiedRecord) || {};
+      delete cleanVerified.__sync;
+      remoteSnapshot = cleanVerified;
       return true;
     }
 
