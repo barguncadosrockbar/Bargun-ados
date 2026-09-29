@@ -424,7 +424,7 @@
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
       <span class="close-btn" onclick="closeModal('productModal')">×</span>
-      <img id="modalImg" src="" alt="Produto" onerror="fallbackImg(this)">
+      <img id="modalImg" src="" alt="Produto" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
       <h3 id="modalTitle">Nome</h3>
       <p id="modalDesc">Descrição</p>
       <div id="modalPrice">R$ 00,00</div>
@@ -568,7 +568,7 @@
   <div id="playerModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
       <span class="close-btn" onclick="closeModal('playerModal')">×</span>
-      <img id="playerModalImg" src="" alt="Player" onerror="fallbackImg(this)">
+      <img id="playerModalImg" src="" alt="Player" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
       <h3 id="playerName" style="font-family: var(--font-title); font-size: 2.2rem; color: var(--c-yellow); margin-bottom: 5px;">Nome</h3>
       <a id="playerIg" href="#" target="_blank" style="color: var(--c-cyan); font-weight: bold; text-decoration: none; display: block; margin-bottom: 15px; font-size: 1.1rem;">@instagram</a>
       <div id="playerQuote">"A mensagem de provocação vai aqui."</div>
@@ -606,7 +606,7 @@
   <div id="eventModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-cyan);">
       <span class="close-btn" onclick="closeModal('eventModal')">×</span>
-      <img id="eventModalImg" src="" alt="Evento" onerror="fallbackImg(this)">
+      <img id="eventModalImg" src="" alt="Evento" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
       <div id="e-tag" style="background: var(--c-red); color: #fff; display: inline-block; padding: 5px 10px; font-weight: bold; border-radius: 4px; margin-bottom: 10px;">TAG</div>
       <h3 id="e-title" style="font-family: var(--font-title); font-size: 2.2rem; color: #fff; margin-bottom: 5px; text-transform: uppercase;">TITULO</h3>
       <p id="e-sub" style="color: var(--c-yellow); font-weight: bold; font-size: 1rem; margin-bottom: 15px;">SUBTITULO</p>
@@ -1409,6 +1409,81 @@
       {id:1034,type:'drink',drinkLine:'whisky',name:'Whisky com cola',short:'Whisky e refrigerante de cola.',full:'Whisky com cola, servido bem gelado.',price:'18,00',img:'https://images.unsplash.com/photo-1527281400683-1aae777175f8?q=80&w=600'}
     ];
 
+    // === RESTAURAÇÃO DE IMAGENS / PROTEÇÃO DO CATÁLOGO ===
+    // Nunca substitui uma foto válida salva pelo ADM. Só repõe a imagem original
+    // quando o dado remoto veio sem URL, vazio ou inválido.
+    // Resolve somente imagens já hospedadas/salvas nos dados do sistema.
+    // Não cria imagens novas e não substitui URLs hospedadas por Unsplash/avatars.
+    function getStoredImageUrl(item){
+      if(!item || typeof item !== 'object') return '';
+      const candidates = [
+        item.img,
+        item.imageUrl,
+        item.imageURL,
+        item.image,
+        item.photoUrl,
+        item.photoURL,
+        item.photo,
+        item.imgbbUrl,
+        item.imgbbURL,
+        item.imgbb,
+        item.imgdbUrl,
+        item.imgdbURL,
+        item.imgdb,
+        item.hostedUrl,
+        item.url
+      ];
+      for(const value of candidates){
+        const url = String(value || '').trim();
+        if(/^https?:\/\//i.test(url) && !/images\.unsplash\.com|ui-avatars\.com/i.test(url)) return url;
+      }
+      return '';
+    }
+
+    function normalizeStoredImage(item){
+      if(!item || typeof item !== 'object') return '';
+      const hosted = getStoredImageUrl(item);
+      if(hosted && item.img !== hosted) item.img = hosted;
+      return hosted;
+    }
+
+    function getCatalogFallbackImage(item){
+      if(!item) return '';
+      const id = String(item.id ?? '');
+      const name = String(item.name || '').trim().toLowerCase();
+      const pools = [
+        ...(Array.isArray(defaultMenu) ? defaultMenu : []),
+        ...(Array.isArray(EXTRA_DRINK_CATALOG) ? EXTRA_DRINK_CATALOG : [])
+      ];
+      const found = pools.find(x => String(x.id ?? '') === id) || pools.find(x => String(x.name || '').trim().toLowerCase() === name);
+      return found && found.img ? found.img : '';
+    }
+
+    function restoreMissingImages(){
+      try{
+        const normalizeList = (list) => {
+          if(!Array.isArray(list)) return;
+          list.forEach(item => normalizeStoredImage(item));
+        };
+        normalizeList(appData.menu);
+        normalizeList(appData.agenda);
+        normalizeList(appData.team);
+        normalizeList(appData.arcade);
+        normalizeList(appData.cachaceiros);
+        normalizeStoredImage(appData.flyer);
+        if(Array.isArray(appData.customTabs)) normalizeList(appData.customTabs);
+      }catch(e){ console.warn('[Bargunçados] normalização das imagens hospedadas:', e); }
+    }
+
+    function fallbackMenuImg(el, id){
+      if(!el) return;
+      const item = Array.isArray(appData?.menu) ? appData.menu.find(x => String(x?.id) === String(id)) : null;
+      const hosted = normalizeStoredImage(item);
+      el.onerror = null;
+      if(hosted && el.src !== hosted) el.src = hosted;
+      else el.style.visibility = 'hidden';
+    }
+
     function ensureDeletedCatalogRegistry() {
       if(!appData.deletedCatalogItems || typeof appData.deletedCatalogItems !== 'object') appData.deletedCatalogItems = {};
       if(!Array.isArray(appData.deletedCatalogItems.ids)) appData.deletedCatalogItems.ids = [];
@@ -2202,7 +2277,10 @@
         if(!drinksContainer || !portionsContainer) return;
         const source = Array.isArray(appData && appData.menu) && appData.menu.length ? appData.menu : defaultMenu;
         const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-        const card = item => `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(item.img || '')}" class="product-img" onerror="fallbackImg(this)"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+        const card = item => {
+          const hostedImg = normalizeStoredImage(item);
+          return `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(hostedImg || '')}" class="product-img" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+        };
         const drinks = source.filter(i => i && ['drink','beer','noalcohol'].includes(i.type));
         const portions = source.filter(i => i && i.type === 'portion');
         drinksContainer.innerHTML = `<div class="menu-grid emergency-menu-grid">${drinks.map(card).join('')}</div>`;
@@ -2222,6 +2300,7 @@
     }
 
     function renderAppUnsafe() {
+      restoreMissingImages();
       // Proteção de renderização: uma resposta remota vazia/nula nunca pode
       // fazer o cardápio desaparecer nem interromper o restante do site.
       const cHome = (appData.home && typeof appData.home === 'object') ? appData.home : defaultHome;
@@ -2359,8 +2438,8 @@
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
-      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
@@ -2372,7 +2451,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <img class="lb-ava" src="${i.img}" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
@@ -2393,7 +2472,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <img class="lb-ava" src="${i.img}" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
@@ -2620,10 +2699,11 @@
     }
 
     function createCard(item) {
+      const hostedImg = normalizeStoredImage(item);
       const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${item.id})` : `openMenuModalObj(${item.id})`;
       const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${item.id},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${item.id},'down')">↓</button></div>` : '';
-      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(item.img||'')}')" onclick="${organizerClick}"><div class="product-image-wrap"><img src="${escapeHTML(item.img||'')}" class="product-img" onerror="fallbackImg(this)">${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
+      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap"><img src="${escapeHTML(hostedImg||'')}" class="product-img" onerror="fallbackMenuImg(this,${Number(item.id)||0})">${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => i.id === id);
@@ -2638,7 +2718,7 @@
           : '';
       }
       document.getElementById('modalPrice').innerText = 'R$ ' + item.price;
-      document.getElementById('modalImg').src = item.img;
+      document.getElementById('modalImg').src = normalizeStoredImage(item) || '';
 
       const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
