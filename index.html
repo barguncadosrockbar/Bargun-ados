@@ -1180,13 +1180,23 @@
       }
     }
 
+    async function fetchWithTimeout(url, options={}, timeoutMs=10000){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     async function supabaseAuthFetch(path, options={}){
       const headers = {
         'apikey': SUPABASE_PUBLISHABLE_KEY,
         ...(options.headers || {})
       };
       if(options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
-      const res = await fetch(SUPABASE_URL + '/auth/v1/' + path, { ...options, headers, cache:'no-store' });
+      const res = await fetchWithTimeout(SUPABASE_URL + '/auth/v1/' + path, { ...options, headers, cache:'no-store' }, 10000);
       let data = null;
       try { data = await res.json(); } catch(e) {}
       return { res, data };
@@ -1416,7 +1426,7 @@
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
     const defaultFlyer = { tag: 'SÁBADO INSANO', title: 'BANDA HELLFIRE', sub: 'ESPECIAL METALLICA E SLIPKNOT', desc: 'A noite mais pesada da região. Guitarras distorcidas e mosh pit liberado. 2h de show!', img: 'https://images.unsplash.com/photo-1540039155732-611116238b93?w=800&q=80' };
 
-    let appData = {
+    var appData = {
       home: defaultHome,
       menu: defaultMenu,
       deletedCatalogItems: { ids: [], names: [] },
@@ -1434,8 +1444,8 @@
       adminLogs: [],
       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
       adminAccounts: [
-        { email: "diegotouru666@gmail.com", pass: b64Decode("ODEzNTAzNzg3MTY3Nw=="), name: "Touru", isMaster: true },
-        { email: "Rafa369@gmail.com", pass: "280514", name: "Alisson", isMaster: false }
+        { email: "diegotouru666@gmail.com", name: "Touru", isMaster: true },
+        { email: "Rafa369@gmail.com", name: "Alisson", isMaster: false }
       ],
       permissionsByAdmin: {
         "diegotouru666@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true },
@@ -1496,7 +1506,7 @@
             console.error('JSONBin: gravação administrativa bloqueada; sessão Supabase ausente.');
             return false;
           }
-          const res = await fetch(SUPABASE_FUNCTION_URL, {
+          const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -1526,7 +1536,7 @@
     }
 
     async function publicJsonbinAction(action, payload={}) {
-      const res = await fetch(SUPABASE_FUNCTION_URL, {
+      const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1706,11 +1716,19 @@
         updateGitHubUI(false);
       }
       
+      // Primeiro pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
+      ensureAdminSystem();
+      ensureDeletedCatalogRegistry();
+      ensureDrinkCatalog();
+      renderApp();
+
+      // Depois tenta restaurar sessão e sincronizar a nuvem sem bloquear a interface.
       await restoreSupabaseAdminSession();
       await fetchBinData();
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
+      renderApp();
       if(adminSecurityMigrationNeeded && supabaseAccessToken) {
         const migrated = await saveBinData('Migrou contas administrativas para autenticação segura do Supabase');
         if(migrated) adminSecurityMigrationNeeded = false;
@@ -1756,10 +1774,10 @@
       if(binWriteBusy) return;
       const readGeneration = binWriteGeneration;
       try {
-        const res = await fetch(SUPABASE_FUNCTION_URL, {
+        const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL, {
           cache: 'no-store',
           headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + SUPABASE_PUBLISHABLE_KEY }
-        });
+        }, 10000);
         if(res.ok) {
           const json = await res.json();
           // Diagnóstico não sensível para facilitar a identificação de falhas
@@ -1773,15 +1791,22 @@
           // Se uma gravação começou enquanto a leitura estava em trânsito,
           // descarta essa resposta antiga em vez de restaurar dados anteriores.
           if(readGeneration !== binWriteGeneration || binWriteBusy) return;
-          if(json.record) {
-            appData = { ...appData, ...json.record };
-            ensureAdminSystem();
-            ensureMenuCategoryLabels();
-            ensureDeletedCatalogRegistry();
-            ensureDrinkCatalog();
-            ensureModerationHistory();
-            renderApp();
-            updateTrafficUI();
+          if(json.record && typeof json.record === 'object') {
+            const localBeforeRemote = appData;
+            try {
+              appData = { ...appData, ...json.record };
+              ensureAdminSystem();
+              ensureMenuCategoryLabels();
+              ensureDeletedCatalogRegistry();
+              ensureDrinkCatalog();
+              ensureModerationHistory();
+              renderApp();
+              updateTrafficUI();
+            } catch(remoteRenderError) {
+              console.error('[Bargunçados] Dados remotos incompatíveis; mantendo catálogo local.', remoteRenderError);
+              appData = localBeforeRemote;
+              renderApp();
+            }
           }
         }
       } catch(e) {
@@ -2139,7 +2164,33 @@
       alert('✅ Posições salvas com sucesso!');
     }
 
+    function renderEmergencyMenu(){
+      try {
+        const drinksContainer = document.getElementById('dynamic-menu-bebidas');
+        const portionsContainer = document.getElementById('dynamic-menu-porcoes');
+        if(!drinksContainer || !portionsContainer) return;
+        const source = Array.isArray(appData && appData.menu) && appData.menu.length ? appData.menu : defaultMenu;
+        const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+        const card = item => `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(item.img || '')}" class="product-img" onerror="fallbackImg(this)"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+        const drinks = source.filter(i => i && ['drink','beer','noalcohol'].includes(i.type));
+        const portions = source.filter(i => i && i.type === 'portion');
+        drinksContainer.innerHTML = `<div class="menu-grid emergency-menu-grid">${drinks.map(card).join('')}</div>`;
+        portionsContainer.innerHTML = `<div class="menu-grid emergency-menu-grid">${portions.map(card).join('')}</div>`;
+      } catch(e) {
+        console.error('[Bargunçados] Falha também no render de emergência.', e);
+      }
+    }
+
     function renderApp() {
+      try {
+        return renderAppUnsafe();
+      } catch(e) {
+        console.error('[Bargunçados] Renderização principal falhou; catálogo de emergência ativado.', e);
+        renderEmergencyMenu();
+      }
+    }
+
+    function renderAppUnsafe() {
       // Proteção de renderização: uma resposta remota vazia/nula nunca pode
       // fazer o cardápio desaparecer nem interromper o restante do site.
       const cHome = (appData.home && typeof appData.home === 'object') ? appData.home : defaultHome;
@@ -3522,6 +3573,7 @@
       }
 
       try {
+        if(!appData || typeof appData !== 'object') throw new Error('O aplicativo ainda está inicializando. Aguarde um instante e tente novamente.');
         if(loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '◌ AUTENTICANDO...'; }
         setAuthStatus('VALIDANDO CREDENCIAIS • CONEXÃO SEGURA', 'working');
         const session = await supabaseSignInWithPassword(emailInput, passInput);
