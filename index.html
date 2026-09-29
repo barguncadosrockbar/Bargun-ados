@@ -384,7 +384,6 @@
   @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
   </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -1133,11 +1132,116 @@
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
     const IMGDB_UPLOAD_URL = "https://imgdb.io/api/v1/upload?ttl=0";
 
-    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false }
-    });
+    // Autenticação Supabase via REST: não depende de CDN/SDK externo no navegador.
+    // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
+    const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
     let supabaseAccessToken = null;
+    let supabaseRefreshToken = null;
+    let supabaseUser = null;
     let adminSecurityMigrationNeeded = false;
+
+    function clearStoredSupabaseSession(){
+      supabaseAccessToken = null;
+      supabaseRefreshToken = null;
+      supabaseUser = null;
+      localStorage.removeItem(SUPABASE_SESSION_STORAGE_KEY);
+    }
+
+    function storeSupabaseSession(session){
+      if(!session || !session.access_token || !session.user) {
+        clearStoredSupabaseSession();
+        return null;
+      }
+      const expiresIn = Number(session.expires_in || 3600);
+      const expiresAt = Number(session.expires_at || Math.floor(Date.now()/1000) + expiresIn);
+      const safe = {
+        access_token: String(session.access_token),
+        refresh_token: String(session.refresh_token || supabaseRefreshToken || ''),
+        user: session.user,
+        expires_at: expiresAt
+      };
+      supabaseAccessToken = safe.access_token;
+      supabaseRefreshToken = safe.refresh_token || null;
+      supabaseUser = safe.user;
+      localStorage.setItem(SUPABASE_SESSION_STORAGE_KEY, JSON.stringify(safe));
+      return safe;
+    }
+
+    function readStoredSupabaseSession(){
+      try {
+        const raw = localStorage.getItem(SUPABASE_SESSION_STORAGE_KEY);
+        if(!raw) return null;
+        const parsed = JSON.parse(raw);
+        if(!parsed || !parsed.access_token || !parsed.user) return null;
+        return parsed;
+      } catch(e) {
+        clearStoredSupabaseSession();
+        return null;
+      }
+    }
+
+    async function supabaseAuthFetch(path, options={}){
+      const headers = {
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        ...(options.headers || {})
+      };
+      if(options.body && !headers['Content-Type']) headers['Content-Type'] = 'application/json';
+      const res = await fetch(SUPABASE_URL + '/auth/v1/' + path, { ...options, headers, cache:'no-store' });
+      let data = null;
+      try { data = await res.json(); } catch(e) {}
+      return { res, data };
+    }
+
+    async function supabaseGetUser(accessToken){
+      if(!accessToken) return null;
+      const {res, data} = await supabaseAuthFetch('user', {
+        method:'GET',
+        headers:{'Authorization':'Bearer ' + accessToken}
+      });
+      return res.ok && data && data.email ? data : null;
+    }
+
+    async function supabaseRefreshSession(){
+      const stored = readStoredSupabaseSession();
+      const refreshToken = stored?.refresh_token || supabaseRefreshToken;
+      if(!refreshToken) return null;
+      const {res, data} = await supabaseAuthFetch('token?grant_type=refresh_token', {
+        method:'POST',
+        body:JSON.stringify({refresh_token:refreshToken})
+      });
+      if(!res.ok || !data?.access_token || !data?.user) {
+        clearStoredSupabaseSession();
+        return null;
+      }
+      return storeSupabaseSession(data);
+    }
+
+    async function supabaseSignInWithPassword(email, password){
+      const {res, data} = await supabaseAuthFetch('token?grant_type=password', {
+        method:'POST',
+        body:JSON.stringify({email, password})
+      });
+      if(!res.ok) {
+        const message = data?.msg || data?.message || data?.error_description || data?.error || 'Falha na autenticação.';
+        throw new Error(String(message));
+      }
+      const session = storeSupabaseSession(data);
+      if(!session) throw new Error('O Supabase não retornou uma sessão válida.');
+      return session;
+    }
+
+    async function supabaseSignOut(){
+      const token = supabaseAccessToken || readStoredSupabaseSession()?.access_token;
+      if(token) {
+        try {
+          await supabaseAuthFetch('logout', {
+            method:'POST',
+            headers:{'Authorization':'Bearer ' + token}
+          });
+        } catch(e) {}
+      }
+      clearStoredSupabaseSession();
+    }
 
     function escapeHTML(str) {
       if (!str) return '';
@@ -1158,13 +1262,36 @@
 
     async function getCurrentSupabaseSession() {
       try {
-        const { data, error } = await supabaseClient.auth.getSession();
-        if(error) throw error;
-        const session = data && data.session ? data.session : null;
-        supabaseAccessToken = session ? session.access_token : null;
+        let session = readStoredSupabaseSession();
+        if(!session) {
+          clearStoredSupabaseSession();
+          return null;
+        }
+
+        supabaseAccessToken = session.access_token;
+        supabaseRefreshToken = session.refresh_token || null;
+        supabaseUser = session.user || null;
+
+        const now = Math.floor(Date.now()/1000);
+        if(Number(session.expires_at || 0) <= now + 60) {
+          session = await supabaseRefreshSession();
+          if(!session) return null;
+        } else {
+          const user = await supabaseGetUser(session.access_token);
+          if(user) {
+            session.user = user;
+            supabaseUser = user;
+            localStorage.setItem(SUPABASE_SESSION_STORAGE_KEY, JSON.stringify(session));
+          } else {
+            session = await supabaseRefreshSession();
+            if(!session) return null;
+          }
+        }
+
         return session;
       } catch(e) {
-        supabaseAccessToken = null;
+        console.warn('[Bargunçados] Sessão Supabase indisponível.', e);
+        clearStoredSupabaseSession();
         return null;
       }
     }
@@ -1174,8 +1301,7 @@
       if(!session || !session.user || !session.user.email) return null;
       const account = getAuthAccountByEmail(session.user.email);
       if(!account) {
-        await supabaseClient.auth.signOut();
-        supabaseAccessToken = null;
+        await supabaseSignOut();
         return null;
       }
       return session.access_token;
@@ -1187,8 +1313,7 @@
       localStorage.setItem('brg_adm_name', account.name);
       localStorage.setItem('brg_adm_is_master', account.isMaster ? 'true' : 'false');
       appData.permissions = getManagedAdminPermissions(account.email);
-      supabaseAccessToken = null;
-      if(user && user.id) localStorage.setItem('brg_supabase_user_id', user.id);
+      if(supabaseAccessToken && user && user.id) localStorage.setItem('brg_supabase_user_id', user.id);
     }
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
@@ -1405,7 +1530,10 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'apikey': SUPABASE_PUBLISHABLE_KEY
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          // O gateway da Edge Function pode exigir Authorization; para operações públicas
+          // usamos a publishable key apenas como credencial de projeto.
+          'Authorization': 'Bearer ' + SUPABASE_PUBLISHABLE_KEY
         },
         body: JSON.stringify({ action, ...payload })
       });
@@ -1547,8 +1675,7 @@
 
       const account = getAuthAccountByEmail(session.user.email);
       if(!account) {
-        await supabaseClient.auth.signOut();
-        supabaseAccessToken = null;
+        await supabaseSignOut();
         localStorage.removeItem('brg_adm_logged');
         localStorage.removeItem('brg_adm_email');
         localStorage.removeItem('brg_adm_name');
@@ -1565,9 +1692,6 @@
       return account;
     }
 
-    supabaseClient.auth.onAuthStateChange((_event, session) => {
-      supabaseAccessToken = session ? session.access_token : null;
-    });
 
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
@@ -1586,8 +1710,7 @@
       await fetchBinData();
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
-      const catalogChanged = ensureDrinkCatalog();
-      if(catalogChanged) await saveBinData();
+      ensureDrinkCatalog();
       if(adminSecurityMigrationNeeded && supabaseAccessToken) {
         const migrated = await saveBinData('Migrou contas administrativas para autenticação segura do Supabase');
         if(migrated) adminSecurityMigrationNeeded = false;
@@ -1635,7 +1758,7 @@
       try {
         const res = await fetch(SUPABASE_FUNCTION_URL, {
           cache: 'no-store',
-          headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY }
+          headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY, 'Authorization': 'Bearer ' + SUPABASE_PUBLISHABLE_KEY }
         });
         if(res.ok) {
           const json = await res.json();
@@ -1661,7 +1784,9 @@
             updateTrafficUI();
           }
         }
-      } catch(e) {}
+      } catch(e) {
+        console.warn('[Bargunçados] Falha ao carregar dados remotos; mantendo catálogo local.', e);
+      }
     }
 
     async function saveBinData(actionDesc = '') {
@@ -3399,17 +3524,17 @@
       try {
         if(loginBtn) { loginBtn.disabled = true; loginBtn.textContent = '◌ AUTENTICANDO...'; }
         setAuthStatus('VALIDANDO CREDENCIAIS • CONEXÃO SEGURA', 'working');
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: emailInput, password: passInput });
-        if(error) throw error;
-        if(!data || !data.user) throw new Error('O Supabase não retornou um usuário autenticado.');
+        const session = await supabaseSignInWithPassword(emailInput, passInput);
+        if(!session || !session.user) throw new Error('O Supabase não retornou um usuário autenticado.');
+        supabaseAccessToken = session.access_token;
 
-        const authenticatedAccount = getAuthAccountByEmail(data.user.email);
+        const authenticatedAccount = getAuthAccountByEmail(session.user.email);
         if(!authenticatedAccount) {
-          await supabaseClient.auth.signOut();
+          await supabaseSignOut();
           throw new Error('Usuário autenticado sem permissão de administrador.');
         }
 
-        applySupabaseAdminSession(data.user, authenticatedAccount);
+        applySupabaseAdminSession(session.user, authenticatedAccount);
         ensureAdminSystem();
         setAuthStatus('ACESSO AUTORIZADO • IDENTIDADE CONFIRMADA', 'success');
         if(loginBox) {
@@ -3541,8 +3666,7 @@
     }
 
     async function processLogout() {
-      try { await supabaseClient.auth.signOut(); } catch(e) {}
-      supabaseAccessToken=null;
+      await supabaseSignOut();
       localStorage.removeItem('brg_adm_logged');
       localStorage.removeItem('brg_adm_email');
       localStorage.removeItem('brg_adm_name');
