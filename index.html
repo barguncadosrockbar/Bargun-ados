@@ -2054,6 +2054,22 @@
       }
     }
 
+    function ensureLegacyDrinkLines(){
+      if(!Array.isArray(appData.menu)) return;
+      const inferred = {
+        'gin sunset':'gin',
+        'caipirinha':'caipirinha',
+        'caipiroska':'vodka',
+        'bloody mary':'vodka',
+        'fenrir whiskey':'whisky'
+      };
+      appData.menu.forEach(item => {
+        if(!item || item.type !== 'drink' || item.drinkLine) return;
+        const key = String(item.name || '').trim().toLowerCase();
+        if(inferred[key]) item.drinkLine = inferred[key];
+      });
+    }
+
     function ensureMenuCategoryLabels() {
       const defaults = {
         bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
@@ -2315,6 +2331,10 @@
       const cCach = Array.isArray(appData.cachaceiros) ? appData.cachaceiros : defaultCachaceiros;
       const cFlyer = (appData.flyer && typeof appData.flyer === 'object') ? appData.flyer : defaultFlyer;
       const cCustomTabs = Array.isArray(appData.customTabs) ? appData.customTabs : [];
+      [cTeam, cArcade, cCach].forEach(list => { if(Array.isArray(list)) list.forEach(x => normalizeStoredImage(x)); });
+      cAgenda.forEach(x => normalizeStoredImage(x));
+      normalizeStoredImage(cFlyer);
+      ensureLegacyDrinkLines();
       ensureMenuCategoryLabels();
       const categoryLabels = appData.menuCategoryLabels;
 
@@ -2438,8 +2458,8 @@
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
-      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackMenuImg(this,${Number(item.id)||0})"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
@@ -2451,7 +2471,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">${i.sub} • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
@@ -2472,7 +2492,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
+          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${displayIg}</strong></span>
