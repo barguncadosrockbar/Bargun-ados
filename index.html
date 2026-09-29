@@ -2235,7 +2235,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       const baseRevision = remoteRevision;
       // Only the fields changed since the last successful cloud read are sent.
       // This prevents an old full snapshot from rolling back newer data.
-      return await queueBinWrite(changes, baseRevision);
+      const saved = await queueBinWrite(changes, baseRevision);
+      if (!saved) {
+        throw new Error('O servidor não confirmou a gravação. A alteração NÃO foi salva na nuvem.');
+      }
+      return true;
     }
 
     async function updateBarStatus(status) {
