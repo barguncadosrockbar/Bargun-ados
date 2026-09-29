@@ -1639,6 +1639,14 @@
         });
         if(res.ok) {
           const json = await res.json();
+          // Diagnóstico não sensível para facilitar a identificação de falhas
+          // de sincronização sem expor credenciais ou conteúdo secreto.
+          try {
+            console.info('[Bargunçados] API segura OK', {
+              hasRecord: !!json?.record,
+              menuItems: Array.isArray(json?.record?.menu) ? json.record.menu.length : null
+            });
+          } catch(e) {}
           // Se uma gravação começou enquanto a leitura estava em trânsito,
           // descarta essa resposta antiga em vez de restaurar dados anteriores.
           if(readGeneration !== binWriteGeneration || binWriteBusy) return;
@@ -2007,14 +2015,20 @@
     }
 
     function renderApp() {
-      const cHome = appData.home;
-      const cMenu = appData.menu;
-      const cAgenda = appData.agenda;
-      const cTeam = appData.team;
-      const cArcade = appData.arcade;
-      const cCach = appData.cachaceiros;
-      const cFlyer = appData.flyer;
-      const cCustomTabs = appData.customTabs || [];
+      // Proteção de renderização: uma resposta remota vazia/nula nunca pode
+      // fazer o cardápio desaparecer nem interromper o restante do site.
+      const cHome = (appData.home && typeof appData.home === 'object') ? appData.home : defaultHome;
+      const remoteMenu = Array.isArray(appData.menu) ? appData.menu : [];
+      // Se a API retornar um menu vazio por falha de migração, usamos somente
+      // o catálogo local de segurança para manter o site visível. Não gravamos
+      // esse fallback de volta no banco automaticamente.
+      const cMenu = remoteMenu.length ? remoteMenu : defaultMenu;
+      const cAgenda = Array.isArray(appData.agenda) ? appData.agenda : defaultAgenda;
+      const cTeam = Array.isArray(appData.team) ? appData.team : defaultTeam;
+      const cArcade = Array.isArray(appData.arcade) ? appData.arcade : defaultArcade;
+      const cCach = Array.isArray(appData.cachaceiros) ? appData.cachaceiros : defaultCachaceiros;
+      const cFlyer = (appData.flyer && typeof appData.flyer === 'object') ? appData.flyer : defaultFlyer;
+      const cCustomTabs = Array.isArray(appData.customTabs) ? appData.customTabs : [];
       ensureMenuCategoryLabels();
       const categoryLabels = appData.menuCategoryLabels;
 
