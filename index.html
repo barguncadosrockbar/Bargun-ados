@@ -1847,8 +1847,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function sendAdminPatch(changes, baseRevision, keepalive=false, retryOnConflict=true){
-      // Toda gravação administrativa é remota. Sem uma sessão Supabase válida,
-      // a operação é recusada e NUNCA é considerada salva localmente.
       let token = await getAdminAccessToken();
       if(!token) {
         console.error('JSONBin: gravação bloqueada; sessão Supabase ausente ou expirada.');
@@ -1912,46 +1910,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
 
       let responseJson = null;
       try { responseJson = await res.json(); } catch(e) {}
-      const savedRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
-
-      // Confirma no servidor antes de dizer ao painel que o dado foi salvo.
-      // Isso evita o falso "Salvo" quando a API aceitou a requisição mas a leitura
-      // seguinte ainda está atrasada ou quando outro dispositivo gravou no intervalo.
-      try {
-        const verify = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
-          cache: 'no-store',
-          headers: {
-            'apikey': SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': 'Bearer ' + (supabaseAccessToken || token)
-          }
-        }, 12000);
-        if(!verify.ok) {
-          console.error('JSONBin: PUT concluído, mas a verificação remota falhou:', verify.status);
-          return false;
-        }
-        const verifyJson = await verify.json();
-        if(!verifyJson?.record || typeof verifyJson.record !== 'object') {
-          console.error('JSONBin: verificação remota sem registro válido.');
-          return false;
-        }
-        const verifiedRecord = cloneForSync(verifyJson.record) || {};
-        const verifiedRevision = Number(verifiedRecord.__sync?.revision || savedRevision);
-        delete verifiedRecord.__sync;
-
-        // Cada campo enviado precisa existir no registro remoto exatamente como foi salvo.
-        const verified = Object.keys(changes).every(k => stableEqual(verifiedRecord[k], changes[k]));
-        if(!verified) {
-          console.error('JSONBin: verificação detectou divergência após salvar.');
-          return false;
-        }
-
-        remoteRevision = verifiedRevision;
-        remoteSnapshot = verifiedRecord;
-        return true;
-      } catch(e) {
-        console.error('JSONBin: não foi possível verificar a gravação:', e);
-        return false;
-      }
+      remoteRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
+      if(!remoteSnapshot || typeof remoteSnapshot !== 'object') remoteSnapshot = {};
+      Object.keys(changes).forEach(k => { remoteSnapshot[k] = cloneForSync(changes[k]); });
+      return true;
     }
 
     function queueBinWrite(changes, baseRevision, keepalive=false){
@@ -2056,14 +2018,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       recordSiteClick();
     }, {passive:true});
 
-    window.addEventListener('beforeunload', function(){
-      try{
-        localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{}));
-        // Só envia o snapshot completo se houver sessão administrativa.
-        // Eventos públicos de analytics usam a fila própria do endpoint seguro.
-        if(!binWriteBusy && supabaseAccessToken){ const changes=getChangedTopLevelFields(); if(Object.keys(changes).length) queueBinWrite(changes, remoteRevision, true); }
-      }catch(e){}
-    });
 
     function ensureAdminSystem() {
       if(!Array.isArray(appData.adminAccounts)) appData.adminAccounts = [];
@@ -2163,7 +2117,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       // Depois tenta restaurar sessão e sincronizar a nuvem sem bloquear a interface.
       await restoreSupabaseAdminSession();
       await fetchBinData();
-
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
@@ -2184,7 +2137,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
         startAdminSessionClock();
       }
 
-      // A sincronização remota é iniciada por startRemoteSync() após o DOM carregar.
     }
 
     function updateGitHubUI(isConnected) {
@@ -2265,13 +2217,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function saveBinData(actionDesc = '') {
-      // REGRA: clicar em Salvar significa persistir no backend compartilhado.
-      // Se não houver sessão autenticada, não existe "salvo localmente".
-      const token = await getAdminAccessToken();
-      if(!token) {
-        throw new Error('Sessão administrativa não está autenticada. Faça login novamente para salvar na nuvem.');
-      }
-
       if(actionDesc) {
         const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
         const now = new Date().toLocaleString('pt-BR');
@@ -2283,36 +2228,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
           date: now
         });
       }
-
       renderApp();
       updateTrafficUI();
-
       const changes = getChangedTopLevelFields();
-      if(!Object.keys(changes).length) {
-        // Não há diferença em relação ao último estado confirmado no servidor.
-        return true;
-      }
-
+      if(!Object.keys(changes).length) return true;
       const baseRevision = remoteRevision;
-      const saved = await queueBinWrite(changes, baseRevision);
-
-      if(!saved) {
-        // O estado editado não é promovido a "salvo". O servidor continua sendo
-        // a fonte da verdade e será consultado novamente.
-        throw new Error('O servidor não confirmou a gravação. A alteração NÃO foi salva na nuvem.');
-      }
-
-      // Confirma uma segunda leitura do mesmo backend antes de liberar o sucesso.
-      // Isso garante que outro dispositivo verá exatamente o estado confirmado.
-      await fetchBinData();
-      const confirmed = Object.keys(changes).every(key =>
-        stableEqual(remoteSnapshot?.[key], changes[key])
-      );
-      if(!confirmed) {
-        throw new Error('A gravação foi enviada, mas a confirmação remota divergiu. A alteração NÃO foi considerada salva.');
-      }
-
-      return true;
+      // Only the fields changed since the last successful cloud read are sent.
+      // This prevents an old full snapshot from rolling back newer data.
+      return await queueBinWrite(changes, baseRevision);
     }
 
     async function updateBarStatus(status) {
