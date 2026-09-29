@@ -519,6 +519,28 @@
 
 </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
+<script>
+/* SECURITY HARDENING V45 — non-visual, client-side defense helpers. */
+function safeImageUrl(value){
+  const raw=String(value ?? '').trim();
+  if(!raw || !/^https:\/\//i.test(raw)) return '';
+  try { const u=new URL(raw); return u.protocol==='https:' ? u.href : ''; }
+  catch(_){ return ''; }
+}
+function safeCssImageUrl(value){
+  const u=safeImageUrl(value);
+  return u ? u.replace(/['"()\r\n\\]/g, ch => '%' + ch.charCodeAt(0).toString(16).padStart(2,'0').toUpperCase()) : '';
+}
+function safeNumericId(value){
+  const n=Number(value);
+  return Number.isFinite(n) ? String(Math.trunc(n)) : '0';
+}
+function escapeJSString(value){
+  return JSON.stringify(String(value ?? '')).replace(/</g,'\u003C').replace(/>/g,'\u003E').replace(/\u2028/g,'\u2028').replace(/\u2029/g,'\u2029');
+}
+function isAuthenticatedAdmin(){ return sessionStorage.getItem('brg_adm_logged')==='true'; }
+function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getItem('brg_adm_is_master')==='true'; }
+</script>
   <link rel="preconnect" href="https://i.ibb.co" crossorigin>
   <link rel="dns-prefetch" href="//i.ibb.co">
   <link rel="preconnect" href="https://imgdb.io" crossorigin>
@@ -1471,12 +1493,12 @@
     }
 
     function applySupabaseAdminSession(user, account) {
-      localStorage.setItem('brg_adm_logged', 'true');
-      localStorage.setItem('brg_adm_email', account.email);
-      localStorage.setItem('brg_adm_name', account.name);
-      localStorage.setItem('brg_adm_is_master', account.isMaster ? 'true' : 'false');
+      sessionStorage.setItem('brg_adm_logged', 'true');
+      sessionStorage.setItem('brg_adm_email', account.email);
+      sessionStorage.setItem('brg_adm_name', account.name);
+      sessionStorage.setItem('brg_adm_is_master', account.isMaster ? 'true' : 'false');
       appData.permissions = getManagedAdminPermissions(account.email);
-      if(supabaseAccessToken && user && user.id) localStorage.setItem('brg_supabase_user_id', user.id);
+      if(supabaseAccessToken && user && user.id) sessionStorage.setItem('brg_supabase_user_id', user.id);
     }
 
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
@@ -1797,37 +1819,109 @@
     let binWriteChain = Promise.resolve();
     let binWriteBusy = false;
     let binWriteGeneration = 0;
+    let remoteRevision = 0;
+    let remoteSnapshot = null;
 
-    function queueBinWrite(snapshot, keepalive=false){
-      const payload = JSON.stringify(snapshot);
+    function cloneForSync(value){
+      try { return JSON.parse(JSON.stringify(value)); } catch(e) { return null; }
+    }
+
+    function stableEqual(a,b){
+      try { return JSON.stringify(a) === JSON.stringify(b); } catch(e) { return false; }
+    }
+
+    function getChangedTopLevelFields(){
+      const base = remoteSnapshot && typeof remoteSnapshot === 'object' ? remoteSnapshot : {};
+      const changes = {};
+      const keys = new Set([...Object.keys(base), ...Object.keys(appData || {})]);
+      keys.forEach(key => {
+        if(key === '__sync') return;
+        const currentValue = appData ? appData[key] : undefined;
+        const baseValue = base[key];
+        if(!stableEqual(currentValue, baseValue)) changes[key] = cloneForSync(currentValue);
+      });
+      return changes;
+    }
+
+    async function sendAdminPatch(changes, baseRevision, keepalive=false, retryOnConflict=true){
+      let token = await getAdminAccessToken();
+      if(!token) {
+        console.error('JSONBin: gravação bloqueada; sessão Supabase ausente ou expirada.');
+        return false;
+      }
+
+      const request = async (accessToken) => fetchWithTimeout(SUPABASE_FUNCTION_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization': 'Bearer ' + accessToken
+        },
+        body: JSON.stringify({ __sync: { baseRevision: Number(baseRevision) || 0 }, changes }),
+        keepalive: !!keepalive
+      }, 15000);
+
+      let res = await request(token);
+      // Never reuse a stale access token. Refresh once on 401 and retry.
+      if(res.status === 401) {
+        const refreshed = await supabaseRefreshSession();
+        token = refreshed?.access_token || null;
+        if(token) res = await request(token);
+      }
+
+      if(res.status === 409 && retryOnConflict) {
+        // Another session changed the record. Pull the newest admin record,
+        // keep this save's exact top-level changes, and retry against its revision.
+        try {
+          const latest = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
+            cache:'no-store',
+            headers:{
+              'apikey': SUPABASE_PUBLISHABLE_KEY,
+              'Authorization':'Bearer ' + (supabaseAccessToken || token)
+            }
+          }, 15000);
+          if(latest.ok){
+            const latestJson = await latest.json();
+            if(latestJson?.record && typeof latestJson.record === 'object'){
+              const latestRecord = cloneForSync(latestJson.record) || {};
+              remoteRevision = Number(latestRecord?.__sync?.revision || 0);
+              delete latestRecord.__sync;
+              remoteSnapshot = latestRecord;
+              // Reapply only the fields changed by this save, preserving every
+              // unrelated newer field from the remote record.
+              Object.keys(changes).forEach(k => { appData[k] = cloneForSync(changes[k]); });
+              return await sendAdminPatch(changes, remoteRevision, keepalive, false);
+            }
+          }
+        } catch(e) {
+          console.error('JSONBin: não foi possível reconciliar conflito de versão.', e);
+        }
+      }
+
+      if(!res.ok){
+        let detail = '';
+        try { const j = await res.json(); detail = j?.message || j?.error || ''; } catch(e) {}
+        console.error('JSONBin: falha ao salvar', res.status, detail);
+        return false;
+      }
+
+      let responseJson = null;
+      try { responseJson = await res.json(); } catch(e) {}
+      remoteRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
+      if(!remoteSnapshot || typeof remoteSnapshot !== 'object') remoteSnapshot = {};
+      Object.keys(changes).forEach(k => { remoteSnapshot[k] = cloneForSync(changes[k]); });
+      return true;
+    }
+
+    function queueBinWrite(changes, baseRevision, keepalive=false){
+      const payloadChanges = cloneForSync(changes) || {};
       const generation = ++binWriteGeneration;
       const run = async () => {
         binWriteBusy = true;
         try {
-          const token = supabaseAccessToken || await getAdminAccessToken();
-          if(!token) {
-            console.error('JSONBin: gravação administrativa bloqueada; sessão Supabase ausente.');
-            return false;
-          }
-          const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-              'apikey': SUPABASE_PUBLISHABLE_KEY,
-              'Authorization': 'Bearer ' + token
-            },
-            body: payload,
-            keepalive: !!keepalive
-          });
-          if(!res.ok) {
-            let detail = '';
-            try { const j = await res.json(); detail = j && j.error ? j.error : ''; } catch(e) {}
-            console.error('JSONBin: falha ao salvar', res.status, detail, 'geração', generation);
-            return false;
-          }
-          return true;
+          return await sendAdminPatch(payloadChanges, baseRevision, keepalive, true);
         } catch(e) {
-          console.error('JSONBin: erro de rede ao salvar', e);
+          console.error('JSONBin: erro de rede ao salvar', e, 'geração', generation);
           return false;
         } finally {
           binWriteBusy = false;
@@ -1926,7 +2020,7 @@
         localStorage.setItem('brg_traffic_snapshot', JSON.stringify(appData.traffic||{}));
         // Só envia o snapshot completo se houver sessão administrativa.
         // Eventos públicos de analytics usam a fila própria do endpoint seguro.
-        if(!binWriteBusy && supabaseAccessToken) queueBinWrite(appData, true);
+        if(!binWriteBusy && supabaseAccessToken){ const changes=getChangedTopLevelFields(); if(Object.keys(changes).length) queueBinWrite(changes, remoteRevision, true); }
       }catch(e){}
     });
 
@@ -1962,7 +2056,7 @@
             : {...(appData.permissions || {})};
         }
       });
-      const loggedEmail = (localStorage.getItem('brg_adm_email') || '').toLowerCase();
+      const loggedEmail = (sessionStorage.getItem('brg_adm_email') || '').toLowerCase();
       if(loggedEmail && appData.permissionsByAdmin[loggedEmail]) appData.permissions = appData.permissionsByAdmin[loggedEmail];
     }
 
@@ -1978,30 +2072,30 @@
     async function restoreSupabaseAdminSession() {
       const session = await getCurrentSupabaseSession();
       if(!session || !session.user || !session.user.email) {
-        localStorage.removeItem('brg_adm_logged');
-        localStorage.removeItem('brg_adm_email');
-        localStorage.removeItem('brg_adm_name');
-        localStorage.removeItem('brg_adm_is_master');
-        localStorage.removeItem('brg_supabase_user_id');
+        sessionStorage.removeItem('brg_adm_logged');
+        sessionStorage.removeItem('brg_adm_email');
+        sessionStorage.removeItem('brg_adm_name');
+        sessionStorage.removeItem('brg_adm_is_master');
+        sessionStorage.removeItem('brg_supabase_user_id');
         return null;
       }
 
       const account = getAuthAccountByEmail(session.user.email);
       if(!account) {
         await supabaseSignOut();
-        localStorage.removeItem('brg_adm_logged');
-        localStorage.removeItem('brg_adm_email');
-        localStorage.removeItem('brg_adm_name');
-        localStorage.removeItem('brg_adm_is_master');
-        localStorage.removeItem('brg_supabase_user_id');
+        sessionStorage.removeItem('brg_adm_logged');
+        sessionStorage.removeItem('brg_adm_email');
+        sessionStorage.removeItem('brg_adm_name');
+        sessionStorage.removeItem('brg_adm_is_master');
+        sessionStorage.removeItem('brg_supabase_user_id');
         return null;
       }
 
-      localStorage.setItem('brg_adm_logged','true');
-      localStorage.setItem('brg_adm_email',account.email);
-      localStorage.setItem('brg_adm_name',account.name);
-      localStorage.setItem('brg_adm_is_master',account.isMaster?'true':'false');
-      localStorage.setItem('brg_supabase_user_id',session.user.id || '');
+      sessionStorage.setItem('brg_adm_logged','true');
+      sessionStorage.setItem('brg_adm_email',account.email);
+      sessionStorage.setItem('brg_adm_name',account.name);
+      sessionStorage.setItem('brg_adm_is_master',account.isMaster?'true':'false');
+      sessionStorage.setItem('brg_supabase_user_id',session.user.id || '');
       return account;
     }
 
@@ -2039,7 +2133,7 @@
       recordTrafficAnalytics();
       renderApp();
       
-      if(localStorage.getItem('brg_adm_logged') === 'true') {
+      if(sessionStorage.getItem('brg_adm_logged') === 'true') {
         const logBox = document.getElementById('admin-login');
         const dashBox = document.getElementById('admin-dashboard');
         if(logBox) logBox.style.display = 'none';
@@ -2104,7 +2198,11 @@
           if(json.record && typeof json.record === 'object') {
             const localBeforeRemote = appData;
             try {
-              appData = { ...appData, ...json.record };
+              const incoming = cloneForSync(json.record) || {};
+              remoteRevision = Number(incoming?.__sync?.revision || 0);
+              delete incoming.__sync;
+              remoteSnapshot = cloneForSync(incoming) || {};
+              appData = { ...appData, ...incoming };
               ensureAdminSystem();
               ensureMenuCategoryLabels();
               ensureDeletedCatalogRegistry();
@@ -2126,7 +2224,7 @@
 
     async function saveBinData(actionDesc = '') {
       if(actionDesc) {
-        const loggedName = localStorage.getItem('brg_adm_name') || 'Administrador';
+        const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
         const now = new Date().toLocaleString('pt-BR');
         if(!appData.adminLogs) appData.adminLogs = [];
         appData.adminLogs.unshift({
@@ -2138,10 +2236,12 @@
       }
       renderApp();
       updateTrafficUI();
-      // O snapshot é criado no momento da solicitação e entra na fila central.
-      // Outra edição feita enquanto esta gravação estiver em trânsito será
-      // enfileirada depois e nunca poderá ser sobrescrita por esta gravação antiga.
-      return await queueBinWrite(appData);
+      const changes = getChangedTopLevelFields();
+      if(!Object.keys(changes).length) return true;
+      const baseRevision = remoteRevision;
+      // Only the fields changed since the last successful cloud read are sent.
+      // This prevents an old full snapshot from rolling back newer data.
+      return await queueBinWrite(changes, baseRevision);
     }
 
     async function updateBarStatus(status) {
@@ -2290,8 +2390,8 @@
     }
 
     function openCategoryQuickEdit(page) {
-      const isLoggedIn = localStorage.getItem('brg_adm_logged') === 'true';
-      const isMaster = localStorage.getItem('brg_adm_is_master') === 'true';
+      const isLoggedIn = sessionStorage.getItem('brg_adm_logged') === 'true';
+      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado: seu administrador não possui permissão para editar categorias.');
       ensureMenuCategoryLabels();
@@ -2319,8 +2419,8 @@
     }
 
     async function saveCategoryQuickEdit() {
-      const isLoggedIn = localStorage.getItem('brg_adm_logged') === 'true';
-      const isMaster = localStorage.getItem('brg_adm_is_master') === 'true';
+      const isLoggedIn = sessionStorage.getItem('brg_adm_logged') === 'true';
+      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado!');
       ensureMenuCategoryLabels();
@@ -2369,8 +2469,8 @@
     }
 
     function isMenuOrganizerAllowed(){
-      const logged = localStorage.getItem('brg_adm_logged') === 'true';
-      const master = localStorage.getItem('brg_adm_is_master') === 'true';
+      const logged = sessionStorage.getItem('brg_adm_logged') === 'true';
+      const master = sessionStorage.getItem('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       return logged && (master || perms.canEdit !== false);
     }
@@ -2524,7 +2624,7 @@
         const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         const card = item => {
           const hostedImg = normalizeStoredImage(item);
-          return `<div class="product-card glass-panel" data-menu-id="${esc(item.id)}" onclick="openMenuModalObj(${Number(item.id) || 0})"><div class="product-image-wrap"><img src="${esc(hostedImg || '')}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+          return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" onclick="openMenuModalObj(${safeNumericId(item.id)})"><div class="product-image-wrap"><img src="${safeImageUrl(hostedImg || '')}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
         };
         const drinks = source.filter(i => i && ['drink','beer','noalcohol'].includes(i.type));
         const portions = source.filter(i => i && i.type === 'portion');
@@ -2595,8 +2695,8 @@
         document.getElementById('home-img').style.display = 'none'; 
       }
 
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isAdmLogged = (sessionStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAdd = isMaster || perms.canAdd !== false;
 
@@ -2670,7 +2770,7 @@
       cAgenda.forEach(ev => {
         const fallimg = ev.img || 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
         agendaList.innerHTML += `
-          <div class="mini-flyer" style="background-image: url('${fallimg}');" onclick="openAgendaModalFromList('${escapeHTML(ev.title)}', '${escapeHTML(ev.date)}', '${escapeHTML(ev.desc)}', '${fallimg}', ${ev.id})">
+          <div class="mini-flyer" style="background-image: url('${safeCssImageUrl(fallimg)}');" onclick="openAgendaModalFromList(${escapeJSString(ev.title)}, ${escapeJSString(ev.date)}, ${escapeJSString(ev.desc)}, ${escapeJSString(safeImageUrl(fallimg))}, ${safeNumericId(ev.id)})">
             <div class="mf-content">
               <div class="mf-date">${escapeHTML(ev.date)}</div>
               <div class="mf-title">${escapeHTML(ev.title)}</div>
@@ -2689,8 +2789,8 @@
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal('${String(t.id)}')"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
-      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal('${String(root.id)}')"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${escapeHTML(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal('${String(t.id)}')"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${escapeHTML(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
@@ -2702,7 +2802,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${escapeHTML(i.name)}</span>
             <span class="lb-sub">${escapeHTML(i.sub)} • <strong style="color:var(--c-pink);">${escapeHTML(displayIg)}</strong></span>
@@ -2723,7 +2823,7 @@
         return `
         <div class="lb-item ${isTop3 ? 'top3-item clickable' : 'clickable'}" ${clickHTML}>
           <span class="lb-pos" style="${isTop3 ? 'color:var(--c-yellow); font-size:1rem;' : ''}">#${i.id}</span>
-          <img class="lb-ava" src="${i.img}" onerror="fallbackImg(this)">
+          <img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)">
           <div class="lb-info">
             <span class="lb-name">${i.name}</span>
             <span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${escapeHTML(displayIg)}</strong></span>
@@ -2761,7 +2861,7 @@
     }
 
     async function clearLogs() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode limpar os logs!");
 
       if(confirm("Tem certeza que deseja limpar o histórico de logs?")) {
@@ -2771,7 +2871,7 @@
     }
 
     async function savePermissions() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       if(!isMaster) return;
 
       const canAdd = document.getElementById('perm-add').checked;
@@ -2788,7 +2888,7 @@
       const target=getManagedAdminPermissions(targetEmail);
       target.canAdd=canAdd;target.canEdit=canEdit;target.canDel=canDel;target.canTabs=canTabs;
       target.canMod=canMod;target.canRank=canRank;target.canAgenda=canAgenda;target.canTeam=canTeam;
-      if((localStorage.getItem('brg_adm_email')||'').toLowerCase()===targetEmail) appData.permissions=target;
+      if((sessionStorage.getItem('brg_adm_email')||'').toLowerCase()===targetEmail) appData.permissions=target;
       await saveBinData(`Atualizou as permissões do administrador ${targetEmail}`);
       alert("Permissões guardadas com sucesso!");
     }
@@ -2811,7 +2911,7 @@
         text: item && item.text ? item.text : '',
         timestamp: item && item.timestamp ? item.timestamp : Date.now(),
         processedAt: Date.now(),
-        admin: localStorage.getItem('brg_adm_name') || 'Administrador'
+        admin: sessionStorage.getItem('brg_adm_name') || 'Administrador'
       });
       // Mantém o histórico completo, mas limita apenas registros extremamente antigos
       // para evitar crescimento acidental e sem alterar os pedidos atuais/publicados.
@@ -2819,9 +2919,9 @@
     }
 
     function canModerateInline() {
-      const isMaster = localStorage.getItem('brg_adm_is_master') === 'true';
+      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
-      return localStorage.getItem('brg_adm_logged') === 'true' && (isMaster || perms.canMod !== false);
+      return sessionStorage.getItem('brg_adm_logged') === 'true' && (isMaster || perms.canMod !== false);
     }
 
     async function editPublishedInteraction(type, id) {
@@ -2841,7 +2941,7 @@
       const oldEditedBy = item.editedBy;
       item.text = cleanText;
       item.editedAt = Date.now();
-      item.editedBy = localStorage.getItem('brg_adm_name') || 'Administrador';
+      item.editedBy = sessionStorage.getItem('brg_adm_name') || 'Administrador';
       const label = type === 'song' ? 'pedido de som' : 'recado do mural';
       const saved = await saveBinData(`Editou um ${label} publicado de "${item.ig}": "${cleanText}"`);
       if(saved === false) {
@@ -2883,8 +2983,8 @@
       const msgs = appData.userMessages || [];
       const inlineAdmin = canModerateInline();
       const perms = appData.permissions || {};
-      const canEdit = inlineAdmin && (localStorage.getItem('brg_adm_is_master') === 'true' || perms.canEdit !== false);
-      const canDelete = inlineAdmin && (localStorage.getItem('brg_adm_is_master') === 'true' || perms.canDel !== false);
+      const canEdit = inlineAdmin && (sessionStorage.getItem('brg_adm_is_master') === 'true' || perms.canEdit !== false);
+      const canDelete = inlineAdmin && (sessionStorage.getItem('brg_adm_is_master') === 'true' || perms.canDel !== false);
       const controls = (type, id) => {
         if(!inlineAdmin || (!canEdit && !canDelete)) return '';
         return `<div class="inline-admin-actions" onclick="event.stopPropagation()">
@@ -2941,7 +3041,7 @@
         section.innerHTML = `
           <h2 class="section-title">${escapeHTML(tab.title || '')}</h2>
           <div class="glass-panel" style="padding: 1.5rem; text-align: center;">
-            ${tab.img ? `<img src="${escapeHTML(tab.img)}" style="width:100%; max-height:300px; object-fit:contain; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);" onerror="this.style.display='none'">` : ''}
+            ${tab.img ? `<img src="${safeImageUrl(tab.img)}" style="width:100%; max-height:300px; object-fit:contain; border-radius:8px; margin-bottom:15px; border:1px solid var(--c-cyan);" onerror="this.style.display='none'">` : ''}
             <p style="color:#ddd; font-size:1.1rem; line-height:1.6; white-space: pre-wrap;">${escapeHTML(tab.desc || '')}</p>
           </div>
         `;
@@ -2952,12 +3052,12 @@
     function createCard(item) {
       const hostedImg = normalizeStoredImage(item);
       const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
-      const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${item.id})` : `openMenuModalObj(${item.id})`;
-      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${item.id},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${item.id},'down')">↓</button></div>` : '';
+      const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${safeNumericId(item.id)})` : `openMenuModalObj(${safeNumericId(item.id)})`;
+      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
       const imageMarkup = hostedImg
-        ? `<img src="${escapeHTML(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
+        ? `<img src="${safeImageUrl(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<img src="" class="product-img" loading="lazy" decoding="async" fetchpriority="low" data-no-image="true" onerror="fallbackMenuImg(this,${Number(item.id)||0})" style="visibility:hidden">`;
-      return `<div class="product-card glass-panel" data-menu-id="${item.id}" style="--card-photo:url('${escapeHTML(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
+      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div></div>`; }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => i.id === id);
@@ -2975,8 +3075,8 @@
       const modalImage = document.getElementById('modalImg');
       setStoredImageWithFallback(modalImage, item);
 
-      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isLoggedIn = (sessionStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3103,7 +3203,7 @@
     }
 
     async function saveModalEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
@@ -3139,7 +3239,7 @@
     }
 
     async function deleteModalItemDirect() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -3157,7 +3257,7 @@
     }
 
     function openCreateItemModal(defaultCategory = 'drink') {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
 
@@ -3184,7 +3284,7 @@
     }
 
     async function confirmCreateItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado!");
 
@@ -3223,14 +3323,14 @@
     }
 
     function checkHomeCardClick() {
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
+      const isAdmLogged = (sessionStorage.getItem('brg_adm_logged') === 'true');
       if(isAdmLogged) {
         openHomeDirectEdit();
       }
     }
 
     function openHomeDirectEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão desativada pelo Master!");
 
@@ -3265,7 +3365,7 @@
     }
 
     async function saveHomeDirectEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado!");
 
@@ -3290,8 +3390,8 @@
       document.getElementById('playerQuote').innerText = `"${quote}"`;
       document.getElementById('playerModalImg').src = imgUrl;
 
-      const isLoggedIn = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isLoggedIn = (sessionStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canRank = isMaster || perms.canRank !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3325,7 +3425,7 @@
     }
 
     async function savePlayerEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canRank === false) return alert("Acesso Negado: Permissão de ranking desativada pelo Master!");
 
@@ -3350,7 +3450,7 @@
     }
 
     async function deleteModalPlayerDirect() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -3378,8 +3478,8 @@
     function openDirectorModal(id){const t=appData.team.find(x=>String(x.id)===String(id));if(!t)return;document.getElementById('directorModalImg').src=t.img||'';document.getElementById('directorModalName').innerText=t.name||'';document.getElementById('directorModalRole').innerText=t.role||'';document.getElementById('directorModalDesc').innerText=t.desc||'';const ig=String(t.ig||'').replace('@','').trim();const a=document.getElementById('directorModalIg');a.href=ig?`https://instagram.com/${encodeURIComponent(ig)}`:'#';a.innerText=ig?`📸 ABRIR INSTAGRAM — @${ig}`:'📸 INSTAGRAM NÃO INFORMADO';document.getElementById('directorModal').style.display='flex';}
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
-      const isAdmLogged = (localStorage.getItem('brg_adm_logged') === 'true');
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isAdmLogged = (sessionStorage.getItem('brg_adm_logged') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAgenda = isMaster || perms.canAgenda !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3442,7 +3542,7 @@
     }
 
     async function saveEventEdit() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
@@ -3482,7 +3582,7 @@
     }
 
     async function deleteModalEventDirect() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -3541,7 +3641,7 @@
 
       if(counterSpan) counterSpan.innerHTML = totalPending > 0 ? `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>` : '';
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const modPermitted = isMaster || perms.canMod !== false;
 
@@ -3653,7 +3753,7 @@
     });
 
     async function saveCustomTab() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado: Permissão de abas desativada pelo Master!");
 
@@ -3683,7 +3783,7 @@
     }
 
     function editCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
@@ -3717,7 +3817,7 @@
     }
 
     async function removeCustomTab(id) {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
@@ -3760,7 +3860,7 @@
         }
       }
 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3787,7 +3887,7 @@
               </div>
               <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
               <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                  <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
                   <div class="file-upload-wrapper" style="padding: 5px 10px;">
                     <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
                     <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
@@ -3837,7 +3937,7 @@
             <input type="text" class="admin-input" id="tig-${t.id}" value="${escapeHTML(t.ig)}" placeholder="Instagram" style="margin-top:5px;">
             <textarea class="admin-textarea" id="tdesc-${t.id}" rows="2" style="margin-top:5px;">${escapeHTML(t.desc)}</textarea>
             <div class="admin-card-row" style="margin-top:5px;">
-                <img src="${t.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                <img src="${safeImageUrl(t.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
                 <div class="file-upload-wrapper" style="padding: 5px 10px;">
                   <span style="font-size:0.75rem;">📷 Upar Avatar</span>
                   <input type="file" accept="image/*" onchange="updateTeamImg('${t.id}', this)">
@@ -3865,7 +3965,7 @@
             </div>
             <textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
             <div class="admin-card-row" style="margin-top:5px;">
-              ${i.id <= 3 ? `<img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+              ${i.id <= 3 ? `<img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
               <div class="file-upload-wrapper" style="padding: 5px 10px;">
                 <span style="font-size:0.75rem;">📷 Avatar Top 3</span>
                 <input type="file" accept="image/*" onchange="updateArcadeImg(${i.id}, this)">
@@ -3890,7 +3990,7 @@
             </div>
             <textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1" placeholder="Mensagem de Provocação..." style="margin-top:5px;">${escapeHTML(i.quote)}</textarea>
             <div class="admin-card-row" style="margin-top:5px;">
-              <img src="${i.img}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
+              <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
               <div class="file-upload-wrapper" style="padding: 5px 10px;">
                   <span style="font-size:0.75rem;">📷 Upar Avatar</span>
                   <input type="file" accept="image/*" onchange="updateCachaceiroImg(${i.id}, this)">
@@ -3910,10 +4010,10 @@
     function shiftHours(start,end){if(!start||!end)return 0;const[a,b]=[start,end].map(x=>x.split(':').map(Number));if(a.some(Number.isNaN)||b.some(Number.isNaN))return 0;let am=a[0]*60+a[1],bm=b[0]*60+b[1];if(bm<am)bm+=1440;return(bm-am)/60}
     function financeMonthData(month){const f=ensurePartnersFinance();return{revenues:f.revenues.filter(x=>x.month===month),expenses:f.expenses.filter(x=>x.month===month),shifts:f.shifts.filter(x=>x.month===month)}}
     function financeTotals(month){const d=financeMonthData(month),gross=d.revenues.reduce((a,x)=>a+Number(x.amount||0),0),operating=d.expenses.filter(x=>x.type!=='partner').reduce((a,x)=>a+Number(x.amount||0),0),partnerExpenses=d.expenses.filter(x=>x.type==='partner').reduce((a,x)=>a+Number(x.amount||0),0),net=gross-operating;const shares=PARTNER_SHARES.map(p=>{const base=net*p.pct/100,deductions=d.expenses.filter(x=>x.type==='partner'&&x.partner===p.name).reduce((a,x)=>a+Number(x.amount||0),0),hours=d.shifts.filter(x=>x.partner===p.name).reduce((a,x)=>a+Number(x.hours||0),0);return{...p,base,deductions,final:base-deductions,hours}});return{gross,operating,partnerExpenses,net,shares,shiftCount:d.shifts.length}}
-    function openPartnersPortal(){if(localStorage.getItem('brg_adm_logged')!=='true')return alert('Acesso restrito aos administradores.');ensurePartnersFinance();const ov=document.getElementById('partners-portal-overlay');if(!ov)return;ov.classList.add('open');document.body.style.overflow='hidden';const m=document.getElementById('partner-month');if(m)m.value=ensurePartnersFinance().currentMonth;const today=new Date().toISOString().slice(0,10);['partner-revenue-date','partner-expense-date','partner-shift-date'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.value)e.value=today});renderPartnersPortal();startAdminSessionClock()}
+    function openPartnersPortal(){if(sessionStorage.getItem('brg_adm_logged')!=='true')return alert('Acesso restrito aos administradores.');ensurePartnersFinance();const ov=document.getElementById('partners-portal-overlay');if(!ov)return;ov.classList.add('open');document.body.style.overflow='hidden';const m=document.getElementById('partner-month');if(m)m.value=ensurePartnersFinance().currentMonth;const today=new Date().toISOString().slice(0,10);['partner-revenue-date','partner-expense-date','partner-shift-date'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.value)e.value=today});renderPartnersPortal();startAdminSessionClock()}
     function closePartnersPortal(){const ov=document.getElementById('partners-portal-overlay');if(ov)ov.classList.remove('open');document.body.style.overflow=''}
     function switchPartnersPortal(view){document.querySelectorAll('.portal-tab').forEach(b=>b.classList.toggle('active',b.dataset.view===view));document.querySelectorAll('.portal-view').forEach(v=>v.classList.toggle('active',v.id==='portal-view-'+view));renderPartnersPortal()}
-    function renderPartnersPortal(){const f=ensurePartnersFinance(),month=selectedFinanceMonth();f.currentMonth=month;const t=financeTotals(month),set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v};set('portal-month-label',escapeHTML(monthLabel(month)));set('portal-gross',moneyBRL(t.gross));set('portal-operating',moneyBRL(t.operating));set('portal-net',moneyBRL(t.net));set('portal-deductions',moneyBRL(t.partnerExpenses));set('portal-shift-count',t.shiftCount+' registros');set('portal-current-user',escapeHTML(localStorage.getItem('brg_adm_name')||'Administrador'));set('portal-partners-list',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name} <span class="portal-muted">${p.pct}%</span></div><div class="portal-person-meta">${p.hours.toFixed(1)}h trabalhadas • redução ${moneyBRL(p.deductions)}</div></div><div style="text-align:right"><div class="portal-money">${moneyBRL(p.final)}</div><div class="portal-muted">base ${moneyBRL(p.base)}</div></div></div>`).join(''));set('portal-hours-summary',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name}</div><div class="portal-person-meta">Participação ${p.pct}%</div></div><div class="portal-money">${p.hours.toFixed(1)} h</div></div>`).join(''));const rr=financeMonthData(month).revenues.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.description||'Receita')}</td><td class="portal-money">${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerRevenue('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-revenues-table',rr||'<tr><td colspan="4" class="portal-muted">Nenhuma receita lançada neste mês.</td></tr>');const er=financeMonthData(month).expenses.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.description||'Despesa')}</td><td>${x.type==='partner'?'👤 '+escapeHTML(x.partner||'Sócio'):'🏢 Operacional'}</td><td class="portal-danger">-${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerExpense('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-expenses-table',er||'<tr><td colspan="5" class="portal-muted">Nenhuma despesa lançada neste mês.</td></tr>');const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.partner||'--')}</td><td>${escapeHTML(x.start||'--')}–${escapeHTML(x.end||'--')}</td><td>${Number(x.hours||0).toFixed(1)}h</td><td>${escapeHTML(x.note||'')}</td><td><button class="action-btn del-btn" onclick="removePartnerShift('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-shifts-table',sr||'<tr><td colspan="6" class="portal-muted">Nenhum turno lançado neste mês.</td></tr>');const notes=document.getElementById('partner-notes');if(notes&&document.activeElement!==notes)notes.value=f.notes||''}
+    function renderPartnersPortal(){const f=ensurePartnersFinance(),month=selectedFinanceMonth();f.currentMonth=month;const t=financeTotals(month),set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v};set('portal-month-label',escapeHTML(monthLabel(month)));set('portal-gross',moneyBRL(t.gross));set('portal-operating',moneyBRL(t.operating));set('portal-net',moneyBRL(t.net));set('portal-deductions',moneyBRL(t.partnerExpenses));set('portal-shift-count',t.shiftCount+' registros');set('portal-current-user',escapeHTML(sessionStorage.getItem('brg_adm_name')||'Administrador'));set('portal-partners-list',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name} <span class="portal-muted">${p.pct}%</span></div><div class="portal-person-meta">${p.hours.toFixed(1)}h trabalhadas • redução ${moneyBRL(p.deductions)}</div></div><div style="text-align:right"><div class="portal-money">${moneyBRL(p.final)}</div><div class="portal-muted">base ${moneyBRL(p.base)}</div></div></div>`).join(''));set('portal-hours-summary',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name}</div><div class="portal-person-meta">Participação ${p.pct}%</div></div><div class="portal-money">${p.hours.toFixed(1)} h</div></div>`).join(''));const rr=financeMonthData(month).revenues.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.description||'Receita')}</td><td class="portal-money">${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerRevenue('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-revenues-table',rr||'<tr><td colspan="4" class="portal-muted">Nenhuma receita lançada neste mês.</td></tr>');const er=financeMonthData(month).expenses.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.description||'Despesa')}</td><td>${x.type==='partner'?'👤 '+escapeHTML(x.partner||'Sócio'):'🏢 Operacional'}</td><td class="portal-danger">-${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerExpense('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-expenses-table',er||'<tr><td colspan="5" class="portal-muted">Nenhuma despesa lançada neste mês.</td></tr>');const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.partner||'--')}</td><td>${escapeHTML(x.start||'--')}–${escapeHTML(x.end||'--')}</td><td>${Number(x.hours||0).toFixed(1)}h</td><td>${escapeHTML(x.note||'')}</td><td><button class="action-btn del-btn" onclick="removePartnerShift('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-shifts-table',sr||'<tr><td colspan="6" class="portal-muted">Nenhum turno lançado neste mês.</td></tr>');const notes=document.getElementById('partner-notes');if(notes&&document.activeElement!==notes)notes.value=f.notes||''}
     async function savePartnerRevenue(){const month=selectedFinanceMonth(),desc=document.getElementById('partner-revenue-desc').value.trim(),amount=Number(document.getElementById('partner-revenue-amount').value||0),date=document.getElementById('partner-revenue-date').value||new Date().toISOString().slice(0,10);if(!desc||!(amount>0))return alert('Informe a descrição e um valor de receita válido.');ensurePartnersFinance().revenues.push({id:'rev_'+Date.now(),month,date,description:desc,amount});document.getElementById('partner-revenue-desc').value='';document.getElementById('partner-revenue-amount').value='';await saveBinData('Central dos Sócios: adicionou uma receita de '+moneyBRL(amount));renderPartnersPortal()}
     async function savePartnerExpense(){const month=selectedFinanceMonth(),desc=document.getElementById('partner-expense-desc').value.trim(),amount=Number(document.getElementById('partner-expense-amount').value||0),date=document.getElementById('partner-expense-date').value||new Date().toISOString().slice(0,10),type=document.getElementById('partner-expense-type').value,partner=document.getElementById('partner-expense-partner').value;if(!desc||!(amount>0))return alert('Informe a descrição e um valor de despesa válido.');ensurePartnersFinance().expenses.push({id:'exp_'+Date.now(),month,date,description:desc,amount,type,partner:type==='partner'?partner:''});document.getElementById('partner-expense-desc').value='';document.getElementById('partner-expense-amount').value='';await saveBinData('Central dos Sócios: adicionou uma despesa de '+moneyBRL(amount));renderPartnersPortal()}
     async function savePartnerShift(){const month=selectedFinanceMonth(),partner=document.getElementById('partner-shift-partner').value,date=document.getElementById('partner-shift-date').value||new Date().toISOString().slice(0,10),start=document.getElementById('partner-shift-start').value,end=document.getElementById('partner-shift-end').value,note=document.getElementById('partner-shift-note').value.trim(),hours=shiftHours(start,end);if(!partner||!start||!end||hours<=0)return alert('Preencha sócio, data, início e fim do turno.');ensurePartnersFinance().shifts.push({id:'shift_'+Date.now(),month,date,partner,start,end,hours,note});document.getElementById('partner-shift-note').value='';await saveBinData('Central dos Sócios: adicionou escala de '+partner);renderPartnersPortal()}
@@ -3921,7 +4021,7 @@
     async function removePartnerRevenue(id){if(!confirm('Excluir esta receita?'))return;ensurePartnersFinance().revenues=ensurePartnersFinance().revenues.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma receita');renderPartnersPortal()}
     async function removePartnerExpense(id){if(!confirm('Excluir esta despesa?'))return;ensurePartnersFinance().expenses=ensurePartnersFinance().expenses.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma despesa');renderPartnersPortal()}
     async function removePartnerShift(id){if(!confirm('Excluir este turno?'))return;ensurePartnersFinance().shifts=ensurePartnersFinance().shifts.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu um turno');renderPartnersPortal()}
-    function startAdminSessionClock(){const started=Number(localStorage.getItem('brg_adm_login_ts')||Date.now());if(!localStorage.getItem('brg_adm_login_ts'))localStorage.setItem('brg_adm_login_ts',String(started));const tick=()=>{const el=document.getElementById('portal-session-time');if(!el)return;const sec=Math.max(0,Math.floor((Date.now()-started)/1000));const h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');el.textContent=`SESSÃO ${h}:${m}:${ss}`};clearInterval(window.__brgSessionTimer);tick();window.__brgSessionTimer=setInterval(tick,1000)}
+    function startAdminSessionClock(){const started=Number(sessionStorage.getItem('brg_adm_login_ts')||Date.now());if(!sessionStorage.getItem('brg_adm_login_ts'))sessionStorage.setItem('brg_adm_login_ts',String(started));const tick=()=>{const el=document.getElementById('portal-session-time');if(!el)return;const sec=Math.max(0,Math.floor((Date.now()-started)/1000));const h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');el.textContent=`SESSÃO ${h}:${m}:${ss}`};clearInterval(window.__brgSessionTimer);tick();window.__brgSessionTimer=setInterval(tick,1000)}
     function togglePartnerExpenseFields(){const is=document.getElementById('partner-expense-type')?.value==='partner',e=document.getElementById('partner-expense-partner');if(e)e.disabled=!is}
     async function showAdminLoginSequence(){const loader=document.getElementById('admin-auth-loader');if(!loader)return async()=>{};const step=document.getElementById('admin-auth-step'),progress=document.getElementById('admin-auth-progress'),logs=document.getElementById('admin-auth-log'),started=Date.now();loader.classList.add('show');const phases=[['PROCURANDO CREDENCIAIS','Verificando identidade administrativa…',8],['FAZENDO AUTENTICAÇÃO','Consultando o gateway seguro…',32],['VALIDANDO PERMISSÕES','Confirmando nível de acesso…',58],['ESTABELECENDO SESSÃO','Sincronizando ambiente privado…',82],['ACESSO LIBERADO','Painel administrativo pronto.',100]];const run=(async()=>{for(const p of phases){if(step)step.textContent=p[0];if(logs)logs.innerHTML=`<div>✓ ${p[1]}</div>`;if(progress)progress.style.width=p[2]+'%';await new Promise(r=>setTimeout(r,850))}})();return async()=>{await run;const wait=Math.max(0,5000-(Date.now()-started));if(wait)await new Promise(r=>setTimeout(r,wait));loader.classList.remove('show')}}
 
@@ -3992,7 +4092,7 @@
         document.getElementById('admin-login').style.display='none';
         document.getElementById('admin-dashboard').style.display='block';
         updateAdminGreeting();
-        localStorage.setItem('brg_adm_login_ts',String(Date.now()));
+        sessionStorage.setItem('brg_adm_login_ts',String(Date.now()));
         startAdminSessionClock();
         document.getElementById('manual-email-input').value='';
         document.getElementById('manual-pass-input').value='';
@@ -4021,8 +4121,8 @@
     });
 
     function updateAdminGreeting() {
-      const name = localStorage.getItem('brg_adm_name') || 'Administrador';
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const name = sessionStorage.getItem('brg_adm_name') || 'Administrador';
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const greetingEl = document.getElementById('adm-welcome-text');
       const masterTabsSec = document.getElementById('master-tabs-section');
       const masterCtrlSec = document.getElementById('master-control-section');
@@ -4065,7 +4165,7 @@
     }
 
     function renderMasterAdminManager() {
-      if(localStorage.getItem('brg_adm_is_master') !== 'true') return;
+      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return;
       ensureAdminSystem();
       const select=document.getElementById('master-admin-select');
       const list=document.getElementById('master-admin-list');
@@ -4079,7 +4179,7 @@
     }
 
     function loadManagedAdminPermissions(showAlert=true) {
-      if(localStorage.getItem('brg_adm_is_master') !== 'true') return;
+      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return;
       const email=getSelectedManagedAdminEmail();
       if(!email) return;
       const acc=getAdminAccounts().find(a=>String(a.email).toLowerCase()===email);
@@ -4092,7 +4192,7 @@
     }
 
     async function createNewAdmin() {
-      if(localStorage.getItem('brg_adm_is_master') !== 'true') return alert('Acesso Negado: somente o ADM Master pode cadastrar administradores.');
+      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return alert('Acesso Negado: somente o ADM Master pode cadastrar administradores.');
       const name=document.getElementById('new-admin-name').value.trim();
       const email=document.getElementById('new-admin-email').value.trim();
       const pass=document.getElementById('new-admin-pass').value.trim();
@@ -4115,12 +4215,12 @@
 
     async function processLogout() {
       await supabaseSignOut();
-      localStorage.removeItem('brg_adm_logged');
-      localStorage.removeItem('brg_adm_email');
-      localStorage.removeItem('brg_adm_name');
-      localStorage.removeItem('brg_adm_is_master');
-      localStorage.removeItem('brg_supabase_user_id');
-      localStorage.removeItem('brg_adm_login_ts');
+      sessionStorage.removeItem('brg_adm_logged');
+      sessionStorage.removeItem('brg_adm_email');
+      sessionStorage.removeItem('brg_adm_name');
+      sessionStorage.removeItem('brg_adm_is_master');
+      sessionStorage.removeItem('brg_supabase_user_id');
+      sessionStorage.removeItem('brg_adm_login_ts');
       clearInterval(window.__brgSessionTimer);
       closePartnersPortal();
       document.getElementById('admin-dashboard').style.display='none';
@@ -4129,25 +4229,25 @@
     }
 
     async function updateHomeImg(input) {
-      uploadToImgBB(input.files[0], async res => { appData.home.img = res; await saveBinData("Atualizou a foto do banner inicial da página home"); alert('Banner Inicial Atualizado via ImgBB!'); });
+      uploadToImgBB(input.files[0], async res => { appData.home.img = res; const saved = await saveBinData("Atualizou a foto do banner inicial da página home"); alert(saved ? 'Banner Inicial Atualizado e salvo na nuvem!' : '⚠️ A foto foi hospedada, mas NÃO foi salva no banco. Tente salvar novamente.'); });
     }
     async function updateFlyerMain(input) {
       uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
     }
     async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou a foto do produto: " + item.name); alert('Imagem do produto salva via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; const saved = await saveBinData("Atualizou a foto do produto: " + item.name); alert(saved ? 'Imagem do produto hospedada e salva na nuvem!' : '⚠️ A foto foi hospedada, mas NÃO foi salva no banco. Tente novamente.'); } });
     }
     async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; await saveBinData("Atualizou o flyer do evento: " + item.title); alert('Mini Flyer atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; const saved = await saveBinData("Atualizou o flyer do evento: " + item.title); alert(saved ? 'Mini Flyer hospedado e salvo na nuvem!' : '⚠️ O flyer foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateArcadeImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert('Avatar atualizado via ImgBB!'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
 
     async function saveHomeData() {
@@ -4163,7 +4263,7 @@
     }
 
     async function saveItemData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
@@ -4192,7 +4292,7 @@
     }
 
     async function saveAgendaData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
@@ -4220,7 +4320,7 @@
     }
 
     async function saveArcadeData(id) {
-       const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
 
@@ -4254,7 +4354,7 @@
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
 
     async function addMenuItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
 
@@ -4285,7 +4385,7 @@
     }
 
     async function addAgendaItem() {
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada!");
 
@@ -4298,7 +4398,7 @@
     }
 
     async function removeMenuItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -4310,7 +4410,7 @@
     }
 
     async function removeAgendaItem(id) { 
-      const isMaster = (localStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
