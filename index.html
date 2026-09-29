@@ -520,7 +520,7 @@
 </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 <script>
-/* SECURITY HARDENING V45 — non-visual, client-side defense helpers. */
+/* SECURITY HARDENING V45 + PERSISTENCE HARDENING V46 — non-visual, client-side defense helpers. */
 function safeImageUrl(value){
   const raw=String(value ?? '').trim();
   if(!raw || !/^https:\/\//i.test(raw)) return '';
@@ -1303,6 +1303,41 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     // Autenticação Supabase via REST: não depende de CDN/SDK externo no navegador.
     // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
     const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
+    const PENDING_CLOUD_CHANGES_KEY = 'brg_pending_cloud_changes_v2';
+    let pendingCloudChanges = null;
+
+    function readPendingCloudChanges(){
+      try {
+        const raw = localStorage.getItem(PENDING_CLOUD_CHANGES_KEY);
+        if(!raw) return {};
+        const parsed = JSON.parse(raw);
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+      } catch(e) {
+        return {};
+      }
+    }
+
+    function mergePendingCloudChanges(changes){
+      const current = readPendingCloudChanges();
+      const merged = { ...current, ...(cloneForSync(changes) || {}) };
+      pendingCloudChanges = merged;
+      try { localStorage.setItem(PENDING_CLOUD_CHANGES_KEY, JSON.stringify(merged)); } catch(e) {}
+    }
+
+    function clearPendingCloudChangesIfPersisted(changes){
+      const current = readPendingCloudChanges();
+      const next = { ...current };
+      Object.keys(changes || {}).forEach(key => {
+        if(stableEqual(next[key], changes[key])) delete next[key];
+      });
+      pendingCloudChanges = next;
+      try {
+        if(Object.keys(next).length) localStorage.setItem(PENDING_CLOUD_CHANGES_KEY, JSON.stringify(next));
+        else localStorage.removeItem(PENDING_CLOUD_CHANGES_KEY);
+      } catch(e) {}
+    }
+
+
     let supabaseAccessToken = null;
     let supabaseRefreshToken = null;
     let supabaseUser = null;
@@ -1844,6 +1879,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function sendAdminPatch(changes, baseRevision, keepalive=false, retryOnConflict=true){
+      mergePendingCloudChanges(changes);
       let token = await getAdminAccessToken();
       if(!token) {
         console.error('JSONBin: gravação bloqueada; sessão Supabase ausente ou expirada.');
@@ -1907,10 +1943,47 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
 
       let responseJson = null;
       try { responseJson = await res.json(); } catch(e) {}
-      remoteRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
-      if(!remoteSnapshot || typeof remoteSnapshot !== 'object') remoteSnapshot = {};
-      Object.keys(changes).forEach(k => { remoteSnapshot[k] = cloneForSync(changes[k]); });
-      return true;
+      const savedRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
+
+      // Confirma no servidor antes de dizer ao painel que o dado foi salvo.
+      // Isso evita o falso "Salvo" quando a API aceitou a requisição mas a leitura
+      // seguinte ainda está atrasada ou quando outro dispositivo gravou no intervalo.
+      try {
+        const verify = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
+          cache: 'no-store',
+          headers: {
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + (supabaseAccessToken || token)
+          }
+        }, 12000);
+        if(!verify.ok) {
+          console.error('JSONBin: PUT concluído, mas a verificação remota falhou:', verify.status);
+          return false;
+        }
+        const verifyJson = await verify.json();
+        if(!verifyJson?.record || typeof verifyJson.record !== 'object') {
+          console.error('JSONBin: verificação remota sem registro válido.');
+          return false;
+        }
+        const verifiedRecord = cloneForSync(verifyJson.record) || {};
+        const verifiedRevision = Number(verifiedRecord.__sync?.revision || savedRevision);
+        delete verifiedRecord.__sync;
+
+        // Cada campo enviado precisa existir no registro remoto exatamente como foi salvo.
+        const verified = Object.keys(changes).every(k => stableEqual(verifiedRecord[k], changes[k]));
+        if(!verified) {
+          console.error('JSONBin: verificação detectou divergência após salvar.');
+          return false;
+        }
+
+        remoteRevision = verifiedRevision;
+        remoteSnapshot = verifiedRecord;
+        clearPendingCloudChangesIfPersisted(changes);
+        return true;
+      } catch(e) {
+        console.error('JSONBin: não foi possível verificar a gravação:', e);
+        return false;
+      }
     }
 
     function queueBinWrite(changes, baseRevision, keepalive=false){
@@ -2122,6 +2195,18 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       // Depois tenta restaurar sessão e sincronizar a nuvem sem bloquear a interface.
       await restoreSupabaseAdminSession();
       await fetchBinData();
+
+      // Se uma gravação anterior falhou por rede/token/timeout, restaura a edição
+      // local e tenta sincronizar novamente. Assim uma falha temporária não perde
+      // o trabalho do administrador nem permite que o JSONBin antigo o apague.
+      const pending = readPendingCloudChanges();
+      if(Object.keys(pending).length && supabaseAccessToken) {
+        Object.keys(pending).forEach(k => { appData[k] = cloneForSync(pending[k]); });
+        remoteSnapshot = remoteSnapshot && typeof remoteSnapshot === 'object' ? remoteSnapshot : {};
+        const pendingSave = await queueBinWrite(pending, remoteRevision, false);
+        if(!pendingSave) console.warn('[Bargunçados] Há alterações locais aguardando nova sincronização.');
+      }
+
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
@@ -4542,6 +4627,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       requestAnimationFrame(animateEmbers);
     }
     animateEmbers();
+
+    window.addEventListener('beforeunload', () => {
+      try {
+        const changes = getChangedTopLevelFields();
+        if(Object.keys(changes).length) mergePendingCloudChanges(changes);
+      } catch(e) {}
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
       initApp();
