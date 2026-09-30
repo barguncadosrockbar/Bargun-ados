@@ -1190,6 +1190,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
                 <button class="action-btn" onclick="createNewAdmin()" style="margin-top:12px; background:var(--c-cyan); color:#000;">➕ Cadastrar Administrador</button>
               </div>
               <div class="admin-card" style="border-color:var(--c-yellow);">
+                <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:5px;">🎯 Metas e despesas do Controle do Bar</h5>
+                <p style="color:#aaa; font-size:0.85rem; margin-bottom:12px;">Somente o Administrador Master pode alterar estes valores. Eles alimentam a aba 🎯 Metas do Controle do Bar.</p>
+                <div class="admin-card-row" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;">
+                  <input type="number" min="0" step="0.01" class="admin-input" id="bar-goal-rent" placeholder="Aluguel mensal">
+                  <input type="number" min="0" step="0.01" class="admin-input" id="bar-goal-operational" placeholder="Custos do bar">
+                  <input type="number" min="0" step="0.01" class="admin-input" id="bar-goal-dailyGoal" placeholder="Meta diária">
+                  <input type="number" min="0" step="0.01" class="admin-input" id="bar-goal-other" placeholder="Outras despesas">
+                </div>
+                <button class="action-btn" onclick="saveBarGoalSettings()" style="margin-top:12px;background:var(--c-yellow);color:#000;">💾 Salvar metas e despesas do bar</button>
+              </div>
+              <div class="admin-card" style="border-color:var(--c-yellow);">
                 <h5 style="color:#fff; font-family:var(--font-title); font-size:1.2rem; margin-bottom:8px;">Administradores cadastrados</h5>
                 <div id="master-admin-list"></div>
               </div>
@@ -4849,7 +4860,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
   const BRG_BAR = {data:null, loading:false, activeView:'dashboard', goalSettings:null};
   const brgMoney=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
   const brgNum=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:3});
-  const brgPrice=v=>{const n=Number(String(v??0).replace(/\./g,'').replace(',','.'));return Number.isFinite(n)?n:0};
+  const brgPrice=v=>{
+    if(v===null||v===undefined||v==='') return 0;
+    if(typeof v==='number') return Number.isFinite(v)?v:0;
+    let s=String(v).trim().replace(/R\$|\s/gi,'');
+    if(s.includes(',') && s.includes('.')) s=s.replace(/\./g,'').replace(',','.');
+    else if(s.includes(',')) s=s.replace(',','.');
+    const n=Number(s);
+    return Number.isFinite(n)?n:0;
+  };
   const brgEsc=v=>escapeHTML(v==null?'':String(v));
   function brgIsAdmin(){return sessionStorage.getItem('brg_adm_logged')==='true';}
   async function brgApi(action,payload={},attempt=0){
@@ -4914,7 +4933,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     try { await saveBinData('Controle do Bar: sincronizou '+pending.length+' venda(s) com a Central dos Sócios'); }
     catch(e){ console.warn('[Bargunçados] Venda registrada no Controle do Bar, mas a sincronização financeira ficará pendente para a próxima atualização.',e); }
   }
-  async function loadBarControl(seed=false){if(!brgIsAdmin())throw new Error('Acesso administrativo necessário.');if(BRG_BAR.loading)return;BRG_BAR.loading=true;try{if(seed){try{await barCtlSeed()}catch(e){console.warn('[Bargunçados] seed inicial do Controle do Bar:',e)}}try{await brgApi('sync_prices',{items:brgMenu().map(i=>({menu_item_id:String(i.id),menu_item_name:String(i.name||''),sale_price:Number(brgPrice(i.price)||0)}))})}catch(e){console.warn('[Bargunçados] sincronização inicial de preços do cardápio:',e)}BRG_BAR.data=await brgApi('bootstrap');BRG_BAR.goalSettings=loadBarGoalSettings();await syncBarSalesToPartnersFinance();renderBarControl()}finally{BRG_BAR.loading=false}}
+  async function loadBarControl(seed=false){if(!brgIsAdmin())throw new Error('Acesso administrativo necessário.');if(BRG_BAR.loading)return;BRG_BAR.loading=true;try{if(seed){try{await barCtlSeed()}catch(e){console.warn('[Bargunçados] seed inicial do Controle do Bar:',e)}}try{await brgApi('sync_prices',{items:brgMenu().map(i=>({menu_item_id:String(i.id),menu_item_name:String(i.name||''),sale_price:Number(brgPrice(i.price)||0)}))})}catch(e){console.warn('[Bargunçados] sincronização inicial de preços do cardápio:',e)}BRG_BAR.data=await brgApi('bootstrap');BRG_BAR.goalSettings=loadBarGoalSettings();syncBarGoalAdminFields();await syncBarSalesToPartnersFinance();renderBarControl()}finally{BRG_BAR.loading=false}}
   window.openBarControl=async function(){if(!brgIsAdmin()){alert('🔐 Faça login como administrador antes de abrir o Controle do Bar.');return}const o=document.getElementById('bar-control-overlay');if(!o)return;o.style.display='block';o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-control-empty">⏳ Carregando Controle do Bar…</div>';try{await loadBarControl(true)}catch(e){document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-alert">Não foi possível abrir o Controle do Bar.<br><small>'+brgEsc(e.message)+'</small></div>';alert('Não foi possível abrir o Controle do Bar.\n\n'+e.message)}};
   window.closeBarControl=function(){const o=document.getElementById('bar-control-overlay');if(o)o.style.display='none';document.body.style.overflow=''};
   window.barCtlReload=async function(){try{await loadBarControl(false)}catch(e){alert('Falha ao atualizar: '+e.message)}};
@@ -4933,13 +4952,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     const u=String(unit||'').toLowerCase();
     return u==='ml'?'ml':u==='l'?'L':u==='g'?'g':u==='kg'?'kg':'un';
   }
-  function brgConversionText(q,unit){
-    const n=Number(q||0),u=String(unit||'').toLowerCase();
+  function brgConversionText(q,unit,name='',avgWeightG=0){
+    const n=Number(q||0),u=String(unit||'').toLowerCase(),nm=String(name||'');
     if(!Number.isFinite(n))return '';
     if(u==='ml') return n>=1000?`${brgNum(n)} ml = ${brgNum(n/1000)} L`:`${brgNum(n)} ml`;
     if(u==='l') return `${brgNum(n)} L = ${brgNum(n*1000)} ml`;
     if(u==='g') return n>=1000?`${brgNum(n)} g = ${brgNum(n/1000)} kg`:`${brgNum(n)} g`;
     if(u==='kg') return `${brgNum(n)} kg = ${brgNum(n*1000)} g`;
+    if(u==='un'){
+      const w=Number(avgWeightG||(/lim[aã]o/i.test(nm)?100:0));
+      if(w>0) return `${brgNum(n)} un ≈ ${brgNum(n*w)} g = ${brgNum(n*w/1000)} kg`;
+    }
     return `${brgNum(n)} ${brgUnitLabel(unit)}`;
   }
   function brgInventorySaleMap(){
@@ -4958,14 +4981,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
   }
   function defaultBarGoalSettings(){return {rent:1000,operational:400,dailyGoal:130,other:0}}
   function loadBarGoalSettings(){const defaults=defaultBarGoalSettings();try{const local=JSON.parse(localStorage.getItem('brg_bar_goal_settings')||'null');const shared=appData?.barGoalSettings&&typeof appData.barGoalSettings==='object'?appData.barGoalSettings:null;return {...defaults,...(local||{}),...(shared||{})}}catch(e){return defaults}}
-  async function saveBarGoalSettings(){const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{localStorage.setItem('brg_bar_goal_settings',JSON.stringify(cfg))}catch(e){}try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
+  async function saveBarGoalSettings(){if(!isCurrentMaster())return alert('Acesso Negado: somente o Administrador Master pode alterar as metas e despesas do bar.');const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{localStorage.setItem('brg_bar_goal_settings',JSON.stringify(cfg))}catch(e){}try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
   window.saveBarGoalSettings=saveBarGoalSettings;
+  function syncBarGoalAdminFields(){
+    const cfg={...defaultBarGoalSettings(),...(BRG_BAR.goalSettings||{})};
+    ['rent','operational','dailyGoal','other'].forEach(k=>{const el=document.getElementById('bar-goal-'+k);if(el)el.value=Number(cfg[k]||0).toFixed(2);});
+  }
   function barGoalChartSvg(daily){const W=900,H=250,pad=32,vals=daily.map(x=>Math.max(0,Number(x.profit||0))),rev=daily.map(x=>Math.max(0,Number(x.revenue||0))),max=Math.max(1,...vals,...rev);const pts=arr=>arr.map((v,i)=>{const x=pad+(i*(W-pad*2))/Math.max(1,arr.length-1),y=H-pad-(v/max)*(H-pad*2);return [x,y]}),rp=pts(rev),pp=pts(vals),path=a=>a.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');return '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="Evolução diária de receita e lucro"><line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-pad)+'" y2="'+(H-pad)+'" stroke="#303940"/><line x1="'+pad+'" y1="'+pad+'" x2="'+pad+'" y2="'+(H-pad)+'" stroke="#303940"/><path d="'+path(rp)+'" fill="none" stroke="#00bcd4" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="'+path(pp)+'" fill="none" stroke="#00e676" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+pp.map((p,i)=>'<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.5" fill="#00e676"><title>'+daily[i].label+' • Lucro '+brgMoney(vals[i])+'</title></circle>').join('')+'</svg>'}
   function renderBarGoals(){
     const root=document.getElementById('bar-view-goals');
     if(!root)return;
     const d=BRG_BAR.data||{};
     const cfg={...defaultBarGoalSettings(),...(BRG_BAR.goalSettings||{})};
+    syncBarGoalAdminFields();
     const sales=d.sales||[];
     const today=brgTodayKey();
     const month=today.slice(0,7);
@@ -4998,13 +5026,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     const remainingText=remaining>0?'Faltam '+brgMoney(remaining)+' de lucro bruto para cobrir as despesas fixas do mês.':'Despesas fixas do mês cobertas.';
     const pct=fixed>0?Math.min(100,Math.max(0,gross/fixed*100)):100;
     root.innerHTML=
-      '<div class="bar-detail-card"><h3>⚙️ Configuração da meta</h3><div class="bar-control-form">'+
-      '<label>Aluguel mensal (R$)<input id="bar-goal-rent" type="number" min="0" step="0.01" value="'+cfg.rent.toFixed(2)+'"></label>'+ 
-      '<label>Custos do bar (R$)<input id="bar-goal-operational" type="number" min="0" step="0.01" value="'+cfg.operational.toFixed(2)+'"></label>'+ 
-      '<label>Meta diária (R$)<input id="bar-goal-dailyGoal" type="number" min="0" step="0.01" value="'+cfg.dailyGoal.toFixed(2)+'"></label>'+ 
-      '<label>Outras despesas mensais (R$)<input id="bar-goal-other" type="number" min="0" step="0.01" value="'+cfg.other.toFixed(2)+'"></label>'+ 
-      '<div class="bar-control-full"><button class="bar-mini-btn primary" onclick="saveBarGoalSettings()">💾 Salvar metas e despesas</button></div></div>'+ 
-      '<div class="bar-goal-note">Base atual: aluguel <b>R$ 1.000</b> + custos do bar <b>R$ 400</b>. A reposição de estoque fica separada e dinâmica.</div></div>'+ 
+      '<div class="bar-goal-note">⚙️ As metas e despesas são configuradas exclusivamente pelo Administrador Master no Painel de Administração. A reposição de estoque fica separada e dinâmica.</div>'+ 
       '<div class="bar-goal-hero"><h3>🎯 Meta diária — '+brgMoney(cfg.dailyGoal)+'</h3><div>Lucro bruto de hoje: <b>'+brgMoney(dailyProfit)+'</b> • Faturamento hoje: <b>'+brgMoney(dailyRevenue)+'</b></div><div class="bar-goal-progress"><span style="width:'+dailyPct+'%"></span></div><div class="bar-goal-status">'+(dailyProfit>=cfg.dailyGoal?'🟢 META DIÁRIA BATIDA!':'🟡 Falta '+brgMoney(Math.max(0,cfg.dailyGoal-dailyProfit))+' para bater a meta de hoje.')+'</div></div>'+ 
       '<div class="bar-kpis" style="margin-top:14px">'+
       '<div class="bar-kpi"><b>'+brgMoney(revenue)+'</b><span>Receita no mês</span></div>'+ 
@@ -5068,20 +5090,20 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       let allowInsufficient=false;
       if(shortages.length){
         const detail=shortages.map(x=>`• ${x.name}: precisa ${brgNum(x.need)} ${x.unit}, disponível ${brgNum(x.available)} ${x.unit}`).join('\n');
-        allowInsufficient=confirm('⚠️ SEM ESTOQUE SUFICIENTE\\n\\n'+detail+'\\n\\nDeseja registrar a venda mesmo assim para teste?\\nO estoque ficará negativo e aparecerá no painel de reposição.');
+        allowInsufficient=confirm('⚠️ SEM ESTOQUE SUFICIENTE\n\n'+detail+'\n\nDeseja registrar a venda mesmo assim para teste?\nO estoque ficará negativo e aparecerá no painel de reposição.');
         if(!allowInsufficient){btn.disabled=false;btn.textContent='✅ Confirmar venda e baixar estoque';return;}
       }
       const rSale=await brgApi('sale',{menu_item_id:String(id),quantity:q,unit_price:price,channel:document.getElementById('bar-sale-channel').value,payment_method:document.getElementById('bar-sale-payment').value,allow_insufficient_stock:allowInsufficient});
       await loadBarControl(false);
-      alert('✅ Venda registrada.\\n\\nFaturamento: '+brgMoney(rSale.total)+'\\nCusto: '+brgMoney(rSale.cost)+'\\nLucro: '+brgMoney(rSale.profit)+(allowInsufficient?'\\n\\n⚠️ Registrada mesmo com estoque insuficiente. Confira a aba Reposição.':''));
+      alert('✅ Venda registrada.\n\nFaturamento: '+brgMoney(rSale.total)+'\nCusto: '+brgMoney(rSale.cost)+'\nLucro: '+brgMoney(rSale.profit)+(allowInsufficient?'\n\n⚠️ Registrada mesmo com estoque insuficiente. Confira a aba Reposição.':''));
     }catch(e){
       console.error('[Controle do Bar] erro ao registrar venda',e);
-      alert('❌ Venda não registrada.\\n\\nMotivo: '+(e?.message||e));
+      alert('❌ Venda não registrada.\n\nMotivo: '+(e?.message||e));
     }finally{if(btn){btn.disabled=false;btn.textContent='✅ Confirmar venda e baixar estoque'}}
   };
   function renderBarStock(){
     const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];
-    root.innerHTML='<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">Cadastre quantidade, unidade, custo de compra, embalagem e limites. O sistema converte kg→g e L→ml automaticamente.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Categoria</th><th>Estoque</th><th>Custo unit.</th><th>Valor total</th><th>Reposição</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const rep=brgReorderTarget(x),cls=Number(x.quantity||0)<0?'bar-danger':rep>0?'bar-warn':'bar-ok';return '<tr><td>'+brgEsc(x.name)+'</td><td>'+brgEsc(x.category)+'</td><td>'+brgNum(x.quantity)+' '+brgEsc(x.unit)+(x.package_count!=null?' <small style="display:block;color:#9aa">Emb.: '+brgNum(x.package_count)+(x.package_ml?' × '+brgNum(x.package_ml)+' ml':'')+'</small>':'')+'<div class="bar-stock-conversion">'+brgConversionText(x.quantity,x.unit)+'</div></td><td>'+brgMoney(x.unit_cost)+'</td><td>'+brgMoney(brgStockValue(x))+'</td><td class="'+cls+'">'+(rep>0?brgNum(rep)+' '+brgEsc(x.unit):'OK')+'</td><td><div class="bar-actions"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+x.id+'\')">✏️ Editar tudo</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+x.id+'\')">± Ajustar</button></div></td></tr>'}).join('')+'</tbody></table></div>'
+    root.innerHTML='<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">Cadastre quantidade, unidade, custo de compra, embalagem e limites. O sistema converte kg→g e L→ml automaticamente.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Categoria</th><th>Estoque</th><th>Custo unit.</th><th>Valor total</th><th>Reposição</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const rep=brgReorderTarget(x),cls=Number(x.quantity||0)<0?'bar-danger':rep>0?'bar-warn':'bar-ok';return '<tr><td>'+brgEsc(x.name)+'</td><td>'+brgEsc(x.category)+'</td><td>'+brgNum(x.quantity)+' '+brgEsc(x.unit)+(x.package_count!=null?' <small style="display:block;color:#9aa">Emb.: '+brgNum(x.package_count)+(x.package_ml?' × '+brgNum(x.package_ml)+' ml':'')+'</small>':'')+'<div class="bar-stock-conversion">'+brgConversionText(x.quantity,x.unit,x.name,x.avg_unit_weight_g)+'</div></td><td>'+brgMoney(x.unit_cost)+'</td><td>'+brgMoney(brgStockValue(x))+'</td><td class="'+cls+'">'+(rep>0?brgNum(rep)+' '+brgEsc(x.unit):'OK')+'</td><td><div class="bar-actions"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+x.id+'\')">✏️ Editar tudo</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+x.id+'\')">± Ajustar</button></div></td></tr>'}).join('')+'</tbody></table></div>'
   }
   function openBarStockEditor(id){
     const x=id?(BRG_BAR.data.inventory||[]).find(i=>i.id===id):null,modal=document.createElement('div');modal.id='bar-stock-edit-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000003;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:15px';
@@ -5091,9 +5113,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     '<label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Skol Lata"></label>'+
     '<label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="Ex.: bebida"></label>'+
     '<label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(String(x?.unit||'un').toLowerCase()==='un'?'selected':'')+'>unidade (un)</option><option value="g" '+(String(x?.unit||'').toLowerCase()==='g'?'selected':'')+'>gramas (g)</option><option value="kg" '+(String(x?.unit||'').toLowerCase()==='kg'?'selected':'')+'>quilogramas (kg)</option><option value="ml" '+(String(x?.unit||'').toLowerCase()==='ml'?'selected':'')+'>mililitros (ml)</option><option value="L" '+(String(x?.unit||'').toLowerCase()==='l'?'selected':'')+'>litros (L)</option></select></label>'+
-    '<label>Quantidade total<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><div id="bar-stock-conversion" class="bar-stock-conversion">'+brgConversionText(q,x?.unit||'un')+'</div></label>'+
+    '<label>Quantidade total<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><div id="bar-stock-conversion" class="bar-stock-conversion">'+brgConversionText(q,x?.unit||'un',x?.name||'',x?.avg_unit_weight_g)+'</div></label>'+
     '<label>Custo total da compra/lote (R$)<input id="bar-stock-purchase-total" type="number" min="0" step="0.01" value="'+(q*cost).toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"></label>'+
     '<label>Custo por unidade da medida (R$)<input id="bar-stock-cost" type="number" min="0" step="0.000001" value="'+cost.toFixed(6)+'" oninput="barCtlStockCalc(\'cost\')"></label>'+
+    '<label id="bar-stock-weight-wrap" style="display:'+((String(x?.unit||'un').toLowerCase()==='un' && /lim[aã]o/i.test(String(x?.name||'')))?'block':'none')+'">Peso médio por unidade (g)<input id="bar-stock-weight" type="number" min="0.1" step="0.1" value="'+((x?.avg_unit_weight_g!=null)?Number(x.avg_unit_weight_g):(/lim[aã]o/i.test(String(x?.name||''))?100:''))+'" placeholder="Ex.: limão ≈ 100 g" oninput="barCtlStockCalc(\'weight\')"></label>'+
     '<label>Qtd. de embalagens/garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(x?.package_count==null?'':Number(x.package_count))+'" placeholder="Ex.: 1"></label>'+
     '<label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="1" value="'+(x?.package_ml==null?'':Number(x.package_ml))+'" placeholder="Ex.: 900"></label>'+
     '<label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label>'+
@@ -5113,35 +5136,44 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     if(source==='total') c=q>0?t/q:0;
     else if(source==='cost') t=q*c;
     else if(source==='qty') t=q*c;
-    if(source!=='total') t=q*c;
-    if(source==='unit') t=q*c;
+    else if(source==='unit') t=q*c;
+    else if(source==='weight') t=q*c;
     cEl.value=Number.isFinite(c)?c.toFixed(6):'0.000000';tEl.value=Number.isFinite(t)?t.toFixed(2):'0.00';
     const conv=document.getElementById('bar-stock-conversion'),lit=document.getElementById('bar-stock-liters-display'),tot=document.getElementById('bar-stock-total'),disp=document.getElementById('bar-stock-cost-display');
-    const convText=brgConversionText(q,unit);if(conv)conv.textContent=convText;if(lit)lit.textContent=convText;if(tot)tot.textContent=brgMoney(t);if(disp)disp.textContent=brgMoney(c);
+    const name=String(document.getElementById('bar-stock-name')?.value||'');
+    const weightEl=document.getElementById('bar-stock-weight');
+    const weightWrap=document.getElementById('bar-stock-weight-wrap');
+    const isUnit=unit==='un';
+    const autoLemon=/lim[aã]o/i.test(name);
+    if(weightWrap) weightWrap.style.display=isUnit && autoLemon?'block':'none';
+    if(weightEl && autoLemon && !weightEl.value) weightEl.value='100';
+    const avgWeight=isUnit && weightEl ? Number(weightEl.value||0) : 0;
+    const convText=brgConversionText(q,unit,name,avgWeight);if(conv)conv.textContent=convText;if(lit)lit.textContent=convText;if(tot)tot.textContent=brgMoney(t);if(disp)disp.textContent=brgMoney(c);
     const itemId=document.getElementById('bar-stock-margin-display'),item=itemId&&document.querySelector('#bar-stock-edit-modal')?((BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(itemId.dataset?.item||''))):null;
   };
   window.barCtlSaveStockEdit=async function(id){
     const name=String(document.getElementById('bar-stock-name')?.value||'').trim(),category=String(document.getElementById('bar-stock-category')?.value||'insumo').trim();
-    const enteredUnit=String(document.getElementById('bar-stock-unit')?.value||'un'),enteredQ=Number(document.getElementById('bar-stock-qty')?.value||0),purchaseTotal=Number(document.getElementById('bar-stock-purchase-total')?.value||0);
+    const enteredUnit=String(document.getElementById('bar-stock-unit')?.value||'un'),enteredQ=Number(document.getElementById('bar-stock-qty')?.value||0),purchaseTotal=Number(document.getElementById('bar-stock-purchase-total')?.value||0),enteredCost=Number(document.getElementById('bar-stock-cost')?.value||0),avgUnitWeight=Number(document.getElementById('bar-stock-weight')?.value||0);
     const min_quantity=Number(document.getElementById('bar-stock-min')?.value||0),maxRaw=String(document.getElementById('bar-stock-max')?.value||'').trim(),max_quantity=maxRaw===''?null:Number(maxRaw);
     const supplier=String(document.getElementById('bar-stock-supplier')?.value||'').trim(),notes=String(document.getElementById('bar-stock-notes')?.value||'').trim(),packageCountRaw=String(document.getElementById('bar-stock-pack-count')?.value||'').trim(),packageMlRaw=String(document.getElementById('bar-stock-pack-ml')?.value||'').trim(),package_count=packageCountRaw===''?null:Number(packageCountRaw),package_ml=packageMlRaw===''?null:Number(packageMlRaw);
     let unit=enteredUnit,quantity=enteredQ;
     if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000}
     if(enteredUnit==='L'){unit='ml';quantity=enteredQ*1000}
-    const unit_cost=quantity>0?purchaseTotal/quantity:0;
+    const unit_cost=enteredCost>0?enteredCost:(quantity>0?purchaseTotal/quantity:0);
     const maxBase=max_quantity==null?null:(enteredUnit==='kg'||enteredUnit==='L'?max_quantity*1000:max_quantity);
     const minBase=(enteredUnit==='kg'||enteredUnit==='L')?min_quantity*1000:min_quantity;
     if(!name)return alert('Informe o nome do insumo.');
     if(!Number.isFinite(enteredQ)||enteredQ<0||!Number.isFinite(purchaseTotal)||purchaseTotal<0||!Number.isFinite(min_quantity)||min_quantity<0||(maxBase!==null&&(!Number.isFinite(maxBase)||maxBase<0)))return alert('Confira quantidade, custo, mínimo e máximo.');
     if(package_count!==null&&(!Number.isFinite(package_count)||package_count<0))return alert('Qtd. de embalagens/garrafas inválida.');
     if(package_ml!==null&&(!Number.isFinite(package_ml)||package_ml<0))return alert('Volume por embalagem inválido.');
+    if(enteredUnit==='un' && avgUnitWeight<0) return alert('Peso médio por unidade inválido.');
     if(maxBase!==null&&maxBase<minBase)return alert('O estoque máximo não pode ser menor que o mínimo.');
     try{
-      const payload={name,category:category||'insumo',unit,quantity,min_quantity:minBase,max_quantity:maxBase,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml};
+      const payload={name,category:category||'insumo',unit,quantity,min_quantity:minBase,max_quantity:maxBase,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml,avg_unit_weight_g:enteredUnit==='un'&&avgUnitWeight>0?avgUnitWeight:null};
       await brgApi(id?'update_inventory':'save_inventory',id?{id,...payload}:payload);
       document.getElementById('bar-stock-edit-modal')?.remove();await loadBarControl(false);
-      alert('✅ Cadastro do insumo salvo permanentemente no Supabase.\\n\\nQuantidade: '+brgNum(quantity)+' '+unit+'\\nCusto unitário: '+brgMoney(unit_cost)+'\\nValor total: '+brgMoney(purchaseTotal));
-    }catch(e){alert('❌ Não foi possível salvar o insumo.\\n\\n'+e.message)}
+      alert('✅ Cadastro do insumo salvo permanentemente no Supabase.\n\nQuantidade: '+brgNum(quantity)+' '+unit+'\nCusto unitário: '+brgMoney(unit_cost)+'\nValor total: '+brgMoney(purchaseTotal));
+    }catch(e){alert('❌ Não foi possível salvar o insumo.\n\n'+e.message)}
   };
   window.barCtlAdjustStock=async function(id){const x=(BRG_BAR.data.inventory||[]).find(i=>i.id===id);if(!x)return;const raw=prompt('Ajuste de estoque para '+x.name+'\nUse positivo para entrada e negativo para saída.\nAtual: '+x.quantity+' '+x.unit,'0');if(raw===null)return;const delta=Number(String(raw).replace(',','.'));if(!Number.isFinite(delta)||delta===0)return alert('Informe um número diferente de zero.');const reason=prompt('Motivo do ajuste','Reposição/ajuste manual')||'Ajuste manual';try{await brgApi('adjust_stock',{inventory_item_id:id,quantity_delta:delta,reason});await loadBarControl(false);alert('✅ Estoque atualizado permanentemente.')}catch(e){alert('❌ '+e.message)}};
   window.barCtlNewStock=function(){openBarStockEditor(null)};
