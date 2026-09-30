@@ -517,6 +517,19 @@
   }
 }
 
+
+
+.bar-control-overlay{position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,.92);backdrop-filter:blur(12px);display:none;overflow:auto;padding:18px}
+.bar-control-shell{max-width:1250px;margin:0 auto;min-height:calc(100vh - 36px);background:linear-gradient(145deg,#070b10,#090909 55%,#100308);border:1px solid rgba(0,188,212,.28);border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.7);overflow:hidden;color:#fff}
+.bar-control-head{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.bar-control-head h2{font-family:var(--font-title);margin:0;color:#fff}.bar-control-head small{color:#8997a0}
+.bar-control-tabs{display:flex;gap:8px;padding:12px;overflow:auto;border-bottom:1px solid rgba(255,255,255,.08)}
+.bar-control-tab{flex:0 0 auto;border:1px solid #242b31;background:#0c1014;color:#b9c1c6;border-radius:10px;padding:11px 14px;font-weight:800;cursor:pointer}.bar-control-tab.active{background:linear-gradient(90deg,#ffeb3b,#ff9800);color:#000;border-color:#ffeb3b}
+.bar-control-view{display:none;padding:18px}.bar-control-view.active{display:block}
+.bar-kpis{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:10px}.bar-kpi{background:#0c1116;border:1px solid #202932;border-radius:12px;padding:14px}.bar-kpi b{display:block;font-size:1.25rem;color:#fff}.bar-kpi span{display:block;color:#8d9aa2;font-size:.76rem;margin-top:4px}
+.bar-products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.bar-product-card{background:linear-gradient(145deg,#10161c,#090c10);border:1px solid #252e36;border-radius:14px;padding:12px;cursor:pointer;transition:.18s}.bar-product-card:hover{transform:translateY(-2px);border-color:#00bcd4}.bar-product-img{width:100%;height:120px;object-fit:cover;border-radius:10px;background:#151a1e}.bar-product-name{font-family:var(--font-title);font-size:1rem;margin-top:9px}.bar-product-meta{display:flex;justify-content:space-between;gap:8px;margin-top:6px;color:#9ba7ad;font-size:.78rem}.bar-product-profit{margin-top:9px;font-weight:900;color:#00e676}.bar-control-form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.bar-control-form input,.bar-control-form select,.bar-control-form textarea{width:100%;box-sizing:border-box;padding:11px;border:1px solid #303940;border-radius:9px;background:#050708;color:#fff}.bar-control-full{grid-column:1/-1}.bar-control-table-wrap{overflow:auto;margin-top:14px;border:1px solid #202932;border-radius:12px}.bar-control-table{width:100%;border-collapse:collapse;min-width:720px}.bar-control-table th,.bar-control-table td{padding:10px;border-bottom:1px solid #202932;text-align:left;font-size:.82rem}.bar-control-table th{color:#8d9aa2;background:#0b0f13}.bar-control-detail{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}.bar-detail-card{background:#0b1015;border:1px solid #252e36;border-radius:14px;padding:16px}.bar-detail-card h3{font-family:var(--font-title);margin:0 0 12px}.bar-pie{width:180px;height:180px;border-radius:50%;margin:8px auto;background:conic-gradient(#00e676 0 50%,#ff1744 50% 100%);box-shadow:0 0 35px rgba(0,188,212,.12)}.bar-legend{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;color:#aaa;font-size:.8rem}.bar-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.bar-ingredient{margin:10px 0}.bar-ingredient-top{display:flex;justify-content:space-between;font-size:.8rem;color:#ddd}.bar-bar{height:8px;border-radius:99px;background:#1b2228;overflow:hidden;margin-top:5px}.bar-bar>span{display:block;height:100%;background:linear-gradient(90deg,#00bcd4,#e91e63)}.bar-alert{padding:10px 12px;border:1px solid rgba(255,193,7,.35);background:rgba(255,193,7,.06);border-radius:10px;color:#ffd54f;margin-bottom:12px}.bar-ok{color:#00e676}.bar-danger{color:#ff5252}.bar-muted{color:#8d9aa2}.bar-actions{display:flex;gap:8px;flex-wrap:wrap}.bar-mini-btn{border:1px solid #39434b;background:#10161b;color:#fff;border-radius:8px;padding:8px 10px;cursor:pointer}.bar-mini-btn.primary{background:#00bcd4;color:#001014;border-color:#00bcd4;font-weight:900}.bar-mini-btn.danger{background:#3a0d12;border-color:#ff1744;color:#fff}.bar-control-empty{padding:30px;text-align:center;color:#7e8a91;border:1px dashed #303940;border-radius:12px}
+@media(max-width:1000px){.bar-products{grid-template-columns:repeat(3,minmax(0,1fr))}.bar-kpis{grid-template-columns:repeat(3,minmax(120px,1fr))}.bar-control-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.bar-control-overlay{padding:0}.bar-control-shell{min-height:100vh;border-radius:0;border-left:0;border-right:0}.bar-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bar-product-img{height:100px}.bar-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-control-form{grid-template-columns:1fr}.bar-control-detail{grid-template-columns:1fr}.bar-control-view{padding:12px}.bar-control-head{padding:14px}}
 </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 <script>
@@ -1024,6 +1037,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
             </div>
           </div>
 
+<div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(0,188,212,.28);background:linear-gradient(135deg,rgba(0,188,212,.07),rgba(233,30,99,.05));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">📦 Controle Profissional do Bar</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Estoque, receitas, vendas, custo real, margem, lucro e capacidade de produção.</div></div><button class="action-btn" onclick="openBarControl()" style="background:linear-gradient(90deg,#00bcd4,#00e676);color:#000;padding:11px 16px;">📦 Abrir Controle do Bar</button></div></div>
+
           <!-- ANALYTICS DO SITE -->
           <div class="traffic-dashboard">
             <div class="traffic-mini"><div class="traffic-mini-val" id="adm-stat-views">0</div><div class="traffic-mini-label">Visitas totais</div></div>
@@ -1387,15 +1402,23 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       const stored = readStoredSupabaseSession();
       const refreshToken = stored?.refresh_token || supabaseRefreshToken;
       if(!refreshToken) return null;
-      const {res, data} = await supabaseAuthFetch('token?grant_type=refresh_token', {
-        method:'POST',
-        body:JSON.stringify({refresh_token:refreshToken})
-      });
-      if(!res.ok || !data?.access_token || !data?.user) {
-        clearStoredSupabaseSession();
+      try {
+        const {res, data} = await supabaseAuthFetch('token?grant_type=refresh_token', {
+          method:'POST',
+          body:JSON.stringify({refresh_token:refreshToken})
+        });
+        if(!res.ok || !data?.access_token || !data?.user) {
+          // Só invalida definitivamente a sessão quando o próprio Supabase
+          // rejeita o refresh. Erros de rede/timeout não podem derrubar a
+          // sessão administrativa e fazer o site cair para o estado público.
+          if(res && [400,401,403].includes(Number(res.status))) clearStoredSupabaseSession();
+          return null;
+        }
+        return storeSupabaseSession(data);
+      } catch(e) {
+        console.warn('[Bargunçados] Falha temporária ao renovar sessão Supabase; mantendo credenciais armazenadas.', e);
         return null;
       }
-      return storeSupabaseSession(data);
     }
 
     async function supabaseSignInWithPassword(email, password){
@@ -1449,49 +1472,55 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function getCurrentSupabaseSession() {
+      let session = readStoredSupabaseSession();
+      if(!session) {
+        supabaseAccessToken = null;
+        supabaseRefreshToken = null;
+        supabaseUser = null;
+        return null;
+      }
+
+      supabaseAccessToken = session.access_token;
+      supabaseRefreshToken = session.refresh_token || null;
+      supabaseUser = session.user || null;
+
       try {
-        let session = readStoredSupabaseSession();
-        if(!session) {
-          clearStoredSupabaseSession();
-          return null;
-        }
-
-        supabaseAccessToken = session.access_token;
-        supabaseRefreshToken = session.refresh_token || null;
-        supabaseUser = session.user || null;
-
         const now = Math.floor(Date.now()/1000);
         if(Number(session.expires_at || 0) <= now + 60) {
-          session = await supabaseRefreshSession();
-          if(!session) return null;
-        } else {
-          const user = await supabaseGetUser(session.access_token);
-          if(user) {
-            session.user = user;
-            supabaseUser = user;
-            sessionStorage.setItem(SUPABASE_SESSION_STORAGE_KEY, JSON.stringify(session));
-          } else {
-            session = await supabaseRefreshSession();
-            if(!session) return null;
-          }
+          const refreshed = await supabaseRefreshSession();
+          if(refreshed) return refreshed;
+          // Mantém o objeto local para que uma falha transitória de rede não
+          // transforme uma sessão administrativa válida em visitante público.
+          return session;
         }
 
+        const user = await supabaseGetUser(session.access_token);
+        if(user) {
+          session.user = user;
+          supabaseUser = user;
+          sessionStorage.setItem(SUPABASE_SESSION_STORAGE_KEY, JSON.stringify(session));
+        }
+        // Se /auth/v1/user falhar por rede, o token ainda não expirado continua
+        // sendo utilizável pelo backend. Não apagamos a sessão aqui.
         return session;
       } catch(e) {
-        console.warn('[Bargunçados] Sessão Supabase indisponível.', e);
-        clearStoredSupabaseSession();
-        return null;
+        console.warn('[Bargunçados] Falha temporária ao validar sessão Supabase; mantendo sessão local.', e);
+        return session;
       }
     }
 
     async function getAdminAccessToken() {
-      const session = await getCurrentSupabaseSession();
-      if(!session || !session.user || !session.user.email) return null;
+      let session = await getCurrentSupabaseSession();
+      if(!session && sessionStorage.getItem('brg_adm_logged') === 'true') {
+        session = await restoreSupabaseAdminSession();
+      }
+      if(!session || !session.access_token || !session.user || !session.user.email) return null;
       const account = getAuthAccountByEmail(session.user.email);
       if(!account) {
         await supabaseSignOut();
         return null;
       }
+      supabaseAccessToken = session.access_token;
       return session.access_token;
     }
 
@@ -1850,6 +1879,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     async function sendAdminPatch(changes, baseRevision, keepalive=false, retryOnConflict=true){
       let token = await getAdminAccessToken();
       if(!token) {
+        // Uma edição administrativa nunca pode ser considerada concluída sem
+        // confirmação do backend. Também não permitimos que a aplicação
+        // silenciosamente continue como se tivesse salvo.
         console.error('JSONBin: gravação bloqueada; sessão Supabase ausente ou expirada.');
         return false;
       }
@@ -1913,38 +1945,47 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       try { responseJson = await res.json(); } catch(e) {}
       const acknowledgedRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
 
-      // Confirma no servidor o registro realmente gravado. HTTP 200 do PUT
-      // sozinho não é suficiente para considerar a alteração persistida.
-      const verifyToken = await getAdminAccessToken();
-      if(!verifyToken) return false;
-      const verifyRes = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
-        cache:'no-store',
-        headers:{
-          'apikey': SUPABASE_PUBLISHABLE_KEY,
-          'Authorization':'Bearer ' + verifyToken
+      // O PUT só chega aqui quando o jsonbin-api devolveu HTTP 200 após
+      // gravar o registro no armazenamento permanente. A confirmação abaixo
+      // é feita com o MESMO token usado no PUT e nunca derruba uma gravação
+      // confirmada por causa de um segundo timeout de rede.
+      try {
+        const verifyRes = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
+          cache:'no-store',
+          headers:{
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization':'Bearer ' + token
+          }
+        }, 10000);
+        if(verifyRes.ok) {
+          const verifyJson = await verifyRes.json();
+          const verifiedRecord = verifyJson?.record;
+          if(verifiedRecord && typeof verifiedRecord === 'object') {
+            const verifiedRevision = Number(verifiedRecord?.__sync?.revision || 0);
+            const allVerified = Object.keys(changes).every(k => stableEqual(verifiedRecord[k], changes[k]));
+            if(allVerified) {
+              remoteRevision = verifiedRevision || acknowledgedRevision;
+              const cleanVerified = cloneForSync(verifiedRecord) || {};
+              delete cleanVerified.__sync;
+              remoteSnapshot = cleanVerified;
+              return true;
+            }
+            console.error('JSONBin: PUT aceito, mas a leitura de confirmação retornou dados diferentes.', Object.keys(changes));
+          }
+        } else if(verifyRes.status === 401) {
+          console.warn('JSONBin: gravação confirmada, mas a sessão não permitiu a leitura de confirmação.');
         }
-      }, 15000);
-      if(!verifyRes.ok) {
-        console.error('JSONBin: PUT aceito, mas a confirmação da gravação falhou.', verifyRes.status);
-        return false;
+      } catch(e) {
+        console.warn('JSONBin: gravação confirmada; verificação posterior indisponível temporariamente.', e);
       }
-      const verifyJson = await verifyRes.json();
-      const verifiedRecord = verifyJson?.record;
-      if(!verifiedRecord || typeof verifiedRecord !== 'object') return false;
-      const verifiedRevision = Number(verifiedRecord?.__sync?.revision || 0);
-      const allVerified = Object.keys(changes).every(k => stableEqual(verifiedRecord[k], changes[k]));
-      if(!allVerified) {
-        console.error('JSONBin: servidor não contém exatamente as alterações enviadas.', Object.keys(changes));
-        remoteRevision = verifiedRevision;
-        const clean = cloneForSync(verifiedRecord) || {};
-        delete clean.__sync;
-        remoteSnapshot = clean;
-        return false;
-      }
-      remoteRevision = verifiedRevision || acknowledgedRevision;
-      const cleanVerified = cloneForSync(verifiedRecord) || {};
-      delete cleanVerified.__sync;
-      remoteSnapshot = cleanVerified;
+
+      // Não reverte o estado local depois de um PUT 200. Atualizamos o snapshot
+      // local com o que o servidor confirmou para que o próximo save seja
+      // incremental e não gere um falso rollback.
+      remoteRevision = acknowledgedRevision;
+      const mergedSnapshot = cloneForSync(remoteSnapshot || {}) || {};
+      Object.keys(changes).forEach(k => { mergedSnapshot[k] = cloneForSync(changes[k]); });
+      remoteSnapshot = mergedSnapshot;
       return true;
     }
 
@@ -2187,58 +2228,66 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function fetchBinData(force=false) {
-      if (!force && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+      const adminExpected = sessionStorage.getItem('brg_adm_logged') === 'true';
+      if(!force && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
-      // Não substitui o estado local enquanto existe uma gravação pendente.
-      // O snapshot remoto pode ter sido iniciado antes da edição atual.
+      // Nunca permita que uma aba administrativa caia silenciosamente para o
+      // snapshot público. Esse era o ponto que fazia edições recentes
+      // desaparecerem quando a sessão sofria uma falha transitória.
       if(binWriteBusy) return;
       const readGeneration = binWriteGeneration;
       try {
-        const adminToken = await getAdminAccessToken();
+        let adminToken = null;
+        if(adminExpected) {
+          adminToken = await getAdminAccessToken();
+          if(!adminToken) {
+            console.warn('[Bargunçados] Sessão administrativa temporariamente indisponível; mantendo o estado atual e NÃO carregando o catálogo público.');
+            return;
+          }
+        } else {
+          adminToken = await getAdminAccessToken();
+        }
+
         const requestHeaders = {
           'apikey': SUPABASE_PUBLISHABLE_KEY,
-          'Authorization': 'Bearer ' + (adminToken || SUPABASE_PUBLISHABLE_KEY)
+          ...(adminToken ? {'Authorization': 'Bearer ' + adminToken} : {})
         };
         const endpoint = adminToken ? (SUPABASE_FUNCTION_URL + '?scope=admin') : SUPABASE_FUNCTION_URL;
         const res = await fetchWithTimeout(endpoint, {
           cache: 'no-store',
           headers: requestHeaders
         }, 10000);
-        if(res.ok) {
-          const json = await res.json();
-          // Diagnóstico não sensível para facilitar a identificação de falhas
-          // de sincronização sem expor credenciais ou conteúdo secreto.
+        if(!res.ok) return;
+        const json = await res.json();
+        try {
+          console.info('[Bargunçados] API segura OK', {
+            scope: adminToken ? 'admin' : 'public',
+            hasRecord: !!json?.record,
+            menuItems: Array.isArray(json?.record?.menu) ? json.record.menu.length : null
+          });
+        } catch(e) {}
+        if(readGeneration !== binWriteGeneration || binWriteBusy) return;
+        if(json.record && typeof json.record === 'object') {
+          const localBeforeRemote = appData;
           try {
-            console.info('[Bargunçados] API segura OK', {
-              hasRecord: !!json?.record,
-              menuItems: Array.isArray(json?.record?.menu) ? json.record.menu.length : null
-            });
-          } catch(e) {}
-          // Se uma gravação começou enquanto a leitura estava em trânsito,
-          // descarta essa resposta antiga em vez de restaurar dados anteriores.
-          if(readGeneration !== binWriteGeneration || binWriteBusy) return;
-          if(json.record && typeof json.record === 'object') {
-            const localBeforeRemote = appData;
-            try {
-              const incoming = cloneForSync(json.record) || {};
-              remoteRevision = Number(incoming?.__sync?.revision || 0);
-              publicRevision = remoteRevision;
-              delete incoming.__sync;
-              remoteSnapshot = cloneForSync(incoming) || {};
-              appData = { ...appData, ...incoming };
-              ensureAdminSystem();
-              ensureMenuCategoryLabels();
-              ensureDeletedCatalogRegistry();
-              ensureDrinkCatalog();
-              ensureModerationHistory();
-              renderApp();
-              updateTrafficUI();
-            } catch(remoteRenderError) {
-              console.error('[Bargunçados] Dados remotos incompatíveis; mantendo catálogo local.', remoteRenderError);
-              appData = localBeforeRemote;
-              renderApp();
-            }
+            const incoming = cloneForSync(json.record) || {};
+            remoteRevision = Number(incoming?.__sync?.revision || 0);
+            publicRevision = remoteRevision;
+            delete incoming.__sync;
+            remoteSnapshot = cloneForSync(incoming) || {};
+            appData = { ...appData, ...incoming };
+            ensureAdminSystem();
+            ensureMenuCategoryLabels();
+            ensureDeletedCatalogRegistry();
+            ensureDrinkCatalog();
+            ensureModerationHistory();
+            renderApp();
+            updateTrafficUI();
+          } catch(remoteRenderError) {
+            console.error('[Bargunçados] Dados remotos incompatíveis; mantendo catálogo local.', remoteRenderError);
+            appData = localBeforeRemote;
+            renderApp();
           }
         }
       } catch(e) {
@@ -2247,6 +2296,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     }
 
     async function saveBinData(actionDesc = '') {
+      if(sessionStorage.getItem('brg_adm_logged') !== 'true') {
+        throw new Error('É necessário estar autenticado como administrador para salvar alterações permanentes.');
+      }
       if(actionDesc) {
         const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
         const now = new Date().toLocaleString('pt-BR');
@@ -2263,11 +2315,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
       const changes = getChangedTopLevelFields();
       if(!Object.keys(changes).length) return true;
       const baseRevision = remoteRevision;
-      // Only the fields changed since the last successful cloud read are sent.
-      // This prevents an old full snapshot from rolling back newer data.
       const saved = await queueBinWrite(changes, baseRevision);
       if (!saved) {
-        throw new Error('O servidor não confirmou a gravação. A alteração NÃO foi salva na nuvem.');
+        // Mantém appData intacto: não substituímos a edição do administrador
+        // por uma cópia antiga em caso de falha.
+        renderApp();
+        throw new Error('O servidor não confirmou a gravação permanente. A alteração continua na tela e será necessário tentar salvar novamente.');
       }
       return true;
     }
@@ -4493,6 +4546,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
 
       const item = appData.menu.find(i => i.id === id);
       if(confirm('Tem certeza que deseja excluir o item "' + (item ? item.name : id) + '" do cardápio?')) { 
+        if(item) markCatalogItemDeleted(item);
         appData.menu = appData.menu.filter(i => i.id !== id); 
         await saveBinData("Excluiu o item do cardápio: " + (item ? item.name : id)); 
       } 
@@ -4666,5 +4720,98 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && sessionStorage.getI
     <section id="portal-view-scale" class="portal-view"><h3 class="portal-section-title">📅 Registrar escala / horas trabalhadas</h3><div class="portal-card"><div class="portal-form-grid"><select id="partner-shift-partner" class="portal-select"><option>Touru</option><option>Edinho</option><option>Alisson</option><option>Ramon</option></select><input id="partner-shift-date" class="portal-input" type="date"><input id="partner-shift-start" class="portal-input" type="time"><input id="partner-shift-end" class="portal-input" type="time"><input id="partner-shift-note" class="portal-input" placeholder="Observação da escala"><button class="action-btn" onclick="savePartnerShift()">+ Registrar turno</button></div></div><div class="portal-table-wrap"><table class="portal-table"><thead><tr><th>Data</th><th>Sócio</th><th>Horário</th><th>Horas</th><th>Observação</th><th>Ação</th></tr></thead><tbody id="portal-shifts-table"></tbody></table></div><h3 class="portal-section-title">⏱️ Horas acumuladas</h3><div id="portal-hours-summary"></div></section>
     <section id="portal-view-partners" class="portal-view"><h3 class="portal-section-title">👥 Quadro societário</h3><div class="portal-grid"><div class="portal-card"><span class="portal-label">Sócio</span><div class="portal-big" style="color:var(--c-yellow)">Touru</div><div style="font-family:var(--font-title);font-size:1.25rem">27%</div><div class="portal-muted">Participação no lucro líquido</div></div><div class="portal-card"><span class="portal-label">Sócio</span><div class="portal-big">Edinho</div><div style="font-family:var(--font-title);font-size:1.25rem">27%</div><div class="portal-muted">Participação no lucro líquido</div></div><div class="portal-card"><span class="portal-label">Sócio</span><div class="portal-big">Alisson</div><div style="font-family:var(--font-title);font-size:1.25rem">27%</div><div class="portal-muted">Participação no lucro líquido</div></div><div class="portal-card"><span class="portal-label">Sócio</span><div class="portal-big">Ramon</div><div style="font-family:var(--font-title);font-size:1.25rem">13%</div><div class="portal-muted">Participação no lucro líquido</div></div></div><div class="portal-card" style="margin-top:14px"><h3>🔐 Privacidade</h3><div class="portal-muted">Esta central só é aberta após autenticação administrativa. Os lançamentos são sincronizados junto aos dados administrativos do sistema.</div></div></section>
   </div></div>
+
+<div id="bar-control-overlay" class="bar-control-overlay" aria-hidden="true">
+ <div class="bar-control-shell">
+  <div class="bar-control-head"><div><h2>📦 CONTROLE PROFISSIONAL DO BAR</h2><small>Estoque • Receitas • Vendas • Custo • Margem • Lucro</small></div><div class="bar-actions"><button class="bar-mini-btn" onclick="barCtlReload()">↻ Atualizar</button><button class="bar-mini-btn danger" onclick="closeBarControl()">✕ Fechar</button></div></div>
+  <div class="bar-control-tabs"><button class="bar-control-tab active" data-bar-view="dashboard" onclick="barCtlTab('dashboard')">📊 Dashboard</button><button class="bar-control-tab" data-bar-view="products" onclick="barCtlTab('products')">🍹 Bebidas & Porções</button><button class="bar-control-tab" data-bar-view="sales" onclick="barCtlTab('sales')">💰 Registrar Venda</button><button class="bar-control-tab" data-bar-view="stock" onclick="barCtlTab('stock')">📦 Estoque</button><button class="bar-control-tab" data-bar-view="reports" onclick="barCtlTab('reports')">📈 Relatórios</button></div>
+  <div id="bar-view-dashboard" class="bar-control-view active"></div><div id="bar-view-products" class="bar-control-view"></div><div id="bar-view-sales" class="bar-control-view"></div><div id="bar-view-stock" class="bar-control-view"></div><div id="bar-view-reports" class="bar-control-view"></div>
+ </div>
+</div>
+
+<script>
+(function(){
+  const BAR_API_URL = SUPABASE_URL + '/functions/v1/bar-control-api';
+  const BRG_BAR = {data:null, loading:false, activeView:'dashboard'};
+  const brgMoney=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+  const brgNum=v=>Number(v||0).toLocaleString('pt-BR',{maximumFractionDigits:3});
+  const brgPrice=v=>{const n=Number(String(v??0).replace(/\./g,'').replace(',','.'));return Number.isFinite(n)?n:0};
+  const brgEsc=v=>escapeHTML(v==null?'':String(v));
+  function brgIsAdmin(){return sessionStorage.getItem('brg_adm_logged')==='true';}
+  async function brgApi(action,payload={}){
+    const token=await getAdminAccessToken();
+    if(!token) throw new Error('Sessão administrativa ausente. Faça login novamente.');
+    const opts={method:action==='bootstrap'?'POST':'POST',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({action,...payload})};
+    const res=await fetchWithTimeout(BAR_API_URL,opts,15000); let data=null; try{data=await res.json()}catch(e){}
+    if(!res.ok) throw new Error(data?.error||('Controle do Bar respondeu HTTP '+res.status));
+    return data;
+  }
+  function brgMenu(){return Array.isArray(appData?.menu)?appData.menu:[]}
+  function brgRecipeMap(){const m={};(BRG_BAR.data?.recipes||[]).forEach(r=>m[String(r.menu_item_id)]=r);return m}
+  function brgCompMap(){const m={};(BRG_BAR.data?.components||[]).forEach(c=>{(m[String(c.recipe_id)]??=[]).push(c)});return m}
+  function brgCost(recipe){if(!recipe)return 0;return (brgCompMap()[String(recipe.id)]||[]).reduce((a,c)=>a+Number(c.quantity_per_sale||0)*Number(c.unit_cost||0),0)}
+  function brgMaxDoses(recipe){if(!recipe)return 0;const cs=brgCompMap()[String(recipe.id)]||[];if(!cs.length)return 0;return Math.max(0,Math.floor(Math.min(...cs.map(c=>Number(c.quantity_per_sale)>0?Number(c.quantity)/Number(c.quantity_per_sale):Infinity))))}
+  function brgProfit(recipe,item){const price=recipe?Number(recipe.sale_price||0):brgPrice(item?.price);return price-brgCost(recipe)}
+  function brgMargin(recipe,item){const price=recipe?Number(recipe.sale_price||0):brgPrice(item?.price);return price>0?(brgProfit(recipe,item)/price*100):0}
+  function brgProductClass(item){return item?.type==='portion'?'🍽️':item?.type==='beer'?'🍺':item?.type==='noalcohol'?'🧃':'🍹'}
+  function brgEstimateFor(item){
+    const n=String(item?.name||'').toLowerCase(), price=brgPrice(item?.price);let c=[];
+    const add=(name,unit,qty,cost)=>c.push({name,unit,quantity:qty,unit_cost:cost});
+    if(item?.type==='beer'){const cost=n.includes('heineken')?6:n.includes('bud')?5:4;add(item.name,'un',1,cost);return {components:c,sale_price:price}}
+    if(item?.type==='portion'){
+      if(n.includes('batata')){add('Batata', 'g',400,.006);add('Cheddar','g',100,.025);add('Bacon','g',80,.035)}
+      else if(n.includes('calabresa')){add('Calabresa','g',300,.024);add('Cebola','g',100,.006);add('Pão de alho','un',2,2.2)}
+      else {add('Alcatra','g',250,.028);add('Batata','g',250,.006);add('Chimichurri','g',10,.04)}
+      return {components:c,sale_price:price}
+    }
+    if(n.includes('caipirinha')) add('Cachaça','ml',50,.04); else if(n.includes('caipiroska')||n.includes('bloody')||n.includes('screwdriver')||n.includes('sex on the beach')||n.includes('cosmopolitan')||n.includes('moscow mule')||n.includes('vodka')) add('Vodka','ml',50,.06); else if(n.includes('gin')) add('Gin','ml',50,.07); else if(n.includes('rum')||n.includes('mojito')||n.includes('daiquiri')||n.includes('cuba libre')||n.includes('caipiríssima')) add('Rum','ml',45,.06); else if(n.includes('tequila')||n.includes('margarita')) add('Tequila','ml',50,.12); else if(n.includes('whisky')||n.includes('whiskey')||n.includes('old fashioned')) add('Whisky','ml',50,.13); else add('Destilado base','ml',50,.06);
+    if(n.includes('morango'))add('Morango','g',80,.02);if(n.includes('maracujá'))add('Maracujá','g',80,.015);if(n.includes('abacaxi'))add('Abacaxi','g',100,.006);if(n.includes('kiwi'))add('Kiwi','g',70,.025);if(n.includes('laranja')||n.includes('sunset'))add('Suco de laranja','ml',120,.005);if(n.includes('frutas vermelhas'))add('Frutas vermelhas','g',80,.025);if(n.includes('tonica')||n.includes('tônica'))add('Água tônica','ml',200,.008);if(n.includes('cola'))add('Refrigerante cola','ml',200,.006);if(n.includes('mojito')||n.includes('gin fizz')||n.includes('tom collins'))add('Soda','ml',100,.004);if(n.includes('bloody'))add('Suco de tomate','ml',120,.008);if(n.includes('cranberry'))add('Cranberry','ml',60,.02);if(n.includes('ginger'))add('Ginger beer','ml',150,.012);if(n.includes('bitter'))add('Bitter','ml',2,.2);if(n.includes('mocktail')){c=[];add('Morango','g',80,.02);add('Limão','g',20,.006);add('Soda','ml',200,.004)}
+    if(!c.some(x=>x.name==='Limão') && !n.includes('sunrise') && !n.includes('screwdriver') && !n.includes('sex on the beach'))add('Limão','g',20,.006);add('Açúcar','g',10,.005);add('Gelo','g',150,.004);return {components:c,sale_price:price}
+  }
+  function brgSeedPayload(){const items=brgMenu();const inventory=new Map();const recipes=[];items.forEach(item=>{const est=brgEstimateFor(item);est.components.forEach(c=>{const key=c.name+'|'+c.unit;if(!inventory.has(key))inventory.set(key,{name:c.name,unit:c.unit,category:'insumo',quantity:0,min_quantity:0,max_quantity:null,unit_cost:c.cost??c.unit_cost??0,notes:'Custo inicial estimado — substituir pelo custo real.'})});recipes.push({menu_item_id:String(item.id),menu_item_name:item.name,sale_price:est.sale_price,yield_qty:1,estimate_source:'Estimativa inicial editável',components:est.components.map(c=>({name:c.name,quantity:c.quantity}))})});return {inventory:[...inventory.values()],recipes}}
+  async function barCtlSeed(){const payload=brgSeedPayload();return brgApi('seed',payload)}
+  async function syncBarSalesToPartnersFinance(){
+    const sales=Array.isArray(BRG_BAR.data?.sales)?BRG_BAR.data.sales:[];
+    if(!sales.length || typeof ensurePartnersFinance!=='function') return;
+    const f=ensurePartnersFinance();
+    if(!Array.isArray(f.integratedBarSales)) f.integratedBarSales=[];
+    const known=new Set(f.integratedBarSales.map(x=>String(x)));
+    const pending=sales.filter(s=>s?.id!=null && !known.has(String(s.id)));
+    if(!pending.length) return;
+    const today=new Date().toISOString().slice(0,10);
+    pending.forEach(s=>{
+      const saleId=String(s.id), total=Number(s.total||0), cost=Number(s.total_cost||0);
+      const date=String(s.sold_at||'').slice(0,10)||today, month=date.slice(0,7)||today.slice(0,7);
+      f.revenues.push({id:'bar_rev_'+saleId,month,date,description:'Venda Controle do Bar #'+saleId,amount:total,source:'bar-control',saleId});
+      if(cost>0) f.expenses.push({id:'bar_cmv_'+saleId,month,date,description:'CMV Controle do Bar #'+saleId,amount:cost,type:'operating',partner:'',source:'bar-control',saleId});
+      f.integratedBarSales.push(saleId);
+    });
+    try { await saveBinData('Controle do Bar: sincronizou '+pending.length+' venda(s) com a Central dos Sócios'); }
+    catch(e){ console.warn('[Bargunçados] Venda registrada no Controle do Bar, mas a sincronização financeira ficará pendente para a próxima atualização.',e); }
+  }
+  async function loadBarControl(seed=false){if(!brgIsAdmin())throw new Error('Acesso administrativo necessário.');if(BRG_BAR.loading)return;BRG_BAR.loading=true;try{if(seed){try{await barCtlSeed()}catch(e){console.warn('[Bargunçados] seed inicial do Controle do Bar:',e)}}BRG_BAR.data=await brgApi('bootstrap');await syncBarSalesToPartnersFinance();renderBarControl()}finally{BRG_BAR.loading=false}}
+  window.openBarControl=async function(){if(!brgIsAdmin()){alert('🔐 Faça login como administrador antes de abrir o Controle do Bar.');return}const o=document.getElementById('bar-control-overlay');if(!o)return;o.style.display='block';o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-control-empty">⏳ Carregando Controle do Bar…</div>';try{await loadBarControl(true)}catch(e){document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-alert">Não foi possível abrir o Controle do Bar.<br><small>'+brgEsc(e.message)+'</small></div>';alert('Não foi possível abrir o Controle do Bar.\n\n'+e.message)}};
+  window.closeBarControl=function(){const o=document.getElementById('bar-control-overlay');if(o)o.style.display='none';document.body.style.overflow=''};
+  window.barCtlReload=async function(){try{await loadBarControl(false)}catch(e){alert('Falha ao atualizar: '+e.message)}};
+  window.barCtlTab=function(view){BRG_BAR.activeView=view;document.querySelectorAll('.bar-control-view').forEach(x=>x.classList.toggle('active',x.id==='bar-view-'+view));document.querySelectorAll('.bar-control-tab').forEach(x=>x.classList.toggle('active',x.dataset.barView===view));renderBarControl()};
+  function renderBarControl(){if(!BRG_BAR.data)return;renderBarDash();renderBarProducts();renderBarSales();renderBarStock();renderBarReports()}
+  function renderBarDash(){const d=BRG_BAR.data,sales=d.sales||[],inv=d.inventory||[],total=sales.reduce((a,x)=>a+Number(x.total||0),0),cost=sales.reduce((a,x)=>a+Number(x.total_cost||0),0),profit=sales.reduce((a,x)=>a+Number(x.total_profit||0),0),stockVal=inv.reduce((a,x)=>a+Number(x.quantity||0)*Number(x.unit_cost||0),0),low=inv.filter(x=>Number(x.quantity||0)<=Number(x.min_quantity||0)).length;document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+brgMoney(total)+'</b><span>Faturamento registrado</span></div><div class="bar-kpi"><b>'+brgMoney(cost)+'</b><span>Custo das vendas</span></div><div class="bar-kpi"><b>'+brgMoney(profit)+'</b><span>Lucro bruto</span></div><div class="bar-kpi"><b>'+brgMoney(stockVal)+'</b><span>Valor do estoque</span></div><div class="bar-kpi"><b>'+sales.length+'</b><span>Vendas registradas</span></div><div class="bar-kpi"><b class="'+(low?'bar-danger':'bar-ok')+'">'+low+'</b><span>Itens no mínimo</span></div></div><div style="margin-top:15px" class="bar-detail-card"><h3>⚡ Operação</h3><p class="bar-muted">Abra <b>Bebidas & Porções</b> para clicar em qualquer produto e ver custo, lucro, margem, receita e capacidade de produção. O cadastro inicial é estimado e editável.</p><div class="bar-actions"><button class="bar-mini-btn primary" onclick="barCtlTab(\'products\')">🍹 Ver produtos</button><button class="bar-mini-btn" onclick="barCtlTab(\'sales\')">💰 Registrar venda</button><button class="bar-mini-btn" onclick="barCtlTab(\'stock\')">📦 Ajustar estoque</button></div></div>'}
+  function renderBarProducts(){const root=document.getElementById('bar-view-products'),items=brgMenu(),rm=brgRecipeMap();root.innerHTML='<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlFilterProducts(\'all\')">Todos</button><button class="bar-mini-btn" onclick="barCtlFilterProducts(\'drink\')">🍹 Bebidas</button><button class="bar-mini-btn" onclick="barCtlFilterProducts(\'portion\')">🍽️ Porções</button></div><div id="bar-product-grid" class="bar-products">'+items.map(i=>{const r=rm[String(i.id)],cost=brgCost(r),profit=brgProfit(r,i),margin=brgMargin(r,i),doses=brgMaxDoses(r);return '<div class="bar-product-card" data-type="'+brgEsc(i.type)+'" onclick="openBarProduct(\''+String(i.id).replace(/'/g,'')+'\')"><img class="bar-product-img" src="'+brgEsc(i.img||getCatalogFallbackImage(i)||'')+'" onerror="this.style.visibility=\'hidden\'"><div class="bar-product-name">'+brgProductClass(i)+' '+brgEsc(i.name)+'</div><div class="bar-product-meta"><span>Venda '+brgMoney(r?Number(r.sale_price):brgPrice(i.price))+'</span><span>Custo '+(r?brgMoney(cost):'pendente')+'</span></div><div class="bar-product-profit">'+(r?'Lucro '+brgMoney(profit)+' • '+margin.toFixed(1)+'%':'⚠ Receita pendente')+'</div><div class="bar-product-meta"><span>Produz: '+(r?(doses===Infinity?'∞':doses):'—')+'</span><span>Detalhes →</span></div></div>'}).join('')+'</div>'}
+  window.barCtlFilterProducts=function(type){document.querySelectorAll('#bar-product-grid .bar-product-card').forEach(x=>x.style.display=(type==='all'||x.dataset.type===type)?'':'none')}
+  window.openBarProduct=function(id){const item=brgMenu().find(x=>String(x.id)===String(id)),r=brgRecipeMap()[String(id)],cs=r?(brgCompMap()[String(r.id)]||[]):[],cost=brgCost(r),price=r?Number(r.sale_price):brgPrice(item?.price),profit=price-cost,margin=price?profit/price*100:0,doses=brgMaxDoses(r),pie=Math.max(0,Math.min(100,price?cost/price*100:0));if(!item)return;const o=document.getElementById('bar-control-overlay');const detail=document.createElement('div');detail.id='bar-product-detail-modal';detail.style.cssText='position:fixed;inset:0;z-index:1000001;background:rgba(0,0,0,.84);display:flex;align-items:center;justify-content:center;padding:15px';detail.innerHTML='<div style="max-width:850px;width:100%;max-height:92vh;overflow:auto;background:#090d11;border:1px solid #29343d;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">'+brgProductClass(item)+' '+brgEsc(item.name)+'</h2><div class="bar-muted">'+brgEsc(r?.estimate_source||'Receita ainda não cadastrada')+'</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-product-detail-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><div class="bar-kpis"><div class="bar-kpi"><b>'+brgMoney(price)+'</b><span>Preço de venda</span></div><div class="bar-kpi"><b>'+brgMoney(cost)+'</b><span>Custo unitário</span></div><div class="bar-kpi"><b class="bar-ok">'+brgMoney(profit)+'</b><span>Lucro bruto</span></div><div class="bar-kpi"><b>'+margin.toFixed(1)+'%</b><span>Margem</span></div><div class="bar-kpi"><b>'+(r?(doses===Infinity?'∞':doses):'—')+'</b><span>Unidades possíveis</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 Custo × Lucro</h3><div class="bar-pie" style="background:conic-gradient(#ff1744 0 '+pie+'%,#00e676 '+pie+'% 100%)"></div><div class="bar-legend"><span><i style="background:#ff1744"></i>Custo '+brgMoney(cost)+'</span><span><i style="background:#00e676"></i>Lucro '+brgMoney(Math.max(0,profit))+'</span></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🧪 Composição da receita</h3>'+(cs.length?cs.map(c=>{const share=cost?Number(c.quantity_per_sale)*Number(c.unit_cost)/cost*100:0;return '<div class="bar-ingredient"><div class="bar-ingredient-top"><span>'+brgEsc(c.inventory_name)+' — '+brgNum(c.quantity_per_sale)+' '+brgEsc(c.unit)+'</span><b>'+brgMoney(Number(c.quantity_per_sale)*Number(c.unit_cost))+'</b></div><div class="bar-bar"><span style="width:'+Math.min(100,share)+'%"></span></div></div>'}).join(''):'<div class="bar-alert">⚠️ Este item ainda não possui receita cadastrada. O sistema não permite registrar uma venda dele até os ingredientes serem definidos.</div>')+'</div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn primary" onclick="openBarRecipeEditor(\''+String(item.id).replace(/'/g,'')+'\')">✏️ Editar receita</button><button class="bar-mini-btn" onclick="document.getElementById(\'bar-product-detail-modal\')?.remove();barCtlTab(\'sales\');document.getElementById(\'bar-sale-product\').value=\''+String(item.id).replace(/'/g,'')+'\';barCtlSaleChanged()">💰 Registrar venda</button></div></div>';o.appendChild(detail)};
+  window.openBarRecipeEditor=function(id){const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const existing=brgRecipeMap()[String(id)],cs=existing?(brgCompMap()[String(existing.id)]||[]):[],modal=document.createElement('div');modal.id='bar-recipe-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000002;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:15px';const inv=BRG_BAR.data.inventory||[];modal.innerHTML='<div style="max-width:900px;width:100%;max-height:92vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between"><h2 style="font-family:var(--font-title);margin:0">✏️ Receita — '+brgEsc(item.name)+'</h2><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-recipe-modal\')?.remove()">✕</button></div><div class="bar-control-form" style="margin-top:12px"><label>Preço<input id="bar-r-price" type="number" step="0.01" value="'+brgPrice(existing?.sale_price||item.price)+'"></label><label>Rendimento<input id="bar-r-yield" type="number" step="0.001" value="'+Number(existing?.yield_qty||1)+'"></label><div class="bar-control-full"><div class="bar-actions"><select id="bar-r-inv">'+inv.map(x=>'<option value="'+x.id+'">'+brgEsc(x.name)+' — '+brgEsc(x.unit)+'</option>').join('')+'</select><input id="bar-r-qty" type="number" step="0.001" placeholder="Quantidade por venda"><button class="bar-mini-btn primary" onclick="barCtlAddRecipeComponent()">+ Ingrediente</button></div><div id="bar-r-components" style="margin-top:10px">'+cs.map(c=>'<div data-inv="'+c.inventory_item_id+'" data-qty="'+c.quantity_per_sale+'" class="bar-detail-card" style="padding:9px;margin-bottom:7px;display:flex;justify-content:space-between"><span>'+brgEsc(c.inventory_name)+' — '+brgNum(c.quantity_per_sale)+' '+brgEsc(c.unit)+'</span><button class="bar-mini-btn danger" onclick="this.parentElement.remove()">Excluir</button></div>').join('')+'</div></div></div><button class="bar-mini-btn primary" style="margin-top:12px" onclick="barCtlSaveRecipe(\''+String(item.id).replace(/'/g,'')+'\')">💾 Salvar receita permanentemente</button></div>';document.body.appendChild(modal)};
+  window.barCtlAddRecipeComponent=function(){const s=document.getElementById('bar-r-inv'),q=document.getElementById('bar-r-qty'),wrap=document.getElementById('bar-r-components');if(!s||!q||!wrap||!(Number(q.value)>0))return alert('Informe uma quantidade válida.');const x=s.options[s.selectedIndex];const d=document.createElement('div');d.className='bar-detail-card';d.dataset.inv=s.value;d.dataset.qty=q.value;d.style.cssText='padding:9px;margin-bottom:7px;display:flex;justify-content:space-between';d.innerHTML='<span>'+brgEsc(x.text)+' — '+brgNum(q.value)+'</span><button class="bar-mini-btn danger" onclick="this.parentElement.remove()">Excluir</button>';wrap.appendChild(d);q.value=''};
+  window.barCtlSaveRecipe=async function(id){const item=brgMenu().find(x=>String(x.id)===String(id));const comps=[...document.querySelectorAll('#bar-r-components>[data-inv]')].map(x=>({inventory_item_id:x.dataset.inv,quantity_per_sale:Number(x.dataset.qty)}));if(!comps.length)return alert('Adicione pelo menos um ingrediente.');try{await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:item.name,sale_price:Number(document.getElementById('bar-r-price').value||0),yield_qty:Number(document.getElementById('bar-r-yield').value||1),estimate_source:'Editado pelo administrador',components:comps}});document.getElementById('bar-recipe-modal')?.remove();document.getElementById('bar-product-detail-modal')?.remove();await loadBarControl(false);alert('✅ Receita salva permanentemente no Supabase.')}catch(e){alert('❌ Não foi possível salvar a receita.\n\n'+e.message)}};
+  function renderBarSales(){const root=document.getElementById('bar-view-sales'),items=brgMenu();root.innerHTML='<div class="bar-detail-card"><h3>💰 Registrar venda</h3><div class="bar-control-form"><label>Produto<select id="bar-sale-product" onchange="barCtlSaleChanged()">'+items.map(i=>'<option value="'+i.id+'">'+brgEsc(i.name)+' — '+brgMoney(brgPrice(i.price))+'</option>').join('')+'</select></label><label>Quantidade<input id="bar-sale-qty" type="number" min="0.001" step="1" value="1" onchange="barCtlSaleChanged()"></label><label>Preço unitário<input id="bar-sale-price" type="number" min="0" step="0.01"></label><label>Canal<select id="bar-sale-channel"><option value="bar">Bar</option><option value="ifood">iFood</option><option value="outro">Outro</option></select></label><label>Pagamento<select id="bar-sale-payment"><option value="cash">Dinheiro</option><option value="pix">PIX</option><option value="debit">Débito</option><option value="credit">Crédito</option><option value="other">Outro</option></select></label></div><div id="bar-sale-preview" style="margin-top:12px"></div><button class="bar-mini-btn primary" onclick="barCtlRegisterSale()" style="margin-top:12px">✅ Confirmar venda e baixar estoque</button></div>' ;barCtlSaleChanged()}
+  window.barCtlSaleChanged=function(){const id=document.getElementById('bar-sale-product')?.value,item=brgMenu().find(x=>String(x.id)===String(id)),r=brgRecipeMap()[String(id)],price=Number(r?.sale_price||brgPrice(item?.price)),q=Number(document.getElementById('bar-sale-qty')?.value||1),cost=brgCost(r)*q;const p=document.getElementById('bar-sale-price');if(p&&!p.matches(':focus'))p.value=price.toFixed(2);const prev=document.getElementById('bar-sale-preview');if(prev)prev.innerHTML=r?'<div class="bar-kpis"><div class="bar-kpi"><b>'+brgMoney(price*q)+'</b><span>Total</span></div><div class="bar-kpi"><b>'+brgMoney(cost)+'</b><span>Custo estimado</span></div><div class="bar-kpi"><b class="bar-ok">'+brgMoney(price*q-cost)+'</b><span>Lucro estimado</span></div><div class="bar-kpi"><b>'+brgMaxDoses(r)+'</b><span>Restante antes da venda</span></div></div>':'<div class="bar-alert">⚠️ Produto sem receita. Cadastre a receita antes de registrar a venda.</div>'}
+  window.barCtlRegisterSale=async function(){const id=document.getElementById('bar-sale-product').value,q=Number(document.getElementById('bar-sale-qty').value),price=Number(document.getElementById('bar-sale-price').value),item=brgMenu().find(x=>String(x.id)===String(id));try{const r=await brgApi('sale',{menu_item_id:String(id),quantity:q,unit_price:price,channel:document.getElementById('bar-sale-channel').value,payment_method:document.getElementById('bar-sale-payment').value});await loadBarControl(false);alert('✅ Venda registrada.\n\nFaturamento: '+brgMoney(r.total)+'\nCusto: '+brgMoney(r.cost)+'\nLucro: '+brgMoney(r.profit));}catch(e){alert('❌ Venda não registrada.\n\n'+e.message)}};
+  function renderBarStock(){const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];root.innerHTML='<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Categoria</th><th>Estoque</th><th>Custo unit.</th><th>Valor</th><th>Mínimo</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>'<tr><td>'+brgEsc(x.name)+'</td><td>'+brgEsc(x.category)+'</td><td>'+brgNum(x.quantity)+' '+brgEsc(x.unit)+'</td><td>'+brgMoney(x.unit_cost)+'</td><td>'+brgMoney(Number(x.quantity)*Number(x.unit_cost))+'</td><td>'+brgNum(x.min_quantity)+'</td><td><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+x.id+'\')">± Ajustar</button></td></tr>').join('')+'</tbody></table></div>'}
+  window.barCtlAdjustStock=async function(id){const x=(BRG_BAR.data.inventory||[]).find(i=>i.id===id);if(!x)return;const raw=prompt('Ajuste de estoque para '+x.name+'\nUse positivo para entrada e negativo para saída.\nAtual: '+x.quantity+' '+x.unit,'0');if(raw===null)return;const delta=Number(String(raw).replace(',','.'));if(!Number.isFinite(delta)||delta===0)return alert('Informe um número diferente de zero.');const reason=prompt('Motivo do ajuste','Reposição/ajuste manual')||'Ajuste manual';try{await brgApi('adjust_stock',{inventory_item_id:id,quantity_delta:delta,reason});await loadBarControl(false);alert('✅ Estoque atualizado permanentemente.')}catch(e){alert('❌ '+e.message)}};
+  window.barCtlNewStock=async function(){const name=prompt('Nome do insumo');if(!name)return;const unit=prompt('Unidade (un, ml, g etc.)','un')||'un';const qty=Number(prompt('Quantidade inicial','0')||0);const cost=Number((prompt('Custo por unidade da medida','0')||'0').replace(',','.'));const min=Number((prompt('Estoque mínimo','0')||'0').replace(',','.'));try{await brgApi('save_inventory',{name,unit,quantity:qty,unit_cost:cost,min_quantity:min,category:'insumo'});await loadBarControl(false);alert('✅ Insumo salvo permanentemente no Supabase.')}catch(e){alert('❌ '+e.message)}};
+  function renderBarReports(){const root=document.getElementById('bar-view-reports'),d=BRG_BAR.data,sales=d.sales||[],items=d.saleItems||[];const agg={};items.forEach(x=>{const k=x.menu_item_id;agg[k]??={name:x.product_name,qty:0,revenue:0,cost:0,profit:0};agg[k].qty+=Number(x.quantity||0);agg[k].revenue+=Number(x.quantity||0)*Number(x.unit_price||0);agg[k].cost+=Number(x.quantity||0)*Number(x.unit_cost||0);agg[k].profit+=Number(x.profit||0)});const rows=Object.values(agg).sort((a,b)=>b.profit-a.profit);root.innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+sales.length+'</b><span>Vendas</span></div><div class="bar-kpi"><b>'+brgMoney(sales.reduce((a,x)=>a+Number(x.total||0),0))+'</b><span>Receita</span></div><div class="bar-kpi"><b>'+brgMoney(sales.reduce((a,x)=>a+Number(x.total_cost||0),0))+'</b><span>Custo</span></div><div class="bar-kpi"><b>'+brgMoney(sales.reduce((a,x)=>a+Number(x.total_profit||0),0))+'</b><span>Lucro</span></div></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Produto</th><th>Qtd.</th><th>Receita</th><th>Custo</th><th>Lucro</th><th>Margem</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+brgEsc(x.name)+'</td><td>'+brgNum(x.qty)+'</td><td>'+brgMoney(x.revenue)+'</td><td>'+brgMoney(x.cost)+'</td><td class="bar-ok">'+brgMoney(x.profit)+'</td><td>'+((x.revenue?x.profit/x.revenue*100:0).toFixed(1))+'%</td></tr>').join('')+'</tbody></table></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn primary" onclick="barCtlExportCSV()">⬇️ Exportar relatório para Excel (CSV)</button></div>'}
+  window.barCtlExportCSV=function(){const d=BRG_BAR.data||{},sales=d.sales||[],items=d.saleItems||[];const rows=[['Data','Canal','Pagamento','Produto','Quantidade','Preço unitário','Custo unitário','Lucro']];const sm={};sales.forEach(s=>sm[s.id]=s);items.forEach(x=>{const s=sm[x.sale_id]||{};rows.push([s.sold_at||'',s.channel||'',s.payment_method||'',x.product_name||'',x.quantity||0,x.unit_price||0,x.unit_cost||0,x.profit||0])});const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='barguncados-controle-bar-'+new Date().toISOString().slice(0,10)+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+})();
+</script>
+
 </body>
 </html>
