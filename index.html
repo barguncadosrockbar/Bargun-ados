@@ -407,9 +407,6 @@
   .menu-move-controls button{width:34px;height:34px;border:1px solid rgba(255,235,59,.65);border-radius:7px;background:rgba(0,0,0,.88);color:#fff;font-weight:900;font-size:1rem;cursor:pointer;touch-action:manipulation;pointer-events:auto}
   .menu-move-controls button:active{transform:scale(.94)}
 
-  .menu-move-controls{position:absolute;top:5px;right:5px;z-index:5;display:flex;gap:3px}
-  .menu-move-controls button{border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.78);color:#fff;border-radius:5px;min-width:30px;height:30px;font-weight:900;cursor:pointer}
-  .menu-move-controls button:active{transform:scale(.94)}
   @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
   
     /* === OTIMIZAÇÃO DE IMAGENS V36 === */
@@ -572,7 +569,7 @@
 #directorModal .director-ig-highlight{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 15px;padding:10px 12px;border-radius:12px;border:1px solid rgba(233,30,99,.65);background:rgba(233,30,99,.08);color:#ff80ab;font-weight:900;font-size:1rem}
 @keyframes brgProfilePop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media (prefers-reduced-motion:reduce){#directorModal .modal-content{animation:none}}
-</style></style>
+</style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };
 window.fallbackTeamImg = function(el){ if(!el) return; el.onerror=null; el.removeAttribute('src'); el.style.visibility='hidden'; el.setAttribute('data-image-missing','true'); };
 </script>
@@ -1852,26 +1849,31 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }catch(e){ console.warn('[Bargunçados] normalização das imagens hospedadas:', e); }
     }
 
+    // Fallback de imagens sem loop: cada URL é tentada no máximo uma vez por elemento.
+    // Isso impede o efeito de piscar quando duas URLs de hospedagem falham alternadamente.
+    const imageFallbackAttempts = new WeakMap();
     function fallbackMenuImg(el, id){
       if(!el) return;
       const item = Array.isArray(appData?.menu) ? appData.menu.find(x => String(x?.id) === String(id)) : null;
-      const current = String(el.currentSrc || el.src || '').trim();
+      let state = imageFallbackAttempts.get(el);
+      if(!state){ state = {attempted:new Set()}; imageFallbackAttempts.set(el,state); }
+
       const candidates = getStoredImageCandidates(item).filter(Boolean);
-      const next = candidates.find(url => String(url) !== current);
-      if(next){
-        el.onerror = function(){ fallbackMenuImg(this,id); };
-        el.src = next;
-        el.style.visibility = 'visible';
-        return;
-      }
       const catalogFallback = normalizeHostedImageUrl(getCatalogFallbackImage(item));
-      if(catalogFallback && catalogFallback !== current){
-        el.onerror = function(){ this.onerror=null; this.style.visibility='hidden'; };
-        el.src = catalogFallback;
+      if(catalogFallback && !candidates.includes(catalogFallback)) candidates.push(catalogFallback);
+
+      for(const url of candidates){
+        const key = String(url);
+        if(!key || state.attempted.has(key)) continue;
+        state.attempted.add(key);
+        el.onerror = function(){ fallbackMenuImg(this,id); };
         el.style.visibility = 'visible';
+        el.src = key;
         return;
       }
+
       el.onerror = null;
+      el.removeAttribute('src');
       el.style.visibility = 'hidden';
     }
 
@@ -2160,19 +2162,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       return json || { ok:true };
     }
 
-    // Compatibilidade com o código legado: o nome antigo continua disponível,
-    // mas agora usa exclusivamente o armazenamento Supabase permanente.
-    async function publicLegacyAction(action, payload={}) {
-      return publicSupabaseAction(action, payload);
-    }
-    // Alias de compatibilidade de código antigo; continua apontando exclusivamente para o Supabase.
-    async function publicJsonbinAction(action, payload={}) {
-      return publicSupabaseAction(action, payload);
-    }
+    // Persistência pública: somente Supabase/PostgreSQL.
 
     let trafficDirty = false;
     let trafficSyncTimer = null;
     let trafficPendingEvents = { views: 0, clicks: 0 };
+    // Impede que a sincronização periódica reconstrua o DOM enquanto uma ação
+    // administrativa crítica (ex.: aprovar/rejeitar) ainda está em andamento.
+    let interactionMutationBusy = false;
 
     function scheduleTrafficSync(){
       trafficDirty = true;
@@ -2339,7 +2336,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(migrated) adminSecurityMigrationNeeded = false;
       }
       recordTrafficAnalytics();
-      renderApp();
+      updateTrafficUI();
       
       if(sessionStillValid && getPersistentAdminFlag('brg_adm_logged') === 'true') {
         const logBox = document.getElementById('admin-login');
@@ -2361,7 +2358,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     async function fetchBinData(force=false) {
       const adminExpected = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      if(!force && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+      if(!force && interactionMutationBusy) return;
+      if(!force && document.activeElement && ['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)) {
         return;
       }
       // Nunca permita que uma aba administrativa caia silenciosamente para o
@@ -2414,10 +2412,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         } catch(e) {}
         if(readGeneration !== binWriteGeneration || binWriteBusy) return;
         if(json.record && typeof json.record === 'object') {
+          const incomingRevision = Number(json.revision ?? json.record?.__sync?.revision ?? 0);
+          // A sincronização de 5 s deve ser barata e invisível: se a revisão
+          // remota não mudou, NÃO reconstruímos nenhum card/imagem. Isso elimina
+          // o efeito de piscar causado por re-renderizações desnecessárias.
+          if(!force && incomingRevision && Number(remoteRevision || 0) === incomingRevision) return;
           const localBeforeRemote = appData;
           try {
             const incoming = cloneForSync(json.record) || {};
-            remoteRevision = Number(incoming?.__sync?.revision || 0);
+            remoteRevision = incomingRevision || Number(incoming?.__sync?.revision || 0);
             publicRevision = remoteRevision;
             delete incoming.__sync;
             remoteSnapshot = cloneForSync(incoming) || {};
@@ -4378,7 +4381,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
             <div class="admin-card-row">
               <button class="action-btn" onclick="approveSong(${JSON.stringify(String(s.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectSong(${JSON.stringify(String(s.id))})">❌ Rejeitar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${JSON.stringify(String(s.id))})">🗑️ Excluir</button>
             </div>
           </div>
         `).join('');
@@ -4393,7 +4396,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
             <div class="admin-card-row">
               <button class="action-btn" onclick="approveMsg(${JSON.stringify(String(m.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectMsg(${JSON.stringify(String(m.id))})">❌ Rejeitar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${JSON.stringify(String(m.id))})">🗑️ Excluir</button>
             </div>
           </div>
         `).join('');
@@ -4447,25 +4450,37 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     async function approveSong(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
       if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
     }
 
     async function rejectSong(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Pedido rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
+      const item=(appData.pendingSongs||[]).find(s=>String(s.id)===String(id));
+      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+      if(!confirm('Excluir este pedido de música da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||''))) return;
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Pedido excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao excluir pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi excluído. Nada foi removido.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
     }
 
     async function approveMsg(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
       if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
     }
 
     async function rejectMsg(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Recado rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
+      const item=(appData.pendingMessages||[]).find(m=>String(m.id)===String(id));
+      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+      if(!confirm('Excluir este recado da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||''))) return;
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Recado excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao excluir recado:',e);await refreshModerationQueue();alert('❌ O recado não foi excluído. Nada foi removido.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
     }
 
     let tempNewTabImg = '';
@@ -4603,10 +4618,21 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             const items=normalizedMenuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
             groups.push({title,count:items.length,items});
           });
-          const simpleGroups=[
-            ['beer','🍺 CERVEJAS'],['noalcohol','🥤 SEM ÁLCOOL / SUCOS / REFRIS'],['portion','🍟 PORÇÕES & LARICA']
+          const categoryDefs=[
+            ['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],
+            ['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],
+            ['legacy','🔥 Destilados & Clássicos','drink'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refrescos','noalcohol'],['portion','🍟 Porções & Larica','portion']
           ];
-          simpleGroups.forEach(([type,title])=>{const items=normalizedMenuItems.filter(i=>i.type===type);groups.push({title,count:items.length,items});});
+          ensureMenuCategoryLabels();
+          const labels=appData.menuCategoryLabels||{};
+          categoryDefs.forEach(([key,fallback,type])=>{
+            const items=normalizedMenuItems.filter(i=>{
+              if(type==='drink') return i.type==='drink' && (key==='legacy' ? !['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||'')) : String(i.drinkLine||'')===key);
+              return i.type===type;
+            });
+            const title=type==='drink' ? (labels.bebidas?.[key]||fallback) : type==='portion' ? (labels.porcoes?.title||fallback) : (labels.bebidas?.[key]||fallback);
+            groups.push({key,title,count:items.length,items});
+          });
 
           const renderAdminItem=i=>`
             <div class="admin-card">
@@ -4652,7 +4678,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           menuList.innerHTML = groups.length ? groups.map(g=>`<section class="admin-menu-category" data-admin-menu-category="${escapeHTML(String(g.title))}" style="margin:0 0 22px;padding:12px;border:1px solid rgba(0,229,255,.20);border-radius:14px;background:linear-gradient(180deg,rgba(0,229,255,.045),rgba(0,0,0,.18));box-shadow:0 8px 22px rgba(0,0,0,.16);">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:7px 9px;border-left:4px solid var(--c-yellow);border-bottom:1px solid rgba(255,235,59,.24);background:rgba(255,235,59,.055);border-radius:7px;">
               <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.12rem;margin:0;letter-spacing:.02em;">${escapeHTML(g.title)}</h5>
-              <span style="color:#b9c4ca;font-size:.75rem;font-family:inherit;font-weight:800;">${g.count} ${g.count===1?'item':'itens'}</span>
+              <span style="color:#b9c4ca;font-size:.75rem;font-family:inherit;font-weight:800;">${g.count} ${g.count===1?'item':'itens'}${(g.key && ((g.key==='portion'?labels.porcoes?.featuredIds:labels.bebidas?.featuredIds)||[]).map(Number).some(id=>g.items.some(i=>Number(i.id)===id)))?' • ⭐ possui destaque':''}</span>
             </div>
             <div style="display:flex;flex-direction:column;gap:8px;">${g.items.length ? g.items.map(renderAdminItem).join('') : '<div style=\"padding:10px;color:#7f8b94;font-size:.82rem;border:1px dashed rgba(255,255,255,.12);border-radius:9px;\">Nenhum item nesta categoria ainda. Use “+ Adicionar Item” para cadastrar.</div>'}</div>
           </section>`).join('') : '<p style="color:#777;font-size:.85rem;">Nenhum item cadastrado no cardápio.</p>';
@@ -5425,12 +5451,12 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     function startRemoteSync() {
       if(syncIntervalId) clearInterval(syncIntervalId);
       syncIntervalId = setInterval(() => {
-        if(!binWriteBusy) fetchBinData();
+        if(!binWriteBusy && !interactionMutationBusy) fetchBinData();
       }, 5000);
     }
 
     window.addEventListener('focus', () => {
-      if(!binWriteBusy) fetchBinData();
+      if(!binWriteBusy && !interactionMutationBusy) fetchBinData();
     });
 
     document.addEventListener('visibilitychange', () => {
