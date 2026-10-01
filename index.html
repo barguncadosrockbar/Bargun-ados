@@ -233,7 +233,7 @@
     .agenda-feature-badge{position:absolute;left:0;right:0;bottom:0;z-index:3;background:rgba(20,8,18,.94);color:#fff;border-top:1px solid rgba(255,255,255,.35);padding:6px 10px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;text-align:center;box-shadow:0 -3px 10px rgba(0,0,0,.35);} .featured-agenda-badge{display:block;width:100%;box-sizing:border-box;background:linear-gradient(135deg,var(--c-red),var(--c-purple));color:#fff;border-top:1px solid rgba(255,255,255,.45);padding:8px 10px;text-align:center;font-family:var(--font-title);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 -2px 10px rgba(0,0,0,.25);}
     .home-social-promo{margin-top:15px;padding:14px 16px;border:1px solid rgba(255,235,59,.42);background:linear-gradient(135deg,rgba(255,235,59,.08),rgba(233,30,99,.08));border-radius:12px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18)}.home-social-promo h3{margin:0 0 6px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.18rem}.home-social-promo p{margin:0;color:#fff;font-weight:800;line-height:1.4}
     .home-agenda-wrap{margin-top:15px;display:flex;justify-content:center}.home-agenda-card{width:min(100%,330px);aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:12px;border:2px solid var(--c-red);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(0,0,0,.4)}.home-agenda-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.05) 65%)}.home-agenda-content{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px;text-align:center}.home-agenda-content .tag{display:inline-block;background:var(--c-red);color:#fff;padding:4px 8px;border-radius:5px;font-family:var(--font-title);font-size:.72rem;margin-bottom:5px}.home-agenda-content .title{color:#fff;font-family:var(--font-title);font-size:1.25rem;text-transform:uppercase;line-height:1.1}
-    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:none}
+    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:auto}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
     .dir-card:hover { transform: translateY(-4px); }
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
@@ -392,11 +392,12 @@
   .menu-organizer-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,214,0,.35);border-radius:10px;background:rgba(255,214,0,.06)}
   .menu-organizer-bar.active{display:flex}
   .menu-organizer-hint{color:#ccc;font-size:.78rem;flex:1 1 220px}
-  .menu-organizer-save{display:none}
-  .menu-organizer-save.pending{display:inline-flex}
+  .menu-organizer-save{display:inline-flex;opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
+  .menu-organizer-save.pending{display:inline-flex;opacity:1;filter:none;pointer-events:auto;cursor:pointer}
+  .menu-organizer-save[disabled]{opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
   .menu-organizer-discard{display:none}
   .menu-organizer-discard.pending{display:inline-flex}
-  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px}
+  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px;user-select:none;-webkit-user-select:none}
   .menu-organizer-active .menu-grid .product-card:active{cursor:grabbing}
   .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:.42;transform:scale(.98)}
   .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:2px solid var(--c-yellow);outline-offset:2px}
@@ -567,7 +568,9 @@
 @keyframes brgProfilePop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media (prefers-reduced-motion:reduce){#directorModal .modal-content{animation:none}}
 </style></style>
-<script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
+<script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };
+window.fallbackTeamImg = function(el){ if(!el) return; el.onerror=null; el.removeAttribute('src'); el.style.visibility='hidden'; el.setAttribute('data-image-missing','true'); };
+</script>
 <script>
 /* SECURITY HARDENING V45 + PERSISTENCE HARDENING V46 — non-visual, client-side defense helpers. */
 function safeImageUrl(value){
@@ -584,8 +587,21 @@ function safeNumericId(value){
   const n=Number(value);
   return Number.isFinite(n) ? String(Math.trunc(n)) : '0';
 }
+function getInstagramProfileUrl(value){
+  const ig=String(value ?? '').replace(/^@/,'').trim();
+  return ig ? 'https://www.instagram.com/'+encodeURIComponent(ig)+'/' : '';
+}
 function escapeJSString(value){
-  return JSON.stringify(String(value ?? '')).replace(/</g,'\u003C').replace(/>/g,'\u003E').replace(/\u2028/g,'\u2028').replace(/\u2029/g,'\u2029');
+  const raw=String(value ?? '');
+  return "'" + raw
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'")
+    .replace(/\r/g,'\\r')
+    .replace(/\n/g,'\\n')
+    .replace(/\u2028/g,'\\u2028')
+    .replace(/\u2029/g,'\\u2029')
+    .replace(/</g,'\\x3C')
+    .replace(/>/g,'\\x3E') + "'";
 }
 function isAuthenticatedAdmin(){ return getPersistentAdminFlag('brg_adm_logged')==='true'; }
 function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminFlag('brg_adm_is_master')==='true'; }
@@ -1866,10 +1882,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
     const defaultTeam = [
-      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
-      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
-      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
-      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
+      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: 'https://i.ibb.co/zHjR4ZjG/185479.jpg' },
+      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: 'https://i.ibb.co/nqtjPTzk/185480.jpg' },
+      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: 'https://i.ibb.co/svfXs51T/185481.webp' },
+      { id: 'pro1', type: 'pro', name: 'RAMON', role: 'Bandas & Mosh', ig: '@', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://i.ibb.co/KcN0BsPN/190574.jpg' }
     ];
     const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
@@ -1901,7 +1917,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { promoTitle: "🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA", promoIds: [2,1], featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       },
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
@@ -2769,7 +2785,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function ensureMenuCategoryLabels() {
       const defaults = {
-        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       };
       if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
@@ -2779,11 +2795,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           if(!appData.menuCategoryLabels[page][key]) appData.menuCategoryLabels[page][key] = defaults[page][key];
         });
       });
-      // Compatibilidade: instalações antigas usavam featuredIds para os destaques.
-      // A nova faixa de PROMOCIONAIS passa a usar promoIds sem apagar os dados antigos.
+      // Compatibilidade com a versão anterior: o selo/destaque NUNCA é automático.
+      // O ADM escolhe manualmente no editor de categorias e somente 1 item pode ficar destacado.
       const b=appData.menuCategoryLabels.bebidas;
-      if(!Array.isArray(b.promoIds)) b.promoIds=Array.isArray(b.featuredIds)?b.featuredIds.slice():[2,1];
-      if(!b.promoTitle) b.promoTitle='🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA';
+      if(Object.prototype.hasOwnProperty.call(b,'promoIds')) delete b.promoIds;
+      if(Object.prototype.hasOwnProperty.call(b,'promoTitle')) delete b.promoTitle;
+      if(!Array.isArray(b.featuredIds)) b.featuredIds=[];
+      b.featuredIds=b.featuredIds.slice(0,1);
     }
 
     function openCategoryQuickEdit(page) {
@@ -2800,22 +2818,23 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       pageEl.value = page;
       title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
       const names = page === 'bebidas' ? [
-        ['promoTitle','Título da faixa de Promocionais'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+        ['featured','Título do Destaque'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
       ] : [['title','Título da página de porções'],['featured','Título dos Destaques']];
       fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
       if(page === 'bebidas'){
         const menu = Array.isArray(appData.menu) ? appData.menu.filter(i=>i.type==='drink') : [];
-        const ids = Array.isArray(labels.promoIds) ? labels.promoIds : (Array.isArray(labels.featuredIds) ? labels.featuredIds : []);
-        const promoOptions = (selected) => `<option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}`;
+        const selected = Array.isArray(labels.featuredIds) ? labels.featuredIds[0] : '';
         fields.innerHTML += `<div style="margin-top:8px;padding:10px;border:1px dashed rgba(255,235,59,.35);border-radius:10px;background:rgba(255,235,59,.04);">
-          <div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">🔥 Escolha as bebidas da faixa PROMOCIONAIS</div>
-          <div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Você pode escolher até 6 bebidas. Elas aparecerão na primeira linha do cardápio com o selo <b style="color:#ffd740;">PROMOÇÃO LIMITADA</b>.</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            ${[0,1,2,3,4,5].map(n=>`<label style="font-size:.78rem;color:#aaa;">Promocional ${n+1}<select class="interaction-input promo-id-select" data-promo-index="${n}" style="padding:8px;margin-top:4px;">${promoOptions(ids[n])}</select></label>`).join('')}
-          </div>
+          <div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">⭐ Item em DESTAQUE</div>
+          <div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Escolha apenas 1 bebida para aparecer na área de destaque. Nenhuma outra bebida recebe selo ou promoção automaticamente.</div>
+          <label style="font-size:.78rem;color:#aaa;">Bebida em destaque<select class="interaction-input featured-drink-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
         </div>`;
       }
-      if(page === 'porcoes'){ const menu=Array.isArray(appData.menu)?appData.menu.filter(i=>i.type==='portion'):[]; const ids=Array.isArray(labels.featuredIds)?labels.featuredIds:[]; fields.innerHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px;"><label style="font-size:.78rem;color:#aaa;">Destaque 1<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(ids[0])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label><label style="font-size:.78rem;color:#aaa;">Destaque 2<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(ids[1])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label></div>`; }
+      if(page === 'porcoes'){
+        const menu=Array.isArray(appData.menu)?appData.menu.filter(i=>i.type==='portion'):[];
+        const selected=Array.isArray(labels.featuredIds)?labels.featuredIds[0]:'';
+        fields.innerHTML += `<div style="margin-top:8px;padding:10px;border:1px dashed rgba(255,235,59,.35);border-radius:10px;background:rgba(255,235,59,.04);"><div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">⭐ Item em DESTAQUE</div><div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Escolha apenas 1 porção para aparecer na área de destaque. Nenhuma outra porção recebe selo ou promoção automaticamente.</div><label style="font-size:.78rem;color:#aaa;">Porção em destaque<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label></div>`;
+      }
       document.getElementById('categoryQuickEditModal').style.display = 'flex';
     }
 
@@ -2833,9 +2852,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(value) appData.menuCategoryLabels[page][key] = value;
       });
       if(page === 'bebidas'){
-        appData.menuCategoryLabels.bebidas.promoIds = Array.from(document.querySelectorAll('#category-edit-fields .promo-id-select')).map(s=>Number(s.value)).filter(Boolean).filter((id,index,arr)=>arr.indexOf(id)===index);
+        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-drink-select')).map(s=>Number(s.value)).filter(Boolean).slice(0,1);
       }
-      if(page === 'porcoes') appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select')).map(s=>Number(s.value)).filter(Boolean);
+      if(page === 'porcoes') appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select')).map(s=>Number(s.value)).filter(Boolean).slice(0,1);
       await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
       closeModal('categoryQuickEditModal');
       alert('✅ Categorias atualizadas e salvas!');
@@ -2889,20 +2908,40 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       updateMenuOrganizerUI(page);
     }
 
+    let menuOrganizerTouchState = null;
+
     function updateMenuOrganizerUI(page){
       const bar=document.getElementById('menu-organizer-'+page);
       const save=document.getElementById('menu-organizer-save-'+page);
       const discard=document.getElementById('menu-organizer-discard-'+page);
-      if(bar) bar.classList.toggle('active', menuOrganizerActive && menuOrganizerPage===page);
-      if(save) save.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
-      if(discard) discard.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
+      const active=menuOrganizerActive && menuOrganizerPage===page;
+      if(bar) bar.classList.toggle('active', active);
+      if(save){
+        save.classList.toggle('pending', active && menuOrganizerDirty);
+        save.disabled=!(active && menuOrganizerDirty);
+        save.setAttribute('aria-disabled', String(!(active && menuOrganizerDirty)));
+        save.title=menuOrganizerDirty ? 'Salvar as posições no Supabase' : 'Nenhuma mudança de posição pendente';
+      }
+      if(discard) discard.classList.toggle('pending', active && menuOrganizerDirty);
       document.body.classList.toggle('menu-organizer-active', menuOrganizerActive);
+    }
+
+    function clearMenuOrganizerTouchState(){
+      const st=menuOrganizerTouchState;
+      if(st?.timer) clearTimeout(st.timer);
+      if(st?.card){
+        st.card.classList.remove('menu-dragging');
+        st.card.style.touchAction='';
+      }
+      if(st?.root) st.root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
+      menuOrganizerTouchState=null;
     }
 
     function setupMenuOrganizerDragAndDrop(page){
       if(!menuOrganizerActive || menuOrganizerPage!==page) return;
       const root=document.getElementById(page === 'bebidas' ? 'dynamic-menu-bebidas' : 'dynamic-menu-porcoes');
       if(!root) return;
+
       root.querySelectorAll('.menu-grid[data-order-key]').forEach(grid=>{
         grid.addEventListener('dragover', e=>{
           e.preventDefault();
@@ -2919,21 +2958,67 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           const target=e.target.closest('.product-card[data-menu-id]');
           if(!target || target===dragging) return;
           const rect=target.getBoundingClientRect();
-          if(e.clientX < rect.left + rect.width/2) grid.insertBefore(dragging,target); else grid.insertBefore(dragging,target.nextSibling);
+          const before=(e.clientX < rect.left + rect.width/2) || (e.clientY < rect.top + rect.height/2);
+          if(before) grid.insertBefore(dragging,target); else grid.insertBefore(dragging,target.nextSibling);
           grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
           captureMenuOrderFromDOM(page);
         });
       });
+
       root.querySelectorAll('.menu-grid .product-card[data-menu-id]').forEach(card=>{
         card.setAttribute('draggable','true');
         card.addEventListener('dragstart', e=>{
           card.classList.add('menu-dragging');
-          if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
+          if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', card.getAttribute('data-menu-id') || ''); }
         });
         card.addEventListener('dragend', ()=>{
           card.classList.remove('menu-dragging');
           root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
         });
+
+        // Android/iOS: HTML5 drag is inconsistent. Long-press + move gives a real
+        // touch reorder without depending on browser-specific drag support.
+        card.addEventListener('touchstart', e=>{
+          if(!menuOrganizerActive || menuOrganizerPage!==page || e.touches.length!==1) return;
+          if(e.target.closest('.menu-move-controls,button,a,input,select,textarea')) return;
+          clearMenuOrganizerTouchState();
+          const touch=e.touches[0];
+          const state={root,card,grid:card.closest('.menu-grid'),startX:touch.clientX,startY:touch.clientY,lastX:touch.clientX,lastY:touch.clientY,active:false,timer:null};
+          state.timer=setTimeout(()=>{
+            if(menuOrganizerTouchState!==state) return;
+            state.active=true;
+            card.classList.add('menu-dragging');
+            card.style.touchAction='none';
+          },220);
+          menuOrganizerTouchState=state;
+        },{passive:true});
+
+        card.addEventListener('touchmove', e=>{
+          const state=menuOrganizerTouchState;
+          if(!state || state.card!==card || e.touches.length!==1) return;
+          const touch=e.touches[0];
+          state.lastX=touch.clientX; state.lastY=touch.clientY;
+          if(!state.active){
+            const moved=Math.hypot(touch.clientX-state.startX,touch.clientY-state.startY);
+            if(moved>12){ clearTimeout(state.timer); state.timer=null; }
+            return;
+          }
+          e.preventDefault();
+          const targetEl=document.elementFromPoint(touch.clientX,touch.clientY);
+          const target=targetEl?.closest?.('.product-card[data-menu-id]');
+          const grid=state.grid;
+          if(!target || !grid || target===card || target.parentElement!==grid) return;
+          grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
+          target.classList.add('menu-drag-over');
+          const rect=target.getBoundingClientRect();
+          const before=(touch.clientX < rect.left + rect.width/2) || (touch.clientY < rect.top + rect.height/2);
+          if(before){ if(card!==target.previousElementSibling) grid.insertBefore(card,target); }
+          else if(card!==target.nextElementSibling){ grid.insertBefore(card,target.nextSibling); }
+          captureMenuOrderFromDOM(page);
+        },{passive:false});
+
+        card.addEventListener('touchend', ()=>{ clearMenuOrganizerTouchState(); });
+        card.addEventListener('touchcancel', ()=>{ clearMenuOrganizerTouchState(); });
       });
     }
 
@@ -2960,11 +3045,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const next = typeof force === 'boolean' ? force : !(menuOrganizerActive && menuOrganizerPage===page);
       if(!next){
         if(menuOrganizerDirty && !confirm('Existem mudanças de posição não salvas. Fechar sem salvar?')) return;
+        clearMenuOrganizerTouchState();
         menuOrganizerActive=false; menuOrganizerPage=''; menuOrganizerDirty=false; menuOrganizerSnapshot=null;
         renderApp();
         return;
       }
       ensureMenuOrderData();
+      clearMenuOrganizerTouchState();
       menuOrganizerPage=page; menuOrganizerActive=true; menuOrganizerDirty=false;
       menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
       renderApp();
@@ -2976,6 +3063,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       ensureMenuOrderData();
       appData.menuOrder=menuOrganizerSnapshot ? JSON.parse(JSON.stringify(menuOrganizerSnapshot)) : {};
       menuOrganizerDirty=false;
+      clearMenuOrganizerTouchState();
       renderApp();
       updateMenuOrganizerUI(page);
     }
@@ -2984,12 +3072,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMenuOrganizerAllowed()) return alert('Acesso Negado.');
       captureMenuOrderFromDOM(page);
       if(!menuOrganizerDirty) return alert('Nenhuma mudança de posição para salvar.');
-      const saved=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
-      if(saved===false) return alert('⚠️ Não foi possível salvar as posições. Tente novamente.');
-      menuOrganizerDirty=false;
-      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
-      updateMenuOrganizerUI(page);
-      alert('✅ Posições salvas com sucesso!');
+      const saveBtn=document.getElementById('menu-organizer-save-'+page);
+      if(saveBtn) saveBtn.disabled=true;
+      try {
+        const saved=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
+        if(saved===false) return alert('⚠️ Não foi possível salvar as posições. Tente novamente.');
+        menuOrganizerDirty=false;
+        menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
+        updateMenuOrganizerUI(page);
+        alert('✅ Posições salvas com sucesso!');
+      } catch(e){
+        updateMenuOrganizerUI(page);
+        alert('⚠️ Não foi possível salvar as posições.\n\n'+(e?.message||e));
+      }
     }
 
     function optimizeMenuImageLoading(){
@@ -3047,13 +3142,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         const dirContainer=document.getElementById('dynamic-dir-list');
         const proContainer=document.getElementById('dynamic-pro-list');
         if(dirContainer){
-          dirContainer.innerHTML=team.filter(t=>t&&t.type==='dir').map(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';return `<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;}).join('');
+          dirContainer.innerHTML=team.filter(t=>t&&t.type==='dir').map(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';return `<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:${c};color:${c};text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;}).join('');
         }
         if(proContainer){
           const promoters=team.filter(t=>t&&t.type==='pro');
           if(promoters.length){
             const root=promoters[0];
-            proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;
+            proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackTeamImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(root.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(root.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></a><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);text-decoration:none;">📸 ${escapeHTML(t.ig)}</a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;
           } else { proContainer.innerHTML='<p style="color:#aaa;text-align:center;">Nenhum promoter cadastrado.</p>'; }
         }
         const arcadeContainer=document.getElementById('dynamic-arcade-list');
@@ -3178,13 +3273,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         return exact || cMenu.find(i => i.type === 'drink' && String(i.price || '') === fallbackPrice);
       };
 
-      const configuredPromoIds = Array.isArray(categoryLabels.bebidas.promoIds) ? categoryLabels.bebidas.promoIds : (Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds : [2,1]);
-      let promotionalItems = configuredPromoIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).filter(i => i && i.type === 'drink');
-      if(!promotionalItems.length){ promotionalItems = [findDrink('Caipirinha', '10,00'), findDrink('Gin-Tônica', '8,00')].filter(Boolean); }
+      const configuredFeaturedIds = Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds.slice(0,1) : [];
+      const featuredDrink = configuredFeaturedIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).find(i => i && i.type === 'drink');
 
       let drinksStr = '';
-      if(promotionalItems.length){
-        drinksStr += `<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.bebidas.promoTitle || '🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${promotionalItems.map(i => createCard(i, true)).join('')}</div></div></details>`;
+      if(featuredDrink){
+        drinksStr += `<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUE')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${createCard(featuredDrink, true)}</div></div></details>`;
       }
 
       const drinksWithLine = new Set();
@@ -3205,7 +3299,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.noalcohol)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="noalcohol">${sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'noalcohol'), 'noalcohol').map(createCard).join('')}</div></div></details>`;
       drinksContainer.innerHTML = drinksStr;
 
-      const portionFeaturedIds=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds:[]; const portionFeaturedItems=portionFeaturedIds.map(id=>cMenu.find(i=>Number(i.id)===Number(id))).filter(Boolean); let portionsStr=''; if(portionFeaturedItems.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured)}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${portionFeaturedItems.map(createCard).join('')}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
+      const portionFeaturedId=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds[0]:null; const portionFeaturedItem=portionFeaturedId!=null?cMenu.find(i=>Number(i.id)===Number(portionFeaturedId)):null; let portionsStr=''; if(portionFeaturedItem) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUE')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${createCard(portionFeaturedItem, true)}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
       optimizeMenuImageLoading();
       setupMenuOrganizerDragAndDrop('bebidas');
@@ -3237,8 +3331,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
-      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:${c};color:${c};text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackTeamImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(root.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(root.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></a><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);text-decoration:none;">📸 ${escapeHTML(t.ig)}</a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
@@ -3500,15 +3594,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       });
     }
 
-    function createCard(item, forcePromo = false) {
+    function createCard(item, showFeaturedBadge = false) {
       const hostedImg = normalizeStoredImage(item);
-      const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.promoIds)?appData.menuCategoryLabels.bebidas.promoIds.map(Number):(Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]); const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=forcePromo || (item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
+      const f=Boolean(showFeaturedBadge);
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${safeNumericId(item.id)})` : `openMenuModalObj(${safeNumericId(item.id)})`;
-      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
+      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><span title="Arraste este item" style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1px solid rgba(0,229,255,.32);background:rgba(0,0,0,.7);color:var(--c-cyan);border-radius:5px;font-weight:900;">↕</span><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
       const imageMarkup = hostedImg
         ? `<img src="${safeImageUrl(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<img src="" class="product-img" loading="lazy" decoding="async" fetchpriority="low" data-no-image="true" onerror="fallbackMenuImg(this,${Number(item.id)||0})" style="visibility:hidden">`;
-      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof brgRecipeMap==='function'?brgRecipeMap()[String(item.id)]:null;const cost=recipe?brgCost(recipe):0;const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);const profit=price-cost;const margin=price>0?profit/price*100:0;const doses=recipe?brgMaxDoses(recipe):Infinity;return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`; }
+      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">⭐ DESTAQUE</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof brgRecipeMap==='function'?brgRecipeMap()[String(item.id)]:null;const cost=recipe?brgCost(recipe):0;const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);const profit=price-cost;const margin=price>0?profit/price*100:0;const doses=recipe?brgMaxDoses(recipe):Infinity;return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`; }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => i.id === id);
@@ -3917,7 +4011,49 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    function openDirectorModal(id){const t=appData.team.find(x=>String(x.id)===String(id));if(!t)return;const modal=document.getElementById('directorModal'),img=document.getElementById('directorModalImg');img.src=safeImageUrl(t.img||'');img.alt=t.name||'Membro';document.getElementById('directorModalName').innerText=t.name||'';document.getElementById('directorModalRole').innerText=t.role||'';document.getElementById('directorModalDesc').innerText=t.desc||'Conheça o membro da equipe do Bargunçados Rock Bar.';const ig=String(t.ig||'').replace(/^@/,'').trim();const a=document.getElementById('directorModalIg'),igt=document.getElementById('directorModalIgText');if(igt)igt.innerText=ig?'@'+ig:'Instagram não informado';a.href=ig?`https://instagram.com/${encodeURIComponent(ig)}`:'#';a.innerText=ig?`📸 ABRIR INSTAGRAM — @${ig}`:'📸 INSTAGRAM NÃO INFORMADO';a.style.pointerEvents=ig?'auto':'none';modal.style.display='flex';requestAnimationFrame(()=>modal.classList.add('is-open'));}
+    function openDirectorModal(id){
+      const t=Array.isArray(appData.team)?appData.team.find(x=>String(x.id)===String(id)):null;
+      if(!t) return;
+      const modal=document.getElementById('directorModal');
+      const img=document.getElementById('directorModalImg');
+      const name=document.getElementById('directorModalName');
+      const role=document.getElementById('directorModalRole');
+      const desc=document.getElementById('directorModalDesc');
+      const a=document.getElementById('directorModalIg');
+      const igt=document.getElementById('directorModalIgText');
+      if(!modal||!img||!name||!role||!desc||!a) return;
+      const hosted=safeImageUrl(t.img||'');
+      img.onerror=window.fallbackTeamImg;
+      img.style.visibility=hosted?'visible':'hidden';
+      if(hosted) img.src=hosted; else img.removeAttribute('src');
+      img.alt=t.name||'Membro da equipe';
+      name.textContent=t.name||'';
+      role.textContent=t.role||'';
+      desc.textContent=t.desc||'Conheça o membro da equipe do Bargunçados Rock Bar.';
+      const ig=String(t.ig||'').replace(/^@/,'').trim();
+      if(igt) igt.textContent=ig?'@'+ig:'Instagram não informado';
+      if(ig){
+        const profileUrl='https://www.instagram.com/'+encodeURIComponent(ig)+'/';
+        a.href=profileUrl;
+        a.target='_blank';
+        a.rel='noopener noreferrer';
+        a.textContent='📸 ABRIR INSTAGRAM — @'+ig;
+        a.style.pointerEvents='auto';
+        a.setAttribute('aria-disabled','false');
+      }else{
+        a.href='#';
+        a.textContent='📸 INSTAGRAM NÃO INFORMADO';
+        a.style.pointerEvents='none';
+        a.setAttribute('aria-disabled','true');
+      }
+      modal.style.display='flex';
+      modal.classList.remove('is-open');
+      requestAnimationFrame(()=>{
+        modal.classList.add('is-open');
+        const panel=modal.querySelector('.modal-content');
+        if(panel){ panel.style.animation='none'; void panel.offsetWidth; panel.style.animation=''; }
+      });
+    }
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
       const isAdmLogged = (getPersistentAdminFlag('brg_adm_logged') === 'true');
@@ -4447,7 +4583,22 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(!canEdit && !canDel) {
           menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
         } else {
-          menuList.innerHTML = appData.menu.map(i => `
+          const menuItems=Array.isArray(appData.menu)?appData.menu:[];
+          const drinkLines=[
+            ['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],['rum','🍹 Linha Rum'],
+            ['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky'],['legacy','🔥 Destilados & Clássicos']
+          ];
+          const groups=[];
+          drinkLines.forEach(([key,title])=>{
+            const items=menuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
+            if(items.length) groups.push({title,count:items.length,items});
+          });
+          const simpleGroups=[
+            ['beer','🍺 CERVEJAS'],['noalcohol','🥤 SEM ÁLCOOL / SUCOS / REFRIS'],['portion','🍟 PORÇÕES & LARICA']
+          ];
+          simpleGroups.forEach(([type,title])=>{const items=menuItems.filter(i=>i.type===type);if(items.length)groups.push({title,count:items.length,items});});
+
+          const renderAdminItem=i=>`
             <div class="admin-card">
               <div class="admin-card-row">
                   <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
@@ -4460,11 +4611,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                   <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
               </div>
               <div class="admin-card-row" style="margin-top:5px;">
-                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short)}">
+                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short||'')}">
               </div>
-              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full)}</textarea>
+              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full||'')}</textarea>
               <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;">
+                  <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;" onerror="fallbackMenuImg(this,${Number(i.id)||0})">
                   <div class="file-upload-wrapper" style="padding: 5px 10px;">
                     <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
                     <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
@@ -4473,7 +4624,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                   ${canEdit ? `<button class="action-btn" style="background:var(--c-cyan);color:#000;" onclick="openSiteDrinkRecipeEditor(${i.id})">🧪 Ingredientes + Custo</button>` : ''}
                   ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
               </div>
-            </div>`).join('');
+            </div>`;
+
+          menuList.innerHTML = groups.length ? groups.map(g=>`<section class="admin-menu-category" style="margin-bottom:18px;">
+            <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.08rem;margin:0 0 8px;border-bottom:1px dashed rgba(255,235,59,.3);padding-bottom:6px;">${escapeHTML(g.title)} <span style="color:#777;font-size:.72rem;font-family:inherit;">(${g.count})</span></h5>
+            <div style="display:flex;flex-direction:column;gap:8px;">${g.items.map(renderAdminItem).join('')}</div>
+          </section>`).join('') : '<p style="color:#777;font-size:.85rem;">Nenhum item cadastrado no cardápio.</p>';
         }
       }
       
@@ -5112,7 +5268,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
     function closeModal(modalId) { 
       const modal = document.getElementById(modalId);
-      if(modal) modal.style.display = 'none'; 
+      if(modal){ modal.classList.remove('is-open'); modal.style.display = 'none'; } 
     }
 
     window.onclick = function(event) { 
