@@ -1087,7 +1087,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <div class="db-status-box">
               <div class="db-status-indicator" style="color: #00e676;">
                 <span class="status-dot open" style="width:8px; height:8px;"></span>
-                <span>Banco de Dados Global (JSONBin.io): CONECTADO & SINCRONIZANDO ✅</span>
+                <span>Banco de Dados Global (Supabase): CONECTADO & SINCRONIZANDO ✅</span>
               </div>
               <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
                 As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
@@ -1350,7 +1350,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     const SUPABASE_URL = "https://fhlcdojhfnsdxdrbcxzt.supabase.co";
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_FKkqz0P7GP2iCh1e9oUIuA_XynOpnxC";
     const SUPABASE_LEGACY_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobGNkb2poZm5zZHhkcmJjeHp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE4NjMsImV4cCI6MjEwNjIwNzg2M30.DbuDV_C6pKYSql9Wfbj8HnbD4-ruTEXUvsFz18Z0XA0";
-    const SUPABASE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/jsonbin-api"; // compatibilidade de endpoint: a implementação agora usa Supabase Postgres.
+    const SUPABASE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/site-state"; // armazenamento administrativo permanente no Supabase Postgres.
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
     const IMGDB_UPLOAD_URL = "https://imgdb.io/api/v1/upload?ttl=0";
 
@@ -2015,7 +2015,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       try { responseJson = await res.json(); } catch(e) {}
       const acknowledgedRevision = Number(responseJson?.revision || (Number(baseRevision)||0) + 1);
 
-      // O PUT só chega aqui quando o jsonbin-api devolveu HTTP 200 após
+      // O PUT só chega aqui quando o site-state devolveu HTTP 200 após
       // gravar o registro no armazenamento permanente. A confirmação abaixo
       // é feita com o MESMO token usado no PUT e nunca derruba uma gravação
       // confirmada por causa de um segundo timeout de rede.
@@ -2291,10 +2291,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       await restoreSupabaseAdminSession();
       await flushPendingAdminChanges();
       await fetchBinData();
-      if(supabaseAccessToken && supabaseUser && Number(remoteRevision) === 0 && (!remoteSnapshot || Object.keys(remoteSnapshot).length === 0)) {
-        const bootstrapped = await saveBinData('Inicialização do armazenamento Supabase a partir da versão local preservada');
-        if(bootstrapped) console.info('[Bargunçados] Estado inicial preservado sincronizado com Supabase Postgres.');
-      }
+      // IMPORTANTE: a inicialização da página NÃO grava automaticamente.
+      // Um carregamento/reload nunca deve abrir o modal "Salvando" nem criar uma
+      // gravação fantasma. A primeira gravação só acontece por uma ação explícita
+      // do administrador ou por uma alteração que ficou pendente no armazenamento local.
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
@@ -2330,7 +2330,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       } else {
         dot.className = 'status-dot closed';
         dot.style.background = '#ff1744';
-        text.innerText = 'GitHub: token não validado (o salvamento do site usa Supabase/JSONBin) ⚠️';
+        text.innerText = 'GitHub: token não validado (o salvamento do site usa Supabase Postgres) ⚠️';
         text.style.color = '#ff9800';
       }
     }
@@ -3489,7 +3489,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         }
 
         // O arquivo é enviado separadamente para os dois serviços.
-        // Nenhum Base64 ou arquivo é salvo no JSONBin.
+        // Nenhum Base64 ou arquivo é salvo no banco de dados do site.
         const uploadImgBB = async () => {
           try {
             const formData = new FormData();
@@ -4466,7 +4466,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
         applySupabaseAdminSession(session.user, authenticatedAccount);
         await flushPendingAdminChanges();
         // A autenticação Supabase é independente da sincronização do conteúdo administrativo.
-        // Se o JSONBin/serviço de dados estiver temporariamente indisponível, não transforme
+        // Se o serviço de dados estiver temporariamente indisponível, não transforme
         // uma senha válida em um falso erro de credenciais: mantém o login e usa o snapshot atual.
         try {
           await fetchBinData(true);
