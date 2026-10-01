@@ -4332,132 +4332,46 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
+    async function moderateInteractionRemote(type, id, status) {
+      if(!canModerateInline()) throw new Error('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const normalizedType = type === 'song' ? 'song' : 'message';
+      const normalizedStatus = status === 'accepted' ? 'accepted' : 'rejected';
+      let token = await getAdminAccessToken();
+      if(!token) throw new Error('Sessão administrativa inválida ou expirada. Faça login novamente.');
+      const request = async(accessToken) => fetchWithTimeout(SUPABASE_FUNCTION_URL,{
+        method:'POST',cache:'no-store',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+accessToken},
+        body:JSON.stringify({action:'moderate_interaction',type:normalizedType,id:String(id),status:normalizedStatus})
+      },15000);
+      let res=await request(token);
+      if(res.status===401){const refreshed=await supabaseRefreshSession();token=refreshed?.access_token||null;if(token)res=await request(token);}
+      let json=null;try{json=await res.json()}catch(e){}
+      if(!res.ok||!json?.ok)throw new Error((json?.error||('HTTP_'+res.status))+': '+(json?.message||'O servidor não confirmou a moderação.'));
+      return json;
+    }
+
     async function approveSong(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const item = (appData.pendingSongs || []).find(s => String(s.id) === String(id));
-      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-
-      const oldPending = cloneForSync(appData.pendingSongs) || [];
-      const oldPublished = cloneForSync(appData.userSongs || []) || [];
-      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
-      appData.pendingSongs = oldPending.filter(s => String(s.id) !== String(id));
-      if(!appData.userSongs) appData.userSongs = [];
-      appData.userSongs.unshift({...item, approvedAt: Date.now(), approvedBy: sessionStorage.getItem('brg_adm_name') || 'Administrador'});
-      addModerationHistory('song', item, 'accepted');
-      renderModerationLists();
-      renderPublicInteractions();
-
-      try {
-        const saved = await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
-        if(saved === false) throw new Error('A gravação não foi confirmada.');
-        await refreshModerationQueue();
-        renderPublicInteractions();
-        alert('✅ Pedido aprovado e publicado no mural para o cliente!');
-        return true;
-      } catch(e) {
-        appData.pendingSongs = oldPending;
-        appData.userSongs = oldPublished;
-        appData.moderationHistory = oldHistory;
-        renderModerationLists();
-        renderPublicInteractions();
-        alert('⚠️ Não foi possível aprovar o pedido na nuvem. Nada foi removido nem publicado. Tente novamente.');
-        console.error('[Bargunçados] Falha ao aprovar pedido de música:', e);
-        return false;
-      }
+      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+      try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
     }
 
     async function rejectSong(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const item = (appData.pendingSongs || []).find(s => String(s.id) === String(id));
-      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-
-      const oldPending = cloneForSync(appData.pendingSongs) || [];
-      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
-      appData.pendingSongs = oldPending.filter(s => String(s.id) !== String(id));
-      addModerationHistory('song', item, 'rejected');
-      renderModerationLists();
-      renderPublicInteractions();
-
-      try {
-        const saved = await saveBinData(`Rejeitou o pedido de som de "${item.ig}": "${item.text}"`);
-        if(saved === false) throw new Error('A gravação não foi confirmada.');
-        await refreshModerationQueue();
-        renderPublicInteractions();
-        alert('❌ Pedido rejeitado e removido da fila. Ele não será publicado no mural.');
-        return true;
-      } catch(e) {
-        appData.pendingSongs = oldPending;
-        appData.moderationHistory = oldHistory;
-        renderModerationLists();
-        renderPublicInteractions();
-        alert('⚠️ Não foi possível rejeitar o pedido na nuvem. O pedido foi restaurado na fila.');
-        console.error('[Bargunçados] Falha ao rejeitar pedido de música:', e);
-        return false;
-      }
+      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+      try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Pedido rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
     }
 
     async function approveMsg(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const item = (appData.pendingMessages || []).find(m => String(m.id) === String(id));
-      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-
-      const oldPending = cloneForSync(appData.pendingMessages) || [];
-      const oldPublished = cloneForSync(appData.userMessages || []) || [];
-      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
-      appData.pendingMessages = oldPending.filter(m => String(m.id) !== String(id));
-      if(!appData.userMessages) appData.userMessages = [];
-      appData.userMessages.unshift({...item, approvedAt: Date.now(), approvedBy: sessionStorage.getItem('brg_adm_name') || 'Administrador'});
-      addModerationHistory('message', item, 'accepted');
-      renderModerationLists();
-      renderPublicInteractions();
-
-      try {
-        const saved = await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
-        if(saved === false) throw new Error('A gravação não foi confirmada.');
-        await refreshModerationQueue();
-        renderPublicInteractions();
-        alert('✅ Recado aprovado e publicado no mural para o cliente!');
-        return true;
-      } catch(e) {
-        appData.pendingMessages = oldPending;
-        appData.userMessages = oldPublished;
-        appData.moderationHistory = oldHistory;
-        renderModerationLists();
-        renderPublicInteractions();
-        alert('⚠️ Não foi possível aprovar o recado na nuvem. Nada foi removido nem publicado.');
-        console.error('[Bargunçados] Falha ao aprovar recado:', e);
-        return false;
-      }
+      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+      try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
     }
 
     async function rejectMsg(id) {
       if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const item = (appData.pendingMessages || []).find(m => String(m.id) === String(id));
-      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-
-      const oldPending = cloneForSync(appData.pendingMessages) || [];
-      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
-      appData.pendingMessages = oldPending.filter(m => String(m.id) !== String(id));
-      addModerationHistory('message', item, 'rejected');
-      renderModerationLists();
-      renderPublicInteractions();
-
-      try {
-        const saved = await saveBinData(`Rejeitou o recado no mural de "${item.ig}": "${item.text}"`);
-        if(saved === false) throw new Error('A gravação não foi confirmada.');
-        await refreshModerationQueue();
-        renderPublicInteractions();
-        alert('❌ Recado rejeitado e removido da fila. Ele não será publicado no mural.');
-        return true;
-      } catch(e) {
-        appData.pendingMessages = oldPending;
-        appData.moderationHistory = oldHistory;
-        renderModerationLists();
-        renderPublicInteractions();
-        alert('⚠️ Não foi possível rejeitar o recado na nuvem. O recado foi restaurado na fila.');
-        console.error('[Bargunçados] Falha ao rejeitar recado:', e);
-        return false;
-      }
+      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+      try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Recado rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
     }
 
     let tempNewTabImg = '';
@@ -4584,19 +4498,21 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
         } else {
           const menuItems=Array.isArray(appData.menu)?appData.menu:[];
+          ensureLegacyDrinkLines();
+          const normalizedMenuItems=Array.isArray(appData.menu)?appData.menu:menuItems;
           const drinkLines=[
             ['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],['rum','🍹 Linha Rum'],
             ['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky'],['legacy','🔥 Destilados & Clássicos']
           ];
           const groups=[];
           drinkLines.forEach(([key,title])=>{
-            const items=menuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
+            const items=normalizedMenuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
             if(items.length) groups.push({title,count:items.length,items});
           });
           const simpleGroups=[
             ['beer','🍺 CERVEJAS'],['noalcohol','🥤 SEM ÁLCOOL / SUCOS / REFRIS'],['portion','🍟 PORÇÕES & LARICA']
           ];
-          simpleGroups.forEach(([type,title])=>{const items=menuItems.filter(i=>i.type===type);if(items.length)groups.push({title,count:items.length,items});});
+          simpleGroups.forEach(([type,title])=>{const items=normalizedMenuItems.filter(i=>i.type===type);if(items.length)groups.push({title,count:items.length,items});});
 
           const renderAdminItem=i=>`
             <div class="admin-card">
@@ -4610,6 +4526,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                   <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
                   <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
               </div>
+              ${i.type === 'drink' ? `<div class="admin-card-row" style="margin-top:5px;">
+                  <label style="color:#aaa;font-size:.72rem;">Categoria da bebida
+                    <select class="admin-input" id="drinkline-${i.id}" style="margin-left:6px;min-width:210px;">
+                      <option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option>
+                      <option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option>
+                      <option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option>
+                      <option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option>
+                      <option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option>
+                      <option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option>
+                      <option value="" ${!i.drinkLine?'selected':''}>🔥 Destilados & Clássicos</option>
+                    </select>
+                  </label>
+              </div>` : ''}
               <div class="admin-card-row" style="margin-top:5px;">
                   <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short||'')}">
               </div>
@@ -4626,8 +4555,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               </div>
             </div>`;
 
-          menuList.innerHTML = groups.length ? groups.map(g=>`<section class="admin-menu-category" style="margin-bottom:18px;">
-            <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.08rem;margin:0 0 8px;border-bottom:1px dashed rgba(255,235,59,.3);padding-bottom:6px;">${escapeHTML(g.title)} <span style="color:#777;font-size:.72rem;font-family:inherit;">(${g.count})</span></h5>
+          menuList.innerHTML = groups.length ? groups.map(g=>`<section class="admin-menu-category" data-admin-menu-category="${escapeHTML(String(g.title))}" style="margin:0 0 22px;padding:12px;border:1px solid rgba(0,229,255,.20);border-radius:14px;background:linear-gradient(180deg,rgba(0,229,255,.045),rgba(0,0,0,.18));box-shadow:0 8px 22px rgba(0,0,0,.16);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:7px 9px;border-left:4px solid var(--c-yellow);border-bottom:1px solid rgba(255,235,59,.24);background:rgba(255,235,59,.055);border-radius:7px;">
+              <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.12rem;margin:0;letter-spacing:.02em;">${escapeHTML(g.title)}</h5>
+              <span style="color:#b9c4ca;font-size:.75rem;font-family:inherit;font-weight:800;">${g.count} ${g.count===1?'item':'itens'}</span>
+            </div>
             <div style="display:flex;flex-direction:column;gap:8px;">${g.items.map(renderAdminItem).join('')}</div>
           </section>`).join('') : '<p style="color:#777;font-size:.85rem;">Nenhum item cadastrado no cardápio.</p>';
         }
@@ -5097,6 +5029,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
           const oldPrice = item.price;
           const newName = document.getElementById(`name-${id}`).value.trim();
           const newType = document.getElementById(`type-${id}`).value;
+          const newDrinkLine = newType === 'drink' ? (document.getElementById(`drinkline-${id}`)?.value || '') : '';
 
           if(newName.toLowerCase() !== oldName.toLowerCase()) {
             const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
@@ -5107,6 +5040,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
           item.name = newName;
           item.type = newType;
+          item.drinkLine = newDrinkLine;
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
