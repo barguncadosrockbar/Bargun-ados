@@ -1351,6 +1351,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_FKkqz0P7GP2iCh1e9oUIuA_XynOpnxC";
     const SUPABASE_LEGACY_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZobGNkb2poZm5zZHhkcmJjeHp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MzE4NjMsImV4cCI6MjEwNjIwNzg2M30.DbuDV_C6pKYSql9Wfbj8HnbD4-ruTEXUvsFz18Z0XA0";
     const SUPABASE_FUNCTION_URL = SUPABASE_URL + "/functions/v1/site-state"; // armazenamento administrativo permanente no Supabase Postgres.
+    const IMAGE_UPLOAD_FUNCTION_URL = SUPABASE_URL + "/functions/v1/image-upload";
     const IMGBB_KEY = "d22e92b4fb0d6ad433008bfe5c7ed699";
     const IMGDB_UPLOAD_URL = "https://imgdb.io/api/v1/upload?ttl=0";
 
@@ -1677,7 +1678,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const values = [];
       const push = value => {
         const url = normalizeHostedImageUrl(value);
-        if(url && !values.includes(url)) values.push(url);
+        if(!url || values.includes(url)) return;
+        values.push(url);
+        // Se uma hospedagem antiga estiver bloqueada/indisponível no navegador,
+        // preservamos a URL original e tentamos o proxy somente como fallback.
+        try {
+          const u = new URL(url);
+          if(['i.ibb.co','imgdb.io','www.imgdb.io'].includes(u.hostname)) {
+            const proxy = SUPABASE_URL + '/functions/v1/image-proxy?url=' + encodeURIComponent(url);
+            if(!values.includes(proxy)) values.push(proxy);
+          }
+        } catch(_) {}
       };
 
       const directKeys = [
@@ -2656,6 +2667,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           if(!Array.isArray(appData.pendingSongs)) appData.pendingSongs=[];
           if(!appData.pendingSongs.some(s=>Number(s.id)===Number(newItem.id))) appData.pendingSongs.push(newItem);
           saved=true;
+          if(typeof renderModerationLists === 'function' && isAuthenticatedAdmin()) renderModerationLists();
         } catch(e) {
           lastError=e && e.message ? e.message : 'Erro desconhecido ao salvar.';
           if(attempt<3) await new Promise(r=>setTimeout(r,500*attempt));
@@ -2773,7 +2785,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function openCategoryQuickEdit(page) {
       const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado: seu administrador não possui permissão para editar categorias.');
       ensureMenuCategoryLabels();
@@ -2802,7 +2814,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     async function saveCategoryQuickEdit() {
       const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado!');
       ensureMenuCategoryLabels();
@@ -2852,7 +2864,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function isMenuOrganizerAllowed(){
       const logged = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      const master = sessionStorage.getItem('brg_adm_is_master') === 'true';
+      const master = getPersistentAdminFlag('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       return logged && (master || perms.canEdit !== false);
     }
@@ -3078,7 +3090,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
 
       const isAdmLogged = (getPersistentAdminFlag('brg_adm_logged') === 'true');
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAdd = isMaster || perms.canAdd !== false;
 
@@ -3243,7 +3255,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function clearLogs() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       if(!isMaster) return alert("Acesso Negado: Apenas o Administrador Master (Touru) pode limpar os logs!");
 
       if(confirm("Tem certeza que deseja limpar o histórico de logs?")) {
@@ -3253,7 +3265,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function savePermissions() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       if(!isMaster) return;
 
       const canAdd = document.getElementById('perm-add').checked;
@@ -3301,7 +3313,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     function canModerateInline() {
-      const isMaster = sessionStorage.getItem('brg_adm_is_master') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
       const perms = appData.permissions || {};
       return getPersistentAdminFlag('brg_adm_logged') === 'true' && (isMaster || perms.canMod !== false);
     }
@@ -3365,8 +3377,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const msgs = appData.userMessages || [];
       const inlineAdmin = canModerateInline();
       const perms = appData.permissions || {};
-      const canEdit = inlineAdmin && (sessionStorage.getItem('brg_adm_is_master') === 'true' || perms.canEdit !== false);
-      const canDelete = inlineAdmin && (sessionStorage.getItem('brg_adm_is_master') === 'true' || perms.canDel !== false);
+      const canEdit = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canEdit !== false);
+      const canDelete = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canDel !== false);
       const controls = (type, id) => {
         if(!inlineAdmin || (!canEdit && !canDelete)) return '';
         return `<div class="inline-admin-actions" onclick="event.stopPropagation()">
@@ -3458,7 +3470,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       setStoredImageWithFallback(modalImage, item);
 
       const isLoggedIn = (getPersistentAdminFlag('brg_adm_logged') === 'true');
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3487,94 +3499,81 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     async function uploadToImgBB(file, callback) {
       if (!file) return false;
-
       try {
         if (!file.type || !file.type.startsWith('image/')) {
           alert('⚠️ Selecione um arquivo de imagem válido.');
           return false;
         }
+        if (Number(file.size || 0) > 15 * 1024 * 1024) {
+          alert('⚠️ A imagem é muito grande. O limite é 15 MB.');
+          return false;
+        }
 
-        // O arquivo é enviado separadamente para os dois serviços.
-        // Nenhum Base64 ou arquivo é salvo no banco de dados do site.
+        // 1) Caminho principal: Edge Function. Evita CORS/bloqueios do navegador.
+        try {
+          const proxyForm = new FormData();
+          proxyForm.append('file', file, file.name || 'imagem');
+          proxyForm.append('key', IMGBB_KEY);
+          const proxyRes = await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL, {
+            method: 'POST',
+            body: proxyForm,
+            cache: 'no-store',
+            headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY }
+          }, 30000);
+          let proxyJson = null;
+          try { proxyJson = await proxyRes.json(); } catch (e) {}
+          const proxyUrl = proxyJson && typeof proxyJson.url === 'string' ? proxyJson.url.trim() : '';
+          if (proxyRes.ok && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(proxyUrl)) {
+            if (typeof callback === 'function') callback(proxyUrl);
+            console.info('[Bargunçados] Upload confirmado pelo proxy ImgBB.', proxyUrl);
+            return true;
+          }
+          console.warn('[Bargunçados] Proxy ImgBB não confirmou o upload; usando fallback direto.', proxyJson);
+        } catch (proxyError) {
+          console.warn('[Bargunçados] Proxy de imagem indisponível; usando fallback direto.', proxyError);
+        }
+
+        // 2) Fallback compatível com o uploader original: ImgBB + ImgDB em paralelo.
         const uploadImgBB = async () => {
           try {
             const formData = new FormData();
             formData.append('image', file, file.name || 'imagem');
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_KEY)}`, {
-              method: 'POST',
-              body: formData,
-              cache: 'no-store'
+              method: 'POST', body: formData, cache: 'no-store'
             });
-            let json = null;
-            try { json = await res.json(); } catch (e) {}
+            let json = null; try { json = await res.json(); } catch (e) {}
             const url = json && json.data && typeof json.data.url === 'string' ? json.data.url.trim() : '';
-            const valid = res.ok && json && json.success === true && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url);
-            if (!valid) {
-              console.warn('ImgBB falhou:', {status: res.status, response: json});
-              return {url:'', error:(json && (json.error && (json.error.message || json.error) || json.message)) || `HTTP ${res.status}`};
-            }
-            return {url:url, error:''};
-          } catch (e) {
-            console.warn('ImgBB indisponível:', e);
-            return {url:'', error:e && e.message ? e.message : 'Erro de rede'};
-          }
+            return (res.ok && json && json.success === true && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url))
+              ? { url, error: '' }
+              : { url: '', error: (json && (json.error?.message || json.error || json.message)) || `HTTP ${res.status}` };
+          } catch (e) { return { url: '', error: e?.message || 'Erro de rede' }; }
         };
-
         const uploadImgDB = async () => {
           try {
             const formData = new FormData();
             formData.append('file', file, file.name || 'imagem');
-            const res = await fetch(IMGDB_UPLOAD_URL, {
-              method: 'POST',
-              body: formData,
-              cache: 'no-store'
-            });
-            let json = null;
-            try { json = await res.json(); } catch (e) {}
+            const res = await fetch(IMGDB_UPLOAD_URL, { method: 'POST', body: formData, cache: 'no-store' });
+            let json = null; try { json = await res.json(); } catch (e) {}
             const url = json && typeof json.url === 'string' ? json.url.trim() : '';
-            const valid = res.ok && /^https:\/\/imgdb\.io\/i\/[^\s]+$/i.test(url);
-            if (!valid) {
-              console.warn('ImgDB falhou:', {status: res.status, response: json});
-              return {url:'', error:(json && (json.error || json.message)) || `HTTP ${res.status}`};
-            }
-            return {url:url, error:''};
-          } catch (e) {
-            console.warn('ImgDB indisponível:', e);
-            return {url:'', error:e && e.message ? e.message : 'Erro de rede'};
-          }
+            return (res.ok && /^https:\/\/imgdb\.io\/i\/[^\s]+$/i.test(url))
+              ? { url, error: '' }
+              : { url: '', error: (json && (json.error || json.message)) || `HTTP ${res.status}` };
+          } catch (e) { return { url: '', error: e?.message || 'Erro de rede' }; }
         };
-
-        // Os dois uploads começam juntos e são avaliados separadamente.
         const [imgbbResult, imgdbResult] = await Promise.all([uploadImgBB(), uploadImgDB()]);
-        const imgbbUrl = imgbbResult.url;
-        const imgdbUrl = imgdbResult.url;
-        const hostedUrl = imgbbUrl || imgdbUrl;
-
+        const hostedUrl = imgbbResult.url || imgdbResult.url;
         if (!hostedUrl) {
-          console.error('Upload de imagem falhou nos dois serviços.', {imgbb: imgbbResult, imgdb: imgdbResult});
           alert(`⚠️ A foto não foi hospedada.\n\nImgBB: ${imgbbResult.error || 'sem resposta válida'}\nImgDB: ${imgdbResult.error || 'sem resposta válida'}\n\nNada foi salvo no banco de dados.`);
           return false;
         }
-
-        // A confirmação de sucesso vem da própria resposta HTTP/JSON das APIs.
-        // Não fazemos uma segunda requisição nem alteramos a URL com parâmetros.
-        if (imgbbUrl && imgdbUrl) {
-          console.info('Imagem hospedada nos dois serviços.', {imgbbUrl, imgdbUrl});
-        } else if (imgbbUrl) {
-          console.warn('Imagem hospedada somente no ImgBB.', {imgbbUrl, imgdbError: imgdbResult.error});
-        } else {
-          console.warn('Imagem hospedada somente no ImgDB.', {imgdbUrl, imgbbError: imgbbResult.error});
-        }
-
         if (typeof callback === 'function') callback(hostedUrl);
         return true;
       } catch (e) {
-        console.error('Upload duplo de imagem: erro inesperado.', e);
+        console.error('Upload de imagem: erro inesperado.', e);
         alert('⚠️ Erro ao enviar a foto. Nada foi salvo no banco de dados.');
         return false;
       }
     }
-
 
     async function modalUploadImg(input) {
       uploadToImgBB(input.files[0], res => {
@@ -3585,7 +3584,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveModalEdit() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
@@ -3621,7 +3620,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function deleteModalItemDirect() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -3639,7 +3638,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     function openCreateItemModal(defaultCategory = 'drink') {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
 
@@ -3666,7 +3665,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function confirmCreateItem() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado!");
 
@@ -3716,7 +3715,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     function openHomeDirectEdit() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão desativada pelo Master!");
 
@@ -3751,7 +3750,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveHomeDirectEdit() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado!");
 
@@ -3777,7 +3776,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       document.getElementById('playerModalImg').src = imgUrl;
 
       const isLoggedIn = (getPersistentAdminFlag('brg_adm_logged') === 'true');
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canRank = isMaster || perms.canRank !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3811,7 +3810,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function savePlayerEdit() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canRank === false) return alert("Acesso Negado: Permissão de ranking desativada pelo Master!");
 
@@ -3836,7 +3835,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function deleteModalPlayerDirect() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -3865,7 +3864,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
       const isAdmLogged = (getPersistentAdminFlag('brg_adm_logged') === 'true');
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAgenda = isMaster || perms.canAgenda !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -3928,7 +3927,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveEventEdit() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
@@ -3968,7 +3967,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function deleteModalEventDirect() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -4027,7 +4026,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       if(counterSpan) counterSpan.innerHTML = totalPending > 0 ? `<span class="adm-notify-badge">${totalPending} NOVA(S)</span>` : '';
 
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const modPermitted = isMaster || perms.canMod !== false;
 
@@ -4139,7 +4138,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     });
 
     async function saveCustomTab() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado: Permissão de abas desativada pelo Master!");
 
@@ -4169,7 +4168,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     function editCustomTab(id) {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
@@ -4203,7 +4202,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function removeCustomTab(id) {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
@@ -4246,7 +4245,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         }
       }
 
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canEdit = isMaster || perms.canEdit !== false;
       const canDel = isMaster || perms.canDel !== false;
@@ -4403,7 +4402,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     function renderPartnersPortal(){const f=ensurePartnersFinance(),month=selectedFinanceMonth();f.currentMonth=month;const t=financeTotals(month),set=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v};set('portal-month-label',escapeHTML(monthLabel(month)));set('portal-gross',moneyBRL(t.gross));set('portal-operating',moneyBRL(t.operating));set('portal-net',moneyBRL(t.net));set('portal-deductions',moneyBRL(t.partnerExpenses));set('portal-bonus',moneyBRL(t.bonus));set('portal-shift-count',t.shiftCount+' registros');set('portal-current-user',escapeHTML(getPersistentAdminFlag('brg_adm_name')||'Administrador'));set('portal-partners-list',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name} <span class="portal-muted">${p.pct}%</span></div><div class="portal-person-meta">${p.hours.toFixed(1)}h trabalhadas • redução individual ${moneyBRL(p.deductions)} • bônus coletivo aplicado ${moneyBRL(t.bonus*p.pct/100)}</div></div><div style="text-align:right"><div class="portal-money">${moneyBRL(p.final)}</div><div class="portal-muted">base após bônus ${moneyBRL(p.base)}</div></div></div>`).join(''));set('portal-hours-summary',t.shares.map(p=>`<div class="portal-person-row"><div><div class="portal-person-name">${p.name}</div><div class="portal-person-meta">Participação ${p.pct}%</div></div><div class="portal-money">${p.hours.toFixed(1)} h</div></div>`).join(''));const rr=financeMonthData(month).revenues.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.description||'Receita')}</td><td class="portal-money">${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerRevenue('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-revenues-table',rr||'<tr><td colspan="4" class="portal-muted">Nenhuma receita lançada neste mês.</td></tr>');const er=financeMonthData(month).expenses.slice().reverse().map(x=>`<tr style="${x.type==='bonus'?'background:rgba(255,215,64,.08);border-left:3px solid #ffd740':''}"><td>${escapeHTML(x.date||'--')}</td><td>${x.type==='bonus'?'🎁 ':''}${escapeHTML(x.description||'Despesa')}</td><td>${x.type==='partner'?'👤 '+escapeHTML(x.partner||'Sócio'):x.type==='bonus'?'🟨 BÔNUS • '+escapeHTML(x.partner||'Administrador'):'🏢 Operacional'}</td><td class="${x.type==='bonus'?'':'portal-danger'}">-${moneyBRL(x.amount)}</td><td><button class="action-btn del-btn" onclick="removePartnerExpense('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-expenses-table',er||'<tr><td colspan="5" class="portal-muted">Nenhuma despesa lançada neste mês.</td></tr>');const bonusBox=document.getElementById('portal-bonus-section');if(bonusBox){const master=getPersistentAdminFlag('brg_adm_is_master')==='true';bonusBox.innerHTML=master?`<h3 class="portal-section-title">🎁 Bônus / consumo administrativo</h3><div class="portal-card" style="border-color:rgba(255,215,64,.55)"><div class="portal-muted">Somente o Master pode registrar. O bônus não entra como despesa operacional; ele é descontado diretamente do lucro líquido antes da divisão entre os sócios.</div><div class="portal-form-grid" style="margin-top:10px"><input id="partner-bonus-date" class="portal-input" type="date" value="${new Date().toISOString().slice(0,10)}"><select id="partner-bonus-admin" class="portal-select"><option>Administrador</option><option>Touru</option><option>Edinho</option><option>Alisson</option><option>Ramon</option></select><input id="partner-bonus-desc" class="portal-input" placeholder="Ex.: consumo de 2 caipirinhas"><input id="partner-bonus-amount" class="portal-input" type="number" min="0.01" step="0.01" placeholder="Valor do bônus (R$)"><button class="action-btn" style="background:#ffd740;color:#000" onclick="savePartnerBonus()">🎁 Registrar bônus</button></div></div>`:''} 
 const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${escapeHTML(x.date||'--')}</td><td>${escapeHTML(x.partner||'--')}</td><td>${escapeHTML(x.start||'--')}–${escapeHTML(x.end||'--')}</td><td>${Number(x.hours||0).toFixed(1)}h</td><td>${escapeHTML(x.note||'')}</td><td><button class="action-btn del-btn" onclick="removePartnerShift('${x.id}')">Excluir</button></td></tr>`).join('');set('portal-shifts-table',sr||'<tr><td colspan="6" class="portal-muted">Nenhum turno lançado neste mês.</td></tr>');const notes=document.getElementById('partner-notes');if(notes&&document.activeElement!==notes)notes.value=f.notes||''}
     window.openPartnerFinanceDetail=function(kind){const month=selectedFinanceMonth(),d=financeMonthData(month),t=financeTotals(month);let title='',summary='',rows=[];if(kind==='gross'){title='💰 Detalhamento da receita bruta';summary='Soma de todas as receitas lançadas no mês.';rows=d.revenues.map(x=>({date:x.date,desc:x.description,type:'Receita',amount:Number(x.amount||0)}));}else if(kind==='operating'){title='🏢 Detalhamento das despesas operacionais';summary='Somente despesas marcadas como operacionais. Bônus e despesas individuais ficam separados.';rows=d.expenses.filter(x=>x.type!=='partner'&&x.type!=='bonus').map(x=>({date:x.date,desc:x.description,type:'Operacional',amount:-Number(x.amount||0)}));}else if(kind==='bonus'){title='🎁 Detalhamento dos bônus administrativos';summary='Cada bônus reduz o lucro líquido antes da divisão. Ex.: R$ 50 de bônus reduz a base de cada sócio proporcionalmente à participação.';rows=d.expenses.filter(x=>x.type==='bonus').map(x=>({date:x.date,desc:x.description+' • '+(x.partner||'Administrador'),type:'Bônus',amount:-Number(x.amount||0)}));}else if(kind==='partner'){title='👤 Detalhamento das despesas de sócios';summary='Esses consumos não alteram o lucro líquido da empresa; reduzem individualmente o valor a receber do sócio indicado.';rows=d.expenses.filter(x=>x.type==='partner').map(x=>({date:x.date,desc:x.description+' • '+(x.partner||'Sócio'),type:'Consumo de sócio',amount:-Number(x.amount||0)}));}else{title='📈 Como foi calculado o lucro líquido';summary='Lucro líquido = receita bruta − despesas operacionais − bônus administrativos. Despesas individuais de sócios são descontadas somente da parcela individual.';rows=[{date:month,desc:'Receita bruta',type:'+',amount:t.gross},{date:month,desc:'Despesas operacionais',type:'−',amount:-t.operating},{date:month,desc:'Bônus administrativos',type:'−',amount:-t.bonus},{date:month,desc:'Lucro líquido',type:'=',amount:t.net}];}const modal=document.createElement('div');modal.id='partner-finance-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000020;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:15px';modal.innerHTML=`<div style="max-width:900px;width:100%;max-height:92vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="margin:0;font-family:var(--font-title)">${title}</h2><div class="portal-muted">${escapeHTML(monthLabel(month))}</div></div><button class="action-btn del-btn" onclick="document.getElementById('partner-finance-detail-modal')?.remove()">✕</button></div><p class="portal-muted" style="margin-top:12px">${summary}</p><div class="portal-card"><div class="portal-big" style="color:var(--c-cyan)">${moneyBRL(kind==='gross'?t.gross:kind==='operating'?-t.operating:kind==='bonus'?-t.bonus:kind==='partner'?-t.partnerExpenses:t.net)}</div><div class="portal-muted">Valor relacionado ao indicador</div></div><div class="portal-table-wrap" style="margin-top:12px"><table class="portal-table"><thead><tr><th>Data</th><th>Descrição</th><th>Tipo</th><th>Valor</th></tr></thead><tbody>${rows.length?rows.map(r=>`<tr><td>${escapeHTML(r.date||'--')}</td><td>${escapeHTML(r.desc||'')}</td><td>${escapeHTML(r.type||'')}</td><td class="${r.amount<0?'portal-danger':'portal-money'}">${r.amount<0?'-':''}${moneyBRL(Math.abs(r.amount))}</td></tr>`).join(''):'<tr><td colspan="4" class="portal-muted">Nenhum lançamento neste mês.</td></tr>'}</tbody></table></div></div>`;document.body.appendChild(modal)};
-    async function savePartnerBonus(){if(sessionStorage.getItem('brg_adm_is_master')!=='true')return alert('Acesso restrito: somente o Master pode registrar bônus.');const month=selectedFinanceMonth(),date=document.getElementById('partner-bonus-date')?.value||new Date().toISOString().slice(0,10),partner=document.getElementById('partner-bonus-admin')?.value||'Administrador',desc=document.getElementById('partner-bonus-desc')?.value.trim(),amount=Number(document.getElementById('partner-bonus-amount')?.value||0);if(!desc||!(amount>0))return alert('Informe a descrição e um valor válido para o bônus.');ensurePartnersFinance().expenses.push({id:'bonus_'+Date.now(),month,date,description:desc,amount,type:'bonus',partner});try{await saveBinData('Central dos Sócios: Master registrou bônus/consumo administrativo de '+moneyBRL(amount)+' para '+partner);document.getElementById('partner-bonus-desc').value='';document.getElementById('partner-bonus-amount').value='';renderPartnersPortal();alert('✅ Bônus registrado. O valor reduz o lucro líquido antes da divisão entre os sócios.');}catch(e){ensurePartnersFinance().expenses=ensurePartnersFinance().expenses.filter(x=>!String(x.id).startsWith('bonus_')||x.description!==desc||Number(x.amount)!==amount);renderPartnersPortal();alert('❌ O bônus não foi salvo.\n\n'+(e?.message||e));}}
+    async function savePartnerBonus(){if(getPersistentAdminFlag('brg_adm_is_master')!=='true')return alert('Acesso restrito: somente o Master pode registrar bônus.');const month=selectedFinanceMonth(),date=document.getElementById('partner-bonus-date')?.value||new Date().toISOString().slice(0,10),partner=document.getElementById('partner-bonus-admin')?.value||'Administrador',desc=document.getElementById('partner-bonus-desc')?.value.trim(),amount=Number(document.getElementById('partner-bonus-amount')?.value||0);if(!desc||!(amount>0))return alert('Informe a descrição e um valor válido para o bônus.');ensurePartnersFinance().expenses.push({id:'bonus_'+Date.now(),month,date,description:desc,amount,type:'bonus',partner});try{await saveBinData('Central dos Sócios: Master registrou bônus/consumo administrativo de '+moneyBRL(amount)+' para '+partner);document.getElementById('partner-bonus-desc').value='';document.getElementById('partner-bonus-amount').value='';renderPartnersPortal();alert('✅ Bônus registrado. O valor reduz o lucro líquido antes da divisão entre os sócios.');}catch(e){ensurePartnersFinance().expenses=ensurePartnersFinance().expenses.filter(x=>!String(x.id).startsWith('bonus_')||x.description!==desc||Number(x.amount)!==amount);renderPartnersPortal();alert('❌ O bônus não foi salvo.\n\n'+(e?.message||e));}}
     async function savePartnerRevenue(){const month=selectedFinanceMonth(),desc=document.getElementById('partner-revenue-desc').value.trim(),amount=Number(document.getElementById('partner-revenue-amount').value||0),date=document.getElementById('partner-revenue-date').value||new Date().toISOString().slice(0,10);if(!desc||!(amount>0))return alert('Informe a descrição e um valor de receita válido.');ensurePartnersFinance().revenues.push({id:'rev_'+Date.now(),month,date,description:desc,amount});document.getElementById('partner-revenue-desc').value='';document.getElementById('partner-revenue-amount').value='';await saveBinData('Central dos Sócios: adicionou uma receita de '+moneyBRL(amount));renderPartnersPortal()}
     async function savePartnerExpense(){const month=selectedFinanceMonth(),desc=document.getElementById('partner-expense-desc').value.trim(),amount=Number(document.getElementById('partner-expense-amount').value||0),date=document.getElementById('partner-expense-date').value||new Date().toISOString().slice(0,10),type=document.getElementById('partner-expense-type').value,partner=document.getElementById('partner-expense-partner').value;if(!desc||!(amount>0))return alert('Informe a descrição e um valor de despesa válido.');ensurePartnersFinance().expenses.push({id:'exp_'+Date.now(),month,date,description:desc,amount,type,partner:type==='partner'?partner:''});document.getElementById('partner-expense-desc').value='';document.getElementById('partner-expense-amount').value='';await saveBinData('Central dos Sócios: adicionou uma despesa de '+moneyBRL(amount));renderPartnersPortal()}
     async function savePartnerShift(){const month=selectedFinanceMonth(),partner=document.getElementById('partner-shift-partner').value,date=document.getElementById('partner-shift-date').value||new Date().toISOString().slice(0,10),start=document.getElementById('partner-shift-start').value,end=document.getElementById('partner-shift-end').value,note=document.getElementById('partner-shift-note').value.trim(),hours=shiftHours(start,end);if(!partner||!start||!end||hours<=0)return alert('Preencha sócio, data, início e fim do turno.');ensurePartnersFinance().shifts.push({id:'shift_'+Date.now(),month,date,partner,start,end,hours,note});document.getElementById('partner-shift-note').value='';await saveBinData('Central dos Sócios: adicionou escala de '+partner);renderPartnersPortal()}
@@ -4567,7 +4566,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     function renderMasterAdminManager() {
-      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return;
+      if(getPersistentAdminFlag('brg_adm_is_master') !== 'true') return;
       ensureAdminSystem();
       const select=document.getElementById('master-admin-select');
       const list=document.getElementById('master-admin-list');
@@ -4581,7 +4580,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     function loadManagedAdminPermissions(showAlert=true) {
-      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return;
+      if(getPersistentAdminFlag('brg_adm_is_master') !== 'true') return;
       const email=getSelectedManagedAdminEmail();
       if(!email) return;
       const acc=getAdminAccounts().find(a=>String(a.email).toLowerCase()===email);
@@ -4594,7 +4593,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function createNewAdmin() {
-      if(sessionStorage.getItem('brg_adm_is_master') !== 'true') return alert('Acesso Negado: somente o ADM Master pode cadastrar administradores.');
+      if(getPersistentAdminFlag('brg_adm_is_master') !== 'true') return alert('Acesso Negado: somente o ADM Master pode cadastrar administradores.');
       const name=document.getElementById('new-admin-name').value.trim();
       const email=document.getElementById('new-admin-email').value.trim();
       const pass=document.getElementById('new-admin-pass').value.trim();
@@ -4690,7 +4689,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     window.saveSiteDrinkRecipe=async function(id){const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),yieldQty=Number(document.getElementById('site-recipe-yield')?.value||1),rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],comps=rows.map(r=>({inventory_item_id:String(r.dataset.inv),quantity_per_sale:Number(r.querySelector('.site-recipe-qty')?.value||0),component_unit:String(r.querySelector('.site-recipe-unit')?.value||'un')}));if(!Number.isFinite(price)||price<0)return alert('Informe um preço válido.');if(!Number.isFinite(yieldQty)||yieldQty<=0)return alert('Informe um rendimento válido.');if(comps.some(c=>!Number.isFinite(c.quantity_per_sale)||c.quantity_per_sale<=0))return alert('Existe ingrediente com quantidade inválida.');if(new Set(comps.map(c=>c.inventory_item_id)).size!==comps.length)return alert('Há ingrediente duplicado na receita.');const oldPrice=item.price;try{const savedResponse=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:price,yield_qty:yieldQty,estimate_source:'Cadastro local do site',components:comps}});if(!savedResponse?.recipe)throw new Error('O servidor não devolveu a receita salva.');brgApplyRecipeSaveResponse(savedResponse);item.price=price.toFixed(2).replace('.',',');await saveBinData('Editou a receita de "'+item.name+'" diretamente no cadastro da bebida. Preço R$ '+oldPrice+' → R$ '+item.price);document.getElementById('site-drink-recipe-modal')?.remove();renderAdminLists();renderApp();alert('✅ Receita salva no servidor. Esta é a receita oficial que o Controle do Bar usará nas próximas vendas.');}catch(e){alert('❌ A receita não foi salva.\n\n'+(e?.message||e));}};
 
     async function saveItemData(id) {
-       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
@@ -4727,7 +4726,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveAgendaData(id) {
-       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
@@ -4755,7 +4754,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveArcadeData(id) {
-       const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
 
@@ -4789,7 +4788,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     let tempNewEvImg = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
 
     async function addMenuItem() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão de adicionar itens desativada!");
 
@@ -4816,7 +4815,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function addAgendaItem() {
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada!");
 
@@ -4829,7 +4828,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function removeMenuItem(id) { 
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -4843,7 +4842,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function removeAgendaItem(id) { 
-      const isMaster = (sessionStorage.getItem('brg_adm_is_master') === 'true');
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
@@ -4876,7 +4875,19 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       if (event.target == document.getElementById('homeDirectEditModal')) closeModal('homeDirectEditModal');
     };
 
-    function fallbackImg(el) { el.onerror = null; el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }
+    function fallbackImg(el) {
+      if(!el) return;
+      const current = String(el.currentSrc || el.src || '').trim();
+      try {
+        const u = new URL(current);
+        if(u.hostname === 'i.ibb.co' || u.hostname === 'imgdb.io' || u.hostname === 'www.imgdb.io') {
+          const proxy = SUPABASE_URL + '/functions/v1/image-proxy?url=' + encodeURIComponent(current);
+          if(current !== proxy) { el.onerror = function(){ this.onerror=null; this.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; }; el.src=proxy; return; }
+        }
+      } catch(_) {}
+      el.onerror = null;
+      el.src = 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80';
+    }
 
     const audio = document.getElementById('rockRadio');
     const playBtn = document.getElementById('play-pause-btn');
@@ -5419,7 +5430,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     barCtlSaleChanged();
   }
   window.barCtlDeleteSale=async function(saleId){
-    if(sessionStorage.getItem('brg_adm_is_master')!=='true')return alert('Acesso Negado: somente o Administrador Master pode excluir vendas.');
+    if(getPersistentAdminFlag('brg_adm_is_master')!=='true')return alert('Acesso Negado: somente o Administrador Master pode excluir vendas.');
     const sale=(BRG_BAR.data?.sales||[]).find(x=>String(x.id)===String(saleId));if(!sale)return alert('Venda não encontrada.');
     if(!confirm('Excluir a venda #'+sale.id+' de '+brgMoney(sale.total)+'?\n\nO estoque consumido por essa venda será devolvido e o lançamento financeiro integrado será removido.'))return;
     try{
