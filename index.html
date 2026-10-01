@@ -401,6 +401,24 @@
   .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:1;transform:none}
   .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:none}
   .menu-organizer-active .menu-grid{min-height:45px}
+  /* FINAL REBUILD: ADM catalog / organizer / finance / modal */
+  .menu-admin-organizer{display:none;margin:12px 0;padding:12px;border:2px solid var(--c-yellow);border-radius:14px;background:rgba(255,215,64,.07);position:relative;z-index:50}
+  .menu-admin-organizer.active{display:block}
+  .menu-admin-organizer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .menu-admin-category{border:1px solid rgba(0,188,212,.28);border-radius:14px;padding:12px;margin:12px 0;background:rgba(255,255,255,.025)}
+  .menu-admin-category-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.2rem}
+  .menu-admin-item{position:relative;border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:10px;margin:8px 0;background:rgba(0,0,0,.18)}
+  .menu-admin-item-controls{display:flex;gap:7px;align-items:center;margin-left:auto}
+  .menu-admin-item-controls button{width:46px;height:46px;border:1px solid var(--c-yellow);border-radius:9px;background:#09090c;color:#fff;font-size:1.4rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+  .menu-admin-item-controls button:active{transform:scale(.94)}
+  .menu-admin-finance{margin-top:10px;padding:9px;border:1px solid rgba(0,188,212,.25);border-radius:10px;background:rgba(0,188,212,.05)}
+  .menu-admin-finance-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .menu-admin-finance-grid div{padding:7px;border-radius:8px;background:rgba(0,0,0,.22);text-align:center}
+  .menu-admin-finance-grid b{display:block;color:#fff;font-size:.95rem}
+  .menu-admin-finance-grid span{display:block;color:#8d9aa2;font-size:.68rem;margin-top:2px}
+  .modal-close-top{display:flex;justify-content:flex-end;position:sticky;top:0;z-index:100;margin:-8px -8px 8px}
+  .modal-close-top button{width:44px;height:44px;border:2px solid var(--c-yellow);border-radius:50%;background:#08090c;color:#fff;font-size:1.55rem;font-weight:900;cursor:pointer;line-height:1;box-shadow:0 3px 12px rgba(0,0,0,.5)}
+  @media(max-width:700px){.menu-admin-finance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-admin-item-controls button{width:50px;height:50px;font-size:1.5rem}}
   .menu-move-controls{position:absolute;top:6px;right:6px;z-index:10020;display:flex;gap:5px;align-items:center;pointer-events:auto}
   .menu-move-controls button{width:38px;height:38px;border:1px solid rgba(255,235,59,.75);border-radius:8px;background:rgba(0,0,0,.92);color:#fff;font-weight:900;font-size:1.15rem;cursor:pointer;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent}
   .menu-move-controls button:active{transform:scale(.94);background:rgba(255,235,59,.18)}
@@ -628,7 +646,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE CARDÁPIO -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
-      <span class="close-btn" onclick="closeModal('productModal')">×</span>
+      <div class="modal-close-top"><button type="button" onclick="closeModal('productModal')" aria-label="Fechar">×</button></div>
       <img id="modalImg" src="" alt="Produto" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
       <h3 id="modalTitle">Nome</h3>
       <p id="modalDesc">Descrição</p>
@@ -682,7 +700,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL DE EDIÇÃO RÁPIDA DE CATEGORIAS -->
   <div id="categoryQuickEditModal" class="modal">
     <div class="modal-content glass-panel" style="border-color:var(--c-yellow); text-align:left; max-width:520px;">
-      <span class="close-btn" onclick="closeModal('categoryQuickEditModal')">×</span>
+      <div class="modal-close-top"><button type="button" onclick="closeModal('categoryQuickEditModal')" aria-label="Fechar">×</button></div>
       <h3 style="font-family:var(--font-title); font-size:1.7rem; color:var(--c-yellow); margin-bottom:6px; text-align:center;">✏️ Editar Categorias da Página</h3>
       <p id="category-edit-page-label" style="color:#aaa; font-size:.85rem; text-align:center; margin-bottom:14px;"></p>
       <input type="hidden" id="category-edit-page">
@@ -694,7 +712,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
   <div id="itemCreateModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
-      <span class="close-btn" onclick="closeModal('itemCreateModal')">×</span>
+      <div class="modal-close-top"><button type="button" onclick="closeModal('itemCreateModal')" aria-label="Fechar">×</button></div>
       <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); margin-bottom: 12px; text-align: center;">✨ Adicionar Novo Item</h3>
       
       <img id="create-item-img-preview" src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80" alt="Preview">
@@ -935,9 +953,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="menu-organizer-bebidas" class="menu-organizer-bar">
           <span class="menu-organizer-hint">Use as setas ↑/↓ em cada card para mudar a ordem dentro da categoria. Não é necessário arrastar ou segurar o card. A mudança só fica permanente depois de salvar.</span>
-          <button id="menu-organizer-save-bebidas" class="action-btn menu-organizer-save" onclick="saveMenuPositions('bebidas')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
-          <button id="menu-organizer-discard-bebidas" class="action-btn menu-organizer-discard" onclick="discardMenuPositions('bebidas')" style="background:#555;color:#fff;">↩ Descartar</button>
-          <button class="action-btn" onclick="toggleMenuOrganizer('bebidas',false)" style="background:#333;color:#fff;">✖ Fechar</button>
+          <button id="menu-organizer-save-${menuOrganizerPage||'bebidas'}" class="action-btn menu-organizer-save" onclick="saveMenuPositions(menuOrganizerPage||'bebidas')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
+          <button id="menu-organizer-discard-bebidas" class="action-btn menu-organizer-discard" onclick="discardMenuPositions(menuOrganizerPage||'bebidas')" style="background:#555;color:#fff;">↩ Descartar</button>
+          <button class="action-btn" onclick="toggleMenuOrganizer(menuOrganizerPage||'bebidas',false)" style="background:#333;color:#fff;">✖ Fechar</button>
         </div>
         <div id="dynamic-menu-bebidas"></div>
       </section>
@@ -2967,138 +2985,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       menuOrganizerDirty = before !== after;
       updateMenuOrganizerUI(page);
     }
-
-    let menuOrganizerTouchState = null;
-
-    function updateMenuOrganizerUI(page){
-      const bar=document.getElementById('menu-organizer-'+page);
-      const save=document.getElementById('menu-organizer-save-'+page);
-      const discard=document.getElementById('menu-organizer-discard-'+page);
-      const active=menuOrganizerActive && menuOrganizerPage===page;
-      if(bar) bar.classList.toggle('active', active);
-      if(save){
-        save.classList.toggle('pending', active && menuOrganizerDirty);
-        save.disabled=!(active && menuOrganizerDirty);
-        save.setAttribute('aria-disabled', String(!(active && menuOrganizerDirty)));
-        save.title=menuOrganizerDirty ? 'Salvar as posições no Supabase' : 'Nenhuma mudança de posição pendente';
-      }
-      if(discard) discard.classList.toggle('pending', active && menuOrganizerDirty);
-      document.body.classList.toggle('menu-organizer-active', menuOrganizerActive);
-    }
-
-    function clearMenuOrganizerTouchState(){
-      const st=menuOrganizerTouchState;
-      if(st?.timer) clearTimeout(st.timer);
-      if(st?.card){
-        st.card.classList.remove('menu-dragging');
-        st.card.style.touchAction='';
-      }
-      if(st?.root) st.root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
-      menuOrganizerTouchState=null;
-    }
-
-    // ================================================================
-    // ORGANIZADOR DO CARDÁPIO — RECONSTRUÇÃO MOBILE POR SETAS
-    // Não usa HTML5 drag/drop nem long-press. Isso elimina o menu do
-    // navegador que aparecia ao tocar/segurar no Android/iPhone.
-    // A única forma de alterar a posição é pelas setas ↑ e ↓.
-    // ================================================================
-    function setupMenuOrganizerDragAndDrop(page){
-      if(!menuOrganizerActive || menuOrganizerPage!==page) return;
-      const root=document.getElementById(page==='bebidas'?'dynamic-menu-bebidas':'dynamic-menu-porcoes');
-      if(!root) return;
-      root.querySelectorAll('.menu-grid .product-card[data-menu-id]').forEach(card=>{
-        card.setAttribute('draggable','false');
-        card.ondragstart=ev=>{ev.preventDefault();return false;};
-        card.style.webkitUserDrag='none';
-      });
-    }
-
-    function moveMenuCard(id,direction){
-      if(!menuOrganizerActive || !isMenuOrganizerAllowed()) return;
-      const root=document.getElementById(menuOrganizerPage==='bebidas'?'dynamic-menu-bebidas':'dynamic-menu-porcoes');
-      if(!root) return;
-      const card=Array.from(root.querySelectorAll('.menu-grid .product-card[data-menu-id]')).find(el=>String(el.getAttribute('data-menu-id'))===String(id));
-      if(!card) return;
-      const grid=card.closest('.menu-grid');
-      if(!grid) return;
-      if(direction==='up'){
-        const prev=card.previousElementSibling;
-        if(prev) grid.insertBefore(card,prev);
-      }else if(direction==='down'){
-        const next=card.nextElementSibling;
-        if(next) grid.insertBefore(next,card);
-      }
-      captureMenuOrderFromDOM(menuOrganizerPage);
-      updateMenuOrganizerUI(menuOrganizerPage);
-    }
-
-    function handleOrganizerCardClick(event,id){
-      if(menuOrganizerActive){ event.preventDefault(); event.stopPropagation(); return false; }
-      openMenuModalObj(id);
-    }
-
-    function toggleMenuOrganizer(page,force){
-      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado: somente administradores com permissão de edição podem organizar o cardápio.');
-      const next=typeof force==='boolean'?force:!(menuOrganizerActive&&menuOrganizerPage===page);
-      if(!next){
-        if(menuOrganizerDirty && !confirm('Existem mudanças de posição não salvas. Fechar sem salvar?')) return;
-        clearMenuOrganizerTouchState();
-        menuOrganizerActive=false;
-        menuOrganizerPage='';
-        menuOrganizerDirty=false;
-        menuOrganizerSnapshot=null;
-        document.body.classList.remove('menu-organizer-active');
-        renderApp();
-        return;
-      }
-      ensureMenuOrderData();
-      clearMenuOrganizerTouchState();
-      menuOrganizerPage=page;
-      menuOrganizerActive=true;
-      menuOrganizerDirty=false;
-      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
-      renderApp();
-      requestAnimationFrame(()=>{
-        setupMenuOrganizerDragAndDrop(page);
-        updateMenuOrganizerUI(page);
-      });
-    }
-
-    function discardMenuPositions(page){
-      if(!menuOrganizerDirty) return;
-      ensureMenuOrderData();
-      appData.menuOrder=menuOrganizerSnapshot?JSON.parse(JSON.stringify(menuOrganizerSnapshot)):{};
-      menuOrganizerDirty=false;
-      clearMenuOrganizerTouchState();
-      renderApp();
-      requestAnimationFrame(()=>{
-        setupMenuOrganizerDragAndDrop(page);
-        updateMenuOrganizerUI(page);
-      });
-    }
-
-    async function saveMenuPositions(page){
-      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado.');
-      captureMenuOrderFromDOM(page);
-      if(!menuOrganizerDirty) return alert('Nenhuma mudança de posição para salvar.');
-      const btn=document.getElementById('menu-organizer-save-'+page);
-      if(btn) btn.disabled=true;
-      try{
-        const ok=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
-        if(ok===false) throw new Error('O servidor não confirmou o salvamento.');
-        menuOrganizerDirty=false;
-        menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
-        updateMenuOrganizerUI(page);
-        alert('✅ Posições salvas no servidor!');
-      }catch(e){
-        updateMenuOrganizerUI(page);
-        alert('⚠️ Não foi possível salvar as posições.\n\n'+(e?.message||e));
-      }finally{
-        if(btn) btn.disabled=false;
-      }
-    }
-
     function optimizeMenuImageLoading(){
       try {
         const root = document;
@@ -3328,8 +3214,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
       optimizeMenuImageLoading();
-      setupMenuOrganizerDragAndDrop('bebidas');
-      setupMenuOrganizerDragAndDrop('porcoes');
+      
+      
       updateMenuOrganizerUI('bebidas');
       updateMenuOrganizerUI('porcoes');
 
@@ -3700,30 +3586,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function uploadToImgBB(file,callback){
-      if(!file) return false;
-      if(!file.type || !file.type.startsWith('image/')){alert('⚠️ Selecione um arquivo de imagem válido.');return false;}
-      if(Number(file.size||0)>15*1024*1024){alert('⚠️ A imagem é muito grande. O limite é 15 MB.');return false;}
-      try{
-        const form=new FormData();
-        form.append('file',file,file.name||'imagem');
-        form.append('key',IMGBB_KEY);
-        const res=await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL,{method:'POST',body:form,cache:'no-store',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY}},30000);
-        let json=null;try{json=await res.json()}catch(_){ }
-        const url=String(json?.url||'').trim();
-        if(!res.ok || !/^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url)){
-          throw new Error(String(json?.error||json?.message||('HTTP '+res.status)));
-        }
-        const valid=await validateHostedImageUrl(url);
-        if(!valid){
-          throw new Error('O servidor informou a URL, mas a imagem não pôde ser carregada.');
-        }
-        if(typeof callback==='function') await callback(url);
-        return true;
-      }catch(e){
-        console.error('[Bargunçados] upload de imagem rejeitado:',e);
-        alert('⚠️ A foto não foi aceita. Nada foi salvo no banco.\n\n'+(e?.message||'Falha no upload.'));
-        return false;
-      }
+      if(!file)return false;if(!String(file.type||'').startsWith('image/')){alert('⚠️ Selecione uma imagem válida.');return false}if(Number(file.size||0)>15*1024*1024){alert('⚠️ A imagem ultrapassa 15 MB.');return false}
+      try{const form=new FormData();form.append('file',file,file.name||'imagem');form.append('key',IMGBB_KEY);const res=await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL,{method:'POST',body:form,cache:'no-store',headers:{apikey:SUPABASE_PUBLISHABLE_KEY}},30000);const json=await res.json().catch(()=>null),url=String(json?.url||'').trim();if(!res.ok||!url)throw new Error(json?.error||json?.message||('HTTP '+res.status));const probe=new Image();await new Promise((ok,bad)=>{probe.onload=ok;probe.onerror=()=>bad(new Error('A imagem hospedada não pôde ser carregada.'));probe.src=url+(url.includes('?')?'&':'?')+'verify='+Date.now()});if(typeof callback==='function')await callback(url);return true}catch(e){alert('❌ Upload não concluído.\n\n'+(e?.message||e));return false}
     }
 
     async function modalUploadImg(input) {
@@ -4451,94 +4315,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       finally{ __adminCatalogBarLoading=false; }
     }
 
-    function renderAdminLists(force=false) {
-      const logged = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      if(!logged) return;
-      const master = getPersistentAdminFlag('brg_adm_is_master') === 'true';
-      const perms = appData.permissions || {};
-      const canEdit = master || perms.canEdit !== false;
-      const canDel = master || perms.canDel !== false;
-      const canAgenda = master || perms.canAgenda !== false;
-      const safeArr=(v)=>Array.isArray(v)?v:[];
-      const val=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v==null?'':String(v)};
-      const img=(item)=>{try{return safeImageUrl(normalizeStoredImage(item))}catch(_){try{return safeImageUrl(item?.img||'')}catch(__){return ''}}};
-      try{const h=appData.home||{};val('adm-h-title',h.title);val('adm-h-desc1',h.desc1);val('adm-h-desc2',h.desc2);val('adm-h-promo-title',h.promoTitle);val('adm-h-promo1',h.promo1);val('adm-h-promo2',h.promo2);val('adm-h-promo3',h.promo3)}catch(e){console.warn('[ADM] inicio',e)}
-      try{
-        const el=document.getElementById('admin-custom-tabs-list'); const tabs=safeArr(appData.customTabs);
-        if(el)el.innerHTML=tabs.length?tabs.map(t=>`<div class="admin-card"><div class="admin-card-row"><b>Aba: ${escapeHTML(t.name||'')} (ID: ${escapeHTML(String(t.id||''))})</b><div><button class="action-btn" onclick="editCustomTab(${escapeJSString(String(t.id||''))})">✏️ Editar</button><button class="action-btn del-btn" onclick="removeCustomTab(${escapeJSString(String(t.id||''))})">🗑️ Apagar</button></div></div></div>`).join(''):'<p style="color:#777;font-size:.85rem">Nenhuma aba personalizada criada ainda.</p>';
-      }catch(e){console.warn('[ADM] abas',e)}
-      // ================================================================
-      // CATÁLOGO ADM — RECONSTRUÇÃO POR CATEGORIAS, IGUAL AO CLIENTE
-      // Cada grupo do administrador usa exatamente a mesma classificação
-      // do cardápio público: destaques, linhas de drinks, cervejas,
-      // sem álcool e porções. Os controles de edição ficam dentro do grupo.
-      // ================================================================
-      try{
-        ensureLegacyDrinkLines();
-        ensureMenuCategoryLabels();
-        ensureMenuOrderData();
-        const list=document.getElementById('admin-menu-list');
-        const menu=safeArr(appData.menu);
-        if(list){
-          if(!canEdit&&!canDel){
-            list.innerHTML='<p style="color:var(--c-red)">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
-          }else{
-            const labels=appData.menuCategoryLabels||{};
-            const drinkLines=[
-              ['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],['rum','🍹 Linha Rum'],
-              ['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky']
-            ];
-            const groups=[];
-            const featuredIds=Array.isArray(labels.bebidas?.featuredIds)?labels.bebidas.featuredIds.map(Number):[];
-            const featured=featuredIds.map(id=>menu.find(i=>Number(i.id)===id)).filter(i=>i&&['drink','beer','noalcohol'].includes(i.type));
-            if(featured.length) groups.push({key:'featured',title:labels.bebidas?.featured||'⭐ DESTAQUE',items:featured,featured:true});
-            const classified=new Set(featured.map(i=>String(i.id)));
-            for(const [key,fallback] of drinkLines){
-              const items=sortMenuItemsBySavedOrder(menu.filter(i=>i&&i.type==='drink'&&String(i.drinkLine||'')===key),''+key);
-              groups.push({key,title:labels.bebidas?.[key]||fallback,items});
-              items.forEach(i=>classified.add(String(i.id)));
-            }
-            const legacy=sortMenuItemsBySavedOrder(menu.filter(i=>i&&i.type==='drink'&&!['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||''))&&!classified.has(String(i.id))),'legacy');
-            groups.push({key:'legacy',title:labels.bebidas?.legacy||'🔥 DESTILADOS & CLÁSSICOS',items:legacy});
-            groups.push({key:'beer',title:labels.bebidas?.beer||'🍺 CERVEJAS',items:sortMenuItemsBySavedOrder(menu.filter(i=>i&&i.type==='beer'),'beer')});
-            groups.push({key:'noalcohol',title:labels.bebidas?.noalcohol||'🥤 SEM ÁLCOOL / SUCOS / REFRIS',items:sortMenuItemsBySavedOrder(menu.filter(i=>i&&i.type==='noalcohol'),'noalcohol')});
-            const pfids=Array.isArray(labels.porcoes?.featuredIds)?labels.porcoes.featuredIds.map(Number):[];
-            const pf=pfids.map(id=>menu.find(i=>Number(i.id)===id)).filter(i=>i&&i.type==='portion');
-            if(pf.length) groups.push({key:'portion-featured',title:labels.porcoes?.featured||'⭐ DESTAQUES DAS PORÇÕES',items:pf,featured:true});
-            groups.push({key:'portion',title:labels.porcoes?.title||'🍟 Porções & Larica',items:sortMenuItemsBySavedOrder(menu.filter(i=>i&&i.type==='portion'),'portion')});
-
-            const financeHtml=(item)=>{
-              try{
-                const recipe=typeof brgRecipeMap==='function'&&BRG_BAR?.data?brgRecipeMap()[String(item.id)]:null;
-                const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);
-                const cost=recipe?brgCost(recipe):0;
-                const profit=price-cost;
-                const margin=price>0?(profit/price*100):0;
-                const status=recipe?'🟢 Receita ligada ao Estoque':'🟡 Receita ainda não cadastrada';
-                return `<div class="bar-admin-finance admin-catalog-finance" data-margin-item="${safeNumericId(item.id)}"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo atual</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${status}${recipe?' • margem recalculada com o custo atual dos ingredientes no estoque.':' • abra “Ingredientes + Custo” para conectar este produto ao estoque.'}</div></div>`;
-              }catch(_){return '';}
-            };
-            const card=(i)=>{
-              const id=Number(i.id), drink=i.type==='drink';
-              return `<div class="admin-card admin-catalog-item" data-admin-item-id="${escapeHTML(String(i.id))}"><div class="admin-card-row"><img src="${img(i)}" alt="${escapeHTML(i.name||'Produto')}" style="width:58px;height:58px;object-fit:contain;border-radius:7px;border:1px solid #444;background:#09090c" onerror="this.style.visibility='hidden'"><div style="flex:1;min-width:150px"><strong style="color:#fff;font-family:var(--font-title);font-size:1.08rem">${escapeHTML(i.name||'Produto')}</strong><div style="color:#8d9aa2;font-size:.72rem;margin-top:2px">ID ${escapeHTML(String(i.id))}</div></div><input class="admin-input" id="type-${id}" value="${escapeHTML(i.type||'drink')}" style="max-width:135px" aria-label="Tipo"><input class="admin-input" id="price-${id}" value="${escapeHTML(i.price||'')}" style="max-width:100px" aria-label="Preço"></div>${drink?`<div class="admin-card-row" style="margin-top:6px"><label style="color:#aaa;font-size:.75rem;flex:1">Categoria<select class="admin-input" id="drinkline-${id}"><option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option><option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option><option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option><option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option><option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option><option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option><option value="" ${!i.drinkLine?'selected':''}>🔥 Destilados & Clássicos</option></select></label></div>`:''}<input class="admin-input" id="name-${id}" value="${escapeHTML(i.name||'')}" placeholder="Nome" style="margin-top:6px"><input class="admin-input" id="short-${id}" value="${escapeHTML(i.short||'')}" placeholder="Resumo curto" style="margin-top:6px"><textarea class="admin-textarea" id="full-${id}" rows="2" style="margin-top:6px" placeholder="Descrição completa">${escapeHTML(i.full||'')}</textarea><div class="admin-card-row" style="margin-top:6px;align-items:center"><div class="file-upload-wrapper" style="padding:6px 10px"><span style="font-size:.75rem">📷 Trocar Foto</span><input type="file" accept="image/*" onchange="updateItemImg(${id},this)"></div>${canEdit?`<button class="action-btn" onclick="saveItemData(${id})">💾 Salvar</button>`:''}${canEdit&&drink?`<button class="action-btn" style="background:var(--c-cyan);color:#000" onclick="openSiteDrinkRecipeEditor(${id})">🧪 Ingredientes + Custo</button>`:''}${canDel?`<button class="action-btn del-btn" onclick="removeMenuItem(${id})">🗑️ Excluir</button>`:''}</div>${financeHtml(i)}</div>`;
-            };
-            list.innerHTML=groups.map(g=>`<details class="admin-menu-category admin-menu-category-rebuilt" data-admin-menu-category="${escapeHTML(g.key)}" open><summary style="list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 2px"><span style="font-family:var(--font-title);font-size:1.2rem;color:var(--c-yellow)">${escapeHTML(g.title)}</span><span style="font-size:.72rem;color:#aaa">${g.items.length} ${g.items.length===1?'item':'itens'} ▾</span></summary><div style="padding-top:10px">${g.items.length?g.items.map(card).join(''):'<div style="padding:12px;color:#777;border:1px dashed rgba(255,255,255,.12);border-radius:9px">Nenhum item nesta categoria.</div>'}</div></details>`).join('');
-          }
-        }
-        if(isAdmLogged && typeof loadBarControl==='function' && (!BRG_BAR.data || !Array.isArray(BRG_BAR.data.recipes))){
-          ensureAdminCatalogBarData();
-        }
-      }catch(e){
-        console.error('[ADM] cardápio reconstruído',e);
-        const el=document.getElementById('admin-menu-list');
-        if(el)el.innerHTML='<p style="color:var(--c-red)">⚠️ Não foi possível montar o catálogo administrativo. Tente atualizar o painel.</p>';
+    function renderAdminLists(force=false){
+      const logged=getPersistentAdminFlag('brg_adm_logged')==='true';if(!logged)return;const master=getPersistentAdminFlag('brg_adm_is_master')==='true',perms=appData.permissions||{},canEdit=master||perms.canEdit!==false,canDel=master||perms.canDel!==false,safeArr=v=>Array.isArray(v)?v:[],img=x=>{try{return safeImageUrl(normalizeStoredImage(x))}catch(_){return safeImageUrl(x?.img||'')}};
+      const root=document.getElementById('admin-menu-list');
+      if(root){ensureLegacyDrinkLines();ensureMenuCategoryLabels();ensureMenuOrderData();const labels=appData.menuCategoryLabels||{},menu=safeArr(appData.menu),featured=new Set(safeArr(labels.bebidas?.featuredIds).map(Number)),pfeatured=new Set(safeArr(labels.porcoes?.featuredIds).map(Number));const defs=[['featured','⭐ DESTAQUES','featured'],['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],['legacy','🔥 Destilados & Clássicos','legacy'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol'],['portion-featured','⭐ Destaques das Porções','portion-featured'],['portion','🍟 Porções & Larica','portion']];
+        const groups=[];for(const [key,fallback,type] of defs){let items=type==='featured'?menu.filter(i=>featured.has(Number(i.id))):type==='portion-featured'?menu.filter(i=>pfeatured.has(Number(i.id))&&i.type==='portion'):type==='drink'?menu.filter(i=>i.type==='drink'&&String(i.drinkLine||'')===key):type==='legacy'?menu.filter(i=>i.type==='drink'&&!['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||''))):menu.filter(i=>i.type===type);items=sortMenuItemsBySavedOrder(items,key==='portion-featured'?'portion':key);if((type==='featured'||type==='portion-featured')&&!items.length)continue;groups.push({key,title:type==='featured'?(labels.bebidas?.featured||fallback):type==='portion-featured'?(labels.porcoes?.featured||fallback):(key==='portion'?labels.porcoes?.title||fallback:labels.bebidas?.[key]||fallback),items})}
+        const rm=typeof brgRecipeMap==='function'?brgRecipeMap():{};const finance=i=>{const r=rm[String(i.id)],price=r?Number(r.sale_price||0):brgPrice(i.price),cost=r?brgCost(r):0,profit=price-cost,margin=price>0?profit/price*100:0;return `<div class="menu-admin-finance"><div class="menu-admin-finance-grid"><div><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div><b>${r?brgMoney(cost):'—'}</b><span>Custo estoque</span></div><div><b>${r?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div><b>${r?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div></div><div style="color:#8d9aa2;font-size:.7rem;margin-top:7px">${r?'🟢 Conectado ao Controle do Bar/Estoque. A margem usa o custo atual dos ingredientes.':'🟡 Sem receita de estoque vinculada. Abra “Estoque / Margem” para vincular.'}</div></div>`};
+        const card=(i,key)=>{const id=Number(i.id),drink=i.type==='drink';return `<div class="menu-admin-item" data-admin-item-id="${escapeHTML(String(i.id))}" data-order-key="${escapeHTML(key)}"><div class="admin-card-row"><img src="${img(i)}" alt="${escapeHTML(i.name||'Produto')}" style="width:64px;height:64px;object-fit:contain;border-radius:8px;border:1px solid #444;background:#09090c" onerror="this.onerror=null;this.style.opacity='.25'"><div style="flex:1;min-width:130px"><strong style="color:#fff;font-family:var(--font-title);font-size:1.05rem">${escapeHTML(i.name||'Produto')}</strong><div style="font-size:.7rem;color:#8d9aa2">ID ${escapeHTML(String(i.id))}</div></div>${menuOrganizerActive&&((menuOrganizerPage==='porcoes'&&['portion','portion-featured'].includes(key))||(menuOrganizerPage==='bebidas'&&!['portion','portion-featured'].includes(key)))?`<div class="menu-admin-item-controls"><button type="button" onclick="event.stopPropagation();moveMenuCard(${id},'up')" aria-label="Subir">↑</button><button type="button" onclick="event.stopPropagation();moveMenuCard(${id},'down')" aria-label="Descer">↓</button></div>`:''}</div><div class="admin-card-row" style="margin-top:7px"><input class="admin-input" id="type-${id}" value="${escapeHTML(i.type||'drink')}" placeholder="Tipo" style="max-width:110px"><input class="admin-input" id="name-${id}" value="${escapeHTML(i.name||'')}" placeholder="Nome"><input class="admin-input" id="price-${id}" value="${escapeHTML(i.price||'')}" placeholder="Preço" style="max-width:110px"></div>${drink?`<label style="display:block;color:#aaa;font-size:.75rem;margin-top:7px">Categoria<select class="admin-input" id="drinkline-${id}"><option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option><option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option><option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option><option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option><option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option><option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option><option value="" ${!i.drinkLine?'selected':''}>🔥 Destilados & Clássicos</option></select></label>`:''}<input class="admin-input" id="short-${id}" value="${escapeHTML(i.short||'')}" placeholder="Resumo curto" style="margin-top:7px"><textarea class="admin-textarea" id="full-${id}" rows="2" placeholder="Descrição completa" style="margin-top:7px">${escapeHTML(i.full||'')}</textarea><div class="admin-card-row" style="margin-top:7px"><label class="file-upload-wrapper" style="padding:7px 10px;cursor:pointer">📷 Trocar Foto<input type="file" accept="image/*" onchange="updateItemImg(${id},this)" style="display:none"></label>${canEdit?`<button type="button" class="action-btn" onclick="saveItemData(${id})">💾 Salvar</button>`:''}${canEdit&&drink?`<button type="button" class="action-btn" style="background:var(--c-cyan);color:#000" onclick="openSiteDrinkRecipeEditor(${id})">🧪 Estoque / Margem</button>`:''}${canDel?`<button type="button" class="action-btn del-btn" onclick="removeMenuItem(${id})">🗑️ Excluir</button>`:''}</div>${finance(i)}</div>`};
+        root.innerHTML=`<div id="menu-admin-organizer-${menuOrganizerPage||'bebidas'}" class="menu-admin-organizer ${menuOrganizerActive?'active':''}"><div class="menu-admin-organizer-head"><strong>📐 ORGANIZAR CARDÁPIO</strong><span style="font-size:.75rem;color:#aaa">Use ↑ e ↓. Não precisa tocar e segurar.</span><div><button id="menu-organizer-save-${menuOrganizerPage||'bebidas'}" class="action-btn" style="background:var(--c-yellow);color:#000" onclick="saveMenuPositions(menuOrganizerPage||'bebidas')" ${menuOrganizerDirty?'':'disabled'}>💾 Salvar</button><button class="action-btn" style="background:#333" onclick="discardMenuPositions(menuOrganizerPage||'bebidas')">↩ Descartar</button><button class="action-btn" style="background:#333" onclick="toggleMenuOrganizer(menuOrganizerPage||'bebidas',false)">✕ Fechar</button></div></div></div>`+groups.map(g=>`<section class="menu-admin-category"><div class="menu-admin-category-title"><span>${escapeHTML(g.title)}</span><span style="font-size:.72rem;color:#8d9aa2">${g.items.length} ${g.items.length===1?'item':'itens'}</span></div><div>${g.items.length?g.items.map(i=>card(i,g.key)).join(''):'<div style="padding:10px;color:#777">Nenhum item nesta categoria.</div>'}</div></section>`).join('');
       }
-
-      const renderSimple=(id,arr,fn,msg)=>{try{const el=document.getElementById(id);if(el)el.innerHTML=arr.length?arr.map(fn).join(''):msg}catch(e){console.error('[ADM] '+id,e)}};
-      try{renderSimple('admin-agenda-list',safeArr(appData.agenda),i=>`<div class="admin-card"><div class="admin-card-row"><input class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date||'')}"><input class="admin-input" id="a-title-${i.id}" value="${escapeHTML(i.title||'')}"></div><textarea class="admin-textarea" id="a-desc-${i.id}">${escapeHTML(i.desc||'')}</textarea><div class="admin-card-row"><img src="${safeImageUrl(i.img||'')}" style="width:48px;height:48px;object-fit:cover;border-radius:5px"><input type="file" accept="image/*" onchange="updateAgendaImg(${Number(i.id)},this)">${canEdit?`<button class="action-btn" onclick="saveAgendaData(${Number(i.id)})">💾 Salvar</button>`:''}${canDel?`<button class="action-btn del-btn" onclick="removeAgendaItem(${Number(i.id)})">🗑️ Excluir</button>`:''}</div></div>`,'<p style="color:#777">Nenhum evento cadastrado.</p>')}catch(e){console.warn('[ADM] agenda',e)}
       renderSimple('admin-team-list',safeArr(appData.team),t=>`<div class="admin-card"><strong style="color:var(--c-cyan)">${escapeHTML(t.name||'')} (${escapeHTML(String(t.type||'').toUpperCase())})</strong><div class="admin-card-row"><input class="admin-input" id="tname-${escapeHTML(String(t.id))}" value="${escapeHTML(t.name||'')}" placeholder="Nome"><input class="admin-input" id="trole-${escapeHTML(String(t.id))}" value="${escapeHTML(t.role||'')}" placeholder="Cargo"></div><input class="admin-input" id="tig-${escapeHTML(String(t.id))}" value="${escapeHTML(t.ig||'')}" placeholder="Instagram" style="margin-top:5px"><textarea class="admin-textarea" id="tdesc-${escapeHTML(String(t.id))}" style="margin-top:5px">${escapeHTML(t.desc||'')}</textarea><div class="admin-card-row"><img src="${img(t)}" style="width:48px;height:48px;object-fit:cover;border-radius:5px"><input type="file" accept="image/*" onchange="updateTeamImg(${escapeJSString(String(t.id))},this)"><button class="action-btn" onclick="saveTeamData(${escapeJSString(String(t.id))})">💾 Salvar</button></div></div>`,'<p style="color:#777">Nenhum integrante cadastrado.</p>');
       renderSimple('admin-arcade-list',safeArr(appData.arcade),i=>`<div class="admin-card" style="border-color:var(--c-purple)"><strong style="color:var(--c-purple)">Posição #${escapeHTML(String(i.id||''))}</strong><div class="admin-card-row"><input class="admin-input" id="arc-name-${i.id}" value="${escapeHTML(i.name||'')}" placeholder="Nome"><input class="admin-input" id="arc-sub-${i.id}" value="${escapeHTML(i.sub||'')}" placeholder="Jogo"></div><div class="admin-card-row"><input class="admin-input" id="arc-score-${i.id}" value="${escapeHTML(i.score||'')}" placeholder="Score"><input class="admin-input" id="arc-prize-${i.id}" value="${escapeHTML(i.prize||'')}" placeholder="Prêmio"></div><input class="admin-input" id="arc-ig-${i.id}" value="${escapeHTML(i.ig||'')}" placeholder="Instagram"><textarea class="admin-textarea" id="arc-quote-${i.id}" rows="1">${escapeHTML(i.quote||'')}</textarea><button class="action-btn" onclick="saveArcadeData(${Number(i.id)})">💾 Salvar Jogador</button></div>`,'<p style="color:#777">Nenhum jogador cadastrado.</p>');
       renderSimple('admin-cachaceiros-list',safeArr(appData.cachaceiros),i=>`<div class="admin-card" style="border-color:#ff9800"><strong style="color:#ff9800">Posição #${escapeHTML(String(i.id||''))}</strong><div class="admin-card-row"><input class="admin-input" id="ca-name-${i.id}" value="${escapeHTML(i.name||'')}" placeholder="Nome"><input class="admin-input" id="ca-score-${i.id}" value="${escapeHTML(i.score||'')}" placeholder="Litros"></div><div class="admin-card-row"><input class="admin-input" id="ca-sub-${i.id}" value="${escapeHTML(i.sub||'')}" placeholder="Instagram"><input class="admin-input" id="ca-prize-${i.id}" value="${escapeHTML(i.prize||'')}" placeholder="Prêmio"></div><textarea class="admin-textarea" id="ca-quote-${i.id}" rows="1">${escapeHTML(i.quote||'')}</textarea><div class="admin-card-row"><img src="${img(i)}" style="width:48px;height:48px;object-fit:cover;border-radius:5px"><input type="file" accept="image/*" onchange="updateCachaceiroImg(${Number(i.id)},this)"><button class="action-btn" onclick="saveCachaceiroData(${Number(i.id)})">💾 Salvar Bebedor</button></div></div>`,'<p style="color:#777">Nenhum cachaceiro cadastrado.</p>');
+      if(!BRG_BAR?.data?.recipes||!Array.isArray(BRG_BAR.data.inventory))ensureAdminCatalogBarData();
     }
 
     /* === CENTRAL PRIVADA DOS SOCIOS === */
@@ -5089,7 +4878,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       const modal=document.getElementById(modalId); if(!modal)return;
       modal.classList.remove('is-open'); modal.style.display='none'; modal.setAttribute('aria-hidden','true');
       if(modalId==='categoryQuickEditModal'){const f=document.getElementById('category-edit-fields');if(f)f.innerHTML='';}
-      if(document.querySelector('.modal.is-open')) document.body.style.overflow='hidden'; else document.body.style.overflow='';
+      if(!document.querySelector('.modal.is-open')) document.body.style.overflow='';
     }
 
     window.onclick = function(event) { 
