@@ -3030,12 +3030,40 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
+    function renderCriticalSections(){
+      // Renderização independente de Diretoria, Promoter e Rankings.
+      // Se qualquer parte do cardápio falhar, estas áreas não podem desaparecer.
+      try {
+        const team=(Array.isArray(appData.team)&&appData.team.length)?appData.team:defaultTeam;
+        const arcade=(Array.isArray(appData.arcade)&&appData.arcade.length)?appData.arcade:defaultArcade;
+        const cach=(Array.isArray(appData.cachaceiros)&&appData.cachaceiros.length)?appData.cachaceiros:defaultCachaceiros;
+        const dirContainer=document.getElementById('dynamic-dir-list');
+        const proContainer=document.getElementById('dynamic-pro-list');
+        if(dirContainer){
+          dirContainer.innerHTML=team.filter(t=>t&&t.type==='dir').map(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';return `<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;}).join('');
+        }
+        if(proContainer){
+          const promoters=team.filter(t=>t&&t.type==='pro');
+          if(promoters.length){
+            const root=promoters[0];
+            proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;
+          } else { proContainer.innerHTML='<p style="color:#aaa;text-align:center;">Nenhum promoter cadastrado.</p>'; }
+        }
+        const arcadeContainer=document.getElementById('dynamic-arcade-list');
+        if(arcadeContainer) arcadeContainer.innerHTML=arcade.map((i,index)=>{const isTop3=index<3;const safeQuote=i.quote||(isTop3?'Traga sua ficha e tente a sorte!':'');const clickHTML=`onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub||'')}', '${escapeHTML(i.score||'')}', '${escapeHTML(i.prize||'')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig||'@jogador')}', '${i.img||''}')"`;return `<div class="lb-item ${isTop3?'top3-item clickable':'clickable'}" ${clickHTML}><span class="lb-pos" style="${isTop3?'color:var(--c-yellow);font-size:1rem;':''}">#${i.id}</span><img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)"><div class="lb-info"><span class="lb-name">${escapeHTML(i.name)}</span><span class="lb-sub">${escapeHTML(i.sub)} • <strong style="color:var(--c-pink);">${escapeHTML(i.ig||'@jogador')}</strong></span><span class="lb-title-badge">${getHonorTitle(index,'arcade')}</span>${isTop3&&safeQuote?`<span class="lb-inline-quote">"${escapeHTML(safeQuote)}"</span>`:''}</div><div><div class="lb-score">${escapeHTML(i.score)}</div>${i.prize?`<span class="lb-prize">${escapeHTML(i.prize)}</span>`:''}</div></div>`;}).join('');
+        const cachContainer=document.getElementById('dynamic-cachaceiros-list');
+        if(cachContainer) cachContainer.innerHTML=cach.map((i,index)=>{const isTop3=index<3;const safeQuote=i.quote||(isTop3?'Água é pro fígado fraco, desce mais uma dose!':'');const clickHTML=`onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub||'')}', '${escapeHTML(i.score||'')}', '${escapeHTML(i.prize||'')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub||i.ig||'@cachaceiro')}', '${i.img||''}')"`;return `<div class="lb-item ${isTop3?'top3-item clickable':'clickable'}" ${clickHTML}><span class="lb-pos" style="${isTop3?'color:var(--c-yellow);font-size:1rem;':''}">#${i.id}</span><img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)"><div class="lb-info"><span class="lb-name">${escapeHTML(i.name)}</span><span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${escapeHTML(i.sub||i.ig||'@cachaceiro')}</strong></span><span class="lb-title-badge">${getHonorTitle(index,'cachaceiro')}</span>${isTop3&&safeQuote?`<span class="lb-inline-quote">"${escapeHTML(safeQuote)}"</span>`:''}</div><div><div class="lb-score">${escapeHTML(i.score)}</div>${i.prize?`<span class="lb-prize">${escapeHTML(i.prize)}</span>`:''}</div></div>`;}).join('');
+      } catch(e) { console.error('[Bargunçados] Falha isolada nas áreas Diretoria/Promoter/Ranking:',e); }
+    }
+
     function renderApp() {
       try {
         return renderAppUnsafe();
       } catch(e) {
         console.error('[Bargunçados] Renderização principal falhou; catálogo de emergência ativado.', e);
         renderEmergencyMenu();
+      } finally {
+        renderCriticalSections();
       }
     }
 
