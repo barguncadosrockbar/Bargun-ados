@@ -233,7 +233,7 @@
     .agenda-feature-badge{position:absolute;left:0;right:0;bottom:0;z-index:3;background:rgba(20,8,18,.94);color:#fff;border-top:1px solid rgba(255,255,255,.35);padding:6px 10px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;text-align:center;box-shadow:0 -3px 10px rgba(0,0,0,.35);} .featured-agenda-badge{display:block;width:100%;box-sizing:border-box;background:linear-gradient(135deg,var(--c-red),var(--c-purple));color:#fff;border-top:1px solid rgba(255,255,255,.45);padding:8px 10px;text-align:center;font-family:var(--font-title);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 -2px 10px rgba(0,0,0,.25);}
     .home-social-promo{margin-top:15px;padding:14px 16px;border:1px solid rgba(255,235,59,.42);background:linear-gradient(135deg,rgba(255,235,59,.08),rgba(233,30,99,.08));border-radius:12px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18)}.home-social-promo h3{margin:0 0 6px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.18rem}.home-social-promo p{margin:0;color:#fff;font-weight:800;line-height:1.4}
     .home-agenda-wrap{margin-top:15px;display:flex;justify-content:center}.home-agenda-card{width:min(100%,330px);aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:12px;border:2px solid var(--c-red);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(0,0,0,.4)}.home-agenda-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.05) 65%)}.home-agenda-content{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px;text-align:center}.home-agenda-content .tag{display:inline-block;background:var(--c-red);color:#fff;padding:4px 8px;border-radius:5px;font-family:var(--font-title);font-size:.72rem;margin-bottom:5px}.home-agenda-content .title{color:#fff;font-family:var(--font-title);font-size:1.25rem;text-transform:uppercase;line-height:1.1}
-    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:auto}
+    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:none}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
     .dir-card:hover { transform: translateY(-4px); }
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
@@ -303,7 +303,6 @@
     @keyframes authScan { 0% { top:18%; opacity:0; } 10% { opacity:.22; } 90% { opacity:.22; } 100% { top:82%; opacity:0; } }
     @keyframes authSuccessFlash { 0% { box-shadow:0 0 0 rgba(0,230,118,0); } 45% { box-shadow:0 0 45px rgba(0,230,118,.22); } 100% { box-shadow:0 0 0 rgba(0,230,118,0); } }
     @keyframes authShake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-7px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(3px); } }
-    .brg-health-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0 14px}.brg-health-last-run{color:#8d9aa2;font-size:.76rem}.brg-health-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}.brg-health-summary-card{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px;background:rgba(0,0,0,.28);text-align:center}.brg-health-summary-card b{display:block;font-family:var(--font-title);font-size:1.15rem}.brg-health-summary-card span{display:block;color:#8d9aa2;font-size:.68rem;margin-top:3px;text-transform:uppercase}.brg-health-results{display:grid;gap:8px}.brg-health-item{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:start;border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:10px;background:rgba(0,0,0,.28)}.brg-health-icon{font-size:1.15rem}.brg-health-name{font-weight:900;color:#fff}.brg-health-detail{font-size:.75rem;color:#9aa7ad;line-height:1.45;margin-top:3px}.brg-health-badge{font-size:.65rem;font-family:var(--font-title);letter-spacing:.7px;padding:4px 7px;border-radius:999px;white-space:nowrap}.brg-health-item.ok{border-color:rgba(0,230,118,.28)}.brg-health-item.ok .brg-health-badge{color:#00e676;background:rgba(0,230,118,.08)}.brg-health-item.warn{border-color:rgba(255,193,7,.28)}.brg-health-item.warn .brg-health-badge{color:#ffcc80;background:rgba(255,193,7,.08)}.brg-health-item.error{border-color:rgba(255,82,82,.34)}.brg-health-item.error .brg-health-badge{color:#ff7b7b;background:rgba(255,82,82,.08)}.brg-health-item.info .brg-health-badge{color:#80d8ff;background:rgba(0,188,212,.08)}.brg-health-section-title{font-family:var(--font-title);font-size:1rem;color:var(--c-yellow);margin:20px 0 8px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12)}.brg-health-permissions{display:grid;gap:8px}.brg-perm-row{display:grid;grid-template-columns:1fr repeat(8,minmax(34px,1fr));gap:5px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px;background:rgba(0,0,0,.24);font-size:.67rem}.brg-perm-row.header{color:#8d9aa2;font-family:var(--font-title);text-transform:uppercase}.brg-perm-name{min-width:130px}.brg-perm-pill{display:flex;align-items:center;justify-content:center;min-height:25px;border-radius:5px;font-weight:900}.brg-perm-pill.yes{color:#00e676;background:rgba(0,230,118,.08)}.brg-perm-pill.no{color:#ff7b7b;background:rgba(255,82,82,.08)}.brg-security-note{display:grid;gap:7px;border:1px solid rgba(255,193,7,.2);background:rgba(255,193,7,.045);border-radius:10px;padding:11px;color:#c8d0d4;font-size:.76rem;line-height:1.45}@media(max-width:760px){.brg-health-summary{grid-template-columns:1fr 1fr}.brg-perm-row{grid-template-columns:1fr 1fr 1fr 1fr}.brg-perm-row.header{display:none}.brg-perm-name{grid-column:1/-1;min-width:0;font-weight:900}.brg-perm-pill{font-size:.62rem}}@media(max-width:480px){.brg-health-summary{grid-template-columns:1fr}.brg-health-item{grid-template-columns:26px 1fr}.brg-health-badge{grid-column:2;justify-self:start}}
     @media (prefers-reduced-motion: reduce) {
       .admin-login-box::before, .auth-tech-header::after, .auth-login-button::before, .auth-tech-dot, .auth-scanline, .auth-status.auth-working { animation:none !important; }
       .auth-login-input, .auth-login-button { transition:none !important; }
@@ -389,15 +388,14 @@
       .traffic-mini-label { font-size: .6rem; }
       .featured-flyer-img { min-height: 420px; max-height: 520px; }
     }
-  .menu-organizer-bar{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,214,0,.35);border-radius:10px;background:rgba(255,214,0,.06)}
+  .menu-organizer-bar{display:none;align-items:center;position:relative;z-index:10000;pointer-events:auto;gap:8px;flex-wrap:wrap;margin:0 0 14px;padding:10px 12px;border:1px solid rgba(255,214,0,.35);border-radius:10px;background:rgba(255,214,0,.06)}
   .menu-organizer-bar.active{display:flex}
   .menu-organizer-hint{color:#ccc;font-size:.78rem;flex:1 1 220px}
-  .menu-organizer-save{display:inline-flex;opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
-  .menu-organizer-save.pending{display:inline-flex;opacity:1;filter:none;pointer-events:auto;cursor:pointer}
-  .menu-organizer-save[disabled]{opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
+  .menu-organizer-save{display:none}
+  .menu-organizer-save.pending{display:inline-flex}
   .menu-organizer-discard{display:none}
   .menu-organizer-discard.pending{display:inline-flex}
-  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px;user-select:none;-webkit-user-select:none}
+  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px}
   .menu-organizer-active .menu-grid .product-card:active{cursor:grabbing}
   .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:.42;transform:scale(.98)}
   .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:2px solid var(--c-yellow);outline-offset:2px}
@@ -558,19 +556,8 @@
 @media(max-width:650px){.bar-analytics-grid{grid-template-columns:1fr}.bar-inline-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-goal-grid{grid-template-columns:1fr}}
 @media(max-width:1000px){.bar-products{grid-template-columns:repeat(3,minmax(0,1fr))}.bar-kpis{grid-template-columns:repeat(3,minmax(120px,1fr))}.bar-control-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.bar-control-overlay{padding:0}.bar-control-shell{min-height:100vh;border-radius:0;border-left:0;border-right:0}.bar-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bar-product-img{height:100px}.bar-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-control-form{grid-template-columns:1fr}.bar-control-detail{grid-template-columns:1fr}.bar-control-view{padding:12px}.bar-control-head{padding:14px}}
-<style>.bar-field-help{display:block;margin-top:5px;font-size:.78rem;line-height:1.35;color:#8fa0ad}.bar-unit-help{line-height:1.45}
-/* V44 — popups de Diretoria/Promoter */
-#directorModal .modal-content{animation:brgProfilePop .28s cubic-bezier(.2,.8,.2,1);transform-origin:center;box-shadow:0 24px 80px rgba(0,0,0,.65),0 0 34px rgba(233,30,99,.16)}
-#directorModal .director-follow-card{margin:14px 0;padding:13px 14px;border:1px solid rgba(255,235,59,.48);border-radius:14px;background:linear-gradient(135deg,rgba(255,235,59,.10),rgba(233,30,99,.07));text-align:center}
-#directorModal .director-follow-title{font-family:var(--font-title);font-weight:900;color:#ffeb3b;letter-spacing:.04em;font-size:1rem}
-#directorModal .director-follow-copy{color:#fff;margin-top:5px;font-weight:800;line-height:1.45}
-#directorModal .director-ig-highlight{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 15px;padding:10px 12px;border-radius:12px;border:1px solid rgba(233,30,99,.65);background:rgba(233,30,99,.08);color:#ff80ab;font-weight:900;font-size:1rem}
-@keyframes brgProfilePop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
-@media (prefers-reduced-motion:reduce){#directorModal .modal-content{animation:none}}
-</style></style>
-<script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };
-window.fallbackTeamImg = function(el){ if(!el) return; el.onerror=null; el.removeAttribute('src'); el.style.visibility='hidden'; el.setAttribute('data-image-missing','true'); };
-</script>
+<style>.bar-field-help{display:block;margin-top:5px;font-size:.78rem;line-height:1.35;color:#8fa0ad}.bar-unit-help{line-height:1.45}</style></style>
+<script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 <script>
 /* SECURITY HARDENING V45 + PERSISTENCE HARDENING V46 — non-visual, client-side defense helpers. */
 function safeImageUrl(value){
@@ -587,21 +574,8 @@ function safeNumericId(value){
   const n=Number(value);
   return Number.isFinite(n) ? String(Math.trunc(n)) : '0';
 }
-function getInstagramProfileUrl(value){
-  const ig=String(value ?? '').replace(/^@/,'').trim();
-  return ig ? 'https://www.instagram.com/'+encodeURIComponent(ig)+'/' : '';
-}
 function escapeJSString(value){
-  const raw=String(value ?? '');
-  return "'" + raw
-    .replace(/\\/g,'\\\\')
-    .replace(/'/g,"\\'")
-    .replace(/\r/g,'\\r')
-    .replace(/\n/g,'\\n')
-    .replace(/\u2028/g,'\\u2028')
-    .replace(/\u2029/g,'\\u2029')
-    .replace(/</g,'\\x3C')
-    .replace(/>/g,'\\x3E') + "'";
+  return JSON.stringify(String(value ?? '')).replace(/</g,'\u003C').replace(/>/g,'\u003E').replace(/\u2028/g,'\u2028').replace(/\u2029/g,'\u2029');
 }
 function isAuthenticatedAdmin(){ return getPersistentAdminFlag('brg_adm_logged')==='true'; }
 function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminFlag('brg_adm_is_master')==='true'; }
@@ -806,7 +780,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     </div>
   </div>
 
-  <div id="directorModal" class="modal"><div class="modal-content glass-panel" style="border-color:var(--c-pink);"><span class="close-btn" onclick="closeModal('directorModal')">×</span><img id="directorModalImg" src="" alt="Diretoria ou Promoter" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid var(--c-pink);margin:0 auto 12px;display:block;"><h3 id="directorModalName" style="font-family:var(--font-title);font-size:2rem;color:#fff;margin-bottom:4px;text-transform:uppercase;text-align:center;"></h3><p id="directorModalRole" style="color:var(--c-yellow);font-weight:800;margin-bottom:10px;text-align:center;"></p><div id="directorModalIgHighlight" class="director-ig-highlight">📸 INSTAGRAM: <span id="directorModalIgText">—</span></div><p id="directorModalDesc" style="color:#ccc;line-height:1.5;text-align:left;margin-bottom:12px;"></p><div class="director-follow-card"><div class="director-follow-title">🔥 DESCONTO AO SEGUIR O MEMBRO</div><div class="director-follow-copy">Apresente aqui que você está seguindo este membro no Instagram e ganhe o desconto/promoção informado pelo bar.</div></div><a id="directorModalIg" href="#" target="_blank" rel="noopener noreferrer" class="ig-button" style="display:block;text-decoration:none;border-color:var(--c-pink);color:var(--c-pink);text-align:center;">📸 ABRIR INSTAGRAM</a></div></div>
+  <div id="directorModal" class="modal"><div class="modal-content glass-panel" style="border-color:var(--c-pink);"><span class="close-btn" onclick="closeModal('directorModal')">×</span><img id="directorModalImg" src="" alt="Diretoria" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--c-pink);margin:0 auto 12px;display:block;"><h3 id="directorModalName" style="font-family:var(--font-title);font-size:2rem;color:#fff;margin-bottom:4px;text-transform:uppercase;"></h3><p id="directorModalRole" style="color:var(--c-yellow);font-weight:800;margin-bottom:12px;"></p><p id="directorModalDesc" style="color:#ccc;line-height:1.5;text-align:left;margin-bottom:15px;"></p><a id="directorModalIg" href="#" target="_blank" class="ig-button" style="display:block;text-decoration:none;border-color:var(--c-pink);color:var(--c-pink);">📸 ABRIR INSTAGRAM</a></div></div>
 
   <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE AGENDA -->
   <div id="eventModal" class="modal">
@@ -1107,35 +1081,32 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <div class="traffic-detail">📊 <b>Média por visita:</b> <span id="adm-stat-click-rate">0</span> cliques</div>
           </div>
 
-          <!-- DIAGNÓSTICO COMPLETO DO SISTEMA -->
-          <button class="admin-accordion-btn" style="border-color: #00e676; border-left: 4px solid #00e676;" onclick="openSystemHealth()">🩺 Diagnóstico Completo • Serviços, Segurança & Permissões</button>
-          <div id="adm-system-health" class="admin-accordion-content" style="border-color: #00e676;">
+          <!-- BANCO DE DADOS E SINCRONIZAÇÃO COMPLETA -->
+          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados & Sincronização em Tempo Real</button>
+          <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
             <div class="db-status-box">
               <div class="db-status-indicator" style="color: #00e676;">
-                <span id="brg-health-main-dot" class="status-dot open" style="width:8px; height:8px;"></span>
-                <span id="brg-health-main-text">Pronto para verificar todos os serviços conectados.</span>
+                <span class="status-dot open" style="width:8px; height:8px;"></span>
+                <span>Banco de Dados Global (Supabase): CONECTADO & SINCRONIZANDO ✅</span>
               </div>
-              <p style="color:#ccc;font-size:.85rem;line-height:1.5;margin:8px 0 0;">
-                Esta central faz testes reais, somente de leitura, no navegador: autenticação, sessão administrativa, banco remoto, Controle do Bar, endpoints de imagens, HTTPS e permissões cadastradas. <strong>Nenhum teste de diagnóstico grava conteúdo no site.</strong>
+              <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
+                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
               </p>
+              
+              <div id="gh-status-indicator" class="db-status-indicator" style="color: var(--c-cyan); margin-top: 10px;">
+                <span id="gh-status-dot" class="status-dot" style="width:8px; height:8px; background:#aaa;"></span>
+                <span id="gh-status-text">GitHub Pages: Verificando Configuração...</span>
+              </div>
             </div>
-            <div class="brg-health-actions">
-              <button class="action-btn" id="brg-health-run-btn" onclick="runSystemDiagnostics()" style="background:#00e676;color:#000;">🔍 VERIFICAR AGORA</button>
-              <span id="brg-health-last-run" class="brg-health-last-run">Ainda não verificado nesta sessão.</span>
-            </div>
-            <div id="brg-health-summary" class="brg-health-summary"></div>
-            <div id="brg-health-results" class="brg-health-results"></div>
 
-            <div class="brg-health-section-title">👥 Auditoria das permissões dos administradores</div>
-            <div id="brg-health-permissions" class="brg-health-permissions">Abra a verificação para carregar a situação atual.</div>
-
-            <div class="brg-health-section-title">🛡️ Auditoria de segurança do projeto</div>
-            <div class="brg-security-note">
-              <div><strong>HTTPS do site:</strong> obrigatório para produção e verificado automaticamente acima.</div>
-              <div><strong>Credencial GitHub:</strong> removida deste painel e não é usada para salvar dados administrativos.</div>
-              <div><strong>Autenticação:</strong> administradores usam Supabase Auth; o painel aplica uma sessão máxima local de 12 horas.</div>
-              <div><strong>Backend:</strong> as gravações administrativas passam por Edge Functions com autenticação Bearer; chaves privilegiadas permanecem no servidor.</div>
-              <div style="margin-top:8px;color:#ffcc80;"><strong>Última auditoria do Supabase:</strong> o projeto tinha 9 tabelas com RLS habilitado sem políticas específicas (nível INFO) e a proteção contra senhas vazadas desativada (nível WARN). Esses pontos não impedem o funcionamento atual, mas aparecem como pendências de segurança e são explicados no resultado abaixo quando o diagnóstico for executado.</div>
+            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para validar acesso de escrita ao repositório GitHub, insira seu Personal Access Token. O salvamento dos dados administrativos do site é feito pela autenticação Supabase e confirmado no Supabase:</p>
+            <div class="admin-card">
+              <div class="admin-card-row">
+                <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
+                <input type="text" class="admin-input" id="gh-repo" placeholder="Repositório (ex: Bargun-ados)">
+              </div>
+              <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
+              <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
             </div>
           </div>
 
@@ -1200,7 +1171,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                 <div id="managed-admin-info" style="color:#aaa; font-size:0.8rem; margin:8px 0 12px;"></div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
-                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores, Textos, Categorias e Promocionais</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
@@ -1388,9 +1359,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
     const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
     const BRG_REMOTE_CACHE_KEY = 'brg_last_remote_snapshot_v1';
-    // Compatibilidade: versões antigas podiam guardar um PAT do GitHub apenas nesta sessão.
-    // Ele não é mais usado pelo site e é removido automaticamente.
-    try { sessionStorage.removeItem('brg_gh_config_session'); localStorage.removeItem('brg_gh_config'); } catch(e) {}
     // O estado do site é persistido exclusivamente no backend Supabase (Edge Function -> Postgres).
     // Nenhuma alteração administrativa é tratada como "salva" em localStorage.
 
@@ -1602,7 +1570,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function getAdminAccessToken() {
-      if(!(await enforceAdminSessionLifetime())) return null;
       let session = await getCurrentSupabaseSession();
       if(!session && getPersistentAdminFlag('brg_adm_logged') === 'true') {
         session = await restoreSupabaseAdminSession();
@@ -1882,10 +1849,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       { id: 3, date: '18/Out', title: 'Domingo Acústico', desc: 'Voz e violão. Rock nacional.', img: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629?w=400&q=80' }
     ];
     const defaultTeam = [
-      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: 'https://i.ibb.co/zHjR4ZjG/185479.jpg' },
-      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: 'https://i.ibb.co/nqtjPTzk/185480.jpg' },
-      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: 'https://i.ibb.co/svfXs51T/185481.webp' },
-      { id: 'pro1', type: 'pro', name: 'RAMON', role: 'Bandas & Mosh', ig: '@', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://i.ibb.co/KcN0BsPN/190574.jpg' }
+      { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
+      { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
+      { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
+      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
     ];
     const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
@@ -1917,12 +1884,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       },
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
       partnersFinance: { currentMonth: new Date().toISOString().slice(0,7), revenues: [], expenses: [], shifts: [], notes: '' }
     };
+
+    let githubConfig = (() => {
+      try {
+        const raw = sessionStorage.getItem('brg_gh_config_session');
+        return raw ? JSON.parse(raw) : { user: '', repo: '', token: '' };
+      } catch(e) { return { user: '', repo: '', token: '' }; }
+    })();
 
     function getTodayKey(){ return new Date().toISOString().slice(0,10); }
 
@@ -2272,17 +2246,58 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
 
-    function hydrateLastKnownRemoteSnapshot(){ return false; }
-    function persistLastKnownRemoteSnapshot(data,revision){ return true; }
+    function hydrateLastKnownRemoteSnapshot(){
+      try{
+        const raw=localStorage.getItem(BRG_REMOTE_CACHE_KEY);
+        if(!raw)return false;
+        const cached=JSON.parse(raw);
+        if(!cached || typeof cached!=='object' || !cached.data || typeof cached.data!=='object') return false;
+        const cachedData=cloneForSync(cached.data)||{};
+        const cachedRevision=Number(cached.revision||0);
+        appData={...appData,...cachedData};
+        remoteRevision=Math.max(remoteRevision,cachedRevision);
+        publicRevision=Math.max(publicRevision,cachedRevision);
+        remoteSnapshot=cloneForSync(cachedData)||{};
+        ensureAdminSystem();
+        ensureMenuCategoryLabels();
+        ensureDeletedCatalogRegistry();
+        ensureDrinkCatalog();
+        ensureModerationHistory();
+        return true;
+      }catch(e){
+        console.warn('[Bargunçados] Cache local remoto inválido; ignorando.',e);
+        try{localStorage.removeItem(BRG_REMOTE_CACHE_KEY)}catch(_){}
+        return false;
+      }
+    }
+
+    function persistLastKnownRemoteSnapshot(data,revision){
+      try{
+        const clean=cloneForSync(data)||{};
+        delete clean.__sync;
+        localStorage.setItem(BRG_REMOTE_CACHE_KEY,JSON.stringify({revision:Number(revision||0),savedAt:Date.now(),data:clean}));
+      }catch(e){
+        console.warn('[Bargunçados] Não foi possível atualizar o cache local do último estado confirmado.',e);
+      }
+    }
 
     async function initApp() {
-      const sessionStillValid = await enforceAdminSessionLifetime();
-      // O painel administrativo não depende de GitHub/PAT. A persistência e a autenticação
-      // são feitas pelo Supabase; o diagnóstico abaixo verifica os serviços reais quando solicitado.
+      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
+        const uEl = document.getElementById('gh-user');
+        const rEl = document.getElementById('gh-repo');
+        const tEl = document.getElementById('gh-token');
+        if(uEl) uEl.value = githubConfig.user;
+        if(rEl) rEl.value = githubConfig.repo;
+        if(tEl) tEl.value = githubConfig.token;
+        updateGitHubUI(true);
+      } else {
+        updateGitHubUI(false);
+      }
       
       // Primeiro recupera o último estado remoto confirmado neste aparelho.
       // Se a API estiver temporariamente indisponível, isso impede o retorno aos
       // dados padrão antigos e preserva a última versão conhecida.
+      hydrateLastKnownRemoteSnapshot();
       // Depois pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
@@ -2291,6 +2306,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       // Depois tenta restaurar sessão e sincronizar a nuvem sem bloquear a interface.
       await restoreSupabaseAdminSession();
+      await flushPendingAdminChanges();
       await fetchBinData();
       // IMPORTANTE: a inicialização da página NÃO grava automaticamente.
       // Um carregamento/reload nunca deve abrir o modal "Salvando" nem criar uma
@@ -2307,7 +2323,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       recordTrafficAnalytics();
       renderApp();
       
-      if(sessionStillValid && getPersistentAdminFlag('brg_adm_logged') === 'true') {
+      if(getPersistentAdminFlag('brg_adm_logged') === 'true') {
         const logBox = document.getElementById('admin-login');
         const dashBox = document.getElementById('admin-dashboard');
         if(logBox) logBox.style.display = 'none';
@@ -2318,12 +2334,44 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     }
 
-    const BRG_PENDING_CHANGES_KEY='brg_pending_admin_changes_disabled';
-    function readPendingAdminChanges(){ return {}; }
-    function writePendingAdminChanges(changes){ return {}; }
-    function clearPendingAdminChanges(changes){ return true; }
-    function overlayPendingAdminChanges(){ return false; }
-    async function flushPendingAdminChanges(){ return false; }
+    function updateGitHubUI(isConnected) {
+      const dot = document.getElementById('gh-status-dot');
+      const text = document.getElementById('gh-status-text');
+      if (!dot || !text) return;
+
+      if(isConnected) {
+        dot.className = 'status-dot open';
+        dot.style.background = '#00e676';
+        text.innerText = `GitHub (${githubConfig.user}/${githubConfig.repo}): TOKEN VALIDADO E COM ESCRITA ✅`;
+        text.style.color = '#00e676';
+      } else {
+        dot.className = 'status-dot closed';
+        dot.style.background = '#ff1744';
+        text.innerText = 'GitHub: token não validado (o salvamento do site usa Supabase Postgres) ⚠️';
+        text.style.color = '#ff9800';
+      }
+    }
+
+    const BRG_PENDING_CHANGES_KEY='brg_pending_admin_changes_v1';
+    function readPendingAdminChanges(){try{const raw=localStorage.getItem(BRG_PENDING_CHANGES_KEY);const v=raw?JSON.parse(raw):null;if(!v||typeof v!=='object'||Array.isArray(v))return {};const owner=String(v.ownerEmail||'').toLowerCase();const current=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(!owner||!current||owner!==current)return {};return v.changes&&typeof v.changes==='object'&&!Array.isArray(v.changes)?v.changes:{}}catch(e){return {}}}
+    function writePendingAdminChanges(changes){const current=readPendingAdminChanges();Object.keys(changes||{}).forEach(k=>{current[k]=cloneForSync(changes[k])});const owner=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(owner)localStorage.setItem(BRG_PENDING_CHANGES_KEY,JSON.stringify({ownerEmail:owner,changes:current,savedAt:Date.now()}));return current}
+    function clearPendingAdminChanges(changes){const current=readPendingAdminChanges();Object.keys(changes||{}).forEach(k=>delete current[k]);const owner=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(Object.keys(current).length&&owner)localStorage.setItem(BRG_PENDING_CHANGES_KEY,JSON.stringify({ownerEmail:owner,changes:current,savedAt:Date.now()}));else if(!Object.keys(current).length)localStorage.removeItem(BRG_PENDING_CHANGES_KEY);}
+    function overlayPendingAdminChanges(){const pending=readPendingAdminChanges();if(!Object.keys(pending).length)return;appData={...appData,...pending};ensureAdminSystem();ensureMenuCategoryLabels();ensureDeletedCatalogRegistry();ensureDrinkCatalog();ensureModerationHistory();renderApp();}
+
+    async function flushPendingAdminChanges(){
+      const pending=readPendingAdminChanges();
+      if(!Object.keys(pending).length)return false;
+      const token=await getAdminAccessToken();
+      if(!token)return false;
+      try{
+        const baseRevision=remoteRevision;
+        const ok=await queueBinWrite(pending,baseRevision);
+        if(!ok)return false;
+        clearPendingAdminChanges(pending);
+        await verifyAdminPersistence(pending);
+        return true;
+      }catch(e){console.warn('[Bargunçados] fila administrativa aguardando nova autenticação/conexão.',e);return false}
+    }
 
     async function fetchBinData(force=false) {
       const adminExpected = getPersistentAdminFlag('brg_adm_logged') === 'true';
@@ -2389,6 +2437,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             remoteSnapshot = cloneForSync(incoming) || {};
             persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
+            if(adminExpected) overlayPendingAdminChanges();
             ensureAdminSystem();
             ensureMenuCategoryLabels();
             ensureDeletedCatalogRegistry();
@@ -2463,9 +2512,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveBinData(actionDesc = '') {
-      if(!(await enforceAdminSessionLifetime())) {
-        throw new Error('A sessão administrativa de 12 horas expirou. Faça login novamente para salvar alterações.');
-      }
       if(getPersistentAdminFlag('brg_adm_logged') !== 'true') {
         throw new Error('É necessário estar autenticado como administrador para salvar alterações permanentes.');
       }
@@ -2491,6 +2537,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
       // Ponte permanente: a alteração fica registrada localmente até o servidor
       // confirmar. Assim uma queda de sessão/conexão não devolve a interface ao estado antigo.
+      writePendingAdminChanges(changes);
       const baseRevision = remoteRevision;
       const saved = await queueBinWrite(changes, baseRevision);
       if (!saved) {
@@ -2517,12 +2564,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             if(latestRecord && typeof latestRecord==='object'){
               const latestRev=Number(latestRecord?.__sync?.revision||0);
               const retry=await queueBinWrite(changes,latestRev);
-              if(retry && await verifyAdminPersistence(changes)){ return true; }
+              if(retry && await verifyAdminPersistence(changes)){ clearPendingAdminChanges(changes); return true; }
             }
           }
         }
         throw new Error('A gravação inicial foi aceita, mas a verificação final detectou que os dados não permaneceram iguais no servidor. A tentativa automática de correção não foi confirmada.');
       }
+      clearPendingAdminChanges(changes);
       return true;
       } catch(e) {
         const progress=document.getElementById('brg-admin-save-progress');
@@ -2539,111 +2587,56 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       alert(appData.home.isOpen ? "🟢 Bar alterado para ABERTO!" : "🔴 Bar alterado para FECHADO!");
     }
 
-    function openSystemHealth(){
-      toggleAdminSection('adm-system-health');
-      const box=document.getElementById('adm-system-health');
-      if(box && box.style.display!=='none') runSystemDiagnostics();
-    }
+    async function saveGitHubConfig() {
+      const user = document.getElementById('gh-user').value.trim();
+      const repo = document.getElementById('gh-repo').value.trim();
+      const token = document.getElementById('gh-token').value.trim();
+      if(!user || !repo || !token) {
+        alert('❌ Informe usuário, repositório e Personal Access Token do GitHub.');
+        return;
+      }
 
-    function brgHealthEscape(v){return escapeHTML(String(v??''));}
-    function renderHealthItem(item){
-      const icon=item.status==='ok'?'✅':item.status==='warn'?'⚠️':item.status==='error'?'❌':'ℹ️';
-      const badge=item.status==='ok'?'OK':item.status==='warn'?'ATENÇÃO':item.status==='error'?'ERRO':'INFO';
-      return `<div class="brg-health-item ${item.status}"><div class="brg-health-icon">${icon}</div><div><div class="brg-health-name">${brgHealthEscape(item.name)}</div><div class="brg-health-detail">${brgHealthEscape(item.detail)}</div></div><div class="brg-health-badge">${badge}</div></div>`;
-    }
-    function renderAdminPermissionAudit(){
-      const box=document.getElementById('brg-health-permissions'); if(!box)return;
-      ensureAdminSystem();
-      const accounts=getAdminAccounts();
-      const labels=[['canAdd','Adicionar'],['canEdit','Editar'],['canDel','Excluir'],['canTabs','Abas'],['canMod','Moderação'],['canRank','Ranking'],['canAgenda','Agenda'],['canTeam','Equipe']];
-      const header=`<div class="brg-perm-row header"><div class="brg-perm-name">Administrador</div>${labels.map(x=>`<div title="${x[1]}">${x[1].slice(0,5)}</div>`).join('')}</div>`;
-      const rows=accounts.map(a=>{
-        const p=getManagedAdminPermissions(a.email)||{};
-        return `<div class="brg-perm-row"><div class="brg-perm-name">${brgHealthEscape(a.name)}${a.isMaster?' 👑':''}<br><span style="color:#7f8b91;font-size:.61rem;">${brgHealthEscape(a.email)}</span></div>${labels.map(([k])=>`<div class="brg-perm-pill ${p[k]!==false?'yes':'no'}">${p[k]!==false?'✓':'×'}</div>`).join('')}</div>`;
-      }).join('');
-      box.innerHTML=header+rows;
-    }
-    async function runSystemDiagnostics(){
-      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return alert('Faça login como administrador para executar o diagnóstico completo.');
-      if(!(await enforceAdminSessionLifetime())){alert('Sua sessão administrativa de 12 horas expirou. Faça login novamente.');return;}
-      const btn=document.getElementById('brg-health-run-btn'), results=document.getElementById('brg-health-results'), summary=document.getElementById('brg-health-summary'), mainText=document.getElementById('brg-health-main-text'), mainDot=document.getElementById('brg-health-main-dot'), last=document.getElementById('brg-health-last-run');
-      if(btn){btn.disabled=true;btn.textContent='⏳ VERIFICANDO...';}
-      if(results)results.innerHTML='<div class="brg-health-item info"><div class="brg-health-icon">⏳</div><div><div class="brg-health-name">Executando diagnóstico</div><div class="brg-health-detail">Os testes abaixo são de leitura e não alteram o conteúdo do site.</div></div><div class="brg-health-badge">EM ANDAMENTO</div></div>';
-      const checks=[]; const add=(status,name,detail)=>checks.push({status,name,detail});
-      const started=performance.now();
-      try{
-        const origin=location.origin;
-        add(location.protocol==='https:'?'ok':'warn','HTTPS / página publicada',location.protocol==='https:'?`Página carregada com HTTPS em ${origin}.`:`A página está usando ${location.protocol}; em produção publique somente via HTTPS.`);
-
-        const session=await getCurrentSupabaseSession();
-        if(!session?.access_token||!session?.user?.email){
-          add('error','Supabase Auth / sessão administrativa','Não foi encontrada uma sessão administrativa válida. Faça login novamente.');
-        }else{
-          const user=await supabaseGetUser(session.access_token);
-          const account=getAuthAccountByEmail(user?.email||session.user.email);
-          if(user?.email&&account){
-            const age=Math.max(0,Date.now()-ensureAdminSessionTimestamp());
-            const remaining=Math.max(0,BRG_ADMIN_SESSION_MAX_MS-age);
-            add('ok','Supabase Auth','Sessão autenticada e identidade confirmada para '+account.name+' ('+account.email+').');
-            add(remaining>0?'ok':'error','Sessão administrativa / limite de 12 horas',`Sessão persistente neste aparelho. Tempo restante: ${String(Math.floor(remaining/3600000)).padStart(2,'0')}:${String(Math.floor(remaining/60000)%60).padStart(2,'0')}:${String(Math.floor(remaining/1000)%60).padStart(2,'0')}.`);
-          }else{
-            add('error','Supabase Auth / identidade','O token existe, mas o usuário não corresponde a uma conta administrativa autorizada no site.');
+      const btn = document.querySelector('#adm-github button[onclick="saveGitHubConfig()"]');
+      if(btn) { btn.disabled = true; btn.dataset.oldText = btn.textContent; btn.textContent = '⏳ Verificando GitHub...'; }
+      try {
+        // O token do GitHub é uma credencial separada da autenticação Supabase.
+        // Nunca tratamos apenas a presença do token como prova de acesso.
+        const res = await fetchWithTimeout(`https://api.github.com/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}`, {
+          cache: 'no-store',
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': 'Bearer ' + token,
+            'X-GitHub-Api-Version': '2022-11-28'
           }
-
-          const siteRes=await fetchWithTimeout(SUPABASE_FUNCTION_URL+'?scope=admin',{method:'GET',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Cache-Control':'no-cache'}},12000);
-          let siteData=null;try{siteData=await siteRes.json()}catch(e){}
-          if(siteRes.ok && siteData?.admin===true && siteData?.record){
-            add('ok','Supabase Postgres / site-state','Leitura administrativa confirmada. Banco remoto respondeu com revisão '+Number(siteData.revision||0)+'.');
-          }else if(siteRes.status===401||siteRes.status===403){
-            add('error','Supabase Postgres / site-state','O backend recusou a sessão administrativa (HTTP '+siteRes.status+'). Faça login novamente; se persistir, confira o allowlist/adminAccounts.');
-          }else{
-            add('error','Supabase Postgres / site-state','Endpoint respondeu HTTP '+siteRes.status+'. Detalhe: '+String(siteData?.message||siteData?.error||'resposta inesperada')+'.');
-          }
-
-          try{
-            const bar=await brgApi('bootstrap');
-            const counts=[Array.isArray(bar?.inventory)?bar.inventory.length:0,Array.isArray(bar?.recipes)?bar.recipes.length:0,Array.isArray(bar?.sales)?bar.sales.length:0];
-            add('ok','Controle Profissional do Bar / bar-control-api',`API autenticada respondeu. Estoque: ${counts[0]}, receitas: ${counts[1]}, vendas carregadas: ${counts[2]}.`);
-          }catch(e){
-            add('error','Controle Profissional do Bar / bar-control-api','Falha no teste somente leitura: '+String(e?.message||e)+'. Verifique a sessão, allowlist bar_admin_allowlist e a Edge Function bar-control-api.');
-          }
+        }, 12000);
+        let data = null;
+        try { data = await res.json(); } catch(e) {}
+        if(!res.ok) {
+          const msg = data?.message || `GitHub respondeu HTTP ${res.status}`;
+          throw new Error(msg);
+        }
+        if(String(data?.full_name || '').toLowerCase() !== `${user}/${repo}`.toLowerCase()) {
+          throw new Error('O GitHub não confirmou o repositório informado.');
+        }
+        const permissions = data?.permissions || {};
+        const canPush = permissions.push === true || permissions.admin === true;
+        if(!canPush) {
+          throw new Error('O token foi aceito, mas não possui permissão de escrita (push) neste repositório.');
         }
 
-        try{
-          const up=await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL,{method:'OPTIONS',cache:'no-store'},10000);
-          if(up.status===204 || (up.status>=200&&up.status<400)) add('ok','Upload de imagens / image-upload','Endpoint online e CORS respondeu corretamente. O diagnóstico não envia arquivo real para evitar criar uma imagem de teste no ImgBB.');
-          else add('warn','Upload de imagens / image-upload','Endpoint respondeu HTTP '+up.status+'. Um upload real pode estar indisponível; tente uma imagem pequena pelo editor.');
-        }catch(e){add('error','Upload de imagens / image-upload','Não foi possível alcançar o endpoint: '+String(e?.message||e)+'. Confira a Edge Function e o domínio publicado.');}
-
-        try{
-          const px=await fetchWithTimeout(SUPABASE_URL+'/functions/v1/image-proxy',{method:'OPTIONS',cache:'no-store'},10000);
-          if(px.status===204 || (px.status>=200&&px.status<400)) add('ok','Imagens / image-proxy','Endpoint online e respondeu ao preflight.');
-          else add('warn','Imagens / image-proxy','Endpoint respondeu HTTP '+px.status+'.');
-        }catch(e){add('error','Imagens / image-proxy','Não foi possível alcançar o endpoint: '+String(e?.message||e)+'.');}
-
-        try{
-          const publishable=String(SUPABASE_PUBLISHABLE_KEY||'');
-          add((publishable.startsWith('sb_publishable_')||publishable.length>20)?'ok':'warn','Chave pública do Supabase',publishable.startsWith('sb_publishable_')?'O navegador usa uma chave publishable, não service_role/secret.':'A chave pública não está no formato publishable esperado; revise a configuração.');
-          add('ok','Credenciais GitHub no painel','Nenhum PAT/configuração GitHub é usado pelo painel administrativo. Configurações antigas, se existirem, são removidas automaticamente ao carregar o site.');
-        }catch(e){add('warn','Segurança do navegador','Não foi possível concluir uma checagem local: '+String(e?.message||e));}
-
-        add('info','ImgBB / provedor de hospedagem de fotos','O fluxo de upload está conectado ao Edge Function image-upload, que encaminha a imagem ao ImgBB. O teste completo de upload não é executado automaticamente para não criar arquivos de teste.');
-        add('info','ImgDB / fallback de imagens','O site mantém o endpoint ImgDB no fluxo de upload legado/fallback. O diagnóstico não cria arquivo de teste no provedor.');
-        add('info','GitHub Pages / hospedagem','O painel não usa PAT do GitHub para salvar conteúdo. A hospedagem da página pode continuar normalmente; a persistência administrativa é independente e está no Supabase.');
-
-        add('warn','Segurança Supabase / proteção contra senhas vazadas','Última auditoria do projeto: a proteção contra senhas vazadas estava desativada (WARN). Para corrigir, ative a opção de proteção contra senhas comprometidas em Authentication → Password Security no painel do Supabase.');
-        add('info','Segurança Supabase / RLS','Última auditoria registrou 9 tabelas com RLS habilitado sem políticas específicas (INFO). Como o backend usa Edge Functions com credenciais privilegiadas no servidor, isso não significa que o painel esteja aberto; ainda assim, as tabelas devem ter políticas explícitas quando forem expostas diretamente pela Data API.');
-      }catch(e){
-        add('error','Diagnóstico interrompido','Falha inesperada no verificador: '+String(e?.message||e)+'.');
+        githubConfig = { user, repo, token };
+        sessionStorage.setItem('brg_gh_config_session', JSON.stringify(githubConfig));
+        localStorage.removeItem('brg_gh_config');
+        updateGitHubUI(true);
+        alert('✅ GitHub validado com sucesso. O token tem permissão de escrita no repositório.\n\nAtenção: o token GitHub não substitui a autenticação Supabase usada para salvar o conteúdo do site na nuvem.');
+      } catch(e) {
+        githubConfig = { user: '', repo: '', token: '' };
+        sessionStorage.removeItem('brg_gh_config_session');
+        updateGitHubUI(false);
+        alert('❌ GitHub NÃO foi vinculado.\n\n' + String(e?.message || e));
+      } finally {
+        if(btn) { btn.disabled = false; btn.textContent = btn.dataset.oldText || 'Vincular ao GitHub'; }
       }
-      const ok=checks.filter(x=>x.status==='ok').length,warn=checks.filter(x=>x.status==='warn').length,err=checks.filter(x=>x.status==='error').length;
-      if(summary)summary.innerHTML=`<div class="brg-health-summary-card"><b style="color:#00e676">${ok}</b><span>OK</span></div><div class="brg-health-summary-card"><b style="color:#ffcc80">${warn}</b><span>Atenção</span></div><div class="brg-health-summary-card"><b style="color:#ff7b7b">${err}</b><span>Erros</span></div>`;
-      if(results)results.innerHTML=checks.map(renderHealthItem).join('');
-      renderAdminPermissionAudit();
-      if(mainText)mainText.textContent=err?'Diagnóstico concluído com erro(s). Veja cada item e a ação recomendada.':warn?'Diagnóstico concluído com avisos. O sistema está respondendo, mas há pendências para revisar.':'Diagnóstico concluído: serviços principais responderam corretamente.';
-      if(mainDot){mainDot.className='status-dot '+(err?'closed':'open');mainDot.style.background=err?'#ff1744':warn?'#ff9800':'#00e676';}
-      if(last)last.textContent='Última verificação: '+new Date().toLocaleString('pt-BR')+' • '+Math.round(performance.now()-started)+' ms';
-      if(btn){btn.disabled=false;btn.textContent='🔍 VERIFICAR NOVAMENTE';}
     }
 
     async function submitUserSong() {
@@ -2769,23 +2762,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         'bloody mary':'vodka',
         'fenrir whiskey':'whisky'
       };
-      const patterns = [
-        [/caipir|caipirinha|caipiríssima/i,'caipirinha'],[/vodka|moscow mule|screwdriver|cosmopolitan|sex on the beach/i,'vodka'],
-        [/mojito|daiquiri|rum sour|rum punch|cuba libre/i,'rum'],[/margarita|tequila sunrise|tequila sour/i,'tequila'],
-        [/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins/i,'gin'],[/whisk|whiskey|old fashioned|highball/i,'whisky']
-      ];
       appData.menu.forEach(item => {
         if(!item || item.type !== 'drink' || item.drinkLine) return;
         const key = String(item.name || '').trim().toLowerCase();
-        if(inferred[key]) { item.drinkLine = inferred[key]; return; }
-        const match = patterns.find(([rx]) => rx.test(String(item.name||'')));
-        if(match) item.drinkLine = match[1];
+        if(inferred[key]) item.drinkLine = inferred[key];
       });
     }
 
     function ensureMenuCategoryLabels() {
       const defaults = {
-        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       };
       if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
@@ -2795,13 +2781,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           if(!appData.menuCategoryLabels[page][key]) appData.menuCategoryLabels[page][key] = defaults[page][key];
         });
       });
-      // Compatibilidade com a versão anterior: o selo/destaque NUNCA é automático.
-      // O ADM escolhe manualmente no editor de categorias e somente 1 item pode ficar destacado.
-      const b=appData.menuCategoryLabels.bebidas;
-      if(Object.prototype.hasOwnProperty.call(b,'promoIds')) delete b.promoIds;
-      if(Object.prototype.hasOwnProperty.call(b,'promoTitle')) delete b.promoTitle;
-      if(!Array.isArray(b.featuredIds)) b.featuredIds=[];
-      b.featuredIds=b.featuredIds.slice(0,1);
     }
 
     function openCategoryQuickEdit(page) {
@@ -2818,24 +2797,37 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       pageEl.value = page;
       title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
       const names = page === 'bebidas' ? [
-        ['featured','Título do Destaque'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+        ['featured','Título dos Destaques'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
       ] : [['title','Título da página de porções'],['featured','Título dos Destaques']];
       fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
+      const buildFeaturedEditor = (kind, menu, ids) => {
+        const cls = kind === 'bebidas' ? 'featured-id-select' : 'featured-portion-select';
+        const safeIds = Array.isArray(ids) ? ids.map(Number).filter(Number.isFinite) : [];
+        const options = menu.map(i=>`<option value="${i.id}">${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('');
+        const rows = safeIds.length ? safeIds.map((id,idx)=>`<div class="featured-row" style="display:flex;gap:5px;align-items:end;"><label style="font-size:.78rem;color:#aaa;flex:1;">Destaque ${idx+1}<select class="interaction-input ${cls}" data-featured-index="${idx}" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${options}</select></label><button type="button" class="action-btn del-btn" onclick="this.closest('.featured-row').remove()">✕</button></div>`).join('') : `<div class="featured-row" style="display:flex;gap:5px;align-items:end;"><label style="font-size:.78rem;color:#aaa;flex:1;">Destaque 1<select class="interaction-input ${cls}" data-featured-index="0" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${options}</select></label><button type="button" class="action-btn del-btn" onclick="this.closest('.featured-row').remove()">✕</button></div>`;
+        return `<div style="margin-top:10px;border:1px solid rgba(255,235,59,.28);border-radius:10px;padding:10px;background:rgba(255,235,59,.04);"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;"><strong style="color:var(--c-yellow);">⭐ Destaques — quantos quiser</strong><button type="button" class="action-btn" style="background:var(--c-yellow);color:#000;padding:6px 10px;" onclick="addFeaturedSelector('${kind}')">＋ Adicionar destaque</button></div><div id="featured-editor-${kind}" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:8px;margin-top:8px;">${rows}</div></div>`;
+      };
       if(page === 'bebidas'){
         const menu = Array.isArray(appData.menu) ? appData.menu.filter(i=>i.type==='drink') : [];
-        const selected = Array.isArray(labels.featuredIds) ? labels.featuredIds[0] : '';
-        fields.innerHTML += `<div style="margin-top:8px;padding:10px;border:1px dashed rgba(255,235,59,.35);border-radius:10px;background:rgba(255,235,59,.04);">
-          <div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">⭐ Item em DESTAQUE</div>
-          <div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Escolha apenas 1 bebida para aparecer na área de destaque. Nenhuma outra bebida recebe selo ou promoção automaticamente.</div>
-          <label style="font-size:.78rem;color:#aaa;">Bebida em destaque<select class="interaction-input featured-drink-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
-        </div>`;
+        fields.innerHTML += buildFeaturedEditor('bebidas', menu, labels.featuredIds);
+        const ids=Array.isArray(labels.featuredIds)?labels.featuredIds:[]; fields.querySelectorAll('#featured-editor-bebidas select').forEach((sel,idx)=>sel.value=String(ids[idx]??''));
       }
       if(page === 'porcoes'){
         const menu=Array.isArray(appData.menu)?appData.menu.filter(i=>i.type==='portion'):[];
-        const selected=Array.isArray(labels.featuredIds)?labels.featuredIds[0]:'';
-        fields.innerHTML += `<div style="margin-top:8px;padding:10px;border:1px dashed rgba(255,235,59,.35);border-radius:10px;background:rgba(255,235,59,.04);"><div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">⭐ Item em DESTAQUE</div><div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Escolha apenas 1 porção para aparecer na área de destaque. Nenhuma outra porção recebe selo ou promoção automaticamente.</div><label style="font-size:.78rem;color:#aaa;">Porção em destaque<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label></div>`;
+        fields.innerHTML += buildFeaturedEditor('porcoes', menu, labels.featuredIds);
+        const ids=Array.isArray(labels.featuredIds)?labels.featuredIds:[]; fields.querySelectorAll('#featured-editor-porcoes select').forEach((sel,idx)=>sel.value=String(ids[idx]??''));
       }
       document.getElementById('categoryQuickEditModal').style.display = 'flex';
+    }
+
+    function addFeaturedSelector(kind){
+      const wrap=document.getElementById('featured-editor-'+kind); if(!wrap) return;
+      const cls=kind==='bebidas'?'featured-id-select':'featured-portion-select';
+      const menu=Array.isArray(appData.menu)?appData.menu.filter(i=>kind==='bebidas'?i.type==='drink':i.type==='portion'):[];
+      const n=wrap.querySelectorAll('.featured-row').length;
+      const row=document.createElement('div'); row.className='featured-row'; row.style.cssText='display:flex;gap:5px;align-items:end;';
+      row.innerHTML=`<label style="font-size:.78rem;color:#aaa;flex:1;">Destaque ${n+1}<select class="interaction-input ${cls}" data-featured-index="${n}" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}">${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label><button type="button" class="action-btn del-btn" onclick="this.closest('.featured-row').remove()">✕</button>`;
+      wrap.appendChild(row);
     }
 
     async function saveCategoryQuickEdit() {
@@ -2852,9 +2844,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(value) appData.menuCategoryLabels[page][key] = value;
       });
       if(page === 'bebidas'){
-        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-drink-select')).map(s=>Number(s.value)).filter(Boolean).slice(0,1);
+        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-id-select')).map(s=>Number(s.value)).filter(Number.isFinite).filter(id=>id>0).filter((id,idx,arr)=>arr.indexOf(id)===idx);
       }
-      if(page === 'porcoes') appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select')).map(s=>Number(s.value)).filter(Boolean).slice(0,1);
+      if(page === 'porcoes') appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select')).map(s=>Number(s.value)).filter(Number.isFinite).filter(id=>id>0).filter((id,idx,arr)=>arr.indexOf(id)===idx);
       await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
       closeModal('categoryQuickEditModal');
       alert('✅ Categorias atualizadas e salvas!');
@@ -2908,40 +2900,20 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       updateMenuOrganizerUI(page);
     }
 
-    let menuOrganizerTouchState = null;
-
     function updateMenuOrganizerUI(page){
       const bar=document.getElementById('menu-organizer-'+page);
       const save=document.getElementById('menu-organizer-save-'+page);
       const discard=document.getElementById('menu-organizer-discard-'+page);
-      const active=menuOrganizerActive && menuOrganizerPage===page;
-      if(bar) bar.classList.toggle('active', active);
-      if(save){
-        save.classList.toggle('pending', active && menuOrganizerDirty);
-        save.disabled=!(active && menuOrganizerDirty);
-        save.setAttribute('aria-disabled', String(!(active && menuOrganizerDirty)));
-        save.title=menuOrganizerDirty ? 'Salvar as posições no Supabase' : 'Nenhuma mudança de posição pendente';
-      }
-      if(discard) discard.classList.toggle('pending', active && menuOrganizerDirty);
+      if(bar) bar.classList.toggle('active', menuOrganizerActive && menuOrganizerPage===page);
+      if(save) save.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
+      if(discard) discard.classList.toggle('pending', menuOrganizerActive && menuOrganizerPage===page && menuOrganizerDirty);
       document.body.classList.toggle('menu-organizer-active', menuOrganizerActive);
-    }
-
-    function clearMenuOrganizerTouchState(){
-      const st=menuOrganizerTouchState;
-      if(st?.timer) clearTimeout(st.timer);
-      if(st?.card){
-        st.card.classList.remove('menu-dragging');
-        st.card.style.touchAction='';
-      }
-      if(st?.root) st.root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
-      menuOrganizerTouchState=null;
     }
 
     function setupMenuOrganizerDragAndDrop(page){
       if(!menuOrganizerActive || menuOrganizerPage!==page) return;
       const root=document.getElementById(page === 'bebidas' ? 'dynamic-menu-bebidas' : 'dynamic-menu-porcoes');
       if(!root) return;
-
       root.querySelectorAll('.menu-grid[data-order-key]').forEach(grid=>{
         grid.addEventListener('dragover', e=>{
           e.preventDefault();
@@ -2958,67 +2930,21 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           const target=e.target.closest('.product-card[data-menu-id]');
           if(!target || target===dragging) return;
           const rect=target.getBoundingClientRect();
-          const before=(e.clientX < rect.left + rect.width/2) || (e.clientY < rect.top + rect.height/2);
-          if(before) grid.insertBefore(dragging,target); else grid.insertBefore(dragging,target.nextSibling);
+          if(e.clientX < rect.left + rect.width/2) grid.insertBefore(dragging,target); else grid.insertBefore(dragging,target.nextSibling);
           grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
           captureMenuOrderFromDOM(page);
         });
       });
-
       root.querySelectorAll('.menu-grid .product-card[data-menu-id]').forEach(card=>{
         card.setAttribute('draggable','true');
         card.addEventListener('dragstart', e=>{
           card.classList.add('menu-dragging');
-          if(e.dataTransfer){ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain', card.getAttribute('data-menu-id') || ''); }
+          if(e.dataTransfer) e.dataTransfer.effectAllowed='move';
         });
         card.addEventListener('dragend', ()=>{
           card.classList.remove('menu-dragging');
           root.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
         });
-
-        // Android/iOS: HTML5 drag is inconsistent. Long-press + move gives a real
-        // touch reorder without depending on browser-specific drag support.
-        card.addEventListener('touchstart', e=>{
-          if(!menuOrganizerActive || menuOrganizerPage!==page || e.touches.length!==1) return;
-          if(e.target.closest('.menu-move-controls,button,a,input,select,textarea')) return;
-          clearMenuOrganizerTouchState();
-          const touch=e.touches[0];
-          const state={root,card,grid:card.closest('.menu-grid'),startX:touch.clientX,startY:touch.clientY,lastX:touch.clientX,lastY:touch.clientY,active:false,timer:null};
-          state.timer=setTimeout(()=>{
-            if(menuOrganizerTouchState!==state) return;
-            state.active=true;
-            card.classList.add('menu-dragging');
-            card.style.touchAction='none';
-          },220);
-          menuOrganizerTouchState=state;
-        },{passive:true});
-
-        card.addEventListener('touchmove', e=>{
-          const state=menuOrganizerTouchState;
-          if(!state || state.card!==card || e.touches.length!==1) return;
-          const touch=e.touches[0];
-          state.lastX=touch.clientX; state.lastY=touch.clientY;
-          if(!state.active){
-            const moved=Math.hypot(touch.clientX-state.startX,touch.clientY-state.startY);
-            if(moved>12){ clearTimeout(state.timer); state.timer=null; }
-            return;
-          }
-          e.preventDefault();
-          const targetEl=document.elementFromPoint(touch.clientX,touch.clientY);
-          const target=targetEl?.closest?.('.product-card[data-menu-id]');
-          const grid=state.grid;
-          if(!target || !grid || target===card || target.parentElement!==grid) return;
-          grid.querySelectorAll('.menu-drag-over').forEach(el=>el.classList.remove('menu-drag-over'));
-          target.classList.add('menu-drag-over');
-          const rect=target.getBoundingClientRect();
-          const before=(touch.clientX < rect.left + rect.width/2) || (touch.clientY < rect.top + rect.height/2);
-          if(before){ if(card!==target.previousElementSibling) grid.insertBefore(card,target); }
-          else if(card!==target.nextElementSibling){ grid.insertBefore(card,target.nextSibling); }
-          captureMenuOrderFromDOM(page);
-        },{passive:false});
-
-        card.addEventListener('touchend', ()=>{ clearMenuOrganizerTouchState(); });
-        card.addEventListener('touchcancel', ()=>{ clearMenuOrganizerTouchState(); });
       });
     }
 
@@ -3045,13 +2971,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const next = typeof force === 'boolean' ? force : !(menuOrganizerActive && menuOrganizerPage===page);
       if(!next){
         if(menuOrganizerDirty && !confirm('Existem mudanças de posição não salvas. Fechar sem salvar?')) return;
-        clearMenuOrganizerTouchState();
         menuOrganizerActive=false; menuOrganizerPage=''; menuOrganizerDirty=false; menuOrganizerSnapshot=null;
         renderApp();
         return;
       }
       ensureMenuOrderData();
-      clearMenuOrganizerTouchState();
       menuOrganizerPage=page; menuOrganizerActive=true; menuOrganizerDirty=false;
       menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
       renderApp();
@@ -3063,7 +2987,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       ensureMenuOrderData();
       appData.menuOrder=menuOrganizerSnapshot ? JSON.parse(JSON.stringify(menuOrganizerSnapshot)) : {};
       menuOrganizerDirty=false;
-      clearMenuOrganizerTouchState();
       renderApp();
       updateMenuOrganizerUI(page);
     }
@@ -3072,19 +2995,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMenuOrganizerAllowed()) return alert('Acesso Negado.');
       captureMenuOrderFromDOM(page);
       if(!menuOrganizerDirty) return alert('Nenhuma mudança de posição para salvar.');
-      const saveBtn=document.getElementById('menu-organizer-save-'+page);
-      if(saveBtn) saveBtn.disabled=true;
-      try {
-        const saved=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
-        if(saved===false) return alert('⚠️ Não foi possível salvar as posições. Tente novamente.');
-        menuOrganizerDirty=false;
-        menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
-        updateMenuOrganizerUI(page);
-        alert('✅ Posições salvas com sucesso!');
-      } catch(e){
-        updateMenuOrganizerUI(page);
-        alert('⚠️ Não foi possível salvar as posições.\n\n'+(e?.message||e));
-      }
+      const saved=await saveBinData('Organizou a posição dos itens do cardápio em '+page+'.');
+      if(saved===false) return alert('⚠️ Não foi possível salvar as posições. Tente novamente.');
+      menuOrganizerDirty=false;
+      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder||{}));
+      updateMenuOrganizerUI(page);
+      alert('✅ Posições salvas com sucesso!');
     }
 
     function optimizeMenuImageLoading(){
@@ -3132,40 +3048,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    function renderCriticalSections(){
-      // Renderização independente de Diretoria, Promoter e Rankings.
-      // Se qualquer parte do cardápio falhar, estas áreas não podem desaparecer.
-      try {
-        const team=(Array.isArray(appData.team)&&appData.team.length)?appData.team:defaultTeam;
-        const arcade=(Array.isArray(appData.arcade)&&appData.arcade.length)?appData.arcade:defaultArcade;
-        const cach=(Array.isArray(appData.cachaceiros)&&appData.cachaceiros.length)?appData.cachaceiros:defaultCachaceiros;
-        const dirContainer=document.getElementById('dynamic-dir-list');
-        const proContainer=document.getElementById('dynamic-pro-list');
-        if(dirContainer){
-          dirContainer.innerHTML=team.filter(t=>t&&t.type==='dir').map(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';return `<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:${c};color:${c};text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;}).join('');
-        }
-        if(proContainer){
-          const promoters=team.filter(t=>t&&t.type==='pro');
-          if(promoters.length){
-            const root=promoters[0];
-            proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackTeamImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(root.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(root.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></a><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);text-decoration:none;">📸 ${escapeHTML(t.ig)}</a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;
-          } else { proContainer.innerHTML='<p style="color:#aaa;text-align:center;">Nenhum promoter cadastrado.</p>'; }
-        }
-        const arcadeContainer=document.getElementById('dynamic-arcade-list');
-        if(arcadeContainer) arcadeContainer.innerHTML=arcade.map((i,index)=>{const isTop3=index<3;const safeQuote=i.quote||(isTop3?'Traga sua ficha e tente a sorte!':'');const clickHTML=`onclick="openPlayerModal('arcade', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub||'')}', '${escapeHTML(i.score||'')}', '${escapeHTML(i.prize||'')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.ig||'@jogador')}', '${i.img||''}')"`;return `<div class="lb-item ${isTop3?'top3-item clickable':'clickable'}" ${clickHTML}><span class="lb-pos" style="${isTop3?'color:var(--c-yellow);font-size:1rem;':''}">#${i.id}</span><img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)"><div class="lb-info"><span class="lb-name">${escapeHTML(i.name)}</span><span class="lb-sub">${escapeHTML(i.sub)} • <strong style="color:var(--c-pink);">${escapeHTML(i.ig||'@jogador')}</strong></span><span class="lb-title-badge">${getHonorTitle(index,'arcade')}</span>${isTop3&&safeQuote?`<span class="lb-inline-quote">"${escapeHTML(safeQuote)}"</span>`:''}</div><div><div class="lb-score">${escapeHTML(i.score)}</div>${i.prize?`<span class="lb-prize">${escapeHTML(i.prize)}</span>`:''}</div></div>`;}).join('');
-        const cachContainer=document.getElementById('dynamic-cachaceiros-list');
-        if(cachContainer) cachContainer.innerHTML=cach.map((i,index)=>{const isTop3=index<3;const safeQuote=i.quote||(isTop3?'Água é pro fígado fraco, desce mais uma dose!':'');const clickHTML=`onclick="openPlayerModal('cachaceiro', ${i.id}, '${escapeHTML(i.name)}', '${escapeHTML(i.sub||'')}', '${escapeHTML(i.score||'')}', '${escapeHTML(i.prize||'')}', '${escapeHTML(safeQuote)}', '${escapeHTML(i.sub||i.ig||'@cachaceiro')}', '${i.img||''}')"`;return `<div class="lb-item ${isTop3?'top3-item clickable':'clickable'}" ${clickHTML}><span class="lb-pos" style="${isTop3?'color:var(--c-yellow);font-size:1rem;':''}">#${i.id}</span><img class="lb-ava" src="${safeImageUrl(i.img)}" onerror="fallbackImg(this)"><div class="lb-info"><span class="lb-name">${escapeHTML(i.name)}</span><span class="lb-sub">Cachaceiro • <strong style="color:var(--c-pink);">${escapeHTML(i.sub||i.ig||'@cachaceiro')}</strong></span><span class="lb-title-badge">${getHonorTitle(index,'cachaceiro')}</span>${isTop3&&safeQuote?`<span class="lb-inline-quote">"${escapeHTML(safeQuote)}"</span>`:''}</div><div><div class="lb-score">${escapeHTML(i.score)}</div>${i.prize?`<span class="lb-prize">${escapeHTML(i.prize)}</span>`:''}</div></div>`;}).join('');
-      } catch(e) { console.error('[Bargunçados] Falha isolada nas áreas Diretoria/Promoter/Ranking:',e); }
-    }
-
     function renderApp() {
       try {
         return renderAppUnsafe();
       } catch(e) {
         console.error('[Bargunçados] Renderização principal falhou; catálogo de emergência ativado.', e);
         renderEmergencyMenu();
-      } finally {
-        renderCriticalSections();
       }
     }
 
@@ -3223,7 +3111,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAdd = isMaster || perms.canAdd !== false;
-      const canEdit = isMaster || perms.canEdit !== false;
 
       const bHome = document.getElementById('bar-action-home');
       const bBebidas = document.getElementById('bar-action-bebidas');
@@ -3231,28 +3118,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const bAgenda = document.getElementById('bar-action-agenda');
 
       if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-      // A barra do cardápio precisa aparecer para quem pode EDITAR, mesmo
-      // que esse administrador não tenha permissão para ADICIONAR itens.
-      // Os botões individuais continuam protegidos pelas permissões próprias.
-      if(bBebidas) {
-        bBebidas.style.display = (isAdmLogged && (canAdd || canEdit)) ? 'flex' : 'none';
-        const org=document.querySelector('#bar-action-bebidas button[onclick*="toggleMenuOrganizer"]');
-        const cat=document.querySelector('#bar-action-bebidas button[onclick*="openCategoryQuickEdit"]');
-        const add=document.querySelector('#bar-action-bebidas button[onclick*="openCreateItemModal"]');
-        if(org) org.style.display = canEdit ? '' : 'none';
-        if(cat) cat.style.display = canEdit ? '' : 'none';
-        if(add) add.style.display = canAdd ? '' : 'none';
-      }
-      if(bPorcoes) {
-        bPorcoes.style.display = (isAdmLogged && (canAdd || canEdit)) ? 'flex' : 'none';
-        const org=document.querySelector('#bar-action-porcoes button[onclick*="toggleMenuOrganizer"]');
-        const cat=document.querySelector('#bar-action-porcoes button[onclick*="openCategoryQuickEdit"]');
-        const add=document.querySelector('#bar-action-porcoes button[onclick*="openCreateItemModal"]');
-        if(org) org.style.display = canEdit ? '' : 'none';
-        if(cat) cat.style.display = canEdit ? '' : 'none';
-        if(add) add.style.display = canAdd ? '' : 'none';
-      }
-      if(bAgenda) bAgenda.style.display = (isAdmLogged && (isMaster || perms.canAgenda !== false)) ? 'flex' : 'none';
+      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
 
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
@@ -3273,13 +3141,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         return exact || cMenu.find(i => i.type === 'drink' && String(i.price || '') === fallbackPrice);
       };
 
-      const configuredFeaturedIds = Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds.slice(0,1) : [];
-      const featuredDrink = configuredFeaturedIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).find(i => i && i.type === 'drink');
+      const configuredFeaturedIds = Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds : [2,1];
+      let featuredItems = configuredFeaturedIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).filter(Boolean);
+      if(!featuredItems.length){ featuredItems = [findDrink('Caipirinha', '10,00'), findDrink('Gin Sunset', '8,00')].filter(Boolean); }
 
-      let drinksStr = '';
-      if(featuredDrink){
-        drinksStr += `<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUE')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${createCard(featuredDrink, true)}</div></div></details>`;
-      }
+      let drinksStr = `
+        <details class="menu-collapse drink-featured" open>
+          <summary>${escapeHTML(categoryLabels.bebidas.featured)}</summary>
+          <div class="menu-collapse-body"><div class="drink-featured-grid">${featuredItems.map(createCard).join('')}</div></div>
+        </details>`;
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
@@ -3299,7 +3169,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.noalcohol)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="noalcohol">${sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'noalcohol'), 'noalcohol').map(createCard).join('')}</div></div></details>`;
       drinksContainer.innerHTML = drinksStr;
 
-      const portionFeaturedId=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds[0]:null; const portionFeaturedItem=portionFeaturedId!=null?cMenu.find(i=>Number(i.id)===Number(portionFeaturedId)):null; let portionsStr=''; if(portionFeaturedItem) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUE')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${createCard(portionFeaturedItem, true)}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
+      const portionFeaturedIds=Array.isArray(categoryLabels.porcoes.featuredIds)?categoryLabels.porcoes.featuredIds:[]; const portionFeaturedItems=portionFeaturedIds.map(id=>cMenu.find(i=>Number(i.id)===Number(id))).filter(Boolean); let portionsStr=''; if(portionFeaturedItems.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured)}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${portionFeaturedItems.map(createCard).join('')}</div></div></details>`; portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`; sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i)); portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
       optimizeMenuImageLoading();
       setupMenuOrganizerDragAndDrop('bebidas');
@@ -3331,8 +3201,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       dirContainer.innerHTML = ''; 
       proContainer.innerHTML = '';
       
-      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:${c};color:${c};text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
-      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackTeamImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(root.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(root.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;text-decoration:none;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></a><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><a class="ig-button" href="${getInstagramProfileUrl(t.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="if(!getInstagramProfileUrl(${escapeJSString(t.ig)})){event.preventDefault();}else{event.stopPropagation();}" style="border-color:var(--c-purple);color:var(--c-purple);text-decoration:none;">📸 ${escapeHTML(t.ig)}</a><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
+      cTeam.filter(t=>t.type==='dir').forEach(t=>{let c='var(--c-pink)';if(t.id==='dir2')c='var(--c-cyan)';if(t.id==='dir3')c='var(--c-yellow)';dirContainer.innerHTML+=`<div class="glass-panel dir-card clickable-card director-featured-card" style="--card-color:${c};" onclick="openDirectorModal(${escapeJSString(t.id)})"><div class="director-featured-badge" style="color:${c};">👔 DIRETORIA • DESTAQUE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:${c};">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:${c};color:${c};">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(t.ig)}</span></div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`;});
+      const promoters=cTeam.filter(t=>t.type==='pro'); if(promoters.length){const root=promoters[0];proContainer.innerHTML=`<div class="promoter-hierarchy"><div class="glass-panel dir-card clickable-card promoter-root" onclick="openDirectorModal(${escapeJSString(root.id)})"><div style="font-family:var(--font-title);color:var(--c-yellow);font-size:.78rem;margin-bottom:8px;">👑 PROMOTER PRINCIPAL</div><img src="${safeImageUrl(root.img)}" class="dir-img" alt="${escapeHTML(root.name)}" style="width:130px;height:130px;border-color:var(--c-yellow);" onerror="fallbackImg(this)"><h3 class="dir-name" style="font-size:2.5rem;">${escapeHTML(root.name)}</h3><p class="dir-role" style="color:var(--c-purple);font-size:1rem;">${escapeHTML(root.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);font-size:1.1rem;">📸 INSTAGRAM: <span style="color:#fff;">${escapeHTML(root.ig)}</span></div><p class="dir-desc" style="font-size:1rem;margin-top:15px;">${escapeHTML(root.desc)}</p></div>${promoters.length>1?`<div class="promoter-children">${promoters.slice(1).map(t=>`<div class="glass-panel dir-card clickable-card promoter-child" onclick="openDirectorModal(${escapeJSString(t.id)})"><div style="font-family:var(--font-title);color:var(--c-purple);font-size:.72rem;margin-bottom:7px;">↳ PROMOTER DA EQUIPE</div><img src="${safeImageUrl(t.img)}" class="dir-img" alt="${escapeHTML(t.name)}" style="width:110px;height:110px;border-color:var(--c-purple);" onerror="fallbackImg(this)"><h3 class="dir-name">${escapeHTML(t.name)}</h3><p class="dir-role" style="color:var(--c-purple);">${escapeHTML(t.role)}</p><div class="ig-button" style="border-color:var(--c-purple);color:var(--c-purple);">📸 ${escapeHTML(t.ig)}</div><p class="dir-desc">${escapeHTML(t.desc)}</p></div>`).join('')}</div>`:''}</div>`;}
 
       document.getElementById('dynamic-arcade-list').innerHTML = cArcade.map((i, index) => {
         const isTop3 = index < 3;
@@ -3467,7 +3337,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function editPublishedInteraction(type, id) {
-      if(!canModerateInline() || (getPersistentAdminFlag('brg_adm_is_master') !== 'true' && (appData.permissions || {}).canEdit === false)) return alert('Acesso Negado: você não tem permissão para editar publicações do mural/som.');
+      if(!canModerateInline()) return alert('Acesso Negado: você não tem permissão para editar publicações do mural/som.');
       const listKey = type === 'song' ? 'userSongs' : 'userMessages';
       const item = (appData[listKey] || []).find(entry => Number(entry.id) === Number(id));
       if(!item) return alert('Publicação não encontrada. Atualize a página e tente novamente.');
@@ -3497,7 +3367,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function deletePublishedInteraction(type, id) {
-      if(!canModerateInline() || (getPersistentAdminFlag('brg_adm_is_master') !== 'true' && (appData.permissions || {}).canDel === false)) return alert('Acesso Negado: você não tem permissão para excluir publicações do mural/som.');
+      if(!canModerateInline()) return alert('Acesso Negado: você não tem permissão para excluir publicações do mural/som.');
       const listKey = type === 'song' ? 'userSongs' : 'userMessages';
       const item = (appData[listKey] || []).find(entry => Number(entry.id) === Number(id));
       if(!item) return alert('Publicação não encontrada. Atualize a página e tente novamente.');
@@ -3523,10 +3393,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const songs = appData.userSongs || [];
       const msgs = appData.userMessages || [];
-      // Publicações já aprovadas têm permissões próprias: EDITAR usa canEdit
-      // e EXCLUIR usa canDel. Elas não ficam artificialmente dependentes de
-      // canMod, que controla somente a fila de aprovação/rejeição.
-      const inlineAdmin = isAuthenticatedAdmin();
+      const inlineAdmin = canModerateInline();
       const perms = appData.permissions || {};
       const canEdit = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canEdit !== false);
       const canDelete = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canDel !== false);
@@ -3594,18 +3461,18 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       });
     }
 
-    function createCard(item, showFeaturedBadge = false) {
+    function createCard(item) {
       const hostedImg = normalizeStoredImage(item);
-      const f=Boolean(showFeaturedBadge);
+      const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${safeNumericId(item.id)})` : `openMenuModalObj(${safeNumericId(item.id)})`;
-      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><span title="Arraste este item" style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1px solid rgba(0,229,255,.32);background:rgba(0,0,0,.7);color:var(--c-cyan);border-radius:5px;font-weight:900;">↕</span><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
+      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
       const imageMarkup = hostedImg
         ? `<img src="${safeImageUrl(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<img src="" class="product-img" loading="lazy" decoding="async" fetchpriority="low" data-no-image="true" onerror="fallbackMenuImg(this,${Number(item.id)||0})" style="visibility:hidden">`;
       return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">⭐ DESTAQUE</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof brgRecipeMap==='function'?brgRecipeMap()[String(item.id)]:null;const cost=recipe?brgCost(recipe):0;const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);const profit=price-cost;const margin=price>0?profit/price*100:0;const doses=recipe?brgMaxDoses(recipe):Infinity;return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`; }
 
     function openMenuModalObj(id) {
-      const item = appData.menu.find(i => i.id === id);
+      const item = appData.menu.find(i => String(i.id) === String(id));
       if(!item) return;
 
       document.getElementById('modalTitle').innerText = item.name.replace('PROMO', '').trim();
@@ -4011,49 +3878,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    function openDirectorModal(id){
-      const t=Array.isArray(appData.team)?appData.team.find(x=>String(x.id)===String(id)):null;
-      if(!t) return;
-      const modal=document.getElementById('directorModal');
-      const img=document.getElementById('directorModalImg');
-      const name=document.getElementById('directorModalName');
-      const role=document.getElementById('directorModalRole');
-      const desc=document.getElementById('directorModalDesc');
-      const a=document.getElementById('directorModalIg');
-      const igt=document.getElementById('directorModalIgText');
-      if(!modal||!img||!name||!role||!desc||!a) return;
-      const hosted=safeImageUrl(t.img||'');
-      img.onerror=window.fallbackTeamImg;
-      img.style.visibility=hosted?'visible':'hidden';
-      if(hosted) img.src=hosted; else img.removeAttribute('src');
-      img.alt=t.name||'Membro da equipe';
-      name.textContent=t.name||'';
-      role.textContent=t.role||'';
-      desc.textContent=t.desc||'Conheça o membro da equipe do Bargunçados Rock Bar.';
-      const ig=String(t.ig||'').replace(/^@/,'').trim();
-      if(igt) igt.textContent=ig?'@'+ig:'Instagram não informado';
-      if(ig){
-        const profileUrl='https://www.instagram.com/'+encodeURIComponent(ig)+'/';
-        a.href=profileUrl;
-        a.target='_blank';
-        a.rel='noopener noreferrer';
-        a.textContent='📸 ABRIR INSTAGRAM — @'+ig;
-        a.style.pointerEvents='auto';
-        a.setAttribute('aria-disabled','false');
-      }else{
-        a.href='#';
-        a.textContent='📸 INSTAGRAM NÃO INFORMADO';
-        a.style.pointerEvents='none';
-        a.setAttribute('aria-disabled','true');
-      }
-      modal.style.display='flex';
-      modal.classList.remove('is-open');
-      requestAnimationFrame(()=>{
-        modal.classList.add('is-open');
-        const panel=modal.querySelector('.modal-content');
-        if(panel){ panel.style.animation='none'; void panel.offsetWidth; panel.style.animation=''; }
-      });
-    }
+    function openDirectorModal(id){const t=appData.team.find(x=>String(x.id)===String(id));if(!t)return;document.getElementById('directorModalImg').src=t.img||'';document.getElementById('directorModalName').innerText=t.name||'';document.getElementById('directorModalRole').innerText=t.role||'';document.getElementById('directorModalDesc').innerText=t.desc||'';const ig=String(t.ig||'').replace('@','').trim();const a=document.getElementById('directorModalIg');a.href=ig?`https://instagram.com/${encodeURIComponent(ig)}`:'#';a.innerText=ig?`📸 ABRIR INSTAGRAM — @${ig}`:'📸 INSTAGRAM NÃO INFORMADO';document.getElementById('directorModal').style.display='flex';}
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
       const isAdmLogged = (getPersistentAdminFlag('brg_adm_logged') === 'true');
@@ -4196,58 +4021,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
-      if(!content) return;
       const btn = content.previousElementSibling;
       if (content.style.display === "block") {
         content.style.display = "none";
-        if(btn) btn.classList.remove("active");
+        btn.classList.remove("active");
       } else {
         content.style.display = "block";
-        if(btn) btn.classList.add("active");
-        if(id === "adm-moderation") {
-          refreshModerationQueue();
-        }
-      }
-    }
-
-    async function refreshModerationQueue() {
-      if(!isAuthenticatedAdmin()) return false;
-      try {
-        const token = await getAdminAccessToken();
-        if(!token) {
-          renderModerationLists();
-          return false;
-        }
-        const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
-          cache: 'no-store',
-          headers: {
-            'apikey': SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': 'Bearer ' + token
-          }
-        }, 12000);
-        let json = null;
-        try { json = await res.json(); } catch(e) {}
-        if(!res.ok || !json?.admin || !json?.record) {
-          console.warn('[Bargunçados] Não foi possível atualizar a fila de moderação.', res.status, json);
-          renderModerationLists();
-          return false;
-        }
-        const record = cloneForSync(json.record) || {};
-        remoteRevision = Number(json.revision || record.__sync?.revision || remoteRevision || 0);
-        publicRevision = remoteRevision;
-        if(Object.prototype.hasOwnProperty.call(record,'pendingSongs')) appData.pendingSongs = Array.isArray(record.pendingSongs) ? record.pendingSongs : [];
-        if(Object.prototype.hasOwnProperty.call(record,'pendingMessages')) appData.pendingMessages = Array.isArray(record.pendingMessages) ? record.pendingMessages : [];
-        if(Object.prototype.hasOwnProperty.call(record,'userSongs')) appData.userSongs = Array.isArray(record.userSongs) ? record.userSongs : [];
-        if(Object.prototype.hasOwnProperty.call(record,'userMessages')) appData.userMessages = Array.isArray(record.userMessages) ? record.userMessages : [];
-        if(Object.prototype.hasOwnProperty.call(record,'moderationHistory')) appData.moderationHistory = Array.isArray(record.moderationHistory) ? record.moderationHistory : [];
-        delete record.__sync;
-        remoteSnapshot = { ...(remoteSnapshot || {}), pendingSongs: cloneForSync(appData.pendingSongs), pendingMessages: cloneForSync(appData.pendingMessages), userSongs: cloneForSync(appData.userSongs), userMessages: cloneForSync(appData.userMessages), moderationHistory: cloneForSync(appData.moderationHistory) };
-        renderModerationLists();
-        return true;
-      } catch(e) {
-        console.warn('[Bargunçados] Erro ao atualizar fila de moderação:', e);
-        renderModerationLists();
-        return false;
+        btn.classList.add("active");
       }
     }
 
@@ -4283,8 +4063,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
             <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
             <div class="admin-card-row">
-              <button class="action-btn" onclick="approveSong(${JSON.stringify(String(s.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectSong(${JSON.stringify(String(s.id))})">❌ Rejeitar</button>
+              <button class="action-btn" onclick="approveSong(${Number(s.id)})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${Number(s.id)})">❌ Rejeitar</button>
             </div>
           </div>
         `).join('');
@@ -4298,8 +4078,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
             <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
             <div class="admin-card-row">
-              <button class="action-btn" onclick="approveMsg(${JSON.stringify(String(m.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectMsg(${JSON.stringify(String(m.id))})">❌ Rejeitar</button>
+              <button class="action-btn" onclick="approveMsg(${Number(m.id)})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${Number(m.id)})">❌ Rejeitar</button>
             </div>
           </div>
         `).join('');
@@ -4332,47 +4112,22 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    async function moderateInteractionRemote(type, id, status) {
-      if(!canModerateInline()) throw new Error('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const normalizedType = type === 'song' ? 'song' : 'message';
-      const normalizedStatus = status === 'accepted' ? 'accepted' : 'rejected';
-      let token = await getAdminAccessToken();
-      if(!token) throw new Error('Sessão administrativa inválida ou expirada. Faça login novamente.');
-      const request = async(accessToken) => fetchWithTimeout(SUPABASE_FUNCTION_URL,{
-        method:'POST',cache:'no-store',
-        headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+accessToken},
-        body:JSON.stringify({action:'moderate_interaction',type:normalizedType,id:String(id),status:normalizedStatus})
-      },15000);
-      let res=await request(token);
-      if(res.status===401){const refreshed=await supabaseRefreshSession();token=refreshed?.access_token||null;if(token)res=await request(token);}
-      let json=null;try{json=await res.json()}catch(e){}
-      if(!res.ok||!json?.ok)throw new Error((json?.error||('HTTP_'+res.status))+': '+(json?.message||'O servidor não confirmou a moderação.'));
-      return json;
+    async function moderateInteractionRemote(type,id,status){
+      if(!canModerateInline()) throw new Error('Acesso Negado: sessão administrativa sem permissão de moderação.');
+      let token=await getAdminAccessToken(); if(!token) throw new Error('Sessão administrativa expirada. Entre novamente no painel.');
+      const body={action:'moderate_interaction',type:String(type),id:String(id),status:String(status)};
+      for(let attempt=0;attempt<2;attempt++){
+        const res=await fetchWithTimeout(SUPABASE_FUNCTION_URL,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+token},body:JSON.stringify(body)},15000);
+        if(res.ok){const j=await res.json().catch(()=>({}));if(j?.ok)return j;throw new Error(j?.message||j?.error||'O servidor não confirmou a operação.');}
+        if(res.status===401&&attempt===0){await supabaseRefreshSession();token=await getAdminAccessToken();if(token)continue;}
+        const j=await res.json().catch(()=>({}));throw new Error(j?.message||j?.error||('Falha HTTP '+res.status));
+      }
+      throw new Error('Falha de autenticação.');
     }
-
-    async function approveSong(id) {
-      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
-    }
-
-    async function rejectSong(id) {
-      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Pedido rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
-    }
-
-    async function approveMsg(id) {
-      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}
-    }
-
-    async function rejectMsg(id) {
-      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
-      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
-      try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('❌ Recado rejeitado e excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao rejeitar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi rejeitado. Nada foi excluído.\n\n'+(e?.message||e));return false;}
-    }
+    async function approveSong(id){try{await moderateInteractionRemote('song',id,'accepted');await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('✅ Pedido aprovado e publicado no mural.');}catch(e){console.error(e);await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Não foi possível aprovar.\n\n'+(e?.message||e));}}
+    async function rejectSong(id){try{await moderateInteractionRemote('song',id,'rejected');await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Pedido rejeitado e removido da fila.');}catch(e){console.error(e);await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Não foi possível rejeitar.\n\n'+(e?.message||e));}}
+    async function approveMsg(id){try{await moderateInteractionRemote('message',id,'accepted');await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('✅ Recado aprovado e publicado no mural.');}catch(e){console.error(e);await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Não foi possível aprovar.\n\n'+(e?.message||e));}}
+    async function rejectMsg(id){try{await moderateInteractionRemote('message',id,'rejected');await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Recado rejeitado e removido da fila.');}catch(e){console.error(e);await fetchBinData(true);renderPublicInteractions();renderModerationLists();alert('❌ Não foi possível rejeitar.\n\n'+(e?.message||e));}}
 
     let tempNewTabImg = '';
     document.getElementById('new-tab-img-file').addEventListener('change', e => {
@@ -4497,71 +4252,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(!canEdit && !canDel) {
           menuList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar o cardápio.</p>';
         } else {
-          const menuItems=Array.isArray(appData.menu)?appData.menu:[];
-          ensureLegacyDrinkLines();
-          const normalizedMenuItems=Array.isArray(appData.menu)?appData.menu:menuItems;
-          const drinkLines=[
-            ['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],['rum','🍹 Linha Rum'],
-            ['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky'],['legacy','🔥 Destilados & Clássicos']
-          ];
-          const groups=[];
-          drinkLines.forEach(([key,title])=>{
-            const items=normalizedMenuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
-            if(items.length) groups.push({title,count:items.length,items});
-          });
-          const simpleGroups=[
-            ['beer','🍺 CERVEJAS'],['noalcohol','🥤 SEM ÁLCOOL / SUCOS / REFRIS'],['portion','🍟 PORÇÕES & LARICA']
-          ];
-          simpleGroups.forEach(([type,title])=>{const items=normalizedMenuItems.filter(i=>i.type===type);if(items.length)groups.push({title,count:items.length,items});});
-
-          const renderAdminItem=i=>`
-            <div class="admin-card">
-              <div class="admin-card-row">
-                  <select class="admin-input" id="type-${i.id}" style="max-width:140px;">
-                    <option value="drink" ${i.type === 'drink' ? 'selected' : ''}>🔥 Destilado</option>
-                    <option value="beer" ${i.type === 'beer' ? 'selected' : ''}>🍺 Cerveja</option>
-                    <option value="noalcohol" ${i.type === 'noalcohol' ? 'selected' : ''}>🥤 Sem Álcool</option>
-                    <option value="portion" ${i.type === 'portion' ? 'selected' : ''}>🍟 Porção</option>
-                  </select>
-                  <input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}">
-                  <input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">
-              </div>
-              ${i.type === 'drink' ? `<div class="admin-card-row" style="margin-top:5px;">
-                  <label style="color:#aaa;font-size:.72rem;">Categoria da bebida
-                    <select class="admin-input" id="drinkline-${i.id}" style="margin-left:6px;min-width:210px;">
-                      <option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option>
-                      <option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option>
-                      <option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option>
-                      <option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option>
-                      <option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option>
-                      <option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option>
-                      <option value="" ${!i.drinkLine?'selected':''}>🔥 Destilados & Clássicos</option>
-                    </select>
-                  </label>
-              </div>` : ''}
-              <div class="admin-card-row" style="margin-top:5px;">
-                  <input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short||'')}">
-              </div>
-              <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full||'')}</textarea>
-              <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;" onerror="fallbackMenuImg(this,${Number(i.id)||0})">
-                  <div class="file-upload-wrapper" style="padding: 5px 10px;">
-                    <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
-                    <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
-                  </div>
-                  ${canEdit ? `<button class="action-btn" onclick="saveItemData(${i.id})">💾 Salvar</button>` : ''}
-                  ${canEdit ? `<button class="action-btn" style="background:var(--c-cyan);color:#000;" onclick="openSiteDrinkRecipeEditor(${i.id})">🧪 Ingredientes + Custo</button>` : ''}
-                  ${canDel ? `<button class="action-btn del-btn" onclick="removeMenuItem(${i.id})">🗑️ Excluir</button>` : ''}
-              </div>
-            </div>`;
-
-          menuList.innerHTML = groups.length ? groups.map(g=>`<section class="admin-menu-category" data-admin-menu-category="${escapeHTML(String(g.title))}" style="margin:0 0 22px;padding:12px;border:1px solid rgba(0,229,255,.20);border-radius:14px;background:linear-gradient(180deg,rgba(0,229,255,.045),rgba(0,0,0,.18));box-shadow:0 8px 22px rgba(0,0,0,.16);">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 10px;padding:7px 9px;border-left:4px solid var(--c-yellow);border-bottom:1px solid rgba(255,235,59,.24);background:rgba(255,235,59,.055);border-radius:7px;">
-              <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.12rem;margin:0;letter-spacing:.02em;">${escapeHTML(g.title)}</h5>
-              <span style="color:#b9c4ca;font-size:.75rem;font-family:inherit;font-weight:800;">${g.count} ${g.count===1?'item':'itens'}</span>
-            </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">${g.items.map(renderAdminItem).join('')}</div>
-          </section>`).join('') : '<p style="color:#777;font-size:.85rem;">Nenhum item cadastrado no cardápio.</p>';
+          const groups = [['🍋 Linha Caipirinha','drink','caipirinha'],['🍸 Linha Vodka','drink','vodka'],['🍹 Linha Rum','drink','rum'],['🌵 Linha Tequila','drink','tequila'],['🌿 Linha Gin','drink','gin'],['🥃 Linha Whisky','drink','whisky'],['🔥 Destilados & Clássicos','drink','legacy'],['🍺 CERVEJAS','beer',null],['🥤 SEM ÁLCOOL / SUCOS / REFRIS','noalcohol',null],['🍟 PORÇÕES & LARICA','portion',null]];
+          const renderAdminMenuItem = i => `<div class="admin-card admin-menu-item-card" data-admin-menu-id="${Number(i.id)}"><div class="admin-card-row"><select class="admin-input" id="type-${i.id}" style="max-width:140px;"><option value="drink" ${i.type==='drink'?'selected':''}>🔥 Destilado</option><option value="beer" ${i.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${i.type==='noalcohol'?'selected':''}>🥤 Sem Álcool</option><option value="portion" ${i.type==='portion'?'selected':''}>🍟 Porção</option></select><input type="text" class="admin-input" id="name-${i.id}" value="${escapeHTML(i.name)}"><input type="text" class="admin-input" id="price-${i.id}" value="${escapeHTML(i.price)}" style="max-width:80px;">${i.type==='drink'?`<select class="admin-input" id="drinkline-${i.id}" style="max-width:190px;"><option value="">🔥 Destilados & Clássicos</option><option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option><option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option><option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option><option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option><option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option><option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option></select>`:''}</div><div class="admin-card-row" style="margin-top:5px;"><input type="text" class="admin-input" id="short-${i.id}" value="${escapeHTML(i.short||'')}"></div><textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full||'')}</textarea><div class="admin-card-row" style="margin-top:5px;"><img src="${safeImageUrl(i.img)}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #444;"><div class="file-upload-wrapper" style="padding:5px 10px;"><span style="font-size:.75rem;">📷 Upar Nova Foto</span><input type="file" accept="image/*" onchange="updateItemImg(${Number(i.id)}, this)"></div>${canEdit?`<button type="button" class="action-btn" onclick="saveItemData(${Number(i.id)})">💾 Salvar</button>`:''}${canEdit?`<button type="button" class="action-btn" style="background:var(--c-cyan);color:#000;" onclick="openSiteDrinkRecipeEditor(${Number(i.id)})">🧪 Ingredientes + Custo</button>`:''}${canDel?`<button type="button" class="action-btn del-btn" onclick="removeMenuItem(${Number(i.id)})">🗑️ Excluir</button>`:''}</div></div>`;
+          menuList.innerHTML = groups.map(([title,type,line])=>{const items=appData.menu.filter(i=>i.type===type&&(type!=='drink'||(line==='legacy'?!i.drinkLine:i.drinkLine===line)));if(!items.length)return '';return `<section data-admin-menu-category="${escapeHTML(title)}" style="margin:12px 0;border:2px solid rgba(255,235,59,.25);border-radius:14px;overflow:hidden;background:rgba(255,255,255,.025);"><div style="padding:10px 12px;background:rgba(255,235,59,.08);border-bottom:1px solid rgba(255,235,59,.22);color:var(--c-yellow);font-family:var(--font-title);font-size:1rem;font-weight:900;display:flex;justify-content:space-between;gap:8px;"><span>${escapeHTML(title)}</span><span>${items.length} item(ns)</span></div><div style="padding:8px;display:grid;gap:8px;">${items.map(renderAdminMenuItem).join('')}</div></section>`;}).join('');
         }
       }
       
@@ -4690,53 +4383,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     async function removePartnerRevenue(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir esta receita?'))return;ensurePartnersFinance().revenues=ensurePartnersFinance().revenues.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma receita');renderPartnersPortal()}
     async function removePartnerExpense(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir esta despesa?'))return;ensurePartnersFinance().expenses=ensurePartnersFinance().expenses.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma despesa');renderPartnersPortal()}
     async function removePartnerShift(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir este turno?'))return;ensurePartnersFinance().shifts=ensurePartnersFinance().shifts.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu um turno');renderPartnersPortal()}
-    const BRG_ADMIN_SESSION_MAX_MS = 12 * 60 * 60 * 1000;
-    const BRG_ADMIN_SESSION_TS_KEY = 'brg_adm_login_ts';
-    function getAdminSessionStartedAt(){
-      const raw=localStorage.getItem(BRG_ADMIN_SESSION_TS_KEY)||sessionStorage.getItem(BRG_ADMIN_SESSION_TS_KEY);
-      const n=Number(raw||0);
-      if(n>0){ sessionStorage.setItem(BRG_ADMIN_SESSION_TS_KEY,String(n)); return n; }
-      return 0;
-    }
-    function ensureAdminSessionTimestamp(){
-      let started=getAdminSessionStartedAt();
-      if(!started){ started=Date.now(); setPersistentAdminFlag(BRG_ADMIN_SESSION_TS_KEY,String(started)); }
-      return started;
-    }
-    function adminSessionExpired(){
-      const started=getAdminSessionStartedAt();
-      return started>0 && (Date.now()-started)>=BRG_ADMIN_SESSION_MAX_MS;
-    }
-    async function enforceAdminSessionLifetime(){
-      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return true;
-      if(!getAdminSessionStartedAt()) ensureAdminSessionTimestamp();
-      if(!adminSessionExpired()) return true;
-      await supabaseSignOut();
-      clearPersistentAdminFlags();
-      clearInterval(window.__brgSessionTimer);
-      return false;
-    }
-    function startAdminSessionClock(){
-      const started=ensureAdminSessionTimestamp();
-      const tick=async()=>{
-        const el=document.getElementById('portal-session-time');
-        const remaining=Math.max(0,BRG_ADMIN_SESSION_MAX_MS-(Date.now()-started));
-        if(remaining<=0){
-          clearInterval(window.__brgSessionTimer);
-          await supabaseSignOut();
-          clearPersistentAdminFlags();
-          const dash=document.getElementById('admin-dashboard'),login=document.getElementById('admin-login');
-          if(dash)dash.style.display='none'; if(login)login.style.display='block';
-          if(el)el.textContent='SESSÃO EXPIRADA • FAÇA LOGIN NOVAMENTE';
-          renderApp();
-          return;
-        }
-        if(!el)return;
-        const sec=Math.floor(remaining/1000),h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');
-        el.textContent=`SESSÃO ATIVA • EXPIRA EM ${h}:${m}:${ss}`;
-      };
-      clearInterval(window.__brgSessionTimer); tick(); window.__brgSessionTimer=setInterval(tick,1000);
-    }
+    function startAdminSessionClock(){const started=Number(sessionStorage.getItem('brg_adm_login_ts')||Date.now());if(!sessionStorage.getItem('brg_adm_login_ts'))sessionStorage.setItem('brg_adm_login_ts',String(started));const tick=()=>{const el=document.getElementById('portal-session-time');if(!el)return;const sec=Math.max(0,Math.floor((Date.now()-started)/1000));const h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');el.textContent=`SESSÃO ${h}:${m}:${ss}`};clearInterval(window.__brgSessionTimer);tick();window.__brgSessionTimer=setInterval(tick,1000)}
     function togglePartnerExpenseFields(){const is=document.getElementById('partner-expense-type')?.value==='partner',e=document.getElementById('partner-expense-partner');if(e)e.disabled=!is}
     async function showAdminLoginSequence(){const loader=document.getElementById('admin-auth-loader');if(!loader)return async()=>{};const step=document.getElementById('admin-auth-step'),progress=document.getElementById('admin-auth-progress'),logs=document.getElementById('admin-auth-log'),started=Date.now();loader.classList.add('show');const phases=[['PROCURANDO CREDENCIAIS','Verificando identidade administrativa…',8],['FAZENDO AUTENTICAÇÃO','Consultando o gateway seguro…',32],['VALIDANDO PERMISSÕES','Confirmando nível de acesso…',58],['ESTABELECENDO SESSÃO','Sincronizando ambiente privado…',82],['ACESSO LIBERADO','Painel administrativo pronto.',100]];const run=(async()=>{for(const p of phases){if(step)step.textContent=p[0];if(logs)logs.innerHTML=`<div>✓ ${p[1]}</div>`;if(progress)progress.style.width=p[2]+'%';await new Promise(r=>setTimeout(r,850))}})();return async()=>{await run;const wait=Math.max(0,5000-(Date.now()-started));if(wait)await new Promise(r=>setTimeout(r,wait));loader.classList.remove('show')}}
 
@@ -4795,7 +4442,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
         }
 
         applySupabaseAdminSession(session.user, authenticatedAccount);
-          // A autenticação Supabase é independente da sincronização do conteúdo administrativo.
+        await flushPendingAdminChanges();
+        // A autenticação Supabase é independente da sincronização do conteúdo administrativo.
         // Se o serviço de dados estiver temporariamente indisponível, não transforme
         // uma senha válida em um falso erro de credenciais: mantém o login e usa o snapshot atual.
         try {
@@ -4817,7 +4465,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
         document.getElementById('admin-login').style.display='none';
         document.getElementById('admin-dashboard').style.display='block';
         updateAdminGreeting();
-        setPersistentAdminFlag(BRG_ADMIN_SESSION_TS_KEY,String(Date.now()));
+        setPersistentAdminFlag('brg_adm_login_ts',String(Date.now()));
         startAdminSessionClock();
         document.getElementById('manual-email-input').value='';
         document.getElementById('manual-pass-input').value='';
@@ -4972,8 +4620,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveHomeData() {
-      const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true', perms=appData.permissions||{};
-      if(!isMaster && perms.canEdit===false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
       appData.home.title = document.getElementById('adm-h-title').value;
       appData.home.desc1 = document.getElementById('adm-h-desc1').value;
       appData.home.desc2 = document.getElementById('adm-h-desc2').value;
@@ -4987,10 +4633,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
     async function openAdminRecipeEditor(id) {
       const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
-      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
-      const perms = appData.permissions || {};
       if(!isLoggedIn) return alert('🔐 Faça login como administrador antes de editar os ingredientes.');
-      if(!isMaster && perms.canEdit === false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
       try {
         await loadBarControl(false);
         openBarRecipeEditor(String(id));
@@ -5016,7 +4659,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     };
     window.siteDrinkRecipeAdd=function(){const sel=document.getElementById('site-recipe-inv'),qty=document.getElementById('site-recipe-new-qty'),wrap=document.getElementById('site-recipe-rows');if(!sel||!qty)return;const q=Number(qty.value);if(!sel.value||!Number.isFinite(q)||q<=0)return alert('Informe uma quantidade válida.');if([...wrap.querySelectorAll('.site-recipe-row')].some(r=>String(r.dataset.inv)===String(sel.value)))return alert('Esse ingrediente já está na receita. Edite a quantidade na linha existente.');const x=(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(sel.value));if(!x)return;wrap.querySelector('.bar-alert')?.remove();const d=document.createElement('div');d.className='site-recipe-row';d.dataset.inv=x.id;d.style.cssText='border:1px solid #29343d;border-radius:12px;padding:10px;margin:8px 0';d.innerHTML='<div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:8px;align-items:center"><div><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.unit)+' • custo '+brgMoney(x.unit_cost)+'</small></div><input class="site-recipe-qty" type="number" min="0.000001" step="0.001" value="'+q+'"><select class="site-recipe-unit admin-input" title="Unidade usada na receita">'+brgComponentUnitOptions(x.unit||'un')+'</select><button type="button" class="action-btn del-btn" onclick="if(confirm(\'Remover este ingrediente da receita?\'))this.closest(\'.site-recipe-row\').remove();window.siteDrinkRecipeRecalc()">🗑️</button></div>';wrap.appendChild(d);qty.value='';window.siteDrinkRecipeRecalc()};
     window.siteDrinkRecipeRecalc=function(){const rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],inv=BRG_BAR.data?.inventory||[];let cost=0;rows.forEach(r=>{const x=inv.find(i=>String(i.id)===String(r.dataset.inv));const q=Number(r.querySelector('.site-recipe-qty')?.value||0),u=String(r.querySelector('.site-recipe-unit')?.value||x.unit||'un');if(x)cost+=brgRecipeToStockBase({...x,component_unit:u},q)*Number(x.unit_cost||0)});const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),profit=price-cost,margin=price>0?profit/price*100:0;const el=document.getElementById('site-recipe-summary');if(el)el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><div><b style="font-size:1.2rem">'+brgMoney(cost)+'</b><small style="display:block;color:#8d9aa2">Custo estimado por bebida</small></div><div><b style="font-size:1.2rem">'+brgMoney(profit)+'</b><small style="display:block;color:#8d9aa2">Lucro bruto estimado</small></div><div><b style="font-size:1.2rem">'+margin.toFixed(1)+'%</b><small style="display:block;color:#8d9aa2">Margem estimada</small></div></div><p style="margin:10px 0 0;color:#9aa7ad">Cálculo: soma da quantidade de cada ingrediente × custo atual cadastrado no estoque. Você pode alterar o preço de venda acima para controlar a margem.</p>'};
-    window.saveSiteDrinkRecipe=async function(id){const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true',perms=appData.permissions||{};if(!isMaster&&perms.canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master.');const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),yieldQty=Number(document.getElementById('site-recipe-yield')?.value||1),rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],comps=rows.map(r=>({inventory_item_id:String(r.dataset.inv),quantity_per_sale:Number(r.querySelector('.site-recipe-qty')?.value||0),component_unit:String(r.querySelector('.site-recipe-unit')?.value||'un')}));if(!Number.isFinite(price)||price<0)return alert('Informe um preço válido.');if(!Number.isFinite(yieldQty)||yieldQty<=0)return alert('Informe um rendimento válido.');if(comps.some(c=>!Number.isFinite(c.quantity_per_sale)||c.quantity_per_sale<=0))return alert('Existe ingrediente com quantidade inválida.');if(new Set(comps.map(c=>c.inventory_item_id)).size!==comps.length)return alert('Há ingrediente duplicado na receita.');const oldPrice=item.price;try{const savedResponse=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:price,yield_qty:yieldQty,estimate_source:'Cadastro local do site',components:comps}});if(!savedResponse?.recipe)throw new Error('O servidor não devolveu a receita salva.');brgApplyRecipeSaveResponse(savedResponse);item.price=price.toFixed(2).replace('.',',');await saveBinData('Editou a receita de "'+item.name+'" diretamente no cadastro da bebida. Preço R$ '+oldPrice+' → R$ '+item.price);document.getElementById('site-drink-recipe-modal')?.remove();renderAdminLists();renderApp();alert('✅ Receita salva no servidor. Esta é a receita oficial que o Controle do Bar usará nas próximas vendas.');}catch(e){alert('❌ A receita não foi salva.\n\n'+(e?.message||e));}};
+    window.saveSiteDrinkRecipe=async function(id){const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),yieldQty=Number(document.getElementById('site-recipe-yield')?.value||1),rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],comps=rows.map(r=>({inventory_item_id:String(r.dataset.inv),quantity_per_sale:Number(r.querySelector('.site-recipe-qty')?.value||0),component_unit:String(r.querySelector('.site-recipe-unit')?.value||'un')}));if(!Number.isFinite(price)||price<0)return alert('Informe um preço válido.');if(!Number.isFinite(yieldQty)||yieldQty<=0)return alert('Informe um rendimento válido.');if(comps.some(c=>!Number.isFinite(c.quantity_per_sale)||c.quantity_per_sale<=0))return alert('Existe ingrediente com quantidade inválida.');if(new Set(comps.map(c=>c.inventory_item_id)).size!==comps.length)return alert('Há ingrediente duplicado na receita.');const oldPrice=item.price;try{const savedResponse=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:price,yield_qty:yieldQty,estimate_source:'Cadastro local do site',components:comps}});if(!savedResponse?.recipe)throw new Error('O servidor não devolveu a receita salva.');brgApplyRecipeSaveResponse(savedResponse);item.price=price.toFixed(2).replace('.',',');await saveBinData('Editou a receita de "'+item.name+'" diretamente no cadastro da bebida. Preço R$ '+oldPrice+' → R$ '+item.price);document.getElementById('site-drink-recipe-modal')?.remove();renderAdminLists();renderApp();alert('✅ Receita salva no servidor. Esta é a receita oficial que o Controle do Bar usará nas próximas vendas.');}catch(e){alert('❌ A receita não foi salva.\n\n'+(e?.message||e));}};
 
     async function saveItemData(id) {
        const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
@@ -5029,7 +4672,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
           const oldPrice = item.price;
           const newName = document.getElementById(`name-${id}`).value.trim();
           const newType = document.getElementById(`type-${id}`).value;
-          const newDrinkLine = newType === 'drink' ? (document.getElementById(`drinkline-${id}`)?.value || '') : '';
 
           if(newName.toLowerCase() !== oldName.toLowerCase()) {
             const exists = appData.menu.some(i => i.name.trim().toLowerCase() === newName.toLowerCase());
@@ -5040,7 +4682,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
           item.name = newName;
           item.type = newType;
-          item.drinkLine = newDrinkLine;
+          item.drinkLine = newType === 'drink' ? (document.getElementById(`drinkline-${id}`)?.value || '') : '';
           item.price = document.getElementById(`price-${id}`).value;
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
@@ -5074,9 +4716,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveTeamData(id) {
-       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
-       const perms = appData.permissions || {};
-       if(!isMaster && perms.canTeam === false) return alert("Acesso Negado: permissão de equipe desativada pelo Master!");
        const t = appData.team.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
@@ -5189,9 +4828,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveFlyerData() {
-      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
-      const perms = appData.permissions || {};
-      if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: permissão de agenda desativada pelo Master!");
       appData.flyer.tag = document.getElementById('adm-f-tag').value;
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
@@ -5202,7 +4838,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
     function closeModal(modalId) { 
       const modal = document.getElementById(modalId);
-      if(modal){ modal.classList.remove('is-open'); modal.style.display = 'none'; } 
+      if(modal) modal.style.display = 'none'; 
     }
 
     window.onclick = function(event) { 
@@ -5580,8 +5216,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     return rows.map(x=>'<div class="bar-chart-row"><span title="'+brgEsc(x.name)+'">'+brgEsc(x.name)+'</span><div class="bar-chart-track"><div class="bar-chart-fill" style="width:'+Math.max(2,Number(x[valueKey]||0)/max*100)+'%"></div></div><b>'+formatter(Number(x[valueKey]||0))+'</b></div>').join('');
   }
   function defaultBarGoalSettings(){return {rent:1000,operational:400,dailyGoal:130,other:0}}
-  function loadBarGoalSettings(){const defaults=defaultBarGoalSettings();const shared=appData?.barGoalSettings&&typeof appData.barGoalSettings==='object'?appData.barGoalSettings:null;return {...defaults,...(shared||{})}}
-  async function saveBarGoalSettings(){if(!isCurrentMaster())return alert('Acesso Negado: somente o Administrador Master pode alterar as metas e despesas do bar.');const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
+  function loadBarGoalSettings(){const defaults=defaultBarGoalSettings();try{const local=JSON.parse(localStorage.getItem('brg_bar_goal_settings')||'null');const shared=appData?.barGoalSettings&&typeof appData.barGoalSettings==='object'?appData.barGoalSettings:null;return {...defaults,...(local||{}),...(shared||{})}}catch(e){return defaults}}
+  async function saveBarGoalSettings(){if(!isCurrentMaster())return alert('Acesso Negado: somente o Administrador Master pode alterar as metas e despesas do bar.');const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{localStorage.setItem('brg_bar_goal_settings',JSON.stringify(cfg))}catch(e){}try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
   window.saveBarGoalSettings=saveBarGoalSettings;
   function syncBarGoalAdminFields(){
     const cfg={...defaultBarGoalSettings(),...(BRG_BAR.goalSettings||{})};
@@ -5822,7 +5458,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     return {current,target,pct,missing,value,sold,adjustOut,entries,status:brgStockStatus(item)};
   }
   function brgMoneyPerBase(value){return Number.isFinite(Number(value))?brgMoney(Number(value)):'—'}
-  function renderBarStock(){const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];const critical=inv.filter(x=>brgStockStatus(x)==='critical').length,totalValue=inv.reduce((a,x)=>a+brgStockValue(x),0),totalSold=inv.reduce((a,x)=>a+brgInventoryStats(x).sold,0);root.innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+inv.length+'</b><span>Itens cadastrados</span></div><div class="bar-kpi"><b>'+critical+'</b><span>⚠️ Abaixo de 30%</span></div><div class="bar-kpi"><b>'+brgMoney(totalValue)+'</b><span>Valor atual do estoque</span></div><div class="bar-kpi"><b>'+brgNum(totalSold)+'</b><span>Saídas em vendas</span></div></div>'+(critical?'<div class="bar-alert" style="border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ ATENÇÃO — REPOSIÇÃO NECESSÁRIA</b><br>'+critical+' item(ns) estão com 30% ou menos do estoque máximo.</div>':'')+'<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">A barra e o gráfico usam o estoque máximo como 100%. Clique em qualquer item para ver quantidade, consumo, embalagem e valores.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Estoque visual</th><th>Físico</th><th>Consumo</th><th>Compra</th><th>Fornecedor</th><th>Preço popular</th><th>Margem</th><th>Status</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const st=brgInventoryStats(x),saleBase=brgSaleUnitInfo(x),physical=brgStockBreakdown(x,st.current),cls=st.status==='negative'||st.status==='critical'?'bar-danger':st.status==='attention'?'bar-warn':'bar-ok',label=st.status==='negative'?'NEGATIVO':st.status==='critical'?'REPOR AGORA':st.status==='attention'?'ATENÇÃO':'OK';return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category||'insumo')+' • base: '+brgEsc(x.unit||'un')+'</small></td><td><div style="min-width:175px"><div style="display:flex;justify-content:space-between"><span>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</span><b>'+st.pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:11px;margin:6px 0 3px"><span style="width:'+st.pct+'%"></span></div><small>Máx. '+brgNum(st.target)+' • falta '+brgNum(st.missing)+'</small></div></td><td><b>'+brgEsc(physical)+'</b><small style="display:block;color:#8d9aa2">'+brgNum(x.package_count||0)+' '+brgEsc(x.package_label||'embalagem')+'(s)</small></td><td><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">saída manual '+brgNum(st.adjustOut)+' • entradas '+brgNum(st.entries)+'</small></td><td><b>Pago: '+brgMoney(Number(x.purchase_price_per_package||0))+'</b><small style="display:block;color:#8d9aa2">Custo base: '+brgMoney(x.unit_cost)+'/'+brgEsc(x.unit||'un')+'</small></td><td>'+brgEsc(x.supplier||'—')+'</td><td><b>'+brgMoney(Number(x.sale_price_per_package||0))+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(saleBase.unitLabel)+'</small></td><td><b>'+((Number(x.purchase_price_per_package)>0&&Number(x.sale_price_per_package)>0)?(((Number(x.sale_price_per_package)-Number(x.purchase_price_per_package))/Number(x.sale_price_per_package))*100).toFixed(1)+'%':'—')+'</b></td><td class="'+cls+'"><b>'+label+'</b><small style="display:block">'+(st.status==='critical'?'≤ 30% do máximo':st.status==='attention'?'abaixo de 70%':'estoque controlado')+'</small></td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+String(x.id).replace(/'/g,'')+'\')">± Ajustar</button>'+(st.status==='critical'||st.status==='negative'?'<button class="bar-mini-btn primary" onclick="barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor</button>':'')+'<button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+String(x.id).replace(/'/g,'')+'\')">🗑️ Excluir</button></div></td></tr>'}).join('')+'</tbody></table></div>'}
+  function renderBarStock(){const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];const critical=inv.filter(x=>brgStockStatus(x)==='critical').length,totalValue=inv.reduce((a,x)=>a+brgStockValue(x),0),totalSold=inv.reduce((a,x)=>a+brgInventoryStats(x).sold,0);root.innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+inv.length+'</b><span>Itens cadastrados</span></div><div class="bar-kpi"><b>'+critical+'</b><span>⚠️ Abaixo de 30%</span></div><div class="bar-kpi"><b>'+brgMoney(totalValue)+'</b><span>Valor atual do estoque</span></div><div class="bar-kpi"><b>'+brgNum(totalSold)+'</b><span>Saídas em vendas</span></div></div>'+(critical?'<div class="bar-alert" style="border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ ATENÇÃO — REPOSIÇÃO NECESSÁRIA</b><br>'+critical+' item(ns) estão com 30% ou menos do estoque máximo.</div>':'')+'<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">A barra e o gráfico usam o estoque máximo como 100%. Clique em qualquer item para ver quantidade, consumo, embalagem e valores.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Estoque visual</th><th>Físico</th><th>Consumo</th><th>Compra / revenda</th><th>Status</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const st=brgInventoryStats(x),saleBase=brgSaleUnitInfo(x),physical=brgStockBreakdown(x,st.current),cls=st.status==='negative'||st.status==='critical'?'bar-danger':st.status==='attention'?'bar-warn':'bar-ok',label=st.status==='negative'?'NEGATIVO':st.status==='critical'?'REPOR AGORA':st.status==='attention'?'ATENÇÃO':'OK';return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category||'insumo')+' • base: '+brgEsc(x.unit||'un')+'</small></td><td><div style="min-width:175px"><div style="display:flex;justify-content:space-between"><span>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</span><b>'+st.pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:11px;margin:6px 0 3px"><span style="width:'+st.pct+'%"></span></div><small>Máx. '+brgNum(st.target)+' • falta '+brgNum(st.missing)+'</small></div></td><td><b>'+brgEsc(physical)+'</b><small style="display:block;color:#8d9aa2">'+brgNum(x.package_count||0)+' '+brgEsc(x.package_label||'embalagem')+'(s)</small></td><td><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">saída manual '+brgNum(st.adjustOut)+' • entradas '+brgNum(st.entries)+'</small></td><td><b>Compra: '+brgMoney(x.unit_cost)+'/'+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">Revenda: '+brgEsc(saleBase.unitLabel)+'</small></td><td class="'+cls+'"><b>'+label+'</b><small style="display:block">'+(st.status==='critical'?'≤ 30% do máximo':st.status==='attention'?'abaixo de 70%':'estoque controlado')+'</small></td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+String(x.id).replace(/'/g,'')+'\')">± Ajustar</button>'+(st.status==='critical'||st.status==='negative'?'<button class="bar-mini-btn primary" onclick="barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor</button>':'')+'<button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+String(x.id).replace(/'/g,'')+'\')">🗑️ Excluir</button></div></td></tr>'}).join('')+'</tbody></table></div>'}
   function brgSaleUnitInfo(x){
     const q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),pc=Number(x?.package_count||0),sale=Number(x?.sale_price_per_package||0),unit=String(x?.unit||'un').toLowerCase(),pm=Number(x?.package_ml||0);
     if(unit==='un'&&pc>0&&sale>0)return {unitLabel:brgMoney(sale/pc)+' / unidade',costPer:cost,salePer:sale/pc};
@@ -5830,7 +5466,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(sale>0&&q>0)return {unitLabel:brgMoney(sale/q)+' / '+brgEsc(x?.unit||'un'),costPer:cost,salePer:sale/q};
     return {unitLabel:'não informado',costPer:cost,salePer:0};
   }
-  window.openBarStockDetail=function(id){const x=(BRG_BAR.data?.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const st=brgInventoryStats(x),sale=brgSaleUnitInfo(x),reorder=brgReorderTarget(x),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),pw=Number(x.package_weight_g||0),purchaseLot=Number(x.unit_cost||0)*Number(x.quantity||0),physical=brgStockBreakdown(x,st.current);const modal=document.createElement('div');modal.id='bar-stock-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000004;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:12px';modal.innerHTML='<div style="max-width:940px;width:100%;max-height:94vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle completo • '+brgEsc(x.unit||'un')+' • '+brgEsc(x.package_label||'embalagem')+'</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div>'+(st.status==='critical'||st.status==='negative'?'<div class="bar-alert" style="margin-top:12px;border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ REPOR MERCADORIA</b><br>'+st.pct.toFixed(0)+'% do alvo. '+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un')+'.':'')+'</div>':'')+'<div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+st.pct+'%,#ff1744 '+st.pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+st.pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-st.pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</b><span>Quantidade atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.target)+' '+brgEsc(x.unit||'un')+'</b><span>Máximo / 100%</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.missing)+' '+brgEsc(x.unit||'un')+'</b><span>Falta para 100%</span></div><div class="bar-mini-kpi"><b>'+brgMoney(st.value)+'</b><span>Valor atual</span></div></div><div style="margin-top:12px;font-size:1.15rem;font-weight:900">📐 Agora: '+brgEsc(physical)+'</div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 Entradas, saídas e consumo</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><span>Saído em vendas</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.adjustOut)+' '+brgEsc(x.unit||'un')+'</b><span>Saída manual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.entries)+' '+brgEsc(x.unit||'un')+'</b><span>Entradas / reposições</span></div><div class="bar-mini-kpi"><b>'+brgMoney(purchaseLot)+'</b><span>Custo do estoque atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 Embalagem e conversão</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(pc||0)+'</b><span>Embalagens / garrafas</span></div><div class="bar-mini-kpi"><b>'+brgNum(pm||0)+' ml</b><span>Volume por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(pw||0)+' g</b><span>Peso por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(x.avg_unit_weight_g||0)+' g</b><span>Peso médio por unidade</span></div></div><p class="bar-muted" style="margin-bottom:0">'+brgStockBaseToDisplay(x,st.current)+'</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>💰 Compra, fornecedor e preço popular</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgMoney(Number(x.purchase_price_per_package||0))+'</b><span>Valor realmente pago</span></div><div class="bar-mini-kpi"><b>'+brgEsc(x.supplier||'—')+'</b><span>Fornecedor</span></div><div class="bar-mini-kpi"><b>'+brgMoney(Number(x.sale_price_per_package||0))+'</b><span>Preço popular / revenda</span></div><div class="bar-mini-kpi"><b>'+((Number(x.purchase_price_per_package)>0&&Number(x.sale_price_per_package)>0)?(((Number(x.sale_price_per_package)-Number(x.purchase_price_per_package))/Number(x.sale_price_per_package))*100).toFixed(1)+'%':'—')+'</b><span>Margem sobre venda</span></div></div><p class="bar-muted" style="margin-bottom:0;margin-top:10px">Custo técnico usado pelas receitas: <b>'+brgMoney(x.unit_cost)+'</b> por '+brgEsc(x.unit||'un')+'. O valor pago acima permanece histórico e não diminui quando o estoque é consumido.</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgEsc(brgReorderTriggerText(x))+'</p><b class="'+(reorder>0?'bar-warn':'bar-ok')+'">'+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un'):'Nenhuma reposição necessária agora')+'</b><div class="bar-actions" style="margin-top:10px">'+(reorder>0?'<button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor agora</button>':'')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar estoque</button></div></div>';document.body.appendChild(modal)};
+  window.openBarStockDetail=function(id){const x=(BRG_BAR.data?.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const st=brgInventoryStats(x),sale=brgSaleUnitInfo(x),reorder=brgReorderTarget(x),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),pw=Number(x.package_weight_g||0),purchaseLot=Number(x.unit_cost||0)*Number(x.quantity||0),physical=brgStockBreakdown(x,st.current);const modal=document.createElement('div');modal.id='bar-stock-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000004;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:12px';modal.innerHTML='<div style="max-width:940px;width:100%;max-height:94vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle completo • '+brgEsc(x.unit||'un')+' • '+brgEsc(x.package_label||'embalagem')+'</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div>'+(st.status==='critical'||st.status==='negative'?'<div class="bar-alert" style="margin-top:12px;border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ REPOR MERCADORIA</b><br>'+st.pct.toFixed(0)+'% do alvo. '+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un')+'.':'')+'</div>':'')+'<div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+st.pct+'%,#ff1744 '+st.pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+st.pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-st.pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</b><span>Quantidade atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.target)+' '+brgEsc(x.unit||'un')+'</b><span>Máximo / 100%</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.missing)+' '+brgEsc(x.unit||'un')+'</b><span>Falta para 100%</span></div><div class="bar-mini-kpi"><b>'+brgMoney(st.value)+'</b><span>Valor atual</span></div></div><div style="margin-top:12px;font-size:1.15rem;font-weight:900">📐 Agora: '+brgEsc(physical)+'</div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 Entradas, saídas e consumo</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><span>Saído em vendas</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.adjustOut)+' '+brgEsc(x.unit||'un')+'</b><span>Saída manual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.entries)+' '+brgEsc(x.unit||'un')+'</b><span>Entradas / reposições</span></div><div class="bar-mini-kpi"><b>'+brgMoney(purchaseLot)+'</b><span>Custo do estoque atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 Embalagem e conversão</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(pc||0)+'</b><span>Embalagens / garrafas</span></div><div class="bar-mini-kpi"><b>'+brgNum(pm||0)+' ml</b><span>Volume por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(pw||0)+' g</b><span>Peso por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(x.avg_unit_weight_g||0)+' g</b><span>Peso médio por unidade</span></div></div><p class="bar-muted" style="margin-bottom:0">'+brgStockBaseToDisplay(x,st.current)+'</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>💰 Compra e revenda</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgMoney(x.unit_cost)+'</b><span>Custo por '+brgEsc(x.unit||'un')+'</span></div><div class="bar-mini-kpi"><b>'+sale.unitLabel+'</b><span>Revenda unitária</span></div><div class="bar-mini-kpi"><b>'+brgMoney(x.sale_price_per_package||0)+'</b><span>Revenda da embalagem/lote</span></div><div class="bar-mini-kpi"><b>'+((sale.salePer>0&&Number(x.unit_cost)>0)?((sale.salePer-Number(x.unit_cost))/sale.salePer*100).toFixed(1)+'%':'—')+'</b><span>Margem</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgEsc(brgReorderTriggerText(x))+'</p><b class="'+(reorder>0?'bar-warn':'bar-ok')+'">'+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un'):'Nenhuma reposição necessária agora')+'</b><div class="bar-actions" style="margin-top:10px">'+(reorder>0?'<button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor agora</button>':'')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar estoque</button></div></div>';document.body.appendChild(modal)};
   function brgSuggestedPackageCount(x){
     const n=brgAutoPackageUnits(x);return n>0?n:(Number(x?.package_count||0)>0?Number(x.package_count):0);
   }
@@ -5842,56 +5478,11 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const margin=saleUnit>0&&cost>0?(saleUnit-cost)/saleUnit*100:0;
     return {effectiveCount,saleUnit,costPackage,margin};
   }
-  function openBarStockEditor(id){const x=id?(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id)):null,modal=document.createElement('div');modal.id='bar-stock-edit-modal';modal.className='bar-scroll-modal';const unit=String(x?.unit||'un').toLowerCase(),q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),sale=Number(x?.sale_price_per_package||0),purchasePaid=Number(x?.purchase_price_per_package||0),pc=Number(x?.package_count||0),pm=Number(x?.package_ml||0),pw=Number(x?.package_weight_g||0),purchaseTotal=purchasePaid>0?purchasePaid:q*cost;modal.innerHTML='<div class="bar-scroll-panel"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">✏️ '+(x?'Editar estoque — ':'Novo estoque — ')+brgEsc(x?.name||'Novo insumo')+'</h2><div class="bar-muted">Agora você cadastra separadamente quantidade, embalagem, compra e revenda. O sistema converte tudo para a unidade base.</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><h3>🧾 1. Identificação e unidade</h3><div class="bar-control-form"><label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Limão, Cerveja, Velho Barreiro"></label><label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="bebida, fruta, gelo, insumo..."></label><label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(unit==='un'?'selected':'')+'>Unidade (un)</option><option value="g" '+(unit==='g'?'selected':'')+'>Gramas (g)</option><option value="kg" '+(unit==='kg'?'selected':'')+'>Quilogramas (kg)</option><option value="ml" '+(unit==='ml'?'selected':'')+'>Mililitros (ml)</option><option value="l" '+(unit==='l'?'selected':'')+'>Litros (L)</option></select><small class="bar-field-help">A unidade base é a que será consumida automaticamente pelas receitas.</small></label><label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label><label>Estoque máximo<input id="bar-stock-max" type="number" min="0" step="0.001" value="'+(x?.max_quantity==null?'':Number(x.max_quantity))+'"><small class="bar-field-help">Este valor representa 100% da barra e do gráfico.</small></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 2. Quantidade física</h3><div class="bar-control-form"><label>Quantidade atual<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><small class="bar-field-help">Ex.: carne = 1000 g → 1 kg • total 1000 g. Se for 1200 g → 1 kg + 200 g.</small></label><label>Quantidade de embalagens / garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(pc||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 2 garrafas, 1 saco, 1 fardo.</small></label><label>Tipo de embalagem<select id="bar-stock-pack-label"><option value="garrafa" '+(String(x?.package_label||'embalagem')==='garrafa'?'selected':'')+'>Garrafa</option><option value="embalagem" '+(String(x?.package_label||'embalagem')==='embalagem'?'selected':'')+'>Embalagem</option><option value="fardo" '+(String(x?.package_label||'embalagem')==='fardo'?'selected':'')+'>Fardo</option><option value="pacote" '+(String(x?.package_label||'embalagem')==='pacote'?'selected':'')+'>Pacote</option><option value="saco" '+(String(x?.package_label||'embalagem')==='saco'?'selected':'')+'>Saco</option></select></label><label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="0.001" value="'+(pm||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 900 ml, 1000 ml, 2000 ml.</small></label><label>Peso por embalagem (g)<input id="bar-stock-pack-weight" type="number" min="0" step="0.001" value="'+(pw||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: saco de limão = 1200 g.</small></label><label>Peso médio por unidade (g)<input id="bar-stock-weight" type="number" min="0" step="0.001" value="'+(Number(x?.avg_unit_weight_g||0)||'')+'" oninput="barCtlStockCalc(\'weight\')"><small class="bar-field-help">Ex.: cada limão ≈ 120 g. Assim uma receita pode usar 3 unidades e o sistema baixa ≈ 360 g.</small></label></div><div id="bar-stock-conversion" class="bar-stock-conversion" style="font-size:1.05rem;margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>💵 3. Compra</h3><div class="bar-control-form"><label>Valor realmente pago pela compra (R$)<input id="bar-stock-purchase-total" type="number" inputmode="decimal" min="0" step="0.01" value="'+purchaseTotal.toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"></label><label>Custo técnico por unidade base (calculado)<input id="bar-stock-cost" type="number" inputmode="decimal" min="0" step="0.000001" value="'+(cost?String(cost):'')+'" oninput="barCtlStockCalc(\'cost\')"><small class="bar-field-help">É usado internamente pelas receitas. Para kg/L ele fica convertido para g/ml; R$ 40/kg nunca vira R$ 40/g.</small></label><label>Fornecedor<input id="bar-stock-supplier" type="text" value="'+brgEsc(x?.supplier||'')+'"></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🏷️ 4. Revenda</h3><div class="bar-control-form"><label>Preço popular / revenda do lote / embalagem (R$)<input id="bar-stock-sale-price" type="number" inputmode="decimal" min="0" step="0.01" value="'+(sale?String(sale):'')+'" oninput="barCtlStockCalc(\'sale\')"><small class="bar-field-help">Ex.: fardo com 12 latas → revenda do fardo R$ 100.</small></label><label>Revenda por unidade / ml (calculada)<input id="bar-stock-sale-unit-display" type="text" readonly></label><label>Margem unitária (calculada)<input id="bar-stock-margin-display" type="text" readonly></label></div><div id="bar-stock-sale-explain" class="bar-unit-help" style="margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 5. Resumo em tempo real</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b id="bar-stock-total">—</b><span>Valor atual do estoque</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-display">—</b><span>Custo por unidade base</span></div><div class="bar-mini-kpi"><b id="bar-stock-liters-display">—</b><span>Conversão</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-ml-display">—</b><span>Custo por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-sale-ml-display">—</b><span>Revenda por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-used-display">—</b><span>Já saiu em vendas</span></div></div></div><label class="bar-control-full" style="display:block;margin-top:12px">Observações<textarea id="bar-stock-notes" rows="4" placeholder="Ex.: fardo com 12 latas, lote, fornecedor...">'+brgEsc(x?.notes||'')+'</textarea></label><div class="bar-modal-footer"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">Cancelar</button><button class="bar-mini-btn primary" data-stock-id="'+(x?.id||'')+'" onclick="barCtlSaveStockEdit(\''+(x?.id||'')+'\')">💾 Salvar permanentemente</button></div></div>';document.body.appendChild(modal);barCtlStockCalc('init')}
+  function openBarStockEditor(id){const x=id?(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id)):null,modal=document.createElement('div');modal.id='bar-stock-edit-modal';modal.className='bar-scroll-modal';const unit=String(x?.unit||'un').toLowerCase(),q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),sale=Number(x?.sale_price_per_package||0),pc=Number(x?.package_count||0),pm=Number(x?.package_ml||0),pw=Number(x?.package_weight_g||0),purchaseTotal=q*cost;modal.innerHTML='<div class="bar-scroll-panel"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">✏️ '+(x?'Editar estoque — ':'Novo estoque — ')+brgEsc(x?.name||'Novo insumo')+'</h2><div class="bar-muted">Agora você cadastra separadamente quantidade, embalagem, compra e revenda. O sistema converte tudo para a unidade base.</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><h3>🧾 1. Identificação e unidade</h3><div class="bar-control-form"><label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Limão, Cerveja, Velho Barreiro"></label><label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="bebida, fruta, gelo, insumo..."></label><label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(unit==='un'?'selected':'')+'>Unidade (un)</option><option value="g" '+(unit==='g'?'selected':'')+'>Gramas (g)</option><option value="kg" '+(unit==='kg'?'selected':'')+'>Quilogramas (kg)</option><option value="ml" '+(unit==='ml'?'selected':'')+'>Mililitros (ml)</option><option value="l" '+(unit==='l'?'selected':'')+'>Litros (L)</option></select><small class="bar-field-help">A unidade base é a que será consumida automaticamente pelas receitas.</small></label><label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label><label>Estoque máximo<input id="bar-stock-max" type="number" min="0" step="0.001" value="'+(x?.max_quantity==null?'':Number(x.max_quantity))+'"><small class="bar-field-help">Este valor representa 100% da barra e do gráfico.</small></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 2. Quantidade física</h3><div class="bar-control-form"><label>Quantidade atual<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><small class="bar-field-help">Ex.: carne = 1000 g → 1 kg • total 1000 g. Se for 1200 g → 1 kg + 200 g.</small></label><label>Quantidade de embalagens / garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(pc||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 2 garrafas, 1 saco, 1 fardo.</small></label><label>Tipo de embalagem<select id="bar-stock-pack-label"><option value="garrafa" '+(String(x?.package_label||'embalagem')==='garrafa'?'selected':'')+'>Garrafa</option><option value="embalagem" '+(String(x?.package_label||'embalagem')==='embalagem'?'selected':'')+'>Embalagem</option><option value="fardo" '+(String(x?.package_label||'embalagem')==='fardo'?'selected':'')+'>Fardo</option><option value="pacote" '+(String(x?.package_label||'embalagem')==='pacote'?'selected':'')+'>Pacote</option><option value="saco" '+(String(x?.package_label||'embalagem')==='saco'?'selected':'')+'>Saco</option></select></label><label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="0.001" value="'+(pm||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 900 ml, 1000 ml, 2000 ml.</small></label><label>Peso por embalagem (g)<input id="bar-stock-pack-weight" type="number" min="0" step="0.001" value="'+(pw||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: saco de limão = 1200 g.</small></label><label>Peso médio por unidade (g)<input id="bar-stock-weight" type="number" min="0" step="0.001" value="'+(Number(x?.avg_unit_weight_g||0)||'')+'" oninput="barCtlStockCalc(\'weight\')"><small class="bar-field-help">Ex.: cada limão ≈ 120 g. Assim uma receita pode usar 3 unidades e o sistema baixa ≈ 360 g.</small></label></div><div id="bar-stock-conversion" class="bar-stock-conversion" style="font-size:1.05rem;margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>💵 3. Compra</h3><div class="bar-control-form"><label>Valor total pago (R$)<input id="bar-stock-purchase-total" type="number" inputmode="decimal" min="0" step="0.01" value="'+purchaseTotal.toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"></label><label>Custo por unidade base (calculado/editável)<input id="bar-stock-cost" type="number" inputmode="decimal" min="0" step="0.000001" value="'+(cost?String(cost):'')+'" oninput="barCtlStockCalc(\'cost\')"><small class="bar-field-help">O valor fica na unidade base. Ex.: R$ 10 ÷ 10 limões = R$ 1,00/un.</small></label><label>Fornecedor<input id="bar-stock-supplier" type="text" value="'+brgEsc(x?.supplier||'')+'"></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🏷️ 4. Revenda</h3><div class="bar-control-form"><label>Preço de revenda do lote / embalagem (R$)<input id="bar-stock-sale-price" type="number" inputmode="decimal" min="0" step="0.01" value="'+(sale?String(sale):'')+'" oninput="barCtlStockCalc(\'sale\')"><small class="bar-field-help">Ex.: fardo com 12 latas → revenda do fardo R$ 100.</small></label><label>Revenda por unidade / ml (calculada)<input id="bar-stock-sale-unit-display" type="text" readonly></label><label>Margem unitária (calculada)<input id="bar-stock-margin-display" type="text" readonly></label></div><div id="bar-stock-sale-explain" class="bar-unit-help" style="margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 5. Resumo em tempo real</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b id="bar-stock-total">—</b><span>Valor atual do estoque</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-display">—</b><span>Custo por unidade base</span></div><div class="bar-mini-kpi"><b id="bar-stock-liters-display">—</b><span>Conversão</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-ml-display">—</b><span>Custo por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-sale-ml-display">—</b><span>Revenda por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-used-display">—</b><span>Já saiu em vendas</span></div></div></div><label class="bar-control-full" style="display:block;margin-top:12px">Observações<textarea id="bar-stock-notes" rows="4" placeholder="Ex.: fardo com 12 latas, lote, fornecedor...">'+brgEsc(x?.notes||'')+'</textarea></label><div class="bar-modal-footer"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">Cancelar</button><button class="bar-mini-btn primary" data-stock-id="'+(x?.id||'')+'" onclick="barCtlSaveStockEdit(\''+(x?.id||'')+'\')">💾 Salvar permanentemente</button></div></div>';document.body.appendChild(modal);barCtlStockCalc('init')}
   window.barCtlEditStock=function(id){openBarStockEditor(id)};
   window.barCtlStockFormatMoney=function(id){const el=document.getElementById('bar-stock-'+id);if(!el)return;const n=Number(String(el.value).replace(',','.'));if(Number.isFinite(n)&&document.activeElement!==el)el.value=n.toFixed(6)};
   window.barCtlStockCalc=function(source='init'){const qEl=document.getElementById('bar-stock-qty'),cEl=document.getElementById('bar-stock-cost'),tEl=document.getElementById('bar-stock-purchase-total'),uEl=document.getElementById('bar-stock-unit'),saleEl=document.getElementById('bar-stock-sale-price');if(!qEl||!cEl||!tEl)return;let q=Number(qEl.value||0),c=Number(cEl.value||0),t=Number(tEl.value||0),unit=String(uEl?.value||'un').toLowerCase(),pc=Number(document.getElementById('bar-stock-pack-count')?.value||0),pm=Number(document.getElementById('bar-stock-pack-ml')?.value||0),pw=Number(document.getElementById('bar-stock-pack-weight')?.value||0),weight=Number(document.getElementById('bar-stock-weight')?.value||0),name=String(document.getElementById('bar-stock-name')?.value||'').trim();if((unit==='ml'||unit==='l')&&pc>0&&pm>0&&source!=='qty'&&source!=='cost'&&source!=='total')q=unit==='l'?pc*pm/1000:pc*pm;if(unit==='g'&&pc>0&&pw>0&&source!=='qty'&&source!=='cost'&&source!=='total')q=pc*pw;if(source==='cost'){t=q*c;if(document.activeElement!==tEl)tEl.value=t.toFixed(2)}else if(source==='total'||source==='qty'||source==='pack'||source==='unit'||source==='weight'){if(q>0&&t>=0){c=t/q;if(document.activeElement!==cEl)cEl.value=String(c)}}const conv=brgStockBaseToDisplay({unit},q)+(unit==='un'&&weight>0?' • '+brgNum(q)+' un ≈ '+brgNum(q*weight)+' g = '+brgNum(q*weight/1000)+' kg':'');const convEl=document.getElementById('bar-stock-conversion');if(convEl)convEl.innerHTML='<b>'+brgEsc(conv)+'</b>'+(pc>0?(pm>0?' • '+brgNum(pc)+' '+brgEsc(document.getElementById('bar-stock-pack-label')?.value||'embalagem')+' × '+brgNum(pm)+' ml':'')+(pw>0?' • '+brgNum(pw)+' g por embalagem':''):'');const sale=Number(saleEl?.value||0),effectiveCount=pc>0?pc:(unit==='un'?1:0),saleUnit=unit==='un'&&effectiveCount>0&&sale>0?sale/effectiveCount:(unit==='ml'&&sale>0&&q>0?sale/q:(unit==='l'&&sale>0&&q>0?sale/q*1000:(unit==='g'&&sale>0&&q>0?sale/q:(unit==='kg'&&sale>0&&q>0?sale/q/1000:0)))),margin=saleUnit>0&&c>0?(saleUnit-c)/saleUnit*100:0,costPerMl=(unit==='ml'?c:unit==='l'?c/1000:0),salePerMl=(unit==='ml'&&sale>0&&q>0?sale/q:unit==='l'&&sale>0&&q>0?sale/(q*1000):0),idButton=document.querySelector('#bar-stock-edit-modal .bar-mini-btn.primary'),existingItem=BRG_BAR.data.inventory?.find(i=>String(i.id)===String(idButton?.dataset?.stockId||'')),used=existingItem?brgInventoryStats(existingItem).sold:0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('bar-stock-total',brgMoney(q*c));set('bar-stock-cost-display',c>0?brgMoney(c):'—');set('bar-stock-liters-display',conv);set('bar-stock-cost-ml-display',costPerMl>0?brgMoney(costPerMl):'—');set('bar-stock-sale-ml-display',salePerMl>0?brgMoney(salePerMl):'—');set('bar-stock-used-display',brgNum(used)+' '+brgEsc(unit));const su=document.getElementById('bar-stock-sale-unit-display');if(su)su.value=saleUnit>0?(unit==='ml'?'R$ '+saleUnit.toFixed(2)+' / ml':unit==='l'?'R$ '+saleUnit.toFixed(2)+' / L':unit==='g'?'R$ '+saleUnit.toFixed(4)+' / g':unit==='kg'?'R$ '+saleUnit.toFixed(4)+' / kg':'R$ '+saleUnit.toFixed(2)+' / unidade'):'—';const ma=document.getElementById('bar-stock-margin-display');if(ma)ma.value=saleUnit>0&&c>0?margin.toFixed(1)+'%':'—';const ex=document.getElementById('bar-stock-sale-explain');if(ex)ex.innerHTML=sale>0?(effectiveCount>1?'Revenda do lote: <b>'+brgMoney(sale)+'</b> ÷ '+effectiveCount+' unidades = <b>'+brgMoney(saleUnit)+'</b> por unidade.':(q>0?'Revenda total: <b>'+brgMoney(sale)+'</b> ÷ '+brgNum(q)+' '+brgEsc(unit)+' = <b>'+brgMoney(saleUnit)+'</b> por unidade base.':'')):'Informe o preço de revenda do lote para calcular o valor unitário.'};
-  window.barCtlSaveStockEdit=async function(id){
-    const val=k=>document.getElementById(k)?.value ?? '';
-    const name=String(val('bar-stock-name')).trim(),category=String(val('bar-stock-category')).trim()||'insumo',enteredUnit=String(val('bar-stock-unit')||'un').toLowerCase();
-    const enteredQ=Number(val('bar-stock-qty')||0),purchaseTotal=Number(val('bar-stock-purchase-total')||0),enteredCost=Number(val('bar-stock-cost')||0);
-    const avgUnitWeight=Number(val('bar-stock-weight')||0),min_quantity=Number(val('bar-stock-min')||0),maxRaw=String(val('bar-stock-max')).trim(),max_quantity=maxRaw===''?null:Number(maxRaw),supplier=String(val('bar-stock-supplier')).trim(),notes=String(val('bar-stock-notes')).trim();
-    const packageCountRaw=String(val('bar-stock-pack-count')).trim(),packageMlRaw=String(val('bar-stock-pack-ml')).trim(),packageWeightRaw=String(val('bar-stock-pack-weight')).trim();
-    const package_count=packageCountRaw===''?null:Number(packageCountRaw),package_ml=packageMlRaw===''?null:Number(packageMlRaw),package_weight_g=packageWeightRaw===''?null:Number(packageWeightRaw),package_label=String(val('bar-stock-pack-label')||'embalagem');
-    const salePriceRaw=String(val('bar-stock-sale-price')).trim(),sale_price_per_package=salePriceRaw===''?null:Number(salePriceRaw);
-    if(!name)return alert('Informe o nome do insumo.');
-    if(!Number.isFinite(enteredQ)||enteredQ<0||!Number.isFinite(purchaseTotal)||purchaseTotal<0||!Number.isFinite(enteredCost)||enteredCost<0)return alert('Confira quantidade, valor pago e custo técnico.');
-    if(!Number.isFinite(min_quantity)||min_quantity<0||(max_quantity!==null&&(!Number.isFinite(max_quantity)||max_quantity<0)))return alert('Confira estoque mínimo e máximo.');
-    if(package_count!==null&&(!Number.isFinite(package_count)||package_count<0))return alert('Quantidade de embalagens inválida.');
-    if(package_ml!==null&&(!Number.isFinite(package_ml)||package_ml<0))return alert('Volume por embalagem inválido.');
-    if(package_weight_g!==null&&(!Number.isFinite(package_weight_g)||package_weight_g<0))return alert('Peso por embalagem inválido.');
-    if(avgUnitWeight<0||!Number.isFinite(avgUnitWeight))return alert('Peso médio por unidade inválido.');
-    if(sale_price_per_package!==null&&(!Number.isFinite(sale_price_per_package)||sale_price_per_package<0))return alert('Preço popular/revenda inválido.');
-    if(max_quantity!==null&&max_quantity<min_quantity)return alert('O estoque máximo não pode ser menor que o mínimo.');
-    let unit=enteredUnit,quantity=enteredQ;
-    if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000;if(package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;}
-    else if(enteredUnit==='l'){unit='ml';quantity=enteredQ*1000;if(package_count>0&&package_ml>0)quantity=package_count*package_ml;}
-    else if(enteredUnit==='ml'&&package_count>0&&package_ml>0)quantity=package_count*package_ml;
-    else if(enteredUnit==='g'&&package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;
-    // O custo digitado é sempre interpretado na unidade que o ADM está vendo.
-    // Ex.: R$40/kg -> R$0,04/g no banco; nunca R$40/g.
-    const costDivisor=(enteredUnit==='kg'||enteredUnit==='l')?1000:1;
-    let unit_cost=enteredCost/costDivisor;
-    if(purchaseTotal>0&&quantity>0)unit_cost=purchaseTotal/quantity;
-    if(!Number.isFinite(unit_cost)||unit_cost<0)unit_cost=0;
-    const baseMin=(enteredUnit==='kg'||enteredUnit==='l')?min_quantity*1000:min_quantity;
-    const baseMax=max_quantity==null?null:((enteredUnit==='kg'||enteredUnit==='l')?max_quantity*1000:max_quantity);
-    const stableId=String(id||crypto.randomUUID());
-    const btn=[...document.querySelectorAll('#bar-stock-edit-modal .bar-mini-btn.primary')].pop(),oldText=btn?.textContent;
-    if(btn){btn.disabled=true;btn.textContent='⏳ SALVANDO NO SERVIDOR…';}
-    const progress=document.createElement('div');progress.id='bar-stock-save-progress';progress.style.cssText='position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000025;background:#061116;border:1px solid #00e676;color:#fff;padding:12px 16px;border-radius:12px;font-weight:800';progress.textContent='⏳ Gravando estoque no Supabase…';document.body.appendChild(progress);
-    try{
-      const payload={name,category,unit,quantity,min_quantity:baseMin,max_quantity:baseMax,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml,package_weight_g,avg_unit_weight_g:avgUnitWeight>0?avgUnitWeight:null,package_label,purchase_price_per_package:purchaseTotal,sale_price_per_package};
-      const savedResponse=await brgApi(id?'update_inventory':'save_inventory',id?{id,...payload}:{id:stableId,...payload});
-      if(!savedResponse?.item?.id)throw new Error('O servidor não devolveu o cadastro salvo.');
-      progress.textContent='🔎 Confirmando no Supabase…';
-      const fresh=await brgApi('bootstrap'),confirmed=(fresh.inventory||[]).find(i=>String(i.id)===String(savedResponse.item.id));
-      if(!confirmed)throw new Error('O item salvo não apareceu na confirmação do banco.');
-      BRG_BAR.data=fresh;document.getElementById('bar-stock-edit-modal')?.remove();renderBarControl();progress.textContent='✅ Estoque salvo e confirmado no Supabase.';setTimeout(()=>progress.remove(),900);
-      const margin=Number(confirmed.purchase_price_per_package)>0&&Number(confirmed.sale_price_per_package)>0?((Number(confirmed.sale_price_per_package)-Number(confirmed.purchase_price_per_package))/Number(confirmed.sale_price_per_package)*100).toFixed(1)+'%':'—';
-      alert('✅ Estoque salvo permanentemente no Supabase.\n\nValor pago: '+brgMoney(confirmed.purchase_price_per_package||0)+'\nFornecedor: '+(confirmed.supplier||'—')+'\nPreço popular/revenda: '+brgMoney(confirmed.sale_price_per_package||0)+'\nMargem: '+margin);
-    }catch(e){progress.textContent='❌ Falha no salvamento.';setTimeout(()=>progress.remove(),1600);alert('❌ Não foi possível salvar o insumo no Supabase.\n\n'+(e?.message||e));}finally{if(btn){btn.disabled=false;btn.textContent=oldText||'💾 Salvar permanentemente';}}
-  };
+  window.barCtlSaveStockEdit=async function(id){const name=String(document.getElementById('bar-stock-name')?.value||'').trim(),category=String(document.getElementById('bar-stock-category')?.value||'insumo').trim(),enteredUnit=String(document.getElementById('bar-stock-unit')?.value||'un').toLowerCase(),enteredQ=Number(document.getElementById('bar-stock-qty')?.value||0),purchaseTotal=Number(document.getElementById('bar-stock-purchase-total')?.value||0),enteredCost=Number(document.getElementById('bar-stock-cost')?.value||0),avgUnitWeight=Number(document.getElementById('bar-stock-weight')?.value||0),min_quantity=Number(document.getElementById('bar-stock-min')?.value||0),maxRaw=String(document.getElementById('bar-stock-max')?.value||'').trim(),max_quantity=maxRaw===''?null:Number(maxRaw),supplier=String(document.getElementById('bar-stock-supplier')?.value||'').trim(),notes=String(document.getElementById('bar-stock-notes')?.value||'').trim(),packageCountRaw=String(document.getElementById('bar-stock-pack-count')?.value||'').trim(),packageMlRaw=String(document.getElementById('bar-stock-pack-ml')?.value||'').trim(),packageWeightRaw=String(document.getElementById('bar-stock-pack-weight')?.value||'').trim(),package_count=packageCountRaw===''?null:Number(packageCountRaw),package_ml=packageMlRaw===''?null:Number(packageMlRaw),package_weight_g=packageWeightRaw===''?null:Number(packageWeightRaw),package_label=String(document.getElementById('bar-stock-pack-label')?.value||'embalagem'),salePriceRaw=String(document.getElementById('bar-stock-sale-price')?.value||'').trim(),sale_price_per_package=salePriceRaw===''?null:Number(salePriceRaw);let unit=enteredUnit,quantity=enteredQ;if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000;if(package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g}if(enteredUnit==='l'){unit='ml';quantity=enteredQ*1000;if(package_count>0&&package_ml>0)quantity=package_count*package_ml}if(enteredUnit==='ml'&&package_count>0&&package_ml>0)quantity=package_count*package_ml;if(enteredUnit==='g'&&package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;const unit_cost=enteredCost>0?enteredCost:(quantity>0?purchaseTotal/quantity:0),maxBase=max_quantity==null?null:((enteredUnit==='kg'||enteredUnit==='l')?max_quantity*1000:max_quantity),minBase=(enteredUnit==='kg'||enteredUnit==='l')?min_quantity*1000:min_quantity;if(!name)return alert('Informe o nome do insumo.');if(!Number.isFinite(enteredQ)||enteredQ<0||!Number.isFinite(purchaseTotal)||purchaseTotal<0||!Number.isFinite(unit_cost)||unit_cost<0||!Number.isFinite(min_quantity)||min_quantity<0||(maxBase!==null&&(!Number.isFinite(maxBase)||maxBase<0)))return alert('Confira quantidade, compra, mínimo e máximo.');if(package_count!==null&&(!Number.isFinite(package_count)||package_count<0))return alert('Quantidade de embalagens inválida.');if(package_ml!==null&&(!Number.isFinite(package_ml)||package_ml<0))return alert('Volume por embalagem inválido.');if(package_weight_g!==null&&(!Number.isFinite(package_weight_g)||package_weight_g<0))return alert('Peso por embalagem inválido.');if(avgUnitWeight<0||!Number.isFinite(avgUnitWeight))return alert('Peso médio por unidade inválido.');if(sale_price_per_package!==null&&(!Number.isFinite(sale_price_per_package)||sale_price_per_package<0))return alert('Preço de revenda inválido.');if(maxBase!==null&&maxBase<minBase)return alert('O estoque máximo não pode ser menor que o mínimo.');const btn=[...document.querySelectorAll('#bar-stock-edit-modal .bar-mini-btn.primary')].pop(),oldText=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='⏳ SALVANDO NO SERVIDOR…'}const progress=document.createElement('div');progress.id='bar-stock-save-progress';progress.style.cssText='position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000025;background:#061116;border:1px solid #00e676;color:#fff;padding:12px 16px;border-radius:12px;font-weight:800';progress.textContent='⏳ Gravando estoque no servidor…';document.body.appendChild(progress);try{const stableId=String(id||crypto.randomUUID()),payload={name,category:category||'insumo',unit,quantity,min_quantity:minBase,max_quantity:maxBase,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml,package_weight_g,avg_unit_weight_g:avgUnitWeight>0?avgUnitWeight:null,package_label,sale_price_per_package};const savedResponse=await brgApi(id?'update_inventory':'save_inventory',id?{id,...payload}:{id:stableId,...payload});if(!savedResponse?.item?.id)throw new Error('O servidor não devolveu o cadastro salvo.');progress.textContent='🔎 Confirmando no banco…';const fresh=await brgApi('bootstrap'),confirmed=(fresh.inventory||[]).find(i=>String(i.id)===String(savedResponse.item.id));if(!confirmed)throw new Error('O item salvo não apareceu na confirmação do banco.');BRG_BAR.data=fresh;document.getElementById('bar-stock-edit-modal')?.remove();renderBarControl();progress.textContent='✅ Estoque salvo e confirmado.';setTimeout(()=>progress.remove(),900);alert('✅ Estoque salvo permanentemente.\n\n'+brgStockBaseToDisplay(confirmed,Number(confirmed.quantity||0))+'\nCusto: '+brgMoney(confirmed.unit_cost)+' por '+confirmed.unit+'\nRevenda da embalagem: '+brgMoney(confirmed.sale_price_per_package||0));}catch(e){progress.textContent='❌ Falha no salvamento.';setTimeout(()=>progress.remove(),1600);alert('❌ Não foi possível salvar o insumo.\n\n'+(e?.message||e));}finally{if(btn){btn.disabled=false;btn.textContent=oldText||'💾 Salvar permanentemente'}}};
   window.barCtlAdjustStock=async function(id){const x=(BRG_BAR.data.inventory||[]).find(i=>i.id===id);if(!x)return;const raw=prompt('Ajuste de estoque para '+x.name+'\nUse positivo para entrada e negativo para saída.\nAtual: '+x.quantity+' '+x.unit,'0');if(raw===null)return;const delta=Number(String(raw).replace(',','.'));if(!Number.isFinite(delta)||delta===0)return alert('Informe um número diferente de zero.');const reason=prompt('Motivo do ajuste','Ajuste manual')||'Ajuste manual';try{await brgApi('adjust_stock',{inventory_item_id:id,quantity_delta:delta,reason});await loadBarControl(false);alert('✅ Estoque atualizado permanentemente.')}catch(e){alert('❌ '+e.message)}};
   window.barCtlOpenRestock=function(id){
     const x=(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const suggested=brgReorderTarget(x),unit=String(x.unit||'un').toLowerCase(),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),defaultPackages=suggested>0?(unit==='un'?suggested:(pc>0?Math.max(1,Math.ceil(suggested/(pm||1))):1)):1;
