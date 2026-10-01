@@ -5062,6 +5062,15 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
     return `${brgNum(n)} ${brgUnitLabel(unit)}`;
   }
+  function brgStockPhysicalText(item){
+    const q=Number(item?.quantity||0),unit=String(item?.unit||'').toLowerCase(),pc=Number(item?.package_count||0),pm=Number(item?.package_ml||0);
+    if((unit==='ml'||unit==='l')&&pc>0&&pm>0){
+      const totalMl=pc*pm;
+      const each=pm>=1000?brgNum(pm/1000)+' L':brgNum(pm)+' ml';
+      return brgNum(pc)+' embalagem'+(pc===1?'':'ns')+' × '+each+' = '+brgNum(totalMl/1000)+' L';
+    }
+    return brgConversionText(q,item?.unit||'un',item?.name||'',item?.avg_unit_weight_g);
+  }
   function brgInventorySaleMap(){
     const m={};
     brgSaleMovements().forEach(x=>{const k=String(x.inventory_item_id);m[k]=(m[k]||0)+Math.abs(Number(x.quantity_delta||0));});
@@ -5309,14 +5318,14 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];
     root.innerHTML='<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">Clique no item para ver o gráfico de estoque. A barra e a fatia mostram quanto há e quanto falta para o alvo. Cadastre embalagem para controlar reposição por pacote.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Estoque visual</th><th>Custo unit.</th><th>Valor total</th><th>Reposição</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{
       const pct=brgStockPercent(x),rep=brgReorderTarget(x),cls=Number(x.quantity||0)<0?'bar-danger':rep>0?'bar-warn':'bar-ok';
-      return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category)+' • '+brgEsc(x.unit)+(x.package_count!=null?' • Emb.: '+brgNum(x.package_count):'')+'</small></td><td><div style="min-width:170px"><div style="display:flex;justify-content:space-between;gap:8px"><span>'+brgNum(x.quantity)+' '+brgEsc(x.unit)+'</span><b>'+pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:10px;margin:6px 0 3px"><span style="width:'+pct+'%"></span></div><small class="bar-stock-conversion">'+brgConversionText(x.quantity,x.unit,x.name,x.avg_unit_weight_g)+'</small></div></td><td>'+brgMoney(x.unit_cost)+'</td><td>'+brgMoney(brgStockValue(x))+'</td><td class="'+cls+'">'+(rep>0?brgNum(rep)+' '+brgEsc(x.unit):'OK')+'</td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+x.id+'\')">✏️ Editar tudo</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+x.id+'\')">± Ajustar</button><button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+x.id+'\')">🗑️ Excluir</button></div></td></tr>';
+      return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category)+' • '+brgEsc(x.unit)+(x.package_count!=null?' • Emb.: '+brgNum(x.package_count):'')+'</small></td><td><div style="min-width:170px"><div style="display:flex;justify-content:space-between;gap:8px"><span>'+brgStockPhysicalText(x)+'</span><b>'+pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:10px;margin:6px 0 3px"><span style="width:'+pct+'%"></span></div><small class="bar-stock-conversion">'+brgStockPhysicalText(x)+'</small></div></td><td>'+brgMoney(x.unit_cost)+'</td><td>'+brgMoney(brgStockValue(x))+'</td><td class="'+cls+'">'+(rep>0?brgNum(rep)+' '+brgEsc(x.unit):'OK')+'</td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+x.id+'\')">✏️ Editar tudo</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+x.id+'\')">± Ajustar</button><button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+x.id+'\')">🗑️ Excluir</button></div></td></tr>';
     }).join('')+'</tbody></table></div>';
   }
   window.openBarStockDetail=function(id){
     const x=(BRG_BAR.data?.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;
     const pct=brgStockPercent(x),missing=Math.max(0,brgStockVisualTarget(x)-Number(x.quantity||0)),rep=brgReorderTarget(x),target=brgStockVisualTarget(x);
     const modal=document.createElement('div');modal.id='bar-stock-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000004;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;padding:15px';
-    modal.innerHTML='<div style="max-width:850px;width:100%;max-height:92vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle visual e cálculo do estoque</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+pct+'%,#ff1744 '+pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgNum(x.quantity)+' '+brgEsc(x.unit)+'</b><span>Atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(target)+' '+brgEsc(x.unit)+'</b><span>Alvo visual</span></div><div class="bar-mini-kpi"><b>'+brgNum(missing)+' '+brgEsc(x.unit)+'</b><span>Falta até o alvo</span></div><div class="bar-mini-kpi"><b>'+brgMoney(brgStockValue(x))+'</b><span>Valor atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgReorderTriggerText(x)+'</p><div style="font-size:1.4rem;font-weight:900" class="'+(rep>0?'bar-warn':'bar-ok')+'">'+(rep>0?'Comprar '+brgNum(rep)+' '+brgEsc(x.unit):'Nenhuma compra sugerida agora')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+x.id+'\')">✏️ Editar estoque</button></div></div>';
+    modal.innerHTML='<div style="max-width:850px;width:100%;max-height:92vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle visual e cálculo do estoque</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+pct+'%,#ff1744 '+pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgStockPhysicalText(x)+'</b><span>Estoque atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(target)+' '+brgEsc(x.unit)+'</b><span>Alvo visual</span></div><div class="bar-mini-kpi"><b>'+brgNum(missing)+' '+brgEsc(x.unit)+'</b><span>Falta até o alvo</span></div><div class="bar-mini-kpi"><b>'+brgMoney(brgStockValue(x))+'</b><span>Valor atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgReorderTriggerText(x)+'</p><div style="font-size:1.4rem;font-weight:900" class="'+(rep>0?'bar-warn':'bar-ok')+'">'+(rep>0?'Comprar '+brgNum(rep)+' '+brgEsc(x.unit):'Nenhuma compra sugerida agora')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+x.id+'\')">✏️ Editar estoque</button></div></div>';
     document.body.appendChild(modal);
   };
   function openBarStockEditor(id){
@@ -5327,12 +5336,12 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     '<label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Skol Lata"><small class="bar-field-help">Nome do insumo exatamente como você quer identificar no estoque.</small></label>'+
     '<label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="Ex.: bebida"><small class="bar-field-help">Grupo do item: bebida, fruta, gelo, insumo, etc.</small></label>'+
     '<label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(String(x?.unit||'un').toLowerCase()==='un'?'selected':'')+'>unidade (un)</option><option value="g" '+(String(x?.unit||'').toLowerCase()==='g'?'selected':'')+'>gramas (g)</option><option value="kg" '+(String(x?.unit||'').toLowerCase()==='kg'?'selected':'')+'>quilogramas (kg)</option><option value="ml" '+(String(x?.unit||'').toLowerCase()==='ml'?'selected':'')+'>mililitros (ml)</option><option value="L" '+(String(x?.unit||'').toLowerCase()==='l'?'selected':'')+'>litros (L)</option></select><small class="bar-field-help">Use ml/L para líquidos e g/kg para peso. O sistema converte L→ml e kg→g automaticamente.</small></label>'+
-    '<label>Quantidade total<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><div id="bar-stock-conversion" class="bar-stock-conversion">'+brgConversionText(q,x?.unit||'un',x?.name||'',x?.avg_unit_weight_g)+'</div><small class="bar-field-help">Quantidade física disponível. Ex.: 4.000 ml equivale a 4 L.</small></label>'+
+    '<label>Quantidade total (calculada automaticamente quando houver embalagens)<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><div id="bar-stock-conversion" class="bar-stock-conversion">'+brgConversionText(q,x?.unit||'un',x?.name||'',x?.avg_unit_weight_g)+'</div><small class="bar-field-help">Se informar 2 garrafas de 2.000 ml, o sistema calcula sozinho 4.000 ml = 4 L. Sem embalagem cadastrada, você pode informar a quantidade manualmente.</small></label>'+
     '<label>Custo total da compra/lote (R$)<input id="bar-stock-purchase-total" type="number" min="0" step="0.01" value="'+(q*cost).toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"><small class="bar-field-help">Quanto você pagou pelo lote inteiro. Ex.: 10 latas por R$ 50 → R$ 5 por lata.</small></label>'+
     '<label>Custo por unidade da medida (R$)<input id="bar-stock-cost" type="number" min="0" step="0.000001" value="'+cost.toFixed(6)+'" oninput="barCtlStockCalc(\'cost\')"><small class="bar-field-help">Custo real de 1 un, 1 g ou 1 ml. Se alterar aqui, o custo total é recalculado.</small></label>'+
     '<label id="bar-stock-weight-wrap" style="display:'+((['un','g','kg'].includes(String(x?.unit||'un').toLowerCase()))?'block':'none')+'">'+((['g','kg'].includes(String(x?.unit||'un').toLowerCase()))?'Peso por embalagem (g)':'Peso médio por unidade (g)')+'<input id="bar-stock-weight" type="number" min="0.1" step="0.1" value="'+((x?.avg_unit_weight_g!=null)?Number(x.avg_unit_weight_g):(/a[cç][uú]car|açúcar/i.test(String(x?.name||''))?1000:(/lim[aã]o/i.test(String(x?.name||''))?100:'')))+'" placeholder="'+(['g','kg'].includes(String(x?.unit||'un').toLowerCase())?'Ex.: açúcar = 1000 g':'Ex.: limão ≈ 100 g')+'" oninput="barCtlStockCalc(\'weight\')"><small class="bar-field-help">'+(['g','kg'].includes(String(x?.unit||'un').toLowerCase())?'Para itens em peso, informe o tamanho do pacote. Ex.: 1 pacote de açúcar = 1.000 g.':'Para unidades, informe o peso médio de 1 unidade. Ex.: limão ≈ 100 g.')+'</small></label>'+
-    '<label>Qtd. de embalagens/garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(x?.package_count==null?'':Number(x.package_count))+'" placeholder="Ex.: 1"><small class="bar-field-help">Quantidade de garrafas, caixas ou pacotes que compõem o estoque informado.</small></label>'+
-    '<label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="1" value="'+(x?.package_ml==null?'':Number(x.package_ml))+'" placeholder="Ex.: 900"><small class="bar-field-help">Volume de cada garrafa/lata. Ex.: 900 ml por garrafa.</small></label>'+
+    '<label>Qtd. de embalagens/garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(x?.package_count==null?'':Number(x.package_count))+'" placeholder="Ex.: 1"><small class="bar-field-help">Informe quantas garrafas/pacotes você possui. Para líquidos, junto com o volume por embalagem, isso calcula o total automaticamente.</small></label>'+
+    '<label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="1" value="'+(x?.package_ml==null?'':Number(x.package_ml))+'" placeholder="Ex.: 900"><small class="bar-field-help">Ex.: 2.000 ml por garrafa. Com 2 garrafas, o estoque passa automaticamente para 4.000 ml = 4 L.</small></label>'+
     '<label>Preço de venda da embalagem (R$)<input id="bar-stock-sale-price" type="number" min="0" step="0.01" value="'+(x?.sale_price_per_package==null?'':Number(x.sale_price_per_package).toFixed(2))+'" oninput="barCtlStockCalc(\'sale\')"><small class="bar-field-help">Se esta embalagem for vendida inteira, informe o preço de venda. O sistema calcula automaticamente R$/ml, custo/ml e margem.</small></label>'+
     '<label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label>'+
     '<label>Estoque máximo<input id="bar-stock-max" type="number" min="0" step="0.001" value="'+(x?.max_quantity==null?'':Number(x.max_quantity))+'"></label>'+
@@ -5348,29 +5357,32 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const qEl=document.getElementById('bar-stock-qty'),cEl=document.getElementById('bar-stock-cost'),tEl=document.getElementById('bar-stock-purchase-total'),uEl=document.getElementById('bar-stock-unit');
     if(!qEl||!cEl||!tEl)return;
     let q=Number(qEl.value||0),c=Number(cEl.value||0),t=Number(tEl.value||0),unit=String(uEl?.value||'un');
-    if(source==='total') c=q>0?t/q:0;
+    const packCount=Number(document.getElementById('bar-stock-pack-count')?.value||0);
+    const packMl=Number(document.getElementById('bar-stock-pack-ml')?.value||0);
+    const hasLiquidPackages=(unit==='ml'||unit==='L')&&packCount>0&&packMl>0;
+    if(hasLiquidPackages){
+      const totalMl=packCount*packMl;
+      q=unit==='L'?totalMl/1000:totalMl;
+      qEl.value=Number.isFinite(q)?(Number.isInteger(q)?String(q):q.toFixed(3)):'0';
+    }
+    if(source==='total'||source==='qty'||source==='unit'||source==='weight') c=q>0?t/q:c;
     else if(source==='cost') t=q*c;
-    else if(source==='qty') t=q*c;
-    else if(source==='unit') t=q*c;
-    else if(source==='weight') t=q*c;
+    if(hasLiquidPackages && source==='init' && t<=0 && c>0) t=q*c;
     cEl.value=Number.isFinite(c)?c.toFixed(6):'0.000000';tEl.value=Number.isFinite(t)?t.toFixed(2):'0.00';
     const conv=document.getElementById('bar-stock-conversion'),lit=document.getElementById('bar-stock-liters-display'),tot=document.getElementById('bar-stock-total'),disp=document.getElementById('bar-stock-cost-display');
     const name=String(document.getElementById('bar-stock-name')?.value||'');
-    const weightEl=document.getElementById('bar-stock-weight');
-    const weightWrap=document.getElementById('bar-stock-weight-wrap');
-    const isUnit=unit==='un';
-    const autoLemon=/lim[aã]o/i.test(name);
-    const autoSugar=/a[cç][uú]car|açúcar/i.test(name);
+    const weightEl=document.getElementById('bar-stock-weight'),weightWrap=document.getElementById('bar-stock-weight-wrap');
+    const isUnit=unit==='un',autoLemon=/lim[aã]o/i.test(name),autoSugar=/a[cç][uú]car|açúcar/i.test(name);
     if(weightWrap) weightWrap.style.display=(isUnit||unit==='g'||unit==='kg')?'block':'none';
     if(weightEl && !weightEl.value && autoLemon && isUnit) weightEl.value='100';
     if(weightEl && !weightEl.value && autoSugar && (unit==='g'||unit==='kg')) weightEl.value='1000';
-    const avgWeight=(isUnit||unit==='g'||unit==='kg') && weightEl ? Number(weightEl.value||0) : 0;
-    const convText=brgConversionText(q,unit,name,isUnit?avgWeight:0);if(conv)conv.textContent=convText;if(lit)lit.textContent=convText;if(tot)tot.textContent=brgMoney(t);if(disp)disp.textContent=brgMoney(c);
-    const saleEl=document.getElementById('bar-stock-sale-price'),salePackage=Number(saleEl?.value||0),packMl=Number(document.getElementById('bar-stock-pack-ml')?.value||0);
-    const packCount=Number(document.getElementById('bar-stock-pack-count')?.value||0);
-    const packageCost=unit==='un'?c:(packCount>0?t/packCount:0);
-    const totalVolumeMl=unit==='ml'?q:(unit==='L'?q*1000:(packMl>0?packMl:0));
-    const costPerMl=totalVolumeMl>0&&packageCost>0?packageCost/totalVolumeMl:0, salePerMl=totalVolumeMl>0&&salePackage>0?salePackage/totalVolumeMl:0, margin=salePackage>0&&packageCost>0?((salePackage-packageCost)/salePackage*100):0;
+    const avgWeight=(isUnit||unit==='g'||unit==='kg')&&weightEl?Number(weightEl.value||0):0;
+    const convText=hasLiquidPackages?(brgNum(packCount)+' garrafa'+(packCount===1?'':'s')+' × '+(packMl>=1000?brgNum(packMl/1000)+' L':brgNum(packMl)+' ml')+' = '+brgNum(packCount*packMl/1000)+' L'):brgConversionText(q,unit,name,isUnit?avgWeight:0);
+    if(conv)conv.textContent=convText;if(lit)lit.textContent=convText;if(tot)tot.textContent=brgMoney(t);if(disp)disp.textContent=brgMoney(c);
+    const saleEl=document.getElementById('bar-stock-sale-price'),salePackage=Number(saleEl?.value||0);
+    const packageCost=packCount>0?t/packCount:(unit==='un'?c:0);
+    const totalVolumeMl=(unit==='ml'?q:(unit==='L'?q*1000:(packMl>0?packMl:0)));
+    const costPerMl=totalVolumeMl>0&&packageCost>0?packageCost/totalVolumeMl:0,salePerMl=totalVolumeMl>0&&salePackage>0?salePackage/totalVolumeMl:0,margin=salePackage>0&&packageCost>0?((salePackage-packageCost)/salePackage*100):0;
     const costMlEl=document.getElementById('bar-stock-cost-ml-display'),saleMlEl=document.getElementById('bar-stock-sale-ml-display'),marginEl=document.getElementById('bar-stock-margin-display');
     if(costMlEl)costMlEl.textContent=costPerMl>0?brgMoney(costPerMl):'—';if(saleMlEl)saleMlEl.textContent=salePerMl>0?brgMoney(salePerMl):'—';if(marginEl)marginEl.textContent=salePackage>0?margin.toFixed(1)+'%':'—';
   };
@@ -5382,6 +5394,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     let unit=enteredUnit,quantity=enteredQ;
     if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000}
     if(enteredUnit==='L'){unit='ml';quantity=enteredQ*1000}
+    if((enteredUnit==='ml'||enteredUnit==='L')&&package_count>0&&package_ml>0){quantity=package_count*package_ml;unit='ml'}
     const unit_cost=enteredCost>0?enteredCost:(quantity>0?purchaseTotal/quantity:0);
     const maxBase=max_quantity==null?null:(enteredUnit==='kg'||enteredUnit==='L'?max_quantity*1000:max_quantity);
     const minBase=(enteredUnit==='kg'||enteredUnit==='L')?min_quantity*1000:min_quantity;
@@ -5406,7 +5419,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       const fresh=await brgApi('bootstrap');
       const confirmed=(fresh.inventory||[]).find(i=>String(i.id)===String(persisted.id));
       if(!confirmed)throw new Error('O servidor confirmou a operação, mas o item não apareceu na leitura de confirmação.');
-      const same=String(confirmed.name||'')===name&&String(confirmed.category||'')===String(payload.category||'insumo')&&String(confirmed.unit||'')===String(unit)&&Math.abs(Number(confirmed.quantity||0)-quantity)<0.000001&&Math.abs(Number(confirmed.unit_cost||0)-unit_cost)<0.000001&&Math.abs(Number(confirmed.min_quantity||0)-minBase)<0.000001&&(maxBase===null?confirmed.max_quantity==null:Math.abs(Number(confirmed.max_quantity||0)-maxBase)<0.000001)&&(package_count===null?confirmed.package_count==null:Math.abs(Number(confirmed.package_count||0)-package_count)<0.000001)&&(package_ml===null?confirmed.package_ml==null:Math.abs(Number(confirmed.package_ml||0)-package_ml)<0.000001);
+      const same=String(confirmed.name||'')===name&&String(confirmed.category||'')===String(payload.category||'insumo')&&String(confirmed.unit||'')===String(unit)&&Math.abs(Number(confirmed.quantity||0)-quantity)<0.000001&&Math.abs(Number(confirmed.unit_cost||0)-unit_cost)<0.000001&&Math.abs(Number(confirmed.min_quantity||0)-minBase)<0.000001&&(maxBase===null?confirmed.max_quantity==null:Math.abs(Number(confirmed.max_quantity||0)-maxBase)<0.000001)&&(package_count===null?confirmed.package_count==null:Math.abs(Number(confirmed.package_count||0)-package_count)<0.000001)&&(package_ml===null?confirmed.package_ml==null:Math.abs(Number(confirmed.package_ml||0)-package_ml)<0.000001)&&(sale_price_per_package===null?confirmed.sale_price_per_package==null:Math.abs(Number(confirmed.sale_price_per_package||0)-sale_price_per_package)<0.000001);
       if(!same)throw new Error('A confirmação do servidor não corresponde exatamente ao que foi informado. Nenhum valor local será considerado salvo.');
       BRG_BAR.data=fresh;
       document.getElementById('bar-stock-edit-modal')?.remove();
