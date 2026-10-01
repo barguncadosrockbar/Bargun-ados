@@ -4031,13 +4031,58 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function toggleAdminSection(id) {
       const content = document.getElementById(id);
+      if(!content) return;
       const btn = content.previousElementSibling;
       if (content.style.display === "block") {
         content.style.display = "none";
-        btn.classList.remove("active");
+        if(btn) btn.classList.remove("active");
       } else {
         content.style.display = "block";
-        btn.classList.add("active");
+        if(btn) btn.classList.add("active");
+        if(id === "adm-moderation") {
+          refreshModerationQueue();
+        }
+      }
+    }
+
+    async function refreshModerationQueue() {
+      if(!isAuthenticatedAdmin()) return false;
+      try {
+        const token = await getAdminAccessToken();
+        if(!token) {
+          renderModerationLists();
+          return false;
+        }
+        const res = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
+          cache: 'no-store',
+          headers: {
+            'apikey': SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': 'Bearer ' + token
+          }
+        }, 12000);
+        let json = null;
+        try { json = await res.json(); } catch(e) {}
+        if(!res.ok || !json?.admin || !json?.record) {
+          console.warn('[Bargunçados] Não foi possível atualizar a fila de moderação.', res.status, json);
+          renderModerationLists();
+          return false;
+        }
+        const record = cloneForSync(json.record) || {};
+        remoteRevision = Number(json.revision || record.__sync?.revision || remoteRevision || 0);
+        publicRevision = remoteRevision;
+        if(Object.prototype.hasOwnProperty.call(record,'pendingSongs')) appData.pendingSongs = Array.isArray(record.pendingSongs) ? record.pendingSongs : [];
+        if(Object.prototype.hasOwnProperty.call(record,'pendingMessages')) appData.pendingMessages = Array.isArray(record.pendingMessages) ? record.pendingMessages : [];
+        if(Object.prototype.hasOwnProperty.call(record,'userSongs')) appData.userSongs = Array.isArray(record.userSongs) ? record.userSongs : [];
+        if(Object.prototype.hasOwnProperty.call(record,'userMessages')) appData.userMessages = Array.isArray(record.userMessages) ? record.userMessages : [];
+        if(Object.prototype.hasOwnProperty.call(record,'moderationHistory')) appData.moderationHistory = Array.isArray(record.moderationHistory) ? record.moderationHistory : [];
+        delete record.__sync;
+        remoteSnapshot = { ...(remoteSnapshot || {}), pendingSongs: cloneForSync(appData.pendingSongs), pendingMessages: cloneForSync(appData.pendingMessages), userSongs: cloneForSync(appData.userSongs), userMessages: cloneForSync(appData.userMessages), moderationHistory: cloneForSync(appData.moderationHistory) };
+        renderModerationLists();
+        return true;
+      } catch(e) {
+        console.warn('[Bargunçados] Erro ao atualizar fila de moderação:', e);
+        renderModerationLists();
+        return false;
       }
     }
 
@@ -4073,8 +4118,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <span style="color:var(--c-cyan); font-weight:bold;">${escapeHTML(s.ig)} pediu:</span>
             <p style="color:#fff;">"${escapeHTML(s.text)}"</p>
             <div class="admin-card-row">
-              <button class="action-btn" onclick="approveSong(${Number(s.id)})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectSong(${Number(s.id)})">❌ Rejeitar</button>
+              <button class="action-btn" onclick="approveSong(${JSON.stringify(String(s.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectSong(${JSON.stringify(String(s.id))})">❌ Rejeitar</button>
             </div>
           </div>
         `).join('');
@@ -4088,8 +4133,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <span style="color:var(--c-pink); font-weight:bold;">${escapeHTML(m.ig)} recado:</span>
             <p style="color:#fff;">"${escapeHTML(m.text)}"</p>
             <div class="admin-card-row">
-              <button class="action-btn" onclick="approveMsg(${Number(m.id)})" style="background:#0f0; color:#000;">✅ Aprovar</button>
-              <button class="action-btn del-btn" onclick="rejectMsg(${Number(m.id)})">❌ Rejeitar</button>
+              <button class="action-btn" onclick="approveMsg(${JSON.stringify(String(m.id))})" style="background:#0f0; color:#000;">✅ Aprovar</button>
+              <button class="action-btn del-btn" onclick="rejectMsg(${JSON.stringify(String(m.id))})">❌ Rejeitar</button>
             </div>
           </div>
         `).join('');
@@ -4123,9 +4168,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function approveSong(id) {
-      const item = appData.pendingSongs.find(s => s.id === id);
+      const item = appData.pendingSongs.find(s => String(s.id) === String(id));
       if(item) {
-        appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+        appData.pendingSongs = appData.pendingSongs.filter(s => String(s.id) !== String(id));
         if(!appData.userSongs) appData.userSongs = [];
         appData.userSongs.unshift(item);
         addModerationHistory('song', item, 'accepted');
@@ -4135,16 +4180,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function rejectSong(id) {
-      const item = appData.pendingSongs.find(s => s.id === id);
-      appData.pendingSongs = appData.pendingSongs.filter(s => s.id !== id);
+      const item = appData.pendingSongs.find(s => String(s.id) === String(id));
+      appData.pendingSongs = appData.pendingSongs.filter(s => String(s.id) !== String(id));
       if(item) addModerationHistory('song', item, 'rejected');
       await saveBinData(`Rejeitou o pedido de som de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
     }
 
     async function approveMsg(id) {
-      const item = appData.pendingMessages.find(m => m.id === id);
+      const item = appData.pendingMessages.find(m => String(m.id) === String(id));
       if(item) {
-        appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+        appData.pendingMessages = appData.pendingMessages.filter(m => String(m.id) !== String(id));
         if(!appData.userMessages) appData.userMessages = [];
         appData.userMessages.unshift(item);
         addModerationHistory('message', item, 'accepted');
@@ -4154,8 +4199,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function rejectMsg(id) {
-      const item = appData.pendingMessages.find(m => m.id === id);
-      appData.pendingMessages = appData.pendingMessages.filter(m => m.id !== id);
+      const item = appData.pendingMessages.find(m => String(m.id) === String(id));
+      appData.pendingMessages = appData.pendingMessages.filter(m => String(m.id) !== String(id));
       if(item) addModerationHistory('message', item, 'rejected');
       await saveBinData(`Rejeitou o recado no mural de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
     }
