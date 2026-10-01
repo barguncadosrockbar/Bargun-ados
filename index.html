@@ -1358,6 +1358,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     // Autenticação Supabase via REST: não depende de CDN/SDK externo no navegador.
     // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
     const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
+    const BRG_REMOTE_CACHE_KEY = 'brg_last_remote_snapshot_v1';
     // O estado do site é persistido exclusivamente no backend (Supabase Edge Function -> JSONBin).
     // Nenhuma alteração administrativa é tratada como "salva" em localStorage.
 
@@ -1841,7 +1842,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       { id: 'dir1', type: 'dir', name: 'TOURU', role: 'TI & Infra', ig: '@Diego_touru', desc: 'O cérebro tecnológico do bar. Responsável por toda a parte técnica, infraestrutura de TI, som digital de alta fidelidade e inovações tecnológicas que mantêm o Bargunçados rodando no talo sem cair a performance.', img: '169819.jpg' },
       { id: 'dir2', type: 'dir', name: 'EDINHO', role: 'Eventos', ig: '@Thrasher_eds', desc: 'O mestre do Marketing e Eventos. A mente estratégica por trás das noites épicas, campanhas de divulgação imbatíveis, parcerias com grandes bandas e a missão constante de lotar a casa todo fim de semana.', img: '169822.jpg' },
       { id: 'dir3', type: 'dir', name: 'ALISSON', role: 'Barman', ig: '@alisson_adler', desc: 'O Barman titular e alquimista das bebidas. Garante os drinks mais brutais e a execução perfeita dos clássicos, controlando o balcão com maestria para que nenhum guerreiro fique de copo vazio.', img: '169823.jpg' },
-      { id: 'pro1', type: 'pro', name: 'KELVIN', role: 'Bandas & Mosh', ig: '@jkelvin_guitar', desc: 'O contato direto com a cena underground. Responsável por trazer as melhores bandas cover e autorais da região, agitar as redes sociais e garantir que o mosh pit não pare um segundo em cada evento.', img: 'https://unavatar.io/instagram/jkelvin_guitar' }
+      { id: 'pro1', type: 'pro', name: 'RAMON', role: 'Promoter', ig: '', desc: '', img: '' }
     ];
     const defaultArcade = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Rodrigo "KOF-GOD"':`Player ${i+1}`, sub: 'KOF 2002', score: (1000 - i*50)+'K', prize: i===0?'TORRE CHOPP':'', quote: i<3?'Aqui ninguém me ganha, traga sua ficha e chore!':'', ig: '@rocker', img: 'https://ui-avatars.com/api/?name=P'+(i+1)+'&background=e91e63&color=fff' }));
     const defaultCachaceiros = Array.from({length: 10}, (_, i) => ({ id: i+1, name: i===0?'Alex "Tanque"':`Bebedor ${i+1}`, sub: '@rocker', score: (40 - i*2)+' L', prize: i===0?'JACK DANIELS':'', quote: i<3?'Água é pro fígado fraco, desce mais uma dose!':'', ig: '@cachaceiro_pro', img: 'https://ui-avatars.com/api/?name=B'+(i+1)+'&background=00bcd4&color=fff' }));
@@ -2229,6 +2230,41 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
 
+    function hydrateLastKnownRemoteSnapshot(){
+      try{
+        const raw=localStorage.getItem(BRG_REMOTE_CACHE_KEY);
+        if(!raw)return false;
+        const cached=JSON.parse(raw);
+        if(!cached || typeof cached!=='object' || !cached.data || typeof cached.data!=='object') return false;
+        const cachedData=cloneForSync(cached.data)||{};
+        const cachedRevision=Number(cached.revision||0);
+        appData={...appData,...cachedData};
+        remoteRevision=Math.max(remoteRevision,cachedRevision);
+        publicRevision=Math.max(publicRevision,cachedRevision);
+        remoteSnapshot=cloneForSync(cachedData)||{};
+        ensureAdminSystem();
+        ensureMenuCategoryLabels();
+        ensureDeletedCatalogRegistry();
+        ensureDrinkCatalog();
+        ensureModerationHistory();
+        return true;
+      }catch(e){
+        console.warn('[Bargunçados] Cache local remoto inválido; ignorando.',e);
+        try{localStorage.removeItem(BRG_REMOTE_CACHE_KEY)}catch(_){}
+        return false;
+      }
+    }
+
+    function persistLastKnownRemoteSnapshot(data,revision){
+      try{
+        const clean=cloneForSync(data)||{};
+        delete clean.__sync;
+        localStorage.setItem(BRG_REMOTE_CACHE_KEY,JSON.stringify({revision:Number(revision||0),savedAt:Date.now(),data:clean}));
+      }catch(e){
+        console.warn('[Bargunçados] Não foi possível atualizar o cache local do último estado confirmado.',e);
+      }
+    }
+
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
         const uEl = document.getElementById('gh-user');
@@ -2242,7 +2278,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         updateGitHubUI(false);
       }
       
-      // Primeiro pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
+      // Primeiro recupera o último estado remoto confirmado neste aparelho.
+      // Se a API estiver temporariamente indisponível, isso impede o retorno aos
+      // dados padrão antigos e preserva a última versão conhecida.
+      hydrateLastKnownRemoteSnapshot();
+      // Depois pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       ensureDrinkCatalog();
@@ -2335,16 +2375,29 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           adminToken = await getAdminAccessToken();
         }
 
-        const requestHeaders = {
-          'apikey': SUPABASE_PUBLISHABLE_KEY,
-          ...(adminToken ? {'Authorization': 'Bearer ' + adminToken} : {})
-        };
         const endpoint = adminToken ? (SUPABASE_FUNCTION_URL + '?scope=admin') : SUPABASE_FUNCTION_URL;
-        const res = await fetchWithTimeout(endpoint, {
-          cache: 'no-store',
-          headers: requestHeaders
-        }, 10000);
-        if(!res.ok) return;
+        const keys=[SUPABASE_PUBLISHABLE_KEY,SUPABASE_LEGACY_ANON_KEY].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i);
+        let res=null;
+        let lastError=null;
+        for(let attempt=0;attempt<3;attempt++){
+          for(const apiKey of keys){
+            try{
+              const requestHeaders = {
+                'apikey': apiKey,
+                ...(adminToken ? {'Authorization': 'Bearer ' + adminToken} : {})
+              };
+              const candidate=await fetchWithTimeout(endpoint,{cache:'no-store',headers:requestHeaders},10000);
+              if(candidate.ok){res=candidate;break;}
+              if(!res || [401,403,429,500,502,503,504].includes(Number(candidate.status))) res=candidate;
+            }catch(e){lastError=e;}
+          }
+          if(res?.ok)break;
+          if(attempt<2) await new Promise(r=>setTimeout(r,500*(attempt+1)));
+        }
+        if(!res?.ok){
+          console.warn('[Bargunçados] API segura indisponível; mantendo o último estado confirmado.',{status:res?.status||null,error:lastError||null});
+          return;
+        }
         const json = await res.json();
         try {
           console.info('[Bargunçados] API segura OK', {
@@ -2362,6 +2415,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             publicRevision = remoteRevision;
             delete incoming.__sync;
             remoteSnapshot = cloneForSync(incoming) || {};
+            persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
             if(adminExpected) overlayPendingAdminChanges();
             ensureAdminSystem();
