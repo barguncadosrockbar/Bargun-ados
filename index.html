@@ -556,7 +556,16 @@
 @media(max-width:650px){.bar-analytics-grid{grid-template-columns:1fr}.bar-inline-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-goal-grid{grid-template-columns:1fr}}
 @media(max-width:1000px){.bar-products{grid-template-columns:repeat(3,minmax(0,1fr))}.bar-kpis{grid-template-columns:repeat(3,minmax(120px,1fr))}.bar-control-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.bar-control-overlay{padding:0}.bar-control-shell{min-height:100vh;border-radius:0;border-left:0;border-right:0}.bar-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bar-product-img{height:100px}.bar-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-control-form{grid-template-columns:1fr}.bar-control-detail{grid-template-columns:1fr}.bar-control-view{padding:12px}.bar-control-head{padding:14px}}
-<style>.bar-field-help{display:block;margin-top:5px;font-size:.78rem;line-height:1.35;color:#8fa0ad}.bar-unit-help{line-height:1.45}</style></style>
+<style>.bar-field-help{display:block;margin-top:5px;font-size:.78rem;line-height:1.35;color:#8fa0ad}.bar-unit-help{line-height:1.45}
+/* V44 — popups de Diretoria/Promoter */
+#directorModal .modal-content{animation:brgProfilePop .28s cubic-bezier(.2,.8,.2,1);transform-origin:center;box-shadow:0 24px 80px rgba(0,0,0,.65),0 0 34px rgba(233,30,99,.16)}
+#directorModal .director-follow-card{margin:14px 0;padding:13px 14px;border:1px solid rgba(255,235,59,.48);border-radius:14px;background:linear-gradient(135deg,rgba(255,235,59,.10),rgba(233,30,99,.07));text-align:center}
+#directorModal .director-follow-title{font-family:var(--font-title);font-weight:900;color:#ffeb3b;letter-spacing:.04em;font-size:1rem}
+#directorModal .director-follow-copy{color:#fff;margin-top:5px;font-weight:800;line-height:1.45}
+#directorModal .director-ig-highlight{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 15px;padding:10px 12px;border-radius:12px;border:1px solid rgba(233,30,99,.65);background:rgba(233,30,99,.08);color:#ff80ab;font-weight:900;font-size:1rem}
+@keyframes brgProfilePop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@media (prefers-reduced-motion:reduce){#directorModal .modal-content{animation:none}}
+</style></style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };</script>
 <script>
 /* SECURITY HARDENING V45 + PERSISTENCE HARDENING V46 — non-visual, client-side defense helpers. */
@@ -780,7 +789,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     </div>
   </div>
 
-  <div id="directorModal" class="modal"><div class="modal-content glass-panel" style="border-color:var(--c-pink);"><span class="close-btn" onclick="closeModal('directorModal')">×</span><img id="directorModalImg" src="" alt="Diretoria" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid var(--c-pink);margin:0 auto 12px;display:block;"><h3 id="directorModalName" style="font-family:var(--font-title);font-size:2rem;color:#fff;margin-bottom:4px;text-transform:uppercase;"></h3><p id="directorModalRole" style="color:var(--c-yellow);font-weight:800;margin-bottom:12px;"></p><p id="directorModalDesc" style="color:#ccc;line-height:1.5;text-align:left;margin-bottom:15px;"></p><a id="directorModalIg" href="#" target="_blank" class="ig-button" style="display:block;text-decoration:none;border-color:var(--c-pink);color:var(--c-pink);">📸 ABRIR INSTAGRAM</a></div></div>
+  <div id="directorModal" class="modal"><div class="modal-content glass-panel" style="border-color:var(--c-pink);"><span class="close-btn" onclick="closeModal('directorModal')">×</span><img id="directorModalImg" src="" alt="Diretoria ou Promoter" style="width:140px;height:140px;border-radius:50%;object-fit:cover;border:3px solid var(--c-pink);margin:0 auto 12px;display:block;"><h3 id="directorModalName" style="font-family:var(--font-title);font-size:2rem;color:#fff;margin-bottom:4px;text-transform:uppercase;text-align:center;"></h3><p id="directorModalRole" style="color:var(--c-yellow);font-weight:800;margin-bottom:10px;text-align:center;"></p><div id="directorModalIgHighlight" class="director-ig-highlight">📸 INSTAGRAM: <span id="directorModalIgText">—</span></div><p id="directorModalDesc" style="color:#ccc;line-height:1.5;text-align:left;margin-bottom:12px;"></p><div class="director-follow-card"><div class="director-follow-title">🔥 DESCONTO AO SEGUIR O MEMBRO</div><div class="director-follow-copy">Apresente aqui que você está seguindo este membro no Instagram e ganhe o desconto/promoção informado pelo bar.</div></div><a id="directorModalIg" href="#" target="_blank" rel="noopener noreferrer" class="ig-button" style="display:block;text-decoration:none;border-color:var(--c-pink);color:var(--c-pink);text-align:center;">📸 ABRIR INSTAGRAM</a></div></div>
 
   <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE AGENDA -->
   <div id="eventModal" class="modal">
@@ -1171,7 +1180,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                 <div id="managed-admin-info" style="color:#aaa; font-size:0.8rem; margin:8px 0 12px;"></div>
                 <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-add" onchange="savePermissions()"> Pode Adicionar Novos Itens</label>
-                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores e Textos</label>
+                  <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-edit" onchange="savePermissions()"> Pode Editar Valores, Textos, Categorias e Promocionais</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-del" onchange="savePermissions()"> Pode Excluir Itens / Eventos</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-tabs" onchange="savePermissions()"> Pode Criar e Editar Abas</label>
                   <label style="color:#fff; font-size:0.85rem; cursor:pointer;"><input type="checkbox" id="perm-mod" onchange="savePermissions()"> Pode Moderar Recados / Som</label>
@@ -1884,7 +1893,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { promoTitle: "🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA", promoIds: [2,1], featured: "⭐ DESTAQUES — CAIPIRINHA R$ 10 & GIN R$ 8", featuredIds: [2,1], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       },
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
@@ -2246,40 +2255,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
 
-    function hydrateLastKnownRemoteSnapshot(){
-      try{
-        const raw=localStorage.getItem(BRG_REMOTE_CACHE_KEY);
-        if(!raw)return false;
-        const cached=JSON.parse(raw);
-        if(!cached || typeof cached!=='object' || !cached.data || typeof cached.data!=='object') return false;
-        const cachedData=cloneForSync(cached.data)||{};
-        const cachedRevision=Number(cached.revision||0);
-        appData={...appData,...cachedData};
-        remoteRevision=Math.max(remoteRevision,cachedRevision);
-        publicRevision=Math.max(publicRevision,cachedRevision);
-        remoteSnapshot=cloneForSync(cachedData)||{};
-        ensureAdminSystem();
-        ensureMenuCategoryLabels();
-        ensureDeletedCatalogRegistry();
-        ensureDrinkCatalog();
-        ensureModerationHistory();
-        return true;
-      }catch(e){
-        console.warn('[Bargunçados] Cache local remoto inválido; ignorando.',e);
-        try{localStorage.removeItem(BRG_REMOTE_CACHE_KEY)}catch(_){}
-        return false;
-      }
-    }
-
-    function persistLastKnownRemoteSnapshot(data,revision){
-      try{
-        const clean=cloneForSync(data)||{};
-        delete clean.__sync;
-        localStorage.setItem(BRG_REMOTE_CACHE_KEY,JSON.stringify({revision:Number(revision||0),savedAt:Date.now(),data:clean}));
-      }catch(e){
-        console.warn('[Bargunçados] Não foi possível atualizar o cache local do último estado confirmado.',e);
-      }
-    }
+    function hydrateLastKnownRemoteSnapshot(){ return false; }
+    function persistLastKnownRemoteSnapshot(data,revision){ return true; }
 
     async function initApp() {
       if(githubConfig.user && githubConfig.repo && githubConfig.token) {
@@ -2297,7 +2274,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       // Primeiro recupera o último estado remoto confirmado neste aparelho.
       // Se a API estiver temporariamente indisponível, isso impede o retorno aos
       // dados padrão antigos e preserva a última versão conhecida.
-      hydrateLastKnownRemoteSnapshot();
       // Depois pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
@@ -2306,7 +2282,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       // Depois tenta restaurar sessão e sincronizar a nuvem sem bloquear a interface.
       await restoreSupabaseAdminSession();
-      await flushPendingAdminChanges();
       await fetchBinData();
       // IMPORTANTE: a inicialização da página NÃO grava automaticamente.
       // Um carregamento/reload nunca deve abrir o modal "Salvando" nem criar uma
@@ -2352,26 +2327,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    const BRG_PENDING_CHANGES_KEY='brg_pending_admin_changes_v1';
-    function readPendingAdminChanges(){try{const raw=localStorage.getItem(BRG_PENDING_CHANGES_KEY);const v=raw?JSON.parse(raw):null;if(!v||typeof v!=='object'||Array.isArray(v))return {};const owner=String(v.ownerEmail||'').toLowerCase();const current=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(!owner||!current||owner!==current)return {};return v.changes&&typeof v.changes==='object'&&!Array.isArray(v.changes)?v.changes:{}}catch(e){return {}}}
-    function writePendingAdminChanges(changes){const current=readPendingAdminChanges();Object.keys(changes||{}).forEach(k=>{current[k]=cloneForSync(changes[k])});const owner=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(owner)localStorage.setItem(BRG_PENDING_CHANGES_KEY,JSON.stringify({ownerEmail:owner,changes:current,savedAt:Date.now()}));return current}
-    function clearPendingAdminChanges(changes){const current=readPendingAdminChanges();Object.keys(changes||{}).forEach(k=>delete current[k]);const owner=String(getPersistentAdminFlag('brg_adm_email')||'').toLowerCase();if(Object.keys(current).length&&owner)localStorage.setItem(BRG_PENDING_CHANGES_KEY,JSON.stringify({ownerEmail:owner,changes:current,savedAt:Date.now()}));else if(!Object.keys(current).length)localStorage.removeItem(BRG_PENDING_CHANGES_KEY);}
-    function overlayPendingAdminChanges(){const pending=readPendingAdminChanges();if(!Object.keys(pending).length)return;appData={...appData,...pending};ensureAdminSystem();ensureMenuCategoryLabels();ensureDeletedCatalogRegistry();ensureDrinkCatalog();ensureModerationHistory();renderApp();}
-
-    async function flushPendingAdminChanges(){
-      const pending=readPendingAdminChanges();
-      if(!Object.keys(pending).length)return false;
-      const token=await getAdminAccessToken();
-      if(!token)return false;
-      try{
-        const baseRevision=remoteRevision;
-        const ok=await queueBinWrite(pending,baseRevision);
-        if(!ok)return false;
-        clearPendingAdminChanges(pending);
-        await verifyAdminPersistence(pending);
-        return true;
-      }catch(e){console.warn('[Bargunçados] fila administrativa aguardando nova autenticação/conexão.',e);return false}
-    }
+    const BRG_PENDING_CHANGES_KEY='brg_pending_admin_changes_disabled';
+    function readPendingAdminChanges(){ return {}; }
+    function writePendingAdminChanges(changes){ return {}; }
+    function clearPendingAdminChanges(changes){ return true; }
+    function overlayPendingAdminChanges(){ return false; }
+    async function flushPendingAdminChanges(){ return false; }
 
     async function fetchBinData(force=false) {
       const adminExpected = getPersistentAdminFlag('brg_adm_logged') === 'true';
@@ -2437,7 +2398,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             remoteSnapshot = cloneForSync(incoming) || {};
             persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
-            if(adminExpected) overlayPendingAdminChanges();
             ensureAdminSystem();
             ensureMenuCategoryLabels();
             ensureDeletedCatalogRegistry();
@@ -2537,7 +2497,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
       // Ponte permanente: a alteração fica registrada localmente até o servidor
       // confirmar. Assim uma queda de sessão/conexão não devolve a interface ao estado antigo.
-      writePendingAdminChanges(changes);
       const baseRevision = remoteRevision;
       const saved = await queueBinWrite(changes, baseRevision);
       if (!saved) {
@@ -2564,13 +2523,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             if(latestRecord && typeof latestRecord==='object'){
               const latestRev=Number(latestRecord?.__sync?.revision||0);
               const retry=await queueBinWrite(changes,latestRev);
-              if(retry && await verifyAdminPersistence(changes)){ clearPendingAdminChanges(changes); return true; }
+              if(retry && await verifyAdminPersistence(changes)){ return true; }
             }
           }
         }
         throw new Error('A gravação inicial foi aceita, mas a verificação final detectou que os dados não permaneceram iguais no servidor. A tentativa automática de correção não foi confirmada.');
       }
-      clearPendingAdminChanges(changes);
       return true;
       } catch(e) {
         const progress=document.getElementById('brg-admin-save-progress');
@@ -2762,10 +2720,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         'bloody mary':'vodka',
         'fenrir whiskey':'whisky'
       };
+      const patterns = [
+        [/caipir|caipirinha|caipiríssima/i,'caipirinha'],[/vodka|moscow mule|screwdriver|cosmopolitan|sex on the beach/i,'vodka'],
+        [/mojito|daiquiri|rum sour|rum punch|cuba libre/i,'rum'],[/margarita|tequila sunrise|tequila sour/i,'tequila'],
+        [/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins/i,'gin'],[/whisk|whiskey|old fashioned|highball/i,'whisky']
+      ];
       appData.menu.forEach(item => {
         if(!item || item.type !== 'drink' || item.drinkLine) return;
         const key = String(item.name || '').trim().toLowerCase();
-        if(inferred[key]) item.drinkLine = inferred[key];
+        if(inferred[key]) { item.drinkLine = inferred[key]; return; }
+        const match = patterns.find(([rx]) => rx.test(String(item.name||'')));
+        if(match) item.drinkLine = match[1];
       });
     }
 
@@ -2781,6 +2746,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           if(!appData.menuCategoryLabels[page][key]) appData.menuCategoryLabels[page][key] = defaults[page][key];
         });
       });
+      // Compatibilidade: instalações antigas usavam featuredIds para os destaques.
+      // A nova faixa de PROMOCIONAIS passa a usar promoIds sem apagar os dados antigos.
+      const b=appData.menuCategoryLabels.bebidas;
+      if(!Array.isArray(b.promoIds)) b.promoIds=Array.isArray(b.featuredIds)?b.featuredIds.slice():[2,1];
+      if(!b.promoTitle) b.promoTitle='🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA';
     }
 
     function openCategoryQuickEdit(page) {
@@ -2797,15 +2767,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       pageEl.value = page;
       title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
       const names = page === 'bebidas' ? [
-        ['featured','Título dos Destaques'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+        ['promoTitle','Título da faixa de Promocionais'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
       ] : [['title','Título da página de porções'],['featured','Título dos Destaques']];
       fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
       if(page === 'bebidas'){
         const menu = Array.isArray(appData.menu) ? appData.menu.filter(i=>i.type==='drink') : [];
-        const ids = Array.isArray(labels.featuredIds) ? labels.featuredIds : [];
-        fields.innerHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px;">
-          <label style="font-size:.78rem;color:#aaa;">Destaque 1<select class="interaction-input featured-id-select" data-featured-index="0" style="padding:8px;margin-top:4px;">${menu.map(i=>`<option value="${i.id}" ${String(ids[0])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
-          <label style="font-size:.78rem;color:#aaa;">Destaque 2<select class="interaction-input featured-id-select" data-featured-index="1" style="padding:8px;margin-top:4px;">${menu.map(i=>`<option value="${i.id}" ${String(ids[1])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label>
+        const ids = Array.isArray(labels.promoIds) ? labels.promoIds : (Array.isArray(labels.featuredIds) ? labels.featuredIds : []);
+        const promoOptions = (selected) => `<option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(selected)===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}`;
+        fields.innerHTML += `<div style="margin-top:8px;padding:10px;border:1px dashed rgba(255,235,59,.35);border-radius:10px;background:rgba(255,235,59,.04);">
+          <div style="color:var(--c-yellow);font-weight:800;margin-bottom:7px;">🔥 Escolha as bebidas da faixa PROMOCIONAIS</div>
+          <div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Você pode escolher até 6 bebidas. Elas aparecerão na primeira linha do cardápio com o selo <b style="color:#ffd740;">PROMOÇÃO LIMITADA</b>.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            ${[0,1,2,3,4,5].map(n=>`<label style="font-size:.78rem;color:#aaa;">Promocional ${n+1}<select class="interaction-input promo-id-select" data-promo-index="${n}" style="padding:8px;margin-top:4px;">${promoOptions(ids[n])}</select></label>`).join('')}
+          </div>
         </div>`;
       }
       if(page === 'porcoes'){ const menu=Array.isArray(appData.menu)?appData.menu.filter(i=>i.type==='portion'):[]; const ids=Array.isArray(labels.featuredIds)?labels.featuredIds:[]; fields.innerHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px;"><label style="font-size:.78rem;color:#aaa;">Destaque 1<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(ids[0])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label><label style="font-size:.78rem;color:#aaa;">Destaque 2<select class="interaction-input featured-portion-select" style="padding:8px;margin-top:4px;"><option value="">Nenhum</option>${menu.map(i=>`<option value="${i.id}" ${String(ids[1])===String(i.id)?'selected':''}>${escapeHTML(i.name)} — R$ ${escapeHTML(i.price)}</option>`).join('')}</select></label></div>`; }
@@ -2826,7 +2800,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(value) appData.menuCategoryLabels[page][key] = value;
       });
       if(page === 'bebidas'){
-        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-id-select')).map(s=>Number(s.value)).filter(Boolean);
+        appData.menuCategoryLabels.bebidas.promoIds = Array.from(document.querySelectorAll('#category-edit-fields .promo-id-select')).map(s=>Number(s.value)).filter(Boolean).filter((id,index,arr)=>arr.indexOf(id)===index);
       }
       if(page === 'porcoes') appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select')).map(s=>Number(s.value)).filter(Boolean);
       await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
@@ -3121,6 +3095,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
       const perms = appData.permissions || {};
       const canAdd = isMaster || perms.canAdd !== false;
+      const canEdit = isMaster || perms.canEdit !== false;
 
       const bHome = document.getElementById('bar-action-home');
       const bBebidas = document.getElementById('bar-action-bebidas');
@@ -3128,9 +3103,28 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const bAgenda = document.getElementById('bar-action-agenda');
 
       if(bHome) bHome.style.display = isAdmLogged ? 'flex' : 'none';
-      if(bBebidas) bBebidas.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-      if(bPorcoes) bPorcoes.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
-      if(bAgenda) bAgenda.style.display = (isAdmLogged && canAdd) ? 'flex' : 'none';
+      // A barra do cardápio precisa aparecer para quem pode EDITAR, mesmo
+      // que esse administrador não tenha permissão para ADICIONAR itens.
+      // Os botões individuais continuam protegidos pelas permissões próprias.
+      if(bBebidas) {
+        bBebidas.style.display = (isAdmLogged && (canAdd || canEdit)) ? 'flex' : 'none';
+        const org=document.querySelector('#bar-action-bebidas button[onclick*="toggleMenuOrganizer"]');
+        const cat=document.querySelector('#bar-action-bebidas button[onclick*="openCategoryQuickEdit"]');
+        const add=document.querySelector('#bar-action-bebidas button[onclick*="openCreateItemModal"]');
+        if(org) org.style.display = canEdit ? '' : 'none';
+        if(cat) cat.style.display = canEdit ? '' : 'none';
+        if(add) add.style.display = canAdd ? '' : 'none';
+      }
+      if(bPorcoes) {
+        bPorcoes.style.display = (isAdmLogged && (canAdd || canEdit)) ? 'flex' : 'none';
+        const org=document.querySelector('#bar-action-porcoes button[onclick*="toggleMenuOrganizer"]');
+        const cat=document.querySelector('#bar-action-porcoes button[onclick*="openCategoryQuickEdit"]');
+        const add=document.querySelector('#bar-action-porcoes button[onclick*="openCreateItemModal"]');
+        if(org) org.style.display = canEdit ? '' : 'none';
+        if(cat) cat.style.display = canEdit ? '' : 'none';
+        if(add) add.style.display = canAdd ? '' : 'none';
+      }
+      if(bAgenda) bAgenda.style.display = (isAdmLogged && (isMaster || perms.canAgenda !== false)) ? 'flex' : 'none';
 
       const drinksContainer = document.getElementById('dynamic-menu-bebidas');
       const portionsContainer = document.getElementById('dynamic-menu-porcoes');
@@ -3151,15 +3145,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         return exact || cMenu.find(i => i.type === 'drink' && String(i.price || '') === fallbackPrice);
       };
 
-      const configuredFeaturedIds = Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds : [2,1];
-      let featuredItems = configuredFeaturedIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).filter(Boolean);
-      if(!featuredItems.length){ featuredItems = [findDrink('Caipirinha', '10,00'), findDrink('Gin Sunset', '8,00')].filter(Boolean); }
+      const configuredPromoIds = Array.isArray(categoryLabels.bebidas.promoIds) ? categoryLabels.bebidas.promoIds : (Array.isArray(categoryLabels.bebidas.featuredIds) ? categoryLabels.bebidas.featuredIds : [2,1]);
+      let promotionalItems = configuredPromoIds.map(id => cMenu.find(i => Number(i.id) === Number(id))).filter(i => i && i.type === 'drink');
+      if(!promotionalItems.length){ promotionalItems = [findDrink('Caipirinha', '10,00'), findDrink('Gin-Tônica', '8,00')].filter(Boolean); }
 
-      let drinksStr = `
-        <details class="menu-collapse drink-featured" open>
-          <summary>${escapeHTML(categoryLabels.bebidas.featured)}</summary>
-          <div class="menu-collapse-body"><div class="drink-featured-grid">${featuredItems.map(createCard).join('')}</div></div>
-        </details>`;
+      let drinksStr = '';
+      if(promotionalItems.length){
+        drinksStr += `<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.bebidas.promoTitle || '🔥 PROMOCIONAIS — PROMOÇÃO LIMITADA')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${promotionalItems.map(i => createCard(i, true)).join('')}</div></div></details>`;
+      }
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
@@ -3347,7 +3340,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function editPublishedInteraction(type, id) {
-      if(!canModerateInline()) return alert('Acesso Negado: você não tem permissão para editar publicações do mural/som.');
+      if(!canModerateInline() || (getPersistentAdminFlag('brg_adm_is_master') !== 'true' && (appData.permissions || {}).canEdit === false)) return alert('Acesso Negado: você não tem permissão para editar publicações do mural/som.');
       const listKey = type === 'song' ? 'userSongs' : 'userMessages';
       const item = (appData[listKey] || []).find(entry => Number(entry.id) === Number(id));
       if(!item) return alert('Publicação não encontrada. Atualize a página e tente novamente.');
@@ -3377,7 +3370,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function deletePublishedInteraction(type, id) {
-      if(!canModerateInline()) return alert('Acesso Negado: você não tem permissão para excluir publicações do mural/som.');
+      if(!canModerateInline() || (getPersistentAdminFlag('brg_adm_is_master') !== 'true' && (appData.permissions || {}).canDel === false)) return alert('Acesso Negado: você não tem permissão para excluir publicações do mural/som.');
       const listKey = type === 'song' ? 'userSongs' : 'userMessages';
       const item = (appData[listKey] || []).find(entry => Number(entry.id) === Number(id));
       if(!item) return alert('Publicação não encontrada. Atualize a página e tente novamente.');
@@ -3403,7 +3396,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const songs = appData.userSongs || [];
       const msgs = appData.userMessages || [];
-      const inlineAdmin = canModerateInline();
+      // Publicações já aprovadas têm permissões próprias: EDITAR usa canEdit
+      // e EXCLUIR usa canDel. Elas não ficam artificialmente dependentes de
+      // canMod, que controla somente a fila de aprovação/rejeição.
+      const inlineAdmin = isAuthenticatedAdmin();
       const perms = appData.permissions || {};
       const canEdit = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canEdit !== false);
       const canDelete = inlineAdmin && (getPersistentAdminFlag('brg_adm_is_master') === 'true' || perms.canDel !== false);
@@ -3471,9 +3467,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       });
     }
 
-    function createCard(item) {
+    function createCard(item, forcePromo = false) {
       const hostedImg = normalizeStoredImage(item);
-      const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]; const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=(item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
+      const d=Array.isArray(appData.menuCategoryLabels?.bebidas?.promoIds)?appData.menuCategoryLabels.bebidas.promoIds.map(Number):(Array.isArray(appData.menuCategoryLabels?.bebidas?.featuredIds)?appData.menuCategoryLabels.bebidas.featuredIds.map(Number):[]); const p=Array.isArray(appData.menuCategoryLabels?.porcoes?.featuredIds)?appData.menuCategoryLabels.porcoes.featuredIds.map(Number):[]; const f=forcePromo || (item.type==='drink'&&d.includes(Number(item.id)))||(item.type==='portion'&&p.includes(Number(item.id)));
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${safeNumericId(item.id)})` : `openMenuModalObj(${safeNumericId(item.id)})`;
       const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
       const imageMarkup = hostedImg
@@ -3888,7 +3884,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    function openDirectorModal(id){const t=appData.team.find(x=>String(x.id)===String(id));if(!t)return;document.getElementById('directorModalImg').src=t.img||'';document.getElementById('directorModalName').innerText=t.name||'';document.getElementById('directorModalRole').innerText=t.role||'';document.getElementById('directorModalDesc').innerText=t.desc||'';const ig=String(t.ig||'').replace('@','').trim();const a=document.getElementById('directorModalIg');a.href=ig?`https://instagram.com/${encodeURIComponent(ig)}`:'#';a.innerText=ig?`📸 ABRIR INSTAGRAM — @${ig}`:'📸 INSTAGRAM NÃO INFORMADO';document.getElementById('directorModal').style.display='flex';}
+    function openDirectorModal(id){const t=appData.team.find(x=>String(x.id)===String(id));if(!t)return;const modal=document.getElementById('directorModal'),img=document.getElementById('directorModalImg');img.src=safeImageUrl(t.img||'');img.alt=t.name||'Membro';document.getElementById('directorModalName').innerText=t.name||'';document.getElementById('directorModalRole').innerText=t.role||'';document.getElementById('directorModalDesc').innerText=t.desc||'Conheça o membro da equipe do Bargunçados Rock Bar.';const ig=String(t.ig||'').replace(/^@/,'').trim();const a=document.getElementById('directorModalIg'),igt=document.getElementById('directorModalIgText');if(igt)igt.innerText=ig?'@'+ig:'Instagram não informado';a.href=ig?`https://instagram.com/${encodeURIComponent(ig)}`:'#';a.innerText=ig?`📸 ABRIR INSTAGRAM — @${ig}`:'📸 INSTAGRAM NÃO INFORMADO';a.style.pointerEvents=ig?'auto':'none';modal.style.display='flex';requestAnimationFrame(()=>modal.classList.add('is-open'));}
 
     function openAgendaModal(type, titleTag="", dateTag="", descTag="", imgTag="", agendaId=null) {
       const isAdmLogged = (getPersistentAdminFlag('brg_adm_logged') === 'true');
@@ -4168,41 +4164,131 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function approveSong(id) {
-      const item = appData.pendingSongs.find(s => String(s.id) === String(id));
-      if(item) {
-        appData.pendingSongs = appData.pendingSongs.filter(s => String(s.id) !== String(id));
-        if(!appData.userSongs) appData.userSongs = [];
-        appData.userSongs.unshift(item);
-        addModerationHistory('song', item, 'accepted');
-        await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
-        alert("Pedido aprovado e publicado no site!");
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item = (appData.pendingSongs || []).find(s => String(s.id) === String(id));
+      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+
+      const oldPending = cloneForSync(appData.pendingSongs) || [];
+      const oldPublished = cloneForSync(appData.userSongs || []) || [];
+      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
+      appData.pendingSongs = oldPending.filter(s => String(s.id) !== String(id));
+      if(!appData.userSongs) appData.userSongs = [];
+      appData.userSongs.unshift({...item, approvedAt: Date.now(), approvedBy: sessionStorage.getItem('brg_adm_name') || 'Administrador'});
+      addModerationHistory('song', item, 'accepted');
+      renderModerationLists();
+      renderPublicInteractions();
+
+      try {
+        const saved = await saveBinData(`Aprovou o pedido de som de "${item.ig}": "${item.text}"`);
+        if(saved === false) throw new Error('A gravação não foi confirmada.');
+        await refreshModerationQueue();
+        renderPublicInteractions();
+        alert('✅ Pedido aprovado e publicado no mural para o cliente!');
+        return true;
+      } catch(e) {
+        appData.pendingSongs = oldPending;
+        appData.userSongs = oldPublished;
+        appData.moderationHistory = oldHistory;
+        renderModerationLists();
+        renderPublicInteractions();
+        alert('⚠️ Não foi possível aprovar o pedido na nuvem. Nada foi removido nem publicado. Tente novamente.');
+        console.error('[Bargunçados] Falha ao aprovar pedido de música:', e);
+        return false;
       }
     }
 
     async function rejectSong(id) {
-      const item = appData.pendingSongs.find(s => String(s.id) === String(id));
-      appData.pendingSongs = appData.pendingSongs.filter(s => String(s.id) !== String(id));
-      if(item) addModerationHistory('song', item, 'rejected');
-      await saveBinData(`Rejeitou o pedido de som de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item = (appData.pendingSongs || []).find(s => String(s.id) === String(id));
+      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+
+      const oldPending = cloneForSync(appData.pendingSongs) || [];
+      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
+      appData.pendingSongs = oldPending.filter(s => String(s.id) !== String(id));
+      addModerationHistory('song', item, 'rejected');
+      renderModerationLists();
+      renderPublicInteractions();
+
+      try {
+        const saved = await saveBinData(`Rejeitou o pedido de som de "${item.ig}": "${item.text}"`);
+        if(saved === false) throw new Error('A gravação não foi confirmada.');
+        await refreshModerationQueue();
+        renderPublicInteractions();
+        alert('❌ Pedido rejeitado e removido da fila. Ele não será publicado no mural.');
+        return true;
+      } catch(e) {
+        appData.pendingSongs = oldPending;
+        appData.moderationHistory = oldHistory;
+        renderModerationLists();
+        renderPublicInteractions();
+        alert('⚠️ Não foi possível rejeitar o pedido na nuvem. O pedido foi restaurado na fila.');
+        console.error('[Bargunçados] Falha ao rejeitar pedido de música:', e);
+        return false;
+      }
     }
 
     async function approveMsg(id) {
-      const item = appData.pendingMessages.find(m => String(m.id) === String(id));
-      if(item) {
-        appData.pendingMessages = appData.pendingMessages.filter(m => String(m.id) !== String(id));
-        if(!appData.userMessages) appData.userMessages = [];
-        appData.userMessages.unshift(item);
-        addModerationHistory('message', item, 'accepted');
-        await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
-        alert("Recado aprovado e publicado no mural!");
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item = (appData.pendingMessages || []).find(m => String(m.id) === String(id));
+      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+
+      const oldPending = cloneForSync(appData.pendingMessages) || [];
+      const oldPublished = cloneForSync(appData.userMessages || []) || [];
+      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
+      appData.pendingMessages = oldPending.filter(m => String(m.id) !== String(id));
+      if(!appData.userMessages) appData.userMessages = [];
+      appData.userMessages.unshift({...item, approvedAt: Date.now(), approvedBy: sessionStorage.getItem('brg_adm_name') || 'Administrador'});
+      addModerationHistory('message', item, 'accepted');
+      renderModerationLists();
+      renderPublicInteractions();
+
+      try {
+        const saved = await saveBinData(`Aprovou o recado no mural de "${item.ig}": "${item.text}"`);
+        if(saved === false) throw new Error('A gravação não foi confirmada.');
+        await refreshModerationQueue();
+        renderPublicInteractions();
+        alert('✅ Recado aprovado e publicado no mural para o cliente!');
+        return true;
+      } catch(e) {
+        appData.pendingMessages = oldPending;
+        appData.userMessages = oldPublished;
+        appData.moderationHistory = oldHistory;
+        renderModerationLists();
+        renderPublicInteractions();
+        alert('⚠️ Não foi possível aprovar o recado na nuvem. Nada foi removido nem publicado.');
+        console.error('[Bargunçados] Falha ao aprovar recado:', e);
+        return false;
       }
     }
 
     async function rejectMsg(id) {
-      const item = appData.pendingMessages.find(m => String(m.id) === String(id));
-      appData.pendingMessages = appData.pendingMessages.filter(m => String(m.id) !== String(id));
-      if(item) addModerationHistory('message', item, 'rejected');
-      await saveBinData(`Rejeitou o recado no mural de "${item ? item.ig : 'Desconhecido'}": "${item ? item.text : ''}"`);
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item = (appData.pendingMessages || []).find(m => String(m.id) === String(id));
+      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+
+      const oldPending = cloneForSync(appData.pendingMessages) || [];
+      const oldHistory = cloneForSync(appData.moderationHistory || []) || [];
+      appData.pendingMessages = oldPending.filter(m => String(m.id) !== String(id));
+      addModerationHistory('message', item, 'rejected');
+      renderModerationLists();
+      renderPublicInteractions();
+
+      try {
+        const saved = await saveBinData(`Rejeitou o recado no mural de "${item.ig}": "${item.text}"`);
+        if(saved === false) throw new Error('A gravação não foi confirmada.');
+        await refreshModerationQueue();
+        renderPublicInteractions();
+        alert('❌ Recado rejeitado e removido da fila. Ele não será publicado no mural.');
+        return true;
+      } catch(e) {
+        appData.pendingMessages = oldPending;
+        appData.moderationHistory = oldHistory;
+        renderModerationLists();
+        renderPublicInteractions();
+        alert('⚠️ Não foi possível rejeitar o recado na nuvem. O recado foi restaurado na fila.');
+        console.error('[Bargunçados] Falha ao rejeitar recado:', e);
+        return false;
+      }
     }
 
     let tempNewTabImg = '';
@@ -4542,8 +4628,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
         }
 
         applySupabaseAdminSession(session.user, authenticatedAccount);
-        await flushPendingAdminChanges();
-        // A autenticação Supabase é independente da sincronização do conteúdo administrativo.
+          // A autenticação Supabase é independente da sincronização do conteúdo administrativo.
         // Se o serviço de dados estiver temporariamente indisponível, não transforme
         // uma senha válida em um falso erro de credenciais: mantém o login e usa o snapshot atual.
         try {
@@ -4720,6 +4805,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveHomeData() {
+      const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true', perms=appData.permissions||{};
+      if(!isMaster && perms.canEdit===false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
       appData.home.title = document.getElementById('adm-h-title').value;
       appData.home.desc1 = document.getElementById('adm-h-desc1').value;
       appData.home.desc2 = document.getElementById('adm-h-desc2').value;
@@ -4733,7 +4820,10 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
     async function openAdminRecipeEditor(id) {
       const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
       if(!isLoggedIn) return alert('🔐 Faça login como administrador antes de editar os ingredientes.');
+      if(!isMaster && perms.canEdit === false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
       try {
         await loadBarControl(false);
         openBarRecipeEditor(String(id));
@@ -4759,7 +4849,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     };
     window.siteDrinkRecipeAdd=function(){const sel=document.getElementById('site-recipe-inv'),qty=document.getElementById('site-recipe-new-qty'),wrap=document.getElementById('site-recipe-rows');if(!sel||!qty)return;const q=Number(qty.value);if(!sel.value||!Number.isFinite(q)||q<=0)return alert('Informe uma quantidade válida.');if([...wrap.querySelectorAll('.site-recipe-row')].some(r=>String(r.dataset.inv)===String(sel.value)))return alert('Esse ingrediente já está na receita. Edite a quantidade na linha existente.');const x=(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(sel.value));if(!x)return;wrap.querySelector('.bar-alert')?.remove();const d=document.createElement('div');d.className='site-recipe-row';d.dataset.inv=x.id;d.style.cssText='border:1px solid #29343d;border-radius:12px;padding:10px;margin:8px 0';d.innerHTML='<div style="display:grid;grid-template-columns:minmax(0,1fr) 110px 130px auto;gap:8px;align-items:center"><div><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.unit)+' • custo '+brgMoney(x.unit_cost)+'</small></div><input class="site-recipe-qty" type="number" min="0.000001" step="0.001" value="'+q+'"><select class="site-recipe-unit admin-input" title="Unidade usada na receita">'+brgComponentUnitOptions(x.unit||'un')+'</select><button type="button" class="action-btn del-btn" onclick="if(confirm(\'Remover este ingrediente da receita?\'))this.closest(\'.site-recipe-row\').remove();window.siteDrinkRecipeRecalc()">🗑️</button></div>';wrap.appendChild(d);qty.value='';window.siteDrinkRecipeRecalc()};
     window.siteDrinkRecipeRecalc=function(){const rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],inv=BRG_BAR.data?.inventory||[];let cost=0;rows.forEach(r=>{const x=inv.find(i=>String(i.id)===String(r.dataset.inv));const q=Number(r.querySelector('.site-recipe-qty')?.value||0),u=String(r.querySelector('.site-recipe-unit')?.value||x.unit||'un');if(x)cost+=brgRecipeToStockBase({...x,component_unit:u},q)*Number(x.unit_cost||0)});const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),profit=price-cost,margin=price>0?profit/price*100:0;const el=document.getElementById('site-recipe-summary');if(el)el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><div><b style="font-size:1.2rem">'+brgMoney(cost)+'</b><small style="display:block;color:#8d9aa2">Custo estimado por bebida</small></div><div><b style="font-size:1.2rem">'+brgMoney(profit)+'</b><small style="display:block;color:#8d9aa2">Lucro bruto estimado</small></div><div><b style="font-size:1.2rem">'+margin.toFixed(1)+'%</b><small style="display:block;color:#8d9aa2">Margem estimada</small></div></div><p style="margin:10px 0 0;color:#9aa7ad">Cálculo: soma da quantidade de cada ingrediente × custo atual cadastrado no estoque. Você pode alterar o preço de venda acima para controlar a margem.</p>'};
-    window.saveSiteDrinkRecipe=async function(id){const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),yieldQty=Number(document.getElementById('site-recipe-yield')?.value||1),rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],comps=rows.map(r=>({inventory_item_id:String(r.dataset.inv),quantity_per_sale:Number(r.querySelector('.site-recipe-qty')?.value||0),component_unit:String(r.querySelector('.site-recipe-unit')?.value||'un')}));if(!Number.isFinite(price)||price<0)return alert('Informe um preço válido.');if(!Number.isFinite(yieldQty)||yieldQty<=0)return alert('Informe um rendimento válido.');if(comps.some(c=>!Number.isFinite(c.quantity_per_sale)||c.quantity_per_sale<=0))return alert('Existe ingrediente com quantidade inválida.');if(new Set(comps.map(c=>c.inventory_item_id)).size!==comps.length)return alert('Há ingrediente duplicado na receita.');const oldPrice=item.price;try{const savedResponse=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:price,yield_qty:yieldQty,estimate_source:'Cadastro local do site',components:comps}});if(!savedResponse?.recipe)throw new Error('O servidor não devolveu a receita salva.');brgApplyRecipeSaveResponse(savedResponse);item.price=price.toFixed(2).replace('.',',');await saveBinData('Editou a receita de "'+item.name+'" diretamente no cadastro da bebida. Preço R$ '+oldPrice+' → R$ '+item.price);document.getElementById('site-drink-recipe-modal')?.remove();renderAdminLists();renderApp();alert('✅ Receita salva no servidor. Esta é a receita oficial que o Controle do Bar usará nas próximas vendas.');}catch(e){alert('❌ A receita não foi salva.\n\n'+(e?.message||e));}};
+    window.saveSiteDrinkRecipe=async function(id){const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true',perms=appData.permissions||{};if(!isMaster&&perms.canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master.');const item=brgMenu().find(x=>String(x.id)===String(id));if(!item)return;const price=Number(document.getElementById('site-recipe-sale-price')?.value||0),yieldQty=Number(document.getElementById('site-recipe-yield')?.value||1),rows=[...document.querySelectorAll('#site-recipe-rows .site-recipe-row')],comps=rows.map(r=>({inventory_item_id:String(r.dataset.inv),quantity_per_sale:Number(r.querySelector('.site-recipe-qty')?.value||0),component_unit:String(r.querySelector('.site-recipe-unit')?.value||'un')}));if(!Number.isFinite(price)||price<0)return alert('Informe um preço válido.');if(!Number.isFinite(yieldQty)||yieldQty<=0)return alert('Informe um rendimento válido.');if(comps.some(c=>!Number.isFinite(c.quantity_per_sale)||c.quantity_per_sale<=0))return alert('Existe ingrediente com quantidade inválida.');if(new Set(comps.map(c=>c.inventory_item_id)).size!==comps.length)return alert('Há ingrediente duplicado na receita.');const oldPrice=item.price;try{const savedResponse=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:price,yield_qty:yieldQty,estimate_source:'Cadastro local do site',components:comps}});if(!savedResponse?.recipe)throw new Error('O servidor não devolveu a receita salva.');brgApplyRecipeSaveResponse(savedResponse);item.price=price.toFixed(2).replace('.',',');await saveBinData('Editou a receita de "'+item.name+'" diretamente no cadastro da bebida. Preço R$ '+oldPrice+' → R$ '+item.price);document.getElementById('site-drink-recipe-modal')?.remove();renderAdminLists();renderApp();alert('✅ Receita salva no servidor. Esta é a receita oficial que o Controle do Bar usará nas próximas vendas.');}catch(e){alert('❌ A receita não foi salva.\n\n'+(e?.message||e));}};
 
     async function saveItemData(id) {
        const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
@@ -4815,6 +4905,9 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveTeamData(id) {
+       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canTeam === false) return alert("Acesso Negado: permissão de equipe desativada pelo Master!");
        const t = appData.team.find(i => i.id === id);
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
@@ -4927,6 +5020,9 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveFlyerData() {
+      const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
+      const perms = appData.permissions || {};
+      if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: permissão de agenda desativada pelo Master!");
       appData.flyer.tag = document.getElementById('adm-f-tag').value;
       appData.flyer.title = document.getElementById('adm-f-title').value;
       appData.flyer.sub = document.getElementById('adm-f-sub').value;
@@ -5315,8 +5411,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     return rows.map(x=>'<div class="bar-chart-row"><span title="'+brgEsc(x.name)+'">'+brgEsc(x.name)+'</span><div class="bar-chart-track"><div class="bar-chart-fill" style="width:'+Math.max(2,Number(x[valueKey]||0)/max*100)+'%"></div></div><b>'+formatter(Number(x[valueKey]||0))+'</b></div>').join('');
   }
   function defaultBarGoalSettings(){return {rent:1000,operational:400,dailyGoal:130,other:0}}
-  function loadBarGoalSettings(){const defaults=defaultBarGoalSettings();try{const local=JSON.parse(localStorage.getItem('brg_bar_goal_settings')||'null');const shared=appData?.barGoalSettings&&typeof appData.barGoalSettings==='object'?appData.barGoalSettings:null;return {...defaults,...(local||{}),...(shared||{})}}catch(e){return defaults}}
-  async function saveBarGoalSettings(){if(!isCurrentMaster())return alert('Acesso Negado: somente o Administrador Master pode alterar as metas e despesas do bar.');const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{localStorage.setItem('brg_bar_goal_settings',JSON.stringify(cfg))}catch(e){}try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
+  function loadBarGoalSettings(){const defaults=defaultBarGoalSettings();const shared=appData?.barGoalSettings&&typeof appData.barGoalSettings==='object'?appData.barGoalSettings:null;return {...defaults,...(shared||{})}}
+  async function saveBarGoalSettings(){if(!isCurrentMaster())return alert('Acesso Negado: somente o Administrador Master pode alterar as metas e despesas do bar.');const get=n=>Number(document.getElementById('bar-goal-'+n)?.value||0);const cfg={rent:get('rent'),operational:get('operational'),dailyGoal:get('dailyGoal'),other:get('other')};if(Object.values(cfg).some(v=>!Number.isFinite(v)||v<0))return alert('Confira os valores das metas e despesas.');BRG_BAR.goalSettings=cfg;appData.barGoalSettings=cfg;try{await saveBinData('Atualizou as metas e despesas do Controle do Bar');alert('✅ Metas salvas permanentemente.');renderBarGoals()}catch(e){alert('❌ Não foi possível salvar as metas.\n\n'+e.message)}}
   window.saveBarGoalSettings=saveBarGoalSettings;
   function syncBarGoalAdminFields(){
     const cfg={...defaultBarGoalSettings(),...(BRG_BAR.goalSettings||{})};
@@ -5557,7 +5653,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     return {current,target,pct,missing,value,sold,adjustOut,entries,status:brgStockStatus(item)};
   }
   function brgMoneyPerBase(value){return Number.isFinite(Number(value))?brgMoney(Number(value)):'—'}
-  function renderBarStock(){const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];const critical=inv.filter(x=>brgStockStatus(x)==='critical').length,totalValue=inv.reduce((a,x)=>a+brgStockValue(x),0),totalSold=inv.reduce((a,x)=>a+brgInventoryStats(x).sold,0);root.innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+inv.length+'</b><span>Itens cadastrados</span></div><div class="bar-kpi"><b>'+critical+'</b><span>⚠️ Abaixo de 30%</span></div><div class="bar-kpi"><b>'+brgMoney(totalValue)+'</b><span>Valor atual do estoque</span></div><div class="bar-kpi"><b>'+brgNum(totalSold)+'</b><span>Saídas em vendas</span></div></div>'+(critical?'<div class="bar-alert" style="border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ ATENÇÃO — REPOSIÇÃO NECESSÁRIA</b><br>'+critical+' item(ns) estão com 30% ou menos do estoque máximo.</div>':'')+'<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">A barra e o gráfico usam o estoque máximo como 100%. Clique em qualquer item para ver quantidade, consumo, embalagem e valores.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Estoque visual</th><th>Físico</th><th>Consumo</th><th>Compra / revenda</th><th>Status</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const st=brgInventoryStats(x),saleBase=brgSaleUnitInfo(x),physical=brgStockBreakdown(x,st.current),cls=st.status==='negative'||st.status==='critical'?'bar-danger':st.status==='attention'?'bar-warn':'bar-ok',label=st.status==='negative'?'NEGATIVO':st.status==='critical'?'REPOR AGORA':st.status==='attention'?'ATENÇÃO':'OK';return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category||'insumo')+' • base: '+brgEsc(x.unit||'un')+'</small></td><td><div style="min-width:175px"><div style="display:flex;justify-content:space-between"><span>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</span><b>'+st.pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:11px;margin:6px 0 3px"><span style="width:'+st.pct+'%"></span></div><small>Máx. '+brgNum(st.target)+' • falta '+brgNum(st.missing)+'</small></div></td><td><b>'+brgEsc(physical)+'</b><small style="display:block;color:#8d9aa2">'+brgNum(x.package_count||0)+' '+brgEsc(x.package_label||'embalagem')+'(s)</small></td><td><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">saída manual '+brgNum(st.adjustOut)+' • entradas '+brgNum(st.entries)+'</small></td><td><b>Compra: '+brgMoney(x.unit_cost)+'/'+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">Revenda: '+brgEsc(saleBase.unitLabel)+'</small></td><td class="'+cls+'"><b>'+label+'</b><small style="display:block">'+(st.status==='critical'?'≤ 30% do máximo':st.status==='attention'?'abaixo de 70%':'estoque controlado')+'</small></td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+String(x.id).replace(/'/g,'')+'\')">± Ajustar</button>'+(st.status==='critical'||st.status==='negative'?'<button class="bar-mini-btn primary" onclick="barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor</button>':'')+'<button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+String(x.id).replace(/'/g,'')+'\')">🗑️ Excluir</button></div></td></tr>'}).join('')+'</tbody></table></div>'}
+  function renderBarStock(){const root=document.getElementById('bar-view-stock'),inv=BRG_BAR.data.inventory||[];const critical=inv.filter(x=>brgStockStatus(x)==='critical').length,totalValue=inv.reduce((a,x)=>a+brgStockValue(x),0),totalSold=inv.reduce((a,x)=>a+brgInventoryStats(x).sold,0);root.innerHTML='<div class="bar-kpis"><div class="bar-kpi"><b>'+inv.length+'</b><span>Itens cadastrados</span></div><div class="bar-kpi"><b>'+critical+'</b><span>⚠️ Abaixo de 30%</span></div><div class="bar-kpi"><b>'+brgMoney(totalValue)+'</b><span>Valor atual do estoque</span></div><div class="bar-kpi"><b>'+brgNum(totalSold)+'</b><span>Saídas em vendas</span></div></div>'+(critical?'<div class="bar-alert" style="border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ ATENÇÃO — REPOSIÇÃO NECESSÁRIA</b><br>'+critical+' item(ns) estão com 30% ou menos do estoque máximo.</div>':'')+'<div class="bar-actions" style="margin-bottom:12px"><button class="bar-mini-btn primary" onclick="barCtlNewStock()">+ Novo insumo</button><span class="bar-muted" style="align-self:center">A barra e o gráfico usam o estoque máximo como 100%. Clique em qualquer item para ver quantidade, consumo, embalagem e valores.</span></div><div class="bar-control-table-wrap"><table class="bar-control-table"><thead><tr><th>Insumo</th><th>Estoque visual</th><th>Físico</th><th>Consumo</th><th>Compra</th><th>Fornecedor</th><th>Preço popular</th><th>Margem</th><th>Status</th><th>Ação</th></tr></thead><tbody>'+inv.map(x=>{const st=brgInventoryStats(x),saleBase=brgSaleUnitInfo(x),physical=brgStockBreakdown(x,st.current),cls=st.status==='negative'||st.status==='critical'?'bar-danger':st.status==='attention'?'bar-warn':'bar-ok',label=st.status==='negative'?'NEGATIVO':st.status==='critical'?'REPOR AGORA':st.status==='attention'?'ATENÇÃO':'OK';return '<tr style="cursor:pointer" onclick="openBarStockDetail(\''+String(x.id).replace(/'/g,'')+'\')"><td><b>'+brgEsc(x.name)+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(x.category||'insumo')+' • base: '+brgEsc(x.unit||'un')+'</small></td><td><div style="min-width:175px"><div style="display:flex;justify-content:space-between"><span>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</span><b>'+st.pct.toFixed(0)+'%</b></div><div class="bar-goal-progress" style="height:11px;margin:6px 0 3px"><span style="width:'+st.pct+'%"></span></div><small>Máx. '+brgNum(st.target)+' • falta '+brgNum(st.missing)+'</small></div></td><td><b>'+brgEsc(physical)+'</b><small style="display:block;color:#8d9aa2">'+brgNum(x.package_count||0)+' '+brgEsc(x.package_label||'embalagem')+'(s)</small></td><td><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><small style="display:block;color:#8d9aa2">saída manual '+brgNum(st.adjustOut)+' • entradas '+brgNum(st.entries)+'</small></td><td><b>Pago: '+brgMoney(Number(x.purchase_price_per_package||0))+'</b><small style="display:block;color:#8d9aa2">Custo base: '+brgMoney(x.unit_cost)+'/'+brgEsc(x.unit||'un')+'</small></td><td>'+brgEsc(x.supplier||'—')+'</td><td><b>'+brgMoney(Number(x.sale_price_per_package||0))+'</b><small style="display:block;color:#8d9aa2">'+brgEsc(saleBase.unitLabel)+'</small></td><td><b>'+((Number(x.purchase_price_per_package)>0&&Number(x.sale_price_per_package)>0)?(((Number(x.sale_price_per_package)-Number(x.purchase_price_per_package))/Number(x.sale_price_per_package))*100).toFixed(1)+'%':'—')+'</b></td><td class="'+cls+'"><b>'+label+'</b><small style="display:block">'+(st.status==='critical'?'≤ 30% do máximo':st.status==='attention'?'abaixo de 70%':'estoque controlado')+'</small></td><td><div class="bar-actions" onclick="event.stopPropagation()"><button class="bar-mini-btn" onclick="barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar</button><button class="bar-mini-btn" onclick="barCtlAdjustStock(\''+String(x.id).replace(/'/g,'')+'\')">± Ajustar</button>'+(st.status==='critical'||st.status==='negative'?'<button class="bar-mini-btn primary" onclick="barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor</button>':'')+'<button class="bar-mini-btn danger" onclick="barCtlDeleteStock(\''+String(x.id).replace(/'/g,'')+'\')">🗑️ Excluir</button></div></td></tr>'}).join('')+'</tbody></table></div>'}
   function brgSaleUnitInfo(x){
     const q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),pc=Number(x?.package_count||0),sale=Number(x?.sale_price_per_package||0),unit=String(x?.unit||'un').toLowerCase(),pm=Number(x?.package_ml||0);
     if(unit==='un'&&pc>0&&sale>0)return {unitLabel:brgMoney(sale/pc)+' / unidade',costPer:cost,salePer:sale/pc};
@@ -5565,7 +5661,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(sale>0&&q>0)return {unitLabel:brgMoney(sale/q)+' / '+brgEsc(x?.unit||'un'),costPer:cost,salePer:sale/q};
     return {unitLabel:'não informado',costPer:cost,salePer:0};
   }
-  window.openBarStockDetail=function(id){const x=(BRG_BAR.data?.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const st=brgInventoryStats(x),sale=brgSaleUnitInfo(x),reorder=brgReorderTarget(x),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),pw=Number(x.package_weight_g||0),purchaseLot=Number(x.unit_cost||0)*Number(x.quantity||0),physical=brgStockBreakdown(x,st.current);const modal=document.createElement('div');modal.id='bar-stock-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000004;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:12px';modal.innerHTML='<div style="max-width:940px;width:100%;max-height:94vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle completo • '+brgEsc(x.unit||'un')+' • '+brgEsc(x.package_label||'embalagem')+'</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div>'+(st.status==='critical'||st.status==='negative'?'<div class="bar-alert" style="margin-top:12px;border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ REPOR MERCADORIA</b><br>'+st.pct.toFixed(0)+'% do alvo. '+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un')+'.':'')+'</div>':'')+'<div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+st.pct+'%,#ff1744 '+st.pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+st.pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-st.pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</b><span>Quantidade atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.target)+' '+brgEsc(x.unit||'un')+'</b><span>Máximo / 100%</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.missing)+' '+brgEsc(x.unit||'un')+'</b><span>Falta para 100%</span></div><div class="bar-mini-kpi"><b>'+brgMoney(st.value)+'</b><span>Valor atual</span></div></div><div style="margin-top:12px;font-size:1.15rem;font-weight:900">📐 Agora: '+brgEsc(physical)+'</div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 Entradas, saídas e consumo</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><span>Saído em vendas</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.adjustOut)+' '+brgEsc(x.unit||'un')+'</b><span>Saída manual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.entries)+' '+brgEsc(x.unit||'un')+'</b><span>Entradas / reposições</span></div><div class="bar-mini-kpi"><b>'+brgMoney(purchaseLot)+'</b><span>Custo do estoque atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 Embalagem e conversão</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(pc||0)+'</b><span>Embalagens / garrafas</span></div><div class="bar-mini-kpi"><b>'+brgNum(pm||0)+' ml</b><span>Volume por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(pw||0)+' g</b><span>Peso por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(x.avg_unit_weight_g||0)+' g</b><span>Peso médio por unidade</span></div></div><p class="bar-muted" style="margin-bottom:0">'+brgStockBaseToDisplay(x,st.current)+'</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>💰 Compra e revenda</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgMoney(x.unit_cost)+'</b><span>Custo por '+brgEsc(x.unit||'un')+'</span></div><div class="bar-mini-kpi"><b>'+sale.unitLabel+'</b><span>Revenda unitária</span></div><div class="bar-mini-kpi"><b>'+brgMoney(x.sale_price_per_package||0)+'</b><span>Revenda da embalagem/lote</span></div><div class="bar-mini-kpi"><b>'+((sale.salePer>0&&Number(x.unit_cost)>0)?((sale.salePer-Number(x.unit_cost))/sale.salePer*100).toFixed(1)+'%':'—')+'</b><span>Margem</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgEsc(brgReorderTriggerText(x))+'</p><b class="'+(reorder>0?'bar-warn':'bar-ok')+'">'+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un'):'Nenhuma reposição necessária agora')+'</b><div class="bar-actions" style="margin-top:10px">'+(reorder>0?'<button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor agora</button>':'')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar estoque</button></div></div>';document.body.appendChild(modal)};
+  window.openBarStockDetail=function(id){const x=(BRG_BAR.data?.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const st=brgInventoryStats(x),sale=brgSaleUnitInfo(x),reorder=brgReorderTarget(x),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),pw=Number(x.package_weight_g||0),purchaseLot=Number(x.unit_cost||0)*Number(x.quantity||0),physical=brgStockBreakdown(x,st.current);const modal=document.createElement('div');modal.id='bar-stock-detail-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000004;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:12px';modal.innerHTML='<div style="max-width:940px;width:100%;max-height:94vh;overflow:auto;background:#090d11;border:1px solid #00bcd4;border-radius:16px;padding:18px"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">📦 '+brgEsc(x.name)+'</h2><div class="bar-muted">Controle completo • '+brgEsc(x.unit||'un')+' • '+brgEsc(x.package_label||'embalagem')+'</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">✕</button></div>'+(st.status==='critical'||st.status==='negative'?'<div class="bar-alert" style="margin-top:12px;border-color:rgba(255,23,68,.55);background:rgba(255,23,68,.08);color:#ff8a9a"><b>⚠️ REPOR MERCADORIA</b><br>'+st.pct.toFixed(0)+'% do alvo. '+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un')+'.':'')+'</div>':'')+'<div class="bar-detail-card" style="margin-top:12px"><div class="bar-pie" style="background:conic-gradient(#00e676 0 '+st.pct+'%,#ff1744 '+st.pct+'% 100%)"></div><div class="bar-legend"><span><i style="background:#00e676"></i>Disponível '+st.pct.toFixed(1)+'%</span><span><i style="background:#ff1744"></i>Faltando '+(100-st.pct).toFixed(1)+'%</span></div><div class="bar-inline-kpis" style="margin-top:12px"><div class="bar-mini-kpi"><b>'+brgNum(st.current)+' '+brgEsc(x.unit||'un')+'</b><span>Quantidade atual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.target)+' '+brgEsc(x.unit||'un')+'</b><span>Máximo / 100%</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.missing)+' '+brgEsc(x.unit||'un')+'</b><span>Falta para 100%</span></div><div class="bar-mini-kpi"><b>'+brgMoney(st.value)+'</b><span>Valor atual</span></div></div><div style="margin-top:12px;font-size:1.15rem;font-weight:900">📐 Agora: '+brgEsc(physical)+'</div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 Entradas, saídas e consumo</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(st.sold)+' '+brgEsc(x.unit||'un')+'</b><span>Saído em vendas</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.adjustOut)+' '+brgEsc(x.unit||'un')+'</b><span>Saída manual</span></div><div class="bar-mini-kpi"><b>'+brgNum(st.entries)+' '+brgEsc(x.unit||'un')+'</b><span>Entradas / reposições</span></div><div class="bar-mini-kpi"><b>'+brgMoney(purchaseLot)+'</b><span>Custo do estoque atual</span></div></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 Embalagem e conversão</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgNum(pc||0)+'</b><span>Embalagens / garrafas</span></div><div class="bar-mini-kpi"><b>'+brgNum(pm||0)+' ml</b><span>Volume por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(pw||0)+' g</b><span>Peso por embalagem</span></div><div class="bar-mini-kpi"><b>'+brgNum(x.avg_unit_weight_g||0)+' g</b><span>Peso médio por unidade</span></div></div><p class="bar-muted" style="margin-bottom:0">'+brgStockBaseToDisplay(x,st.current)+'</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>💰 Compra, fornecedor e preço popular</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b>'+brgMoney(Number(x.purchase_price_per_package||0))+'</b><span>Valor realmente pago</span></div><div class="bar-mini-kpi"><b>'+brgEsc(x.supplier||'—')+'</b><span>Fornecedor</span></div><div class="bar-mini-kpi"><b>'+brgMoney(Number(x.sale_price_per_package||0))+'</b><span>Preço popular / revenda</span></div><div class="bar-mini-kpi"><b>'+((Number(x.purchase_price_per_package)>0&&Number(x.sale_price_per_package)>0)?(((Number(x.sale_price_per_package)-Number(x.purchase_price_per_package))/Number(x.sale_price_per_package))*100).toFixed(1)+'%':'—')+'</b><span>Margem sobre venda</span></div></div><p class="bar-muted" style="margin-bottom:0;margin-top:10px">Custo técnico usado pelas receitas: <b>'+brgMoney(x.unit_cost)+'</b> por '+brgEsc(x.unit||'un')+'. O valor pago acima permanece histórico e não diminui quando o estoque é consumido.</p></div><div class="bar-detail-card" style="margin-top:12px"><h3>🛒 Reposição</h3><p class="bar-muted">'+brgEsc(brgReorderTriggerText(x))+'</p><b class="'+(reorder>0?'bar-warn':'bar-ok')+'">'+(reorder>0?'Sugestão: '+brgNum(reorder)+' '+brgEsc(x.unit||'un'):'Nenhuma reposição necessária agora')+'</b><div class="bar-actions" style="margin-top:10px">'+(reorder>0?'<button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlOpenRestock(\''+String(x.id).replace(/'/g,'')+'\')">🛒 Repor agora</button>':'')+'</div></div><div class="bar-actions" style="margin-top:12px"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove()">Fechar</button><button class="bar-mini-btn primary" onclick="document.getElementById(\'bar-stock-detail-modal\')?.remove();barCtlEditStock(\''+String(x.id).replace(/'/g,'')+'\')">✏️ Editar estoque</button></div></div>';document.body.appendChild(modal)};
   function brgSuggestedPackageCount(x){
     const n=brgAutoPackageUnits(x);return n>0?n:(Number(x?.package_count||0)>0?Number(x.package_count):0);
   }
@@ -5577,11 +5673,56 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const margin=saleUnit>0&&cost>0?(saleUnit-cost)/saleUnit*100:0;
     return {effectiveCount,saleUnit,costPackage,margin};
   }
-  function openBarStockEditor(id){const x=id?(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id)):null,modal=document.createElement('div');modal.id='bar-stock-edit-modal';modal.className='bar-scroll-modal';const unit=String(x?.unit||'un').toLowerCase(),q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),sale=Number(x?.sale_price_per_package||0),pc=Number(x?.package_count||0),pm=Number(x?.package_ml||0),pw=Number(x?.package_weight_g||0),purchaseTotal=q*cost;modal.innerHTML='<div class="bar-scroll-panel"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">✏️ '+(x?'Editar estoque — ':'Novo estoque — ')+brgEsc(x?.name||'Novo insumo')+'</h2><div class="bar-muted">Agora você cadastra separadamente quantidade, embalagem, compra e revenda. O sistema converte tudo para a unidade base.</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><h3>🧾 1. Identificação e unidade</h3><div class="bar-control-form"><label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Limão, Cerveja, Velho Barreiro"></label><label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="bebida, fruta, gelo, insumo..."></label><label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(unit==='un'?'selected':'')+'>Unidade (un)</option><option value="g" '+(unit==='g'?'selected':'')+'>Gramas (g)</option><option value="kg" '+(unit==='kg'?'selected':'')+'>Quilogramas (kg)</option><option value="ml" '+(unit==='ml'?'selected':'')+'>Mililitros (ml)</option><option value="l" '+(unit==='l'?'selected':'')+'>Litros (L)</option></select><small class="bar-field-help">A unidade base é a que será consumida automaticamente pelas receitas.</small></label><label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label><label>Estoque máximo<input id="bar-stock-max" type="number" min="0" step="0.001" value="'+(x?.max_quantity==null?'':Number(x.max_quantity))+'"><small class="bar-field-help">Este valor representa 100% da barra e do gráfico.</small></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 2. Quantidade física</h3><div class="bar-control-form"><label>Quantidade atual<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><small class="bar-field-help">Ex.: carne = 1000 g → 1 kg • total 1000 g. Se for 1200 g → 1 kg + 200 g.</small></label><label>Quantidade de embalagens / garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(pc||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 2 garrafas, 1 saco, 1 fardo.</small></label><label>Tipo de embalagem<select id="bar-stock-pack-label"><option value="garrafa" '+(String(x?.package_label||'embalagem')==='garrafa'?'selected':'')+'>Garrafa</option><option value="embalagem" '+(String(x?.package_label||'embalagem')==='embalagem'?'selected':'')+'>Embalagem</option><option value="fardo" '+(String(x?.package_label||'embalagem')==='fardo'?'selected':'')+'>Fardo</option><option value="pacote" '+(String(x?.package_label||'embalagem')==='pacote'?'selected':'')+'>Pacote</option><option value="saco" '+(String(x?.package_label||'embalagem')==='saco'?'selected':'')+'>Saco</option></select></label><label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="0.001" value="'+(pm||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 900 ml, 1000 ml, 2000 ml.</small></label><label>Peso por embalagem (g)<input id="bar-stock-pack-weight" type="number" min="0" step="0.001" value="'+(pw||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: saco de limão = 1200 g.</small></label><label>Peso médio por unidade (g)<input id="bar-stock-weight" type="number" min="0" step="0.001" value="'+(Number(x?.avg_unit_weight_g||0)||'')+'" oninput="barCtlStockCalc(\'weight\')"><small class="bar-field-help">Ex.: cada limão ≈ 120 g. Assim uma receita pode usar 3 unidades e o sistema baixa ≈ 360 g.</small></label></div><div id="bar-stock-conversion" class="bar-stock-conversion" style="font-size:1.05rem;margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>💵 3. Compra</h3><div class="bar-control-form"><label>Valor total pago (R$)<input id="bar-stock-purchase-total" type="number" inputmode="decimal" min="0" step="0.01" value="'+purchaseTotal.toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"></label><label>Custo por unidade base (calculado/editável)<input id="bar-stock-cost" type="number" inputmode="decimal" min="0" step="0.000001" value="'+(cost?String(cost):'')+'" oninput="barCtlStockCalc(\'cost\')"><small class="bar-field-help">O valor fica na unidade base. Ex.: R$ 10 ÷ 10 limões = R$ 1,00/un.</small></label><label>Fornecedor<input id="bar-stock-supplier" type="text" value="'+brgEsc(x?.supplier||'')+'"></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🏷️ 4. Revenda</h3><div class="bar-control-form"><label>Preço de revenda do lote / embalagem (R$)<input id="bar-stock-sale-price" type="number" inputmode="decimal" min="0" step="0.01" value="'+(sale?String(sale):'')+'" oninput="barCtlStockCalc(\'sale\')"><small class="bar-field-help">Ex.: fardo com 12 latas → revenda do fardo R$ 100.</small></label><label>Revenda por unidade / ml (calculada)<input id="bar-stock-sale-unit-display" type="text" readonly></label><label>Margem unitária (calculada)<input id="bar-stock-margin-display" type="text" readonly></label></div><div id="bar-stock-sale-explain" class="bar-unit-help" style="margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 5. Resumo em tempo real</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b id="bar-stock-total">—</b><span>Valor atual do estoque</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-display">—</b><span>Custo por unidade base</span></div><div class="bar-mini-kpi"><b id="bar-stock-liters-display">—</b><span>Conversão</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-ml-display">—</b><span>Custo por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-sale-ml-display">—</b><span>Revenda por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-used-display">—</b><span>Já saiu em vendas</span></div></div></div><label class="bar-control-full" style="display:block;margin-top:12px">Observações<textarea id="bar-stock-notes" rows="4" placeholder="Ex.: fardo com 12 latas, lote, fornecedor...">'+brgEsc(x?.notes||'')+'</textarea></label><div class="bar-modal-footer"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">Cancelar</button><button class="bar-mini-btn primary" data-stock-id="'+(x?.id||'')+'" onclick="barCtlSaveStockEdit(\''+(x?.id||'')+'\')">💾 Salvar permanentemente</button></div></div>';document.body.appendChild(modal);barCtlStockCalc('init')}
+  function openBarStockEditor(id){const x=id?(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id)):null,modal=document.createElement('div');modal.id='bar-stock-edit-modal';modal.className='bar-scroll-modal';const unit=String(x?.unit||'un').toLowerCase(),q=Number(x?.quantity||0),cost=Number(x?.unit_cost||0),sale=Number(x?.sale_price_per_package||0),purchasePaid=Number(x?.purchase_price_per_package||0),pc=Number(x?.package_count||0),pm=Number(x?.package_ml||0),pw=Number(x?.package_weight_g||0),purchaseTotal=purchasePaid>0?purchasePaid:q*cost;modal.innerHTML='<div class="bar-scroll-panel"><div style="display:flex;justify-content:space-between;gap:10px"><div><h2 style="font-family:var(--font-title);margin:0">✏️ '+(x?'Editar estoque — ':'Novo estoque — ')+brgEsc(x?.name||'Novo insumo')+'</h2><div class="bar-muted">Agora você cadastra separadamente quantidade, embalagem, compra e revenda. O sistema converte tudo para a unidade base.</div></div><button class="bar-mini-btn danger" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">✕</button></div><div class="bar-detail-card" style="margin-top:12px"><h3>🧾 1. Identificação e unidade</h3><div class="bar-control-form"><label>Nome<input id="bar-stock-name" type="text" value="'+brgEsc(x?.name||'')+'" placeholder="Ex.: Limão, Cerveja, Velho Barreiro"></label><label>Categoria<input id="bar-stock-category" type="text" value="'+brgEsc(x?.category||'insumo')+'" placeholder="bebida, fruta, gelo, insumo..."></label><label>Unidade de controle<select id="bar-stock-unit" onchange="barCtlStockCalc(\'unit\')"><option value="un" '+(unit==='un'?'selected':'')+'>Unidade (un)</option><option value="g" '+(unit==='g'?'selected':'')+'>Gramas (g)</option><option value="kg" '+(unit==='kg'?'selected':'')+'>Quilogramas (kg)</option><option value="ml" '+(unit==='ml'?'selected':'')+'>Mililitros (ml)</option><option value="l" '+(unit==='l'?'selected':'')+'>Litros (L)</option></select><small class="bar-field-help">A unidade base é a que será consumida automaticamente pelas receitas.</small></label><label>Estoque mínimo<input id="bar-stock-min" type="number" min="0" step="0.001" value="'+Number(x?.min_quantity||0)+'"></label><label>Estoque máximo<input id="bar-stock-max" type="number" min="0" step="0.001" value="'+(x?.max_quantity==null?'':Number(x.max_quantity))+'"><small class="bar-field-help">Este valor representa 100% da barra e do gráfico.</small></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📦 2. Quantidade física</h3><div class="bar-control-form"><label>Quantidade atual<input id="bar-stock-qty" type="number" min="0" step="0.001" value="'+q+'" oninput="barCtlStockCalc(\'qty\')"><small class="bar-field-help">Ex.: carne = 1000 g → 1 kg • total 1000 g. Se for 1200 g → 1 kg + 200 g.</small></label><label>Quantidade de embalagens / garrafas<input id="bar-stock-pack-count" type="number" min="0" step="0.001" value="'+(pc||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 2 garrafas, 1 saco, 1 fardo.</small></label><label>Tipo de embalagem<select id="bar-stock-pack-label"><option value="garrafa" '+(String(x?.package_label||'embalagem')==='garrafa'?'selected':'')+'>Garrafa</option><option value="embalagem" '+(String(x?.package_label||'embalagem')==='embalagem'?'selected':'')+'>Embalagem</option><option value="fardo" '+(String(x?.package_label||'embalagem')==='fardo'?'selected':'')+'>Fardo</option><option value="pacote" '+(String(x?.package_label||'embalagem')==='pacote'?'selected':'')+'>Pacote</option><option value="saco" '+(String(x?.package_label||'embalagem')==='saco'?'selected':'')+'>Saco</option></select></label><label>Volume por embalagem (ml)<input id="bar-stock-pack-ml" type="number" min="0" step="0.001" value="'+(pm||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: 900 ml, 1000 ml, 2000 ml.</small></label><label>Peso por embalagem (g)<input id="bar-stock-pack-weight" type="number" min="0" step="0.001" value="'+(pw||'')+'" oninput="barCtlStockCalc(\'pack\')"><small class="bar-field-help">Ex.: saco de limão = 1200 g.</small></label><label>Peso médio por unidade (g)<input id="bar-stock-weight" type="number" min="0" step="0.001" value="'+(Number(x?.avg_unit_weight_g||0)||'')+'" oninput="barCtlStockCalc(\'weight\')"><small class="bar-field-help">Ex.: cada limão ≈ 120 g. Assim uma receita pode usar 3 unidades e o sistema baixa ≈ 360 g.</small></label></div><div id="bar-stock-conversion" class="bar-stock-conversion" style="font-size:1.05rem;margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>💵 3. Compra</h3><div class="bar-control-form"><label>Valor realmente pago pela compra (R$)<input id="bar-stock-purchase-total" type="number" inputmode="decimal" min="0" step="0.01" value="'+purchaseTotal.toFixed(2)+'" oninput="barCtlStockCalc(\'total\')"></label><label>Custo técnico por unidade base (calculado)<input id="bar-stock-cost" type="number" inputmode="decimal" min="0" step="0.000001" value="'+(cost?String(cost):'')+'" oninput="barCtlStockCalc(\'cost\')"><small class="bar-field-help">É usado internamente pelas receitas. Para kg/L ele fica convertido para g/ml; R$ 40/kg nunca vira R$ 40/g.</small></label><label>Fornecedor<input id="bar-stock-supplier" type="text" value="'+brgEsc(x?.supplier||'')+'"></label></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>🏷️ 4. Revenda</h3><div class="bar-control-form"><label>Preço popular / revenda do lote / embalagem (R$)<input id="bar-stock-sale-price" type="number" inputmode="decimal" min="0" step="0.01" value="'+(sale?String(sale):'')+'" oninput="barCtlStockCalc(\'sale\')"><small class="bar-field-help">Ex.: fardo com 12 latas → revenda do fardo R$ 100.</small></label><label>Revenda por unidade / ml (calculada)<input id="bar-stock-sale-unit-display" type="text" readonly></label><label>Margem unitária (calculada)<input id="bar-stock-margin-display" type="text" readonly></label></div><div id="bar-stock-sale-explain" class="bar-unit-help" style="margin-top:10px"></div></div><div class="bar-detail-card" style="margin-top:12px"><h3>📊 5. Resumo em tempo real</h3><div class="bar-inline-kpis"><div class="bar-mini-kpi"><b id="bar-stock-total">—</b><span>Valor atual do estoque</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-display">—</b><span>Custo por unidade base</span></div><div class="bar-mini-kpi"><b id="bar-stock-liters-display">—</b><span>Conversão</span></div><div class="bar-mini-kpi"><b id="bar-stock-cost-ml-display">—</b><span>Custo por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-sale-ml-display">—</b><span>Revenda por ml</span></div><div class="bar-mini-kpi"><b id="bar-stock-used-display">—</b><span>Já saiu em vendas</span></div></div></div><label class="bar-control-full" style="display:block;margin-top:12px">Observações<textarea id="bar-stock-notes" rows="4" placeholder="Ex.: fardo com 12 latas, lote, fornecedor...">'+brgEsc(x?.notes||'')+'</textarea></label><div class="bar-modal-footer"><button class="bar-mini-btn" onclick="document.getElementById(\'bar-stock-edit-modal\')?.remove()">Cancelar</button><button class="bar-mini-btn primary" data-stock-id="'+(x?.id||'')+'" onclick="barCtlSaveStockEdit(\''+(x?.id||'')+'\')">💾 Salvar permanentemente</button></div></div>';document.body.appendChild(modal);barCtlStockCalc('init')}
   window.barCtlEditStock=function(id){openBarStockEditor(id)};
   window.barCtlStockFormatMoney=function(id){const el=document.getElementById('bar-stock-'+id);if(!el)return;const n=Number(String(el.value).replace(',','.'));if(Number.isFinite(n)&&document.activeElement!==el)el.value=n.toFixed(6)};
   window.barCtlStockCalc=function(source='init'){const qEl=document.getElementById('bar-stock-qty'),cEl=document.getElementById('bar-stock-cost'),tEl=document.getElementById('bar-stock-purchase-total'),uEl=document.getElementById('bar-stock-unit'),saleEl=document.getElementById('bar-stock-sale-price');if(!qEl||!cEl||!tEl)return;let q=Number(qEl.value||0),c=Number(cEl.value||0),t=Number(tEl.value||0),unit=String(uEl?.value||'un').toLowerCase(),pc=Number(document.getElementById('bar-stock-pack-count')?.value||0),pm=Number(document.getElementById('bar-stock-pack-ml')?.value||0),pw=Number(document.getElementById('bar-stock-pack-weight')?.value||0),weight=Number(document.getElementById('bar-stock-weight')?.value||0),name=String(document.getElementById('bar-stock-name')?.value||'').trim();if((unit==='ml'||unit==='l')&&pc>0&&pm>0&&source!=='qty'&&source!=='cost'&&source!=='total')q=unit==='l'?pc*pm/1000:pc*pm;if(unit==='g'&&pc>0&&pw>0&&source!=='qty'&&source!=='cost'&&source!=='total')q=pc*pw;if(source==='cost'){t=q*c;if(document.activeElement!==tEl)tEl.value=t.toFixed(2)}else if(source==='total'||source==='qty'||source==='pack'||source==='unit'||source==='weight'){if(q>0&&t>=0){c=t/q;if(document.activeElement!==cEl)cEl.value=String(c)}}const conv=brgStockBaseToDisplay({unit},q)+(unit==='un'&&weight>0?' • '+brgNum(q)+' un ≈ '+brgNum(q*weight)+' g = '+brgNum(q*weight/1000)+' kg':'');const convEl=document.getElementById('bar-stock-conversion');if(convEl)convEl.innerHTML='<b>'+brgEsc(conv)+'</b>'+(pc>0?(pm>0?' • '+brgNum(pc)+' '+brgEsc(document.getElementById('bar-stock-pack-label')?.value||'embalagem')+' × '+brgNum(pm)+' ml':'')+(pw>0?' • '+brgNum(pw)+' g por embalagem':''):'');const sale=Number(saleEl?.value||0),effectiveCount=pc>0?pc:(unit==='un'?1:0),saleUnit=unit==='un'&&effectiveCount>0&&sale>0?sale/effectiveCount:(unit==='ml'&&sale>0&&q>0?sale/q:(unit==='l'&&sale>0&&q>0?sale/q*1000:(unit==='g'&&sale>0&&q>0?sale/q:(unit==='kg'&&sale>0&&q>0?sale/q/1000:0)))),margin=saleUnit>0&&c>0?(saleUnit-c)/saleUnit*100:0,costPerMl=(unit==='ml'?c:unit==='l'?c/1000:0),salePerMl=(unit==='ml'&&sale>0&&q>0?sale/q:unit==='l'&&sale>0&&q>0?sale/(q*1000):0),idButton=document.querySelector('#bar-stock-edit-modal .bar-mini-btn.primary'),existingItem=BRG_BAR.data.inventory?.find(i=>String(i.id)===String(idButton?.dataset?.stockId||'')),used=existingItem?brgInventoryStats(existingItem).sold:0;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};set('bar-stock-total',brgMoney(q*c));set('bar-stock-cost-display',c>0?brgMoney(c):'—');set('bar-stock-liters-display',conv);set('bar-stock-cost-ml-display',costPerMl>0?brgMoney(costPerMl):'—');set('bar-stock-sale-ml-display',salePerMl>0?brgMoney(salePerMl):'—');set('bar-stock-used-display',brgNum(used)+' '+brgEsc(unit));const su=document.getElementById('bar-stock-sale-unit-display');if(su)su.value=saleUnit>0?(unit==='ml'?'R$ '+saleUnit.toFixed(2)+' / ml':unit==='l'?'R$ '+saleUnit.toFixed(2)+' / L':unit==='g'?'R$ '+saleUnit.toFixed(4)+' / g':unit==='kg'?'R$ '+saleUnit.toFixed(4)+' / kg':'R$ '+saleUnit.toFixed(2)+' / unidade'):'—';const ma=document.getElementById('bar-stock-margin-display');if(ma)ma.value=saleUnit>0&&c>0?margin.toFixed(1)+'%':'—';const ex=document.getElementById('bar-stock-sale-explain');if(ex)ex.innerHTML=sale>0?(effectiveCount>1?'Revenda do lote: <b>'+brgMoney(sale)+'</b> ÷ '+effectiveCount+' unidades = <b>'+brgMoney(saleUnit)+'</b> por unidade.':(q>0?'Revenda total: <b>'+brgMoney(sale)+'</b> ÷ '+brgNum(q)+' '+brgEsc(unit)+' = <b>'+brgMoney(saleUnit)+'</b> por unidade base.':'')):'Informe o preço de revenda do lote para calcular o valor unitário.'};
-  window.barCtlSaveStockEdit=async function(id){const name=String(document.getElementById('bar-stock-name')?.value||'').trim(),category=String(document.getElementById('bar-stock-category')?.value||'insumo').trim(),enteredUnit=String(document.getElementById('bar-stock-unit')?.value||'un').toLowerCase(),enteredQ=Number(document.getElementById('bar-stock-qty')?.value||0),purchaseTotal=Number(document.getElementById('bar-stock-purchase-total')?.value||0),enteredCost=Number(document.getElementById('bar-stock-cost')?.value||0),avgUnitWeight=Number(document.getElementById('bar-stock-weight')?.value||0),min_quantity=Number(document.getElementById('bar-stock-min')?.value||0),maxRaw=String(document.getElementById('bar-stock-max')?.value||'').trim(),max_quantity=maxRaw===''?null:Number(maxRaw),supplier=String(document.getElementById('bar-stock-supplier')?.value||'').trim(),notes=String(document.getElementById('bar-stock-notes')?.value||'').trim(),packageCountRaw=String(document.getElementById('bar-stock-pack-count')?.value||'').trim(),packageMlRaw=String(document.getElementById('bar-stock-pack-ml')?.value||'').trim(),packageWeightRaw=String(document.getElementById('bar-stock-pack-weight')?.value||'').trim(),package_count=packageCountRaw===''?null:Number(packageCountRaw),package_ml=packageMlRaw===''?null:Number(packageMlRaw),package_weight_g=packageWeightRaw===''?null:Number(packageWeightRaw),package_label=String(document.getElementById('bar-stock-pack-label')?.value||'embalagem'),salePriceRaw=String(document.getElementById('bar-stock-sale-price')?.value||'').trim(),sale_price_per_package=salePriceRaw===''?null:Number(salePriceRaw);let unit=enteredUnit,quantity=enteredQ;if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000;if(package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g}if(enteredUnit==='l'){unit='ml';quantity=enteredQ*1000;if(package_count>0&&package_ml>0)quantity=package_count*package_ml}if(enteredUnit==='ml'&&package_count>0&&package_ml>0)quantity=package_count*package_ml;if(enteredUnit==='g'&&package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;const unit_cost=enteredCost>0?enteredCost:(quantity>0?purchaseTotal/quantity:0),maxBase=max_quantity==null?null:((enteredUnit==='kg'||enteredUnit==='l')?max_quantity*1000:max_quantity),minBase=(enteredUnit==='kg'||enteredUnit==='l')?min_quantity*1000:min_quantity;if(!name)return alert('Informe o nome do insumo.');if(!Number.isFinite(enteredQ)||enteredQ<0||!Number.isFinite(purchaseTotal)||purchaseTotal<0||!Number.isFinite(unit_cost)||unit_cost<0||!Number.isFinite(min_quantity)||min_quantity<0||(maxBase!==null&&(!Number.isFinite(maxBase)||maxBase<0)))return alert('Confira quantidade, compra, mínimo e máximo.');if(package_count!==null&&(!Number.isFinite(package_count)||package_count<0))return alert('Quantidade de embalagens inválida.');if(package_ml!==null&&(!Number.isFinite(package_ml)||package_ml<0))return alert('Volume por embalagem inválido.');if(package_weight_g!==null&&(!Number.isFinite(package_weight_g)||package_weight_g<0))return alert('Peso por embalagem inválido.');if(avgUnitWeight<0||!Number.isFinite(avgUnitWeight))return alert('Peso médio por unidade inválido.');if(sale_price_per_package!==null&&(!Number.isFinite(sale_price_per_package)||sale_price_per_package<0))return alert('Preço de revenda inválido.');if(maxBase!==null&&maxBase<minBase)return alert('O estoque máximo não pode ser menor que o mínimo.');const btn=[...document.querySelectorAll('#bar-stock-edit-modal .bar-mini-btn.primary')].pop(),oldText=btn?.textContent;if(btn){btn.disabled=true;btn.textContent='⏳ SALVANDO NO SERVIDOR…'}const progress=document.createElement('div');progress.id='bar-stock-save-progress';progress.style.cssText='position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000025;background:#061116;border:1px solid #00e676;color:#fff;padding:12px 16px;border-radius:12px;font-weight:800';progress.textContent='⏳ Gravando estoque no servidor…';document.body.appendChild(progress);try{const stableId=String(id||crypto.randomUUID()),payload={name,category:category||'insumo',unit,quantity,min_quantity:minBase,max_quantity:maxBase,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml,package_weight_g,avg_unit_weight_g:avgUnitWeight>0?avgUnitWeight:null,package_label,sale_price_per_package};const savedResponse=await brgApi(id?'update_inventory':'save_inventory',id?{id,...payload}:{id:stableId,...payload});if(!savedResponse?.item?.id)throw new Error('O servidor não devolveu o cadastro salvo.');progress.textContent='🔎 Confirmando no banco…';const fresh=await brgApi('bootstrap'),confirmed=(fresh.inventory||[]).find(i=>String(i.id)===String(savedResponse.item.id));if(!confirmed)throw new Error('O item salvo não apareceu na confirmação do banco.');BRG_BAR.data=fresh;document.getElementById('bar-stock-edit-modal')?.remove();renderBarControl();progress.textContent='✅ Estoque salvo e confirmado.';setTimeout(()=>progress.remove(),900);alert('✅ Estoque salvo permanentemente.\n\n'+brgStockBaseToDisplay(confirmed,Number(confirmed.quantity||0))+'\nCusto: '+brgMoney(confirmed.unit_cost)+' por '+confirmed.unit+'\nRevenda da embalagem: '+brgMoney(confirmed.sale_price_per_package||0));}catch(e){progress.textContent='❌ Falha no salvamento.';setTimeout(()=>progress.remove(),1600);alert('❌ Não foi possível salvar o insumo.\n\n'+(e?.message||e));}finally{if(btn){btn.disabled=false;btn.textContent=oldText||'💾 Salvar permanentemente'}}};
+  window.barCtlSaveStockEdit=async function(id){
+    const val=k=>document.getElementById(k)?.value ?? '';
+    const name=String(val('bar-stock-name')).trim(),category=String(val('bar-stock-category')).trim()||'insumo',enteredUnit=String(val('bar-stock-unit')||'un').toLowerCase();
+    const enteredQ=Number(val('bar-stock-qty')||0),purchaseTotal=Number(val('bar-stock-purchase-total')||0),enteredCost=Number(val('bar-stock-cost')||0);
+    const avgUnitWeight=Number(val('bar-stock-weight')||0),min_quantity=Number(val('bar-stock-min')||0),maxRaw=String(val('bar-stock-max')).trim(),max_quantity=maxRaw===''?null:Number(maxRaw),supplier=String(val('bar-stock-supplier')).trim(),notes=String(val('bar-stock-notes')).trim();
+    const packageCountRaw=String(val('bar-stock-pack-count')).trim(),packageMlRaw=String(val('bar-stock-pack-ml')).trim(),packageWeightRaw=String(val('bar-stock-pack-weight')).trim();
+    const package_count=packageCountRaw===''?null:Number(packageCountRaw),package_ml=packageMlRaw===''?null:Number(packageMlRaw),package_weight_g=packageWeightRaw===''?null:Number(packageWeightRaw),package_label=String(val('bar-stock-pack-label')||'embalagem');
+    const salePriceRaw=String(val('bar-stock-sale-price')).trim(),sale_price_per_package=salePriceRaw===''?null:Number(salePriceRaw);
+    if(!name)return alert('Informe o nome do insumo.');
+    if(!Number.isFinite(enteredQ)||enteredQ<0||!Number.isFinite(purchaseTotal)||purchaseTotal<0||!Number.isFinite(enteredCost)||enteredCost<0)return alert('Confira quantidade, valor pago e custo técnico.');
+    if(!Number.isFinite(min_quantity)||min_quantity<0||(max_quantity!==null&&(!Number.isFinite(max_quantity)||max_quantity<0)))return alert('Confira estoque mínimo e máximo.');
+    if(package_count!==null&&(!Number.isFinite(package_count)||package_count<0))return alert('Quantidade de embalagens inválida.');
+    if(package_ml!==null&&(!Number.isFinite(package_ml)||package_ml<0))return alert('Volume por embalagem inválido.');
+    if(package_weight_g!==null&&(!Number.isFinite(package_weight_g)||package_weight_g<0))return alert('Peso por embalagem inválido.');
+    if(avgUnitWeight<0||!Number.isFinite(avgUnitWeight))return alert('Peso médio por unidade inválido.');
+    if(sale_price_per_package!==null&&(!Number.isFinite(sale_price_per_package)||sale_price_per_package<0))return alert('Preço popular/revenda inválido.');
+    if(max_quantity!==null&&max_quantity<min_quantity)return alert('O estoque máximo não pode ser menor que o mínimo.');
+    let unit=enteredUnit,quantity=enteredQ;
+    if(enteredUnit==='kg'){unit='g';quantity=enteredQ*1000;if(package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;}
+    else if(enteredUnit==='l'){unit='ml';quantity=enteredQ*1000;if(package_count>0&&package_ml>0)quantity=package_count*package_ml;}
+    else if(enteredUnit==='ml'&&package_count>0&&package_ml>0)quantity=package_count*package_ml;
+    else if(enteredUnit==='g'&&package_count>0&&package_weight_g>0)quantity=package_count*package_weight_g;
+    // O custo digitado é sempre interpretado na unidade que o ADM está vendo.
+    // Ex.: R$40/kg -> R$0,04/g no banco; nunca R$40/g.
+    const costDivisor=(enteredUnit==='kg'||enteredUnit==='l')?1000:1;
+    let unit_cost=enteredCost/costDivisor;
+    if(purchaseTotal>0&&quantity>0)unit_cost=purchaseTotal/quantity;
+    if(!Number.isFinite(unit_cost)||unit_cost<0)unit_cost=0;
+    const baseMin=(enteredUnit==='kg'||enteredUnit==='l')?min_quantity*1000:min_quantity;
+    const baseMax=max_quantity==null?null:((enteredUnit==='kg'||enteredUnit==='l')?max_quantity*1000:max_quantity);
+    const stableId=String(id||crypto.randomUUID());
+    const btn=[...document.querySelectorAll('#bar-stock-edit-modal .bar-mini-btn.primary')].pop(),oldText=btn?.textContent;
+    if(btn){btn.disabled=true;btn.textContent='⏳ SALVANDO NO SERVIDOR…';}
+    const progress=document.createElement('div');progress.id='bar-stock-save-progress';progress.style.cssText='position:fixed;left:50%;top:18px;transform:translateX(-50%);z-index:1000025;background:#061116;border:1px solid #00e676;color:#fff;padding:12px 16px;border-radius:12px;font-weight:800';progress.textContent='⏳ Gravando estoque no Supabase…';document.body.appendChild(progress);
+    try{
+      const payload={name,category,unit,quantity,min_quantity:baseMin,max_quantity:baseMax,unit_cost,supplier:supplier||null,notes:notes||null,package_count,package_ml,package_weight_g,avg_unit_weight_g:avgUnitWeight>0?avgUnitWeight:null,package_label,purchase_price_per_package:purchaseTotal,sale_price_per_package};
+      const savedResponse=await brgApi(id?'update_inventory':'save_inventory',id?{id,...payload}:{id:stableId,...payload});
+      if(!savedResponse?.item?.id)throw new Error('O servidor não devolveu o cadastro salvo.');
+      progress.textContent='🔎 Confirmando no Supabase…';
+      const fresh=await brgApi('bootstrap'),confirmed=(fresh.inventory||[]).find(i=>String(i.id)===String(savedResponse.item.id));
+      if(!confirmed)throw new Error('O item salvo não apareceu na confirmação do banco.');
+      BRG_BAR.data=fresh;document.getElementById('bar-stock-edit-modal')?.remove();renderBarControl();progress.textContent='✅ Estoque salvo e confirmado no Supabase.';setTimeout(()=>progress.remove(),900);
+      const margin=Number(confirmed.purchase_price_per_package)>0&&Number(confirmed.sale_price_per_package)>0?((Number(confirmed.sale_price_per_package)-Number(confirmed.purchase_price_per_package))/Number(confirmed.sale_price_per_package)*100).toFixed(1)+'%':'—';
+      alert('✅ Estoque salvo permanentemente no Supabase.\n\nValor pago: '+brgMoney(confirmed.purchase_price_per_package||0)+'\nFornecedor: '+(confirmed.supplier||'—')+'\nPreço popular/revenda: '+brgMoney(confirmed.sale_price_per_package||0)+'\nMargem: '+margin);
+    }catch(e){progress.textContent='❌ Falha no salvamento.';setTimeout(()=>progress.remove(),1600);alert('❌ Não foi possível salvar o insumo no Supabase.\n\n'+(e?.message||e));}finally{if(btn){btn.disabled=false;btn.textContent=oldText||'💾 Salvar permanentemente';}}
+  };
   window.barCtlAdjustStock=async function(id){const x=(BRG_BAR.data.inventory||[]).find(i=>i.id===id);if(!x)return;const raw=prompt('Ajuste de estoque para '+x.name+'\nUse positivo para entrada e negativo para saída.\nAtual: '+x.quantity+' '+x.unit,'0');if(raw===null)return;const delta=Number(String(raw).replace(',','.'));if(!Number.isFinite(delta)||delta===0)return alert('Informe um número diferente de zero.');const reason=prompt('Motivo do ajuste','Ajuste manual')||'Ajuste manual';try{await brgApi('adjust_stock',{inventory_item_id:id,quantity_delta:delta,reason});await loadBarControl(false);alert('✅ Estoque atualizado permanentemente.')}catch(e){alert('❌ '+e.message)}};
   window.barCtlOpenRestock=function(id){
     const x=(BRG_BAR.data.inventory||[]).find(i=>String(i.id)===String(id));if(!x)return;const suggested=brgReorderTarget(x),unit=String(x.unit||'un').toLowerCase(),pc=Number(x.package_count||0),pm=Number(x.package_ml||0),defaultPackages=suggested>0?(unit==='un'?suggested:(pc>0?Math.max(1,Math.ceil(suggested/(pm||1))):1)):1;
