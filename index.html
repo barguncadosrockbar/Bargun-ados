@@ -303,6 +303,7 @@
     @keyframes authScan { 0% { top:18%; opacity:0; } 10% { opacity:.22; } 90% { opacity:.22; } 100% { top:82%; opacity:0; } }
     @keyframes authSuccessFlash { 0% { box-shadow:0 0 0 rgba(0,230,118,0); } 45% { box-shadow:0 0 45px rgba(0,230,118,.22); } 100% { box-shadow:0 0 0 rgba(0,230,118,0); } }
     @keyframes authShake { 0%,100% { transform:translateX(0); } 20% { transform:translateX(-7px); } 40% { transform:translateX(6px); } 60% { transform:translateX(-4px); } 80% { transform:translateX(3px); } }
+    .brg-health-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0 14px}.brg-health-last-run{color:#8d9aa2;font-size:.76rem}.brg-health-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}.brg-health-summary-card{border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:10px;background:rgba(0,0,0,.28);text-align:center}.brg-health-summary-card b{display:block;font-family:var(--font-title);font-size:1.15rem}.brg-health-summary-card span{display:block;color:#8d9aa2;font-size:.68rem;margin-top:3px;text-transform:uppercase}.brg-health-results{display:grid;gap:8px}.brg-health-item{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:start;border:1px solid rgba(255,255,255,.11);border-radius:10px;padding:10px;background:rgba(0,0,0,.28)}.brg-health-icon{font-size:1.15rem}.brg-health-name{font-weight:900;color:#fff}.brg-health-detail{font-size:.75rem;color:#9aa7ad;line-height:1.45;margin-top:3px}.brg-health-badge{font-size:.65rem;font-family:var(--font-title);letter-spacing:.7px;padding:4px 7px;border-radius:999px;white-space:nowrap}.brg-health-item.ok{border-color:rgba(0,230,118,.28)}.brg-health-item.ok .brg-health-badge{color:#00e676;background:rgba(0,230,118,.08)}.brg-health-item.warn{border-color:rgba(255,193,7,.28)}.brg-health-item.warn .brg-health-badge{color:#ffcc80;background:rgba(255,193,7,.08)}.brg-health-item.error{border-color:rgba(255,82,82,.34)}.brg-health-item.error .brg-health-badge{color:#ff7b7b;background:rgba(255,82,82,.08)}.brg-health-item.info .brg-health-badge{color:#80d8ff;background:rgba(0,188,212,.08)}.brg-health-section-title{font-family:var(--font-title);font-size:1rem;color:var(--c-yellow);margin:20px 0 8px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.12)}.brg-health-permissions{display:grid;gap:8px}.brg-perm-row{display:grid;grid-template-columns:1fr repeat(8,minmax(34px,1fr));gap:5px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px;background:rgba(0,0,0,.24);font-size:.67rem}.brg-perm-row.header{color:#8d9aa2;font-family:var(--font-title);text-transform:uppercase}.brg-perm-name{min-width:130px}.brg-perm-pill{display:flex;align-items:center;justify-content:center;min-height:25px;border-radius:5px;font-weight:900}.brg-perm-pill.yes{color:#00e676;background:rgba(0,230,118,.08)}.brg-perm-pill.no{color:#ff7b7b;background:rgba(255,82,82,.08)}.brg-security-note{display:grid;gap:7px;border:1px solid rgba(255,193,7,.2);background:rgba(255,193,7,.045);border-radius:10px;padding:11px;color:#c8d0d4;font-size:.76rem;line-height:1.45}@media(max-width:760px){.brg-health-summary{grid-template-columns:1fr 1fr}.brg-perm-row{grid-template-columns:1fr 1fr 1fr 1fr}.brg-perm-row.header{display:none}.brg-perm-name{grid-column:1/-1;min-width:0;font-weight:900}.brg-perm-pill{font-size:.62rem}}@media(max-width:480px){.brg-health-summary{grid-template-columns:1fr}.brg-health-item{grid-template-columns:26px 1fr}.brg-health-badge{grid-column:2;justify-self:start}}
     @media (prefers-reduced-motion: reduce) {
       .admin-login-box::before, .auth-tech-header::after, .auth-login-button::before, .auth-tech-dot, .auth-scanline, .auth-status.auth-working { animation:none !important; }
       .auth-login-input, .auth-login-button { transition:none !important; }
@@ -1090,32 +1091,35 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <div class="traffic-detail">📊 <b>Média por visita:</b> <span id="adm-stat-click-rate">0</span> cliques</div>
           </div>
 
-          <!-- BANCO DE DADOS E SINCRONIZAÇÃO COMPLETA -->
-          <button class="admin-accordion-btn" style="border-color: #0f0; border-left: 4px solid #0f0;" onclick="toggleAdminSection('adm-github')">🌐 Banco de Dados & Sincronização em Tempo Real</button>
-          <div id="adm-github" class="admin-accordion-content" style="border-color: #0f0;">
+          <!-- DIAGNÓSTICO COMPLETO DO SISTEMA -->
+          <button class="admin-accordion-btn" style="border-color: #00e676; border-left: 4px solid #00e676;" onclick="openSystemHealth()">🩺 Diagnóstico Completo • Serviços, Segurança & Permissões</button>
+          <div id="adm-system-health" class="admin-accordion-content" style="border-color: #00e676;">
             <div class="db-status-box">
               <div class="db-status-indicator" style="color: #00e676;">
-                <span class="status-dot open" style="width:8px; height:8px;"></span>
-                <span>Banco de Dados Global (Supabase): CONECTADO & SINCRONIZANDO ✅</span>
+                <span id="brg-health-main-dot" class="status-dot open" style="width:8px; height:8px;"></span>
+                <span id="brg-health-main-text">Pronto para verificar todos os serviços conectados.</span>
               </div>
-              <p style="color: #ccc; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px;">
-                As alterações feitas por qualquer administrador são enviadas instantaneamente para a nuvem e <strong>atualizam automaticamente em todos os aparelhos</strong> a cada 15 segundos.
+              <p style="color:#ccc;font-size:.85rem;line-height:1.5;margin:8px 0 0;">
+                Esta central faz testes reais, somente de leitura, no navegador: autenticação, sessão administrativa, banco remoto, Controle do Bar, endpoints de imagens, HTTPS e permissões cadastradas. <strong>Nenhum teste de diagnóstico grava conteúdo no site.</strong>
               </p>
-              
-              <div id="gh-status-indicator" class="db-status-indicator" style="color: var(--c-cyan); margin-top: 10px;">
-                <span id="gh-status-dot" class="status-dot" style="width:8px; height:8px; background:#aaa;"></span>
-                <span id="gh-status-text">GitHub Pages: Verificando Configuração...</span>
-              </div>
             </div>
+            <div class="brg-health-actions">
+              <button class="action-btn" id="brg-health-run-btn" onclick="runSystemDiagnostics()" style="background:#00e676;color:#000;">🔍 VERIFICAR AGORA</button>
+              <span id="brg-health-last-run" class="brg-health-last-run">Ainda não verificado nesta sessão.</span>
+            </div>
+            <div id="brg-health-summary" class="brg-health-summary"></div>
+            <div id="brg-health-results" class="brg-health-results"></div>
 
-            <p style="color: #ccc; font-size: 0.9rem; margin-bottom: 15px;">Para validar acesso de escrita ao repositório GitHub, insira seu Personal Access Token. O salvamento dos dados administrativos do site é feito pela autenticação Supabase e confirmado no Supabase:</p>
-            <div class="admin-card">
-              <div class="admin-card-row">
-                <input type="text" class="admin-input" id="gh-user" placeholder="Usuário GitHub (ex: barguncadosrockbar)">
-                <input type="text" class="admin-input" id="gh-repo" placeholder="Repositório (ex: Bargun-ados)">
-              </div>
-              <input type="password" class="admin-input" id="gh-token" placeholder="GitHub Personal Access Token (ghp_...)" style="margin-top: 10px;">
-              <button class="action-btn" onclick="saveGitHubConfig()" style="margin-top: 15px; background: #0f0;">Vincular ao GitHub</button>
+            <div class="brg-health-section-title">👥 Auditoria das permissões dos administradores</div>
+            <div id="brg-health-permissions" class="brg-health-permissions">Abra a verificação para carregar a situação atual.</div>
+
+            <div class="brg-health-section-title">🛡️ Auditoria de segurança do projeto</div>
+            <div class="brg-security-note">
+              <div><strong>HTTPS do site:</strong> obrigatório para produção e verificado automaticamente acima.</div>
+              <div><strong>Credencial GitHub:</strong> removida deste painel e não é usada para salvar dados administrativos.</div>
+              <div><strong>Autenticação:</strong> administradores usam Supabase Auth; o painel aplica uma sessão máxima local de 12 horas.</div>
+              <div><strong>Backend:</strong> as gravações administrativas passam por Edge Functions com autenticação Bearer; chaves privilegiadas permanecem no servidor.</div>
+              <div style="margin-top:8px;color:#ffcc80;"><strong>Última auditoria do Supabase:</strong> o projeto tinha 9 tabelas com RLS habilitado sem políticas específicas (nível INFO) e a proteção contra senhas vazadas desativada (nível WARN). Esses pontos não impedem o funcionamento atual, mas aparecem como pendências de segurança e são explicados no resultado abaixo quando o diagnóstico for executado.</div>
             </div>
           </div>
 
@@ -1368,6 +1372,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     // Isso mantém o site funcional mesmo se um bloqueador impedir bibliotecas externas.
     const SUPABASE_SESSION_STORAGE_KEY = 'brg_supabase_session_v1';
     const BRG_REMOTE_CACHE_KEY = 'brg_last_remote_snapshot_v1';
+    // Compatibilidade: versões antigas podiam guardar um PAT do GitHub apenas nesta sessão.
+    // Ele não é mais usado pelo site e é removido automaticamente.
+    try { sessionStorage.removeItem('brg_gh_config_session'); localStorage.removeItem('brg_gh_config'); } catch(e) {}
     // O estado do site é persistido exclusivamente no backend Supabase (Edge Function -> Postgres).
     // Nenhuma alteração administrativa é tratada como "salva" em localStorage.
 
@@ -1579,6 +1586,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function getAdminAccessToken() {
+      if(!(await enforceAdminSessionLifetime())) return null;
       let session = await getCurrentSupabaseSession();
       if(!session && getPersistentAdminFlag('brg_adm_logged') === 'true') {
         session = await restoreSupabaseAdminSession();
@@ -1899,13 +1907,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
       partnersFinance: { currentMonth: new Date().toISOString().slice(0,7), revenues: [], expenses: [], shifts: [], notes: '' }
     };
-
-    let githubConfig = (() => {
-      try {
-        const raw = sessionStorage.getItem('brg_gh_config_session');
-        return raw ? JSON.parse(raw) : { user: '', repo: '', token: '' };
-      } catch(e) { return { user: '', repo: '', token: '' }; }
-    })();
 
     function getTodayKey(){ return new Date().toISOString().slice(0,10); }
 
@@ -2259,17 +2260,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     function persistLastKnownRemoteSnapshot(data,revision){ return true; }
 
     async function initApp() {
-      if(githubConfig.user && githubConfig.repo && githubConfig.token) {
-        const uEl = document.getElementById('gh-user');
-        const rEl = document.getElementById('gh-repo');
-        const tEl = document.getElementById('gh-token');
-        if(uEl) uEl.value = githubConfig.user;
-        if(rEl) rEl.value = githubConfig.repo;
-        if(tEl) tEl.value = githubConfig.token;
-        updateGitHubUI(true);
-      } else {
-        updateGitHubUI(false);
-      }
+      const sessionStillValid = await enforceAdminSessionLifetime();
+      // O painel administrativo não depende de GitHub/PAT. A persistência e a autenticação
+      // são feitas pelo Supabase; o diagnóstico abaixo verifica os serviços reais quando solicitado.
       
       // Primeiro recupera o último estado remoto confirmado neste aparelho.
       // Se a API estiver temporariamente indisponível, isso impede o retorno aos
@@ -2298,7 +2291,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       recordTrafficAnalytics();
       renderApp();
       
-      if(getPersistentAdminFlag('brg_adm_logged') === 'true') {
+      if(sessionStillValid && getPersistentAdminFlag('brg_adm_logged') === 'true') {
         const logBox = document.getElementById('admin-login');
         const dashBox = document.getElementById('admin-dashboard');
         if(logBox) logBox.style.display = 'none';
@@ -2307,24 +2300,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         startAdminSessionClock();
       }
 
-    }
-
-    function updateGitHubUI(isConnected) {
-      const dot = document.getElementById('gh-status-dot');
-      const text = document.getElementById('gh-status-text');
-      if (!dot || !text) return;
-
-      if(isConnected) {
-        dot.className = 'status-dot open';
-        dot.style.background = '#00e676';
-        text.innerText = `GitHub (${githubConfig.user}/${githubConfig.repo}): TOKEN VALIDADO E COM ESCRITA ✅`;
-        text.style.color = '#00e676';
-      } else {
-        dot.className = 'status-dot closed';
-        dot.style.background = '#ff1744';
-        text.innerText = 'GitHub: token não validado (o salvamento do site usa Supabase Postgres) ⚠️';
-        text.style.color = '#ff9800';
-      }
     }
 
     const BRG_PENDING_CHANGES_KEY='brg_pending_admin_changes_disabled';
@@ -2472,6 +2447,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveBinData(actionDesc = '') {
+      if(!(await enforceAdminSessionLifetime())) {
+        throw new Error('A sessão administrativa de 12 horas expirou. Faça login novamente para salvar alterações.');
+      }
       if(getPersistentAdminFlag('brg_adm_logged') !== 'true') {
         throw new Error('É necessário estar autenticado como administrador para salvar alterações permanentes.');
       }
@@ -2545,56 +2523,111 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       alert(appData.home.isOpen ? "🟢 Bar alterado para ABERTO!" : "🔴 Bar alterado para FECHADO!");
     }
 
-    async function saveGitHubConfig() {
-      const user = document.getElementById('gh-user').value.trim();
-      const repo = document.getElementById('gh-repo').value.trim();
-      const token = document.getElementById('gh-token').value.trim();
-      if(!user || !repo || !token) {
-        alert('❌ Informe usuário, repositório e Personal Access Token do GitHub.');
-        return;
-      }
+    function openSystemHealth(){
+      toggleAdminSection('adm-system-health');
+      const box=document.getElementById('adm-system-health');
+      if(box && box.style.display!=='none') runSystemDiagnostics();
+    }
 
-      const btn = document.querySelector('#adm-github button[onclick="saveGitHubConfig()"]');
-      if(btn) { btn.disabled = true; btn.dataset.oldText = btn.textContent; btn.textContent = '⏳ Verificando GitHub...'; }
-      try {
-        // O token do GitHub é uma credencial separada da autenticação Supabase.
-        // Nunca tratamos apenas a presença do token como prova de acesso.
-        const res = await fetchWithTimeout(`https://api.github.com/repos/${encodeURIComponent(user)}/${encodeURIComponent(repo)}`, {
-          cache: 'no-store',
-          headers: {
-            'Accept': 'application/vnd.github+json',
-            'Authorization': 'Bearer ' + token,
-            'X-GitHub-Api-Version': '2022-11-28'
+    function brgHealthEscape(v){return escapeHTML(String(v??''));}
+    function renderHealthItem(item){
+      const icon=item.status==='ok'?'✅':item.status==='warn'?'⚠️':item.status==='error'?'❌':'ℹ️';
+      const badge=item.status==='ok'?'OK':item.status==='warn'?'ATENÇÃO':item.status==='error'?'ERRO':'INFO';
+      return `<div class="brg-health-item ${item.status}"><div class="brg-health-icon">${icon}</div><div><div class="brg-health-name">${brgHealthEscape(item.name)}</div><div class="brg-health-detail">${brgHealthEscape(item.detail)}</div></div><div class="brg-health-badge">${badge}</div></div>`;
+    }
+    function renderAdminPermissionAudit(){
+      const box=document.getElementById('brg-health-permissions'); if(!box)return;
+      ensureAdminSystem();
+      const accounts=getAdminAccounts();
+      const labels=[['canAdd','Adicionar'],['canEdit','Editar'],['canDel','Excluir'],['canTabs','Abas'],['canMod','Moderação'],['canRank','Ranking'],['canAgenda','Agenda'],['canTeam','Equipe']];
+      const header=`<div class="brg-perm-row header"><div class="brg-perm-name">Administrador</div>${labels.map(x=>`<div title="${x[1]}">${x[1].slice(0,5)}</div>`).join('')}</div>`;
+      const rows=accounts.map(a=>{
+        const p=getManagedAdminPermissions(a.email)||{};
+        return `<div class="brg-perm-row"><div class="brg-perm-name">${brgHealthEscape(a.name)}${a.isMaster?' 👑':''}<br><span style="color:#7f8b91;font-size:.61rem;">${brgHealthEscape(a.email)}</span></div>${labels.map(([k])=>`<div class="brg-perm-pill ${p[k]!==false?'yes':'no'}">${p[k]!==false?'✓':'×'}</div>`).join('')}</div>`;
+      }).join('');
+      box.innerHTML=header+rows;
+    }
+    async function runSystemDiagnostics(){
+      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return alert('Faça login como administrador para executar o diagnóstico completo.');
+      if(!(await enforceAdminSessionLifetime())){alert('Sua sessão administrativa de 12 horas expirou. Faça login novamente.');return;}
+      const btn=document.getElementById('brg-health-run-btn'), results=document.getElementById('brg-health-results'), summary=document.getElementById('brg-health-summary'), mainText=document.getElementById('brg-health-main-text'), mainDot=document.getElementById('brg-health-main-dot'), last=document.getElementById('brg-health-last-run');
+      if(btn){btn.disabled=true;btn.textContent='⏳ VERIFICANDO...';}
+      if(results)results.innerHTML='<div class="brg-health-item info"><div class="brg-health-icon">⏳</div><div><div class="brg-health-name">Executando diagnóstico</div><div class="brg-health-detail">Os testes abaixo são de leitura e não alteram o conteúdo do site.</div></div><div class="brg-health-badge">EM ANDAMENTO</div></div>';
+      const checks=[]; const add=(status,name,detail)=>checks.push({status,name,detail});
+      const started=performance.now();
+      try{
+        const origin=location.origin;
+        add(location.protocol==='https:'?'ok':'warn','HTTPS / página publicada',location.protocol==='https:'?`Página carregada com HTTPS em ${origin}.`:`A página está usando ${location.protocol}; em produção publique somente via HTTPS.`);
+
+        const session=await getCurrentSupabaseSession();
+        if(!session?.access_token||!session?.user?.email){
+          add('error','Supabase Auth / sessão administrativa','Não foi encontrada uma sessão administrativa válida. Faça login novamente.');
+        }else{
+          const user=await supabaseGetUser(session.access_token);
+          const account=getAuthAccountByEmail(user?.email||session.user.email);
+          if(user?.email&&account){
+            const age=Math.max(0,Date.now()-ensureAdminSessionTimestamp());
+            const remaining=Math.max(0,BRG_ADMIN_SESSION_MAX_MS-age);
+            add('ok','Supabase Auth','Sessão autenticada e identidade confirmada para '+account.name+' ('+account.email+').');
+            add(remaining>0?'ok':'error','Sessão administrativa / limite de 12 horas',`Sessão persistente neste aparelho. Tempo restante: ${String(Math.floor(remaining/3600000)).padStart(2,'0')}:${String(Math.floor(remaining/60000)%60).padStart(2,'0')}:${String(Math.floor(remaining/1000)%60).padStart(2,'0')}.`);
+          }else{
+            add('error','Supabase Auth / identidade','O token existe, mas o usuário não corresponde a uma conta administrativa autorizada no site.');
           }
-        }, 12000);
-        let data = null;
-        try { data = await res.json(); } catch(e) {}
-        if(!res.ok) {
-          const msg = data?.message || `GitHub respondeu HTTP ${res.status}`;
-          throw new Error(msg);
-        }
-        if(String(data?.full_name || '').toLowerCase() !== `${user}/${repo}`.toLowerCase()) {
-          throw new Error('O GitHub não confirmou o repositório informado.');
-        }
-        const permissions = data?.permissions || {};
-        const canPush = permissions.push === true || permissions.admin === true;
-        if(!canPush) {
-          throw new Error('O token foi aceito, mas não possui permissão de escrita (push) neste repositório.');
+
+          const siteRes=await fetchWithTimeout(SUPABASE_FUNCTION_URL+'?scope=admin',{method:'GET',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+session.access_token,'Cache-Control':'no-cache'}},12000);
+          let siteData=null;try{siteData=await siteRes.json()}catch(e){}
+          if(siteRes.ok && siteData?.admin===true && siteData?.record){
+            add('ok','Supabase Postgres / site-state','Leitura administrativa confirmada. Banco remoto respondeu com revisão '+Number(siteData.revision||0)+'.');
+          }else if(siteRes.status===401||siteRes.status===403){
+            add('error','Supabase Postgres / site-state','O backend recusou a sessão administrativa (HTTP '+siteRes.status+'). Faça login novamente; se persistir, confira o allowlist/adminAccounts.');
+          }else{
+            add('error','Supabase Postgres / site-state','Endpoint respondeu HTTP '+siteRes.status+'. Detalhe: '+String(siteData?.message||siteData?.error||'resposta inesperada')+'.');
+          }
+
+          try{
+            const bar=await brgApi('bootstrap');
+            const counts=[Array.isArray(bar?.inventory)?bar.inventory.length:0,Array.isArray(bar?.recipes)?bar.recipes.length:0,Array.isArray(bar?.sales)?bar.sales.length:0];
+            add('ok','Controle Profissional do Bar / bar-control-api',`API autenticada respondeu. Estoque: ${counts[0]}, receitas: ${counts[1]}, vendas carregadas: ${counts[2]}.`);
+          }catch(e){
+            add('error','Controle Profissional do Bar / bar-control-api','Falha no teste somente leitura: '+String(e?.message||e)+'. Verifique a sessão, allowlist bar_admin_allowlist e a Edge Function bar-control-api.');
+          }
         }
 
-        githubConfig = { user, repo, token };
-        sessionStorage.setItem('brg_gh_config_session', JSON.stringify(githubConfig));
-        localStorage.removeItem('brg_gh_config');
-        updateGitHubUI(true);
-        alert('✅ GitHub validado com sucesso. O token tem permissão de escrita no repositório.\n\nAtenção: o token GitHub não substitui a autenticação Supabase usada para salvar o conteúdo do site na nuvem.');
-      } catch(e) {
-        githubConfig = { user: '', repo: '', token: '' };
-        sessionStorage.removeItem('brg_gh_config_session');
-        updateGitHubUI(false);
-        alert('❌ GitHub NÃO foi vinculado.\n\n' + String(e?.message || e));
-      } finally {
-        if(btn) { btn.disabled = false; btn.textContent = btn.dataset.oldText || 'Vincular ao GitHub'; }
+        try{
+          const up=await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL,{method:'OPTIONS',cache:'no-store'},10000);
+          if(up.status===204 || (up.status>=200&&up.status<400)) add('ok','Upload de imagens / image-upload','Endpoint online e CORS respondeu corretamente. O diagnóstico não envia arquivo real para evitar criar uma imagem de teste no ImgBB.');
+          else add('warn','Upload de imagens / image-upload','Endpoint respondeu HTTP '+up.status+'. Um upload real pode estar indisponível; tente uma imagem pequena pelo editor.');
+        }catch(e){add('error','Upload de imagens / image-upload','Não foi possível alcançar o endpoint: '+String(e?.message||e)+'. Confira a Edge Function e o domínio publicado.');}
+
+        try{
+          const px=await fetchWithTimeout(SUPABASE_URL+'/functions/v1/image-proxy',{method:'OPTIONS',cache:'no-store'},10000);
+          if(px.status===204 || (px.status>=200&&px.status<400)) add('ok','Imagens / image-proxy','Endpoint online e respondeu ao preflight.');
+          else add('warn','Imagens / image-proxy','Endpoint respondeu HTTP '+px.status+'.');
+        }catch(e){add('error','Imagens / image-proxy','Não foi possível alcançar o endpoint: '+String(e?.message||e)+'.');}
+
+        try{
+          const publishable=String(SUPABASE_PUBLISHABLE_KEY||'');
+          add((publishable.startsWith('sb_publishable_')||publishable.length>20)?'ok':'warn','Chave pública do Supabase',publishable.startsWith('sb_publishable_')?'O navegador usa uma chave publishable, não service_role/secret.':'A chave pública não está no formato publishable esperado; revise a configuração.');
+          add('ok','Credenciais GitHub no painel','Nenhum PAT/configuração GitHub é usado pelo painel administrativo. Configurações antigas, se existirem, são removidas automaticamente ao carregar o site.');
+        }catch(e){add('warn','Segurança do navegador','Não foi possível concluir uma checagem local: '+String(e?.message||e));}
+
+        add('info','ImgBB / provedor de hospedagem de fotos','O fluxo de upload está conectado ao Edge Function image-upload, que encaminha a imagem ao ImgBB. O teste completo de upload não é executado automaticamente para não criar arquivos de teste.');
+        add('info','ImgDB / fallback de imagens','O site mantém o endpoint ImgDB no fluxo de upload legado/fallback. O diagnóstico não cria arquivo de teste no provedor.');
+        add('info','GitHub Pages / hospedagem','O painel não usa PAT do GitHub para salvar conteúdo. A hospedagem da página pode continuar normalmente; a persistência administrativa é independente e está no Supabase.');
+
+        add('warn','Segurança Supabase / proteção contra senhas vazadas','Última auditoria do projeto: a proteção contra senhas vazadas estava desativada (WARN). Para corrigir, ative a opção de proteção contra senhas comprometidas em Authentication → Password Security no painel do Supabase.');
+        add('info','Segurança Supabase / RLS','Última auditoria registrou 9 tabelas com RLS habilitado sem políticas específicas (INFO). Como o backend usa Edge Functions com credenciais privilegiadas no servidor, isso não significa que o painel esteja aberto; ainda assim, as tabelas devem ter políticas explícitas quando forem expostas diretamente pela Data API.');
+      }catch(e){
+        add('error','Diagnóstico interrompido','Falha inesperada no verificador: '+String(e?.message||e)+'.');
       }
+      const ok=checks.filter(x=>x.status==='ok').length,warn=checks.filter(x=>x.status==='warn').length,err=checks.filter(x=>x.status==='error').length;
+      if(summary)summary.innerHTML=`<div class="brg-health-summary-card"><b style="color:#00e676">${ok}</b><span>OK</span></div><div class="brg-health-summary-card"><b style="color:#ffcc80">${warn}</b><span>Atenção</span></div><div class="brg-health-summary-card"><b style="color:#ff7b7b">${err}</b><span>Erros</span></div>`;
+      if(results)results.innerHTML=checks.map(renderHealthItem).join('');
+      renderAdminPermissionAudit();
+      if(mainText)mainText.textContent=err?'Diagnóstico concluído com erro(s). Veja cada item e a ação recomendada.':warn?'Diagnóstico concluído com avisos. O sistema está respondendo, mas há pendências para revisar.':'Diagnóstico concluído: serviços principais responderam corretamente.';
+      if(mainDot){mainDot.className='status-dot '+(err?'closed':'open');mainDot.style.background=err?'#ff1744':warn?'#ff9800':'#00e676';}
+      if(last)last.textContent='Última verificação: '+new Date().toLocaleString('pt-BR')+' • '+Math.round(performance.now()-started)+' ms';
+      if(btn){btn.disabled=false;btn.textContent='🔍 VERIFICAR NOVAMENTE';}
     }
 
     async function submitUserSong() {
@@ -4569,7 +4602,53 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     async function removePartnerRevenue(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir esta receita?'))return;ensurePartnersFinance().revenues=ensurePartnersFinance().revenues.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma receita');renderPartnersPortal()}
     async function removePartnerExpense(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir esta despesa?'))return;ensurePartnersFinance().expenses=ensurePartnersFinance().expenses.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu uma despesa');renderPartnersPortal()}
     async function removePartnerShift(id){if(!barCtlCanDelete())return alert('Acesso Negado: seu administrador não possui permissão para excluir registros.');if(!confirm('Excluir este turno?'))return;ensurePartnersFinance().shifts=ensurePartnersFinance().shifts.filter(x=>String(x.id)!==String(id));await saveBinData('Central dos Sócios: excluiu um turno');renderPartnersPortal()}
-    function startAdminSessionClock(){const started=Number(sessionStorage.getItem('brg_adm_login_ts')||Date.now());if(!sessionStorage.getItem('brg_adm_login_ts'))sessionStorage.setItem('brg_adm_login_ts',String(started));const tick=()=>{const el=document.getElementById('portal-session-time');if(!el)return;const sec=Math.max(0,Math.floor((Date.now()-started)/1000));const h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');el.textContent=`SESSÃO ${h}:${m}:${ss}`};clearInterval(window.__brgSessionTimer);tick();window.__brgSessionTimer=setInterval(tick,1000)}
+    const BRG_ADMIN_SESSION_MAX_MS = 12 * 60 * 60 * 1000;
+    const BRG_ADMIN_SESSION_TS_KEY = 'brg_adm_login_ts';
+    function getAdminSessionStartedAt(){
+      const raw=localStorage.getItem(BRG_ADMIN_SESSION_TS_KEY)||sessionStorage.getItem(BRG_ADMIN_SESSION_TS_KEY);
+      const n=Number(raw||0);
+      if(n>0){ sessionStorage.setItem(BRG_ADMIN_SESSION_TS_KEY,String(n)); return n; }
+      return 0;
+    }
+    function ensureAdminSessionTimestamp(){
+      let started=getAdminSessionStartedAt();
+      if(!started){ started=Date.now(); setPersistentAdminFlag(BRG_ADMIN_SESSION_TS_KEY,String(started)); }
+      return started;
+    }
+    function adminSessionExpired(){
+      const started=getAdminSessionStartedAt();
+      return started>0 && (Date.now()-started)>=BRG_ADMIN_SESSION_MAX_MS;
+    }
+    async function enforceAdminSessionLifetime(){
+      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return true;
+      if(!getAdminSessionStartedAt()) ensureAdminSessionTimestamp();
+      if(!adminSessionExpired()) return true;
+      await supabaseSignOut();
+      clearPersistentAdminFlags();
+      clearInterval(window.__brgSessionTimer);
+      return false;
+    }
+    function startAdminSessionClock(){
+      const started=ensureAdminSessionTimestamp();
+      const tick=async()=>{
+        const el=document.getElementById('portal-session-time');
+        const remaining=Math.max(0,BRG_ADMIN_SESSION_MAX_MS-(Date.now()-started));
+        if(remaining<=0){
+          clearInterval(window.__brgSessionTimer);
+          await supabaseSignOut();
+          clearPersistentAdminFlags();
+          const dash=document.getElementById('admin-dashboard'),login=document.getElementById('admin-login');
+          if(dash)dash.style.display='none'; if(login)login.style.display='block';
+          if(el)el.textContent='SESSÃO EXPIRADA • FAÇA LOGIN NOVAMENTE';
+          renderApp();
+          return;
+        }
+        if(!el)return;
+        const sec=Math.floor(remaining/1000),h=String(Math.floor(sec/3600)).padStart(2,'0'),m=String(Math.floor(sec%3600/60)).padStart(2,'0'),ss=String(sec%60).padStart(2,'0');
+        el.textContent=`SESSÃO ATIVA • EXPIRA EM ${h}:${m}:${ss}`;
+      };
+      clearInterval(window.__brgSessionTimer); tick(); window.__brgSessionTimer=setInterval(tick,1000);
+    }
     function togglePartnerExpenseFields(){const is=document.getElementById('partner-expense-type')?.value==='partner',e=document.getElementById('partner-expense-partner');if(e)e.disabled=!is}
     async function showAdminLoginSequence(){const loader=document.getElementById('admin-auth-loader');if(!loader)return async()=>{};const step=document.getElementById('admin-auth-step'),progress=document.getElementById('admin-auth-progress'),logs=document.getElementById('admin-auth-log'),started=Date.now();loader.classList.add('show');const phases=[['PROCURANDO CREDENCIAIS','Verificando identidade administrativa…',8],['FAZENDO AUTENTICAÇÃO','Consultando o gateway seguro…',32],['VALIDANDO PERMISSÕES','Confirmando nível de acesso…',58],['ESTABELECENDO SESSÃO','Sincronizando ambiente privado…',82],['ACESSO LIBERADO','Painel administrativo pronto.',100]];const run=(async()=>{for(const p of phases){if(step)step.textContent=p[0];if(logs)logs.innerHTML=`<div>✓ ${p[1]}</div>`;if(progress)progress.style.width=p[2]+'%';await new Promise(r=>setTimeout(r,850))}})();return async()=>{await run;const wait=Math.max(0,5000-(Date.now()-started));if(wait)await new Promise(r=>setTimeout(r,wait));loader.classList.remove('show')}}
 
@@ -4650,7 +4729,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
         document.getElementById('admin-login').style.display='none';
         document.getElementById('admin-dashboard').style.display='block';
         updateAdminGreeting();
-        setPersistentAdminFlag('brg_adm_login_ts',String(Date.now()));
+        setPersistentAdminFlag(BRG_ADMIN_SESSION_TS_KEY,String(Date.now()));
         startAdminSessionClock();
         document.getElementById('manual-email-input').value='';
         document.getElementById('manual-pass-input').value='';
