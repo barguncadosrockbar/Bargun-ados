@@ -3130,6 +3130,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         clearMenuOrganizerTouchState();
         menuOrganizerActive=false; menuOrganizerPage=''; menuOrganizerDirty=false; menuOrganizerSnapshot=null;
         renderApp();
+        updateMenuOrganizerUI(page);
         return;
       }
       ensureMenuOrderData();
@@ -3137,6 +3138,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       menuOrganizerPage=page; menuOrganizerActive=true; menuOrganizerDirty=false;
       menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
       renderApp();
+      // renderApp reconstrói os grids; esta segunda chamada garante que os
+      // controles de toque/arraste sejam instalados no DOM recém-criado.
+      setupMenuOrganizerDragAndDrop(page);
       updateMenuOrganizerUI(page);
     }
 
@@ -4301,6 +4305,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       } else {
         content.style.display = "block";
         if(btn) btn.classList.add("active");
+        // Ao abrir qualquer painel, force a pintura dos dados administrativos.
+        // Isso evita que o guard de foco (INPUT/SELECT/TEXTAREA) deixe listas
+        // como Cardápio, Equipe e Rankings visualmente vazias.
+        try {
+          renderAdminLists(true);
+          renderModerationLists();
+          renderAdminLogsList();
+        } catch(e) {
+          console.warn('[Bargunçados] Falha ao atualizar painel ADM:', e);
+        }
         if(id === "adm-moderation") {
           refreshModerationQueue();
         }
@@ -4609,20 +4623,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           const menuItems=Array.isArray(appData.menu)?appData.menu:[];
           ensureLegacyDrinkLines();
           const normalizedMenuItems=Array.isArray(appData.menu)?appData.menu:menuItems;
-          const drinkLines=[
-            ['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],['rum','🍹 Linha Rum'],
-            ['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky'],['legacy','🔥 Destilados & Clássicos']
-          ];
+          // Uma única fonte de agrupamento. A versão anterior montava as linhas de bebidas
+          // duas vezes e acabava duplicando/embaralhando a área de ADM.
           const groups=[];
-          drinkLines.forEach(([key,title])=>{
-            const items=normalizedMenuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
-            groups.push({title,count:items.length,items});
-          });
-          const categoryDefs=[
+          const fallbackCategoryDefs=[
             ['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],
             ['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],
             ['legacy','🔥 Destilados & Clássicos','drink'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refrescos','noalcohol'],['portion','🍟 Porções & Larica','portion']
           ];
+          const remoteCategoryDefs = Array.isArray(appData.adminMenuCategories?.bebidas) ? appData.adminMenuCategories.bebidas : [];
+          const categoryDefs = fallbackCategoryDefs.map(([key,fallback,type])=>{
+            const remote = remoteCategoryDefs.find(c=>String(c?.key||'')===key);
+            return [key, String(remote?.title||fallback), type];
+          });
           ensureMenuCategoryLabels();
           const labels=appData.menuCategoryLabels||{};
           categoryDefs.forEach(([key,fallback,type])=>{
@@ -4630,7 +4643,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               if(type==='drink') return i.type==='drink' && (key==='legacy' ? !['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||'')) : String(i.drinkLine||'')===key);
               return i.type===type;
             });
-            const title=type==='drink' ? (labels.bebidas?.[key]||fallback) : type==='portion' ? (labels.porcoes?.title||fallback) : (labels.bebidas?.[key]||fallback);
+            const remotePortion = Array.isArray(appData.adminMenuCategories?.porcoes) ? appData.adminMenuCategories.porcoes.find(c=>String(c?.key||'')===key) : null; const title=type==='drink' ? (labels.bebidas?.[key]||fallback) : type==='portion' ? (labels.porcoes?.title||remotePortion?.title||fallback) : (labels.bebidas?.[key]||fallback);
             groups.push({key,title,count:items.length,items});
           });
 
@@ -4691,7 +4704,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(!canAgenda) {
           agendaList.innerHTML = '<p style="color:var(--c-red); font-size:0.9rem;">⚠️ O Administrador Master desativou a tua permissão para alterar a agenda.</p>';
         } else {
-          agendaList.innerHTML = appData.agenda.map(i => `
+          agendaList.innerHTML = (Array.isArray(appData.agenda) ? appData.agenda : []).map(i => `
             <div class="admin-card">
               <div class="admin-card-row">
                 <input type="text" class="admin-input" id="a-date-${i.id}" value="${escapeHTML(i.date)}" style="max-width:80px;">
@@ -4713,7 +4726,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const teamList = document.getElementById('admin-team-list');
       if(teamList) {
-        teamList.innerHTML = appData.team.map(t => `
+        teamList.innerHTML = (Array.isArray(appData.team) ? appData.team : []).map(t => `
           <div class="admin-card">
             <strong style="color:var(--c-cyan);">${escapeHTML(t.name)} (${escapeHTML(String(t.type || '').toUpperCase())})</strong>
             <div class="admin-card-row">
@@ -4735,7 +4748,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const arcList = document.getElementById('admin-arcade-list');
       if(arcList) {
-        arcList.innerHTML = appData.arcade.map(i => `
+        arcList.innerHTML = (Array.isArray(appData.arcade) ? appData.arcade : []).map(i => `
           <div class="admin-card" style="border-color:var(--c-purple);">
             <strong style="color:var(--c-purple);">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
             <div class="admin-card-row">
@@ -4763,7 +4776,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const cachList = document.getElementById('admin-cachaceiros-list');
       if(cachList) {
-        cachList.innerHTML = appData.cachaceiros.map(i => `
+        cachList.innerHTML = (Array.isArray(appData.cachaceiros) ? appData.cachaceiros : []).map(i => `
           <div class="admin-card" style="border-color:#ff9800;">
             <strong style="color:#ff9800;">Posição #${i.id} ${i.id <= 3 ? '(TOP 3)' : ''}</strong>
             <div class="admin-card-row">
