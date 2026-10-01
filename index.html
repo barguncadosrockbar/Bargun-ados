@@ -152,6 +152,7 @@
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
     .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
+    .product-img-empty { background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.055), transparent 55%); }
     .menu-modal-description { margin: 16px 0 14px; padding: 14px 15px; border: 1px solid rgba(0,188,212,0.38); border-left: 4px solid var(--c-cyan); border-radius: 10px; background: rgba(0,188,212,0.08); color: #fff; text-align: left; line-height: 1.65; font-size: 0.98rem; box-shadow: inset 0 0 18px rgba(0,188,212,0.05); }
     .menu-modal-description-label { display:block; color:var(--c-yellow); font-family:var(--font-title); font-size:0.82rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
     .menu-modal-description-text { color:#f4f4f4; font-weight:500; white-space:pre-wrap; overflow-wrap:anywhere; }
@@ -1705,9 +1706,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!raw) return '';
       const url = raw.startsWith('//') ? ('https:' + raw) : raw;
       if(!/^https?:\/\//i.test(url)) return '';
-      // Nunca transforma/substitui uma foto hospedada por Unsplash/avatars.
-      if(/images\.unsplash\.com|ui-avatars\.com/i.test(url)) return '';
-      return url;
+      try {
+        const u = new URL(url);
+        if(u.protocol !== 'https:') return '';
+        return u.href;
+      } catch(_) {
+        return '';
+      }
     }
 
     function getStoredImageCandidates(item){
@@ -1762,6 +1767,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         push(value.link);
       });
 
+      if(!values.length){
+        const catalogFallback = normalizeHostedImageUrl(getCatalogFallbackImage(item));
+        if(catalogFallback) values.push(catalogFallback);
+      }
       return values;
     }
 
@@ -1773,8 +1782,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!item || typeof item !== 'object') return '';
       const candidates = getStoredImageCandidates(item);
       const hosted = candidates[0] || '';
-      // Mantém a primeira URL hospedada no campo principal para compatibilidade
-      // com o restante do site, sem apagar nenhuma das outras URLs existentes.
+      // Mantém uma URL válida no campo principal para compatibilidade, sem
+      // apagar nenhuma outra informação de imagem já existente.
       if(hosted && item.img !== hosted) item.img = hosted;
       return hosted;
     }
@@ -1846,7 +1855,24 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     function fallbackMenuImg(el, id){
       if(!el) return;
       const item = Array.isArray(appData?.menu) ? appData.menu.find(x => String(x?.id) === String(id)) : null;
-      setStoredImageWithFallback(el, item);
+      const current = String(el.currentSrc || el.src || '').trim();
+      const candidates = getStoredImageCandidates(item).filter(Boolean);
+      const next = candidates.find(url => String(url) !== current);
+      if(next){
+        el.onerror = function(){ fallbackMenuImg(this,id); };
+        el.src = next;
+        el.style.visibility = 'visible';
+        return;
+      }
+      const catalogFallback = normalizeHostedImageUrl(getCatalogFallbackImage(item));
+      if(catalogFallback && catalogFallback !== current){
+        el.onerror = function(){ this.onerror=null; this.style.visibility='hidden'; };
+        el.src = catalogFallback;
+        el.style.visibility = 'visible';
+        return;
+      }
+      el.onerror = null;
+      el.style.visibility = 'hidden';
     }
 
     function ensureDeletedCatalogRegistry() {
@@ -2609,7 +2635,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           }
 
           try{
-            const bar=await window.brgApi('bootstrap');
+            let barApi = window.brgApi;
+            if(typeof barApi !== 'function'){
+              const startedWait=Date.now();
+              while(typeof window.brgApi !== 'function' && Date.now()-startedWait < 3000){
+                await new Promise(r=>setTimeout(r,100));
+              }
+              barApi=window.brgApi;
+            }
+            if(typeof barApi !== 'function') throw new Error('A API do Controle Profissional ainda não terminou de inicializar.');
+            const bar=await barApi('bootstrap');
             const counts=[Array.isArray(bar?.inventory)?bar.inventory.length:0,Array.isArray(bar?.recipes)?bar.recipes.length:0,Array.isArray(bar?.sales)?bar.sales.length:0];
             add('ok','Controle Profissional do Bar / bar-control-api',`API autenticada respondeu. Estoque: ${counts[0]}, receitas: ${counts[1]}, vendas carregadas: ${counts[2]}.`);
           }catch(e){
@@ -2783,7 +2818,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         [/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins/i,'gin'],[/whisk|whiskey|old fashioned|highball/i,'whisky']
       ];
       appData.menu.forEach(item => {
-        if(!item || item.type !== 'drink' || item.drinkLine) return;
+        if(!item || item.type !== 'drink') return;
+        if(item.drinkLine && ['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(item.drinkLine))) return;
         const key = String(item.name || '').trim().toLowerCase();
         if(inferred[key]) { item.drinkLine = inferred[key]; return; }
         const match = patterns.find(([rx]) => rx.test(String(item.name||'')));
@@ -2896,6 +2932,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
       await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
       closeModal('categoryQuickEditModal');
+      renderAdminLists(true);
+      renderApp();
       alert('✅ Categorias atualizadas e salvas!');
     }
 
@@ -2943,7 +2981,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         const ids = Array.from(grid.querySelectorAll('.product-card[data-menu-id]')).map(card=>Number(card.getAttribute('data-menu-id'))).filter(Number.isFinite);
         if(ids.length) appData.menuOrder[key] = ids;
       });
-      menuOrganizerDirty = true;
+      const before = menuOrganizerSnapshot ? JSON.stringify(menuOrganizerSnapshot) : '';
+      const after = JSON.stringify(appData.menuOrder || {});
+      menuOrganizerDirty = before !== after;
       updateMenuOrganizerUI(page);
     }
 
@@ -3652,9 +3692,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const f=Boolean(showFeaturedBadge);
       const organizerClick = menuOrganizerActive ? `handleOrganizerCardClick(event,${safeNumericId(item.id)})` : `openMenuModalObj(${safeNumericId(item.id)})`;
       const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation()"><span title="Arraste este item" style="display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:30px;border:1px solid rgba(0,229,255,.32);background:rgba(0,0,0,.7);color:var(--c-cyan);border-radius:5px;font-weight:900;">↕</span><button type="button" title="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
-      const imageMarkup = hostedImg
-        ? `<img src="${safeImageUrl(hostedImg)}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
-        : `<img src="" class="product-img" loading="lazy" decoding="async" fetchpriority="low" data-no-image="true" onerror="fallbackMenuImg(this,${Number(item.id)||0})" style="visibility:hidden">`;
+      const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
+      const imageMarkup = imageUrl
+        ? `<img src="${imageUrl}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
+        : `<div class="product-img product-img-empty" aria-hidden="true"></div>`;
       return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">⭐ DESTAQUE</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof brgRecipeMap==='function'?brgRecipeMap()[String(item.id)]:null;const cost=recipe?brgCost(recipe):0;const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);const profit=price-cost;const margin=price>0?profit/price*100:0;const doses=recipe?brgMaxDoses(recipe):Infinity;return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`; }
 
     function openMenuModalObj(id) {
@@ -3793,7 +3834,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
       const id = Number(document.getElementById('modal-edit-id').value);
-      const item = appData.menu.find(i => i.id === id);
+      const item = appData.menu.find(i => String(i.id) === String(id));
       if(!item) return;
 
       const oldName = item.name;
@@ -3804,7 +3845,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const allowDuplicateEdit = !!document.getElementById('modal-edit-allow-duplicate')?.checked;
       if(newName.toLowerCase() !== oldName.toLowerCase() && !allowDuplicateEdit) {
-        const exists = appData.menu.some(i => i.id !== id && i.name.trim().toLowerCase() === newName.toLowerCase());
+        const exists = appData.menu.some(i => String(i.id) !== String(id) && i.name.trim().toLowerCase() === newName.toLowerCase());
         if(exists) {
           return alert("⚠️ Item já existente! Marque 'Permitir nome duplicado' se quiser cadastrar mesmo assim.");
         }
@@ -3829,12 +3870,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const id = Number(document.getElementById('modal-edit-id').value);
-      const item = appData.menu.find(i => i.id === id);
+      const item = appData.menu.find(i => String(i.id) === String(id));
       if(!item) return;
 
       if(confirm(`Tem certeza que deseja EXCLUIR "${item.name}" do cardápio?`)) {
         markCatalogItemDeleted(item);
-        appData.menu = appData.menu.filter(i => i.id !== id);
+        appData.menu = appData.menu.filter(i => String(i.id) !== String(id));
         closeModal('productModal');
         await saveBinData(`Excluiu diretamente no cardápio o item: "${item.name}" (Preço R$ ${item.price})`);
         alert("✅ Item excluído com sucesso!");
@@ -4197,7 +4238,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         alert("✅ Flyer de Destaque atualizado com sucesso!");
       } else {
         const id = Number(document.getElementById('event-edit-id').value);
-        const item = appData.agenda.find(i => i.id === id);
+        const item = appData.agenda.find(i => String(i.id) === String(id));
         if(!item) return;
 
         const oldTitle = item.title;
@@ -4218,11 +4259,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
       const id = Number(document.getElementById('event-edit-id').value);
-      const ev = appData.agenda.find(i => i.id === id);
+      const ev = appData.agenda.find(i => String(i.id) === String(id));
       if(!ev) return;
 
       if(confirm(`Tem certeza que deseja EXCLUIR "${ev.title}" da agenda?`)) {
-        appData.agenda = appData.agenda.filter(i => i.id !== id);
+        appData.agenda = appData.agenda.filter(i => String(i.id) !== String(id));
         closeModal('eventModal');
         await saveBinData(`Excluiu diretamente da agenda o evento: "${ev.title}" (${ev.date})`);
         alert("✅ Evento excluído com sucesso!");
@@ -4467,7 +4508,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const perms = appData.permissions || {};
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
-      const tab = appData.customTabs.find(t => t.id === id);
+      const tab = appData.customTabs.find(t => String(t.id) === String(id));
       if(!tab) return;
       document.getElementById('edit-tab-original-id').value = tab.id;
       document.getElementById('new-tab-id').value = tab.id;
@@ -4502,13 +4543,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMaster && perms.canTabs === false) return alert("Acesso Negado!");
 
       if(confirm("Tem certeza que deseja apagar esta aba personalizada?")) {
-        appData.customTabs = appData.customTabs.filter(t => t.id !== id);
+        appData.customTabs = appData.customTabs.filter(t => String(t.id) !== String(id));
         await saveBinData("Apagou a aba personalizada ID: " + id);
       }
     }
 
-    function renderAdminLists() {
-      if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
+    function renderAdminLists(force=false) {
+      if (!force && document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'SELECT')) {
         return;
       }
 
@@ -4560,12 +4601,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           const groups=[];
           drinkLines.forEach(([key,title])=>{
             const items=normalizedMenuItems.filter(i=>i.type==='drink' && (key==='legacy' ? !i.drinkLine : i.drinkLine===key));
-            if(items.length) groups.push({title,count:items.length,items});
+            groups.push({title,count:items.length,items});
           });
           const simpleGroups=[
             ['beer','🍺 CERVEJAS'],['noalcohol','🥤 SEM ÁLCOOL / SUCOS / REFRIS'],['portion','🍟 PORÇÕES & LARICA']
           ];
-          simpleGroups.forEach(([type,title])=>{const items=normalizedMenuItems.filter(i=>i.type===type);if(items.length)groups.push({title,count:items.length,items});});
+          simpleGroups.forEach(([type,title])=>{const items=normalizedMenuItems.filter(i=>i.type===type);groups.push({title,count:items.length,items});});
 
           const renderAdminItem=i=>`
             <div class="admin-card">
@@ -4597,7 +4638,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               </div>
               <textarea class="admin-textarea" id="full-${i.id}" rows="2" style="margin-top:5px;">${escapeHTML(i.full||'')}</textarea>
               <div class="admin-card-row" style="margin-top:5px;">
-                  <img src="${safeImageUrl(i.img)}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;" onerror="fallbackMenuImg(this,${Number(i.id)||0})">
+                  <img src="${safeImageUrl(normalizeStoredImage(i))}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #444;" onerror="fallbackMenuImg(this,${Number(i.id)||0})">
                   <div class="file-upload-wrapper" style="padding: 5px 10px;">
                     <span style="font-size:0.75rem;">📷 Upar Nova Foto</span>
                     <input type="file" accept="image/*" onchange="updateItemImg(${i.id}, this)">
@@ -4613,7 +4654,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.12rem;margin:0;letter-spacing:.02em;">${escapeHTML(g.title)}</h5>
               <span style="color:#b9c4ca;font-size:.75rem;font-family:inherit;font-weight:800;">${g.count} ${g.count===1?'item':'itens'}</span>
             </div>
-            <div style="display:flex;flex-direction:column;gap:8px;">${g.items.map(renderAdminItem).join('')}</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">${g.items.length ? g.items.map(renderAdminItem).join('') : '<div style=\"padding:10px;color:#7f8b94;font-size:.82rem;border:1px dashed rgba(255,255,255,.12);border-radius:9px;\">Nenhum item nesta categoria ainda. Use “+ Adicionar Item” para cadastrar.</div>'}</div>
           </section>`).join('') : '<p style="color:#777;font-size:.85rem;">Nenhum item cadastrado no cardápio.</p>';
         }
       }
@@ -5009,19 +5050,19 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       uploadToImgBB(input.files[0], async res => { appData.flyer.img = res; await saveBinData("Atualizou o flyer de destaque principal da agenda"); alert('Flyer Destaque Atualizado via ImgBB!'); });
     }
     async function updateItemImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => i.id === id); if(item) { item.img = res; const saved = await saveBinData("Atualizou a foto do produto: " + item.name); alert(saved ? 'Imagem do produto hospedada e salva na nuvem!' : '⚠️ A foto foi hospedada, mas NÃO foi salva no banco. Tente novamente.'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.menu.find(i => String(i.id) === String(id)); if(item) { item.img = res; const saved = await saveBinData("Atualizou a foto do produto: " + item.name); alert(saved ? 'Imagem do produto hospedada e salva na nuvem!' : '⚠️ A foto foi hospedada, mas NÃO foi salva no banco. Tente novamente.'); } });
     }
     async function updateAgendaImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => i.id === id); if(item) { item.img = res; const saved = await saveBinData("Atualizou o flyer do evento: " + item.title); alert(saved ? 'Mini Flyer hospedado e salvo na nuvem!' : '⚠️ O flyer foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
+      uploadToImgBB(input.files[0], async res => { const item = appData.agenda.find(i => String(i.id) === String(id)); if(item) { item.img = res; const saved = await saveBinData("Atualizou o flyer do evento: " + item.title); alert(saved ? 'Mini Flyer hospedado e salvo na nuvem!' : '⚠️ O flyer foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateTeamImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.team.find(i => String(i.id) === String(id)); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto de perfil da equipe: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateCachaceiroImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.cachaceiros.find(i => String(i.id) === String(id)); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do cachaceiro no ranking: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
     async function updateArcadeImg(id, input) {
-      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => i.id === id); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
+      uploadToImgBB(input.files[0], async res => { const t = appData.arcade.find(i => String(i.id) === String(id)); if(t) { t.img = res; const saved = await saveBinData("Atualizou a foto do jogador arcade: " + t.name); alert(saved ? 'Avatar hospedado e salvo na nuvem!' : '⚠️ O avatar foi hospedado, mas NÃO foi salvo no banco. Tente novamente.'); } });
     }
 
     async function saveHomeData() {
@@ -5076,7 +5117,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const perms = appData.permissions || {};
        if(!isMaster && perms.canEdit === false) return alert("Acesso Negado: Permissão de edição desativada pelo Master!");
 
-       const item = appData.menu.find(i => i.id === id);
+       const item = appData.menu.find(i => String(i.id) === String(id));
        if(item) {
           const oldName = item.name;
           const oldPrice = item.price;
@@ -5115,7 +5156,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const perms = appData.permissions || {};
        if(!isMaster && perms.canAgenda === false) return alert("Acesso Negado: Permissão de agenda desativada pelo Master!");
 
-       const item = appData.agenda.find(i => i.id === id);
+       const item = appData.agenda.find(i => String(i.id) === String(id));
        if(item) {
           const oldTitle = item.title;
           item.date = document.getElementById(`a-date-${id}`).value;
@@ -5130,7 +5171,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canTeam === false) return alert("Acesso Negado: permissão de equipe desativada pelo Master!");
-       const t = appData.team.find(i => i.id === id);
+       const t = appData.team.find(i => String(i.id) === String(id));
        if(t) {
           t.name = document.getElementById(`tname-${id}`).value;
           t.role = document.getElementById(`trole-${id}`).value;
@@ -5146,7 +5187,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const perms = appData.permissions || {};
        if(!isMaster && perms.canRank === false) return alert("Acesso Negado!");
 
-       const t = appData.arcade.find(i => i.id === id);
+       const t = appData.arcade.find(i => String(i.id) === String(id));
        if(t) {
           t.name = document.getElementById(`arc-name-${id}`).value;
           t.sub = document.getElementById(`arc-sub-${id}`).value;
@@ -5160,7 +5201,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     }
 
     async function saveCachaceiroData(id) {
-       const t = appData.cachaceiros.find(i => i.id === id);
+       const t = appData.cachaceiros.find(i => String(i.id) === String(id));
        if(t) {
           t.name = document.getElementById(`ca-name-${id}`).value;
           t.sub = document.getElementById(`ca-sub-${id}`).value;
@@ -5220,10 +5261,10 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
-      const item = appData.menu.find(i => i.id === id);
+      const item = appData.menu.find(i => String(i.id) === String(id));
       if(confirm('Tem certeza que deseja excluir o item "' + (item ? item.name : id) + '" do cardápio?')) { 
         if(item) markCatalogItemDeleted(item);
-        appData.menu = appData.menu.filter(i => i.id !== id); 
+        appData.menu = appData.menu.filter(i => String(i.id) !== String(id)); 
         await saveBinData("Excluiu o item do cardápio: " + (item ? item.name : id));
         try { if(typeof window.brgApi === 'function') await window.brgApi('delete_recipe',{menu_item_id:String(id)}); } catch(e) { console.warn('[Bargunçados] A receita vinculada não pôde ser removida agora:',e); }
       } 
@@ -5234,9 +5275,9 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       const perms = appData.permissions || {};
       if(!isMaster && perms.canDel === false) return alert("Acesso Negado: Permissão de exclusão desativada pelo Master!");
 
-      const ev = appData.agenda.find(i => i.id === id);
+      const ev = appData.agenda.find(i => String(i.id) === String(id));
       if(confirm('Tem certeza que deseja excluir o evento "' + (ev ? ev.title : id) + '" da agenda?')) { 
-        appData.agenda = appData.agenda.filter(i => i.id !== id); 
+        appData.agenda = appData.agenda.filter(i => String(i.id) !== String(id)); 
         await saveBinData("Excluiu o evento da agenda: " + (ev ? ev.title : id)); 
       } 
     }
@@ -5471,6 +5512,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
   // continua sendo usado internamente; apenas disponibilizamos a referência global
   // para a leitura somente do diagnóstico.
   window.brgApi=brgApi;
+  window.__brgApiReady=true;
   function brgMenu(){return Array.isArray(appData?.menu)?appData.menu:[]}
   function brgRecipeMap(){const m={};(BRG_BAR.data?.recipes||[]).forEach(r=>m[String(r.menu_item_id)]=r);return m}
   function brgCompMap(){const m={};(BRG_BAR.data?.components||[]).forEach(c=>{(m[String(c.recipe_id)]??=[]).push(c)});return m}
