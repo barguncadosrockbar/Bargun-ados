@@ -1309,7 +1309,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
 <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(0,188,212,.28);background:linear-gradient(135deg,rgba(0,188,212,.07),rgba(233,30,99,.05));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">📦 Controle Profissional do Bar</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Estoque, receitas, vendas, custo real, margem, lucro e capacidade de produção.</div></div><button class="action-btn" onclick="openBarControl()" style="background:linear-gradient(90deg,#00bcd4,#00e676);color:#000;padding:11px 16px;">📦 Abrir Controle do Bar</button></div></div>
 
-          <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(255,193,7,.32);background:linear-gradient(135deg,rgba(255,193,7,.07),rgba(233,30,99,.04));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">🛡️ Histórico permanente de edições</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Cada alteração importante do site fica guardada no Supabase. Se houver problema, o Master pode restaurar uma revisão salva sem apagar o histórico.</div></div><button class="action-btn" onclick="openSiteBackupManager()" style="background:linear-gradient(90deg,#ffeb3b,#ff9800);color:#000;padding:11px 16px;">🛡️ Abrir Histórico / Backup</button></div></div>
+          <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(255,193,7,.32);background:linear-gradient(135deg,rgba(255,193,7,.07),rgba(233,30,99,.04));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">🛡️ Histórico permanente de edições</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Cada alteração importante do site fica guardada no Supabase. Se houver problema, o Master pode restaurar uma revisão salva sem apagar o histórico.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button id="master-save-all-btn" class="action-btn" onclick="saveEverythingPermanently()" style="display:none;background:linear-gradient(90deg,#00e676,#00bcd4);color:#000;padding:11px 16px;font-weight:900;">💾 SALVAR TUDO PERMANENTEMENTE</button><button class="action-btn" onclick="openSiteBackupManager()" style="background:linear-gradient(90deg,#ffeb3b,#ff9800);color:#000;padding:11px 16px;">🛡️ Histórico / Backup</button></div></div></div>
 
           <!-- ANALYTICS DO SITE -->
           <div class="traffic-dashboard">
@@ -2547,6 +2547,35 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     function hydrateLastKnownRemoteSnapshot(){ return false; }
     function persistLastKnownRemoteSnapshot(data,revision){ try { if(!data||!Number.isFinite(Number(revision))) return false; localStorage.setItem('brg_last_confirmed_revision',String(Number(revision))); localStorage.setItem('brg_last_confirmed_snapshot',JSON.stringify(data)); return true; } catch(e){ return false; } }
 
+    async function saveEverythingPermanently(){
+      if(getPersistentAdminFlag('brg_adm_is_master')!=='true') return alert('Acesso restrito: somente o ADM Master pode executar o salvamento geral.');
+      if(binWriteBusy) return alert('⏳ Já existe um salvamento em andamento. Aguarde terminar.');
+      try{
+        // Antes do salvamento geral, completa somente itens ausentes do catálogo.
+        // Itens existentes permanecem exatamente como estão.
+        ensureDeletedCatalogRegistry();
+        const catalogCompleted=ensureDefaultCatalogIntegrity();
+        ensureAdminSystem();
+        showAdminSaveProgress('Salvando TODO o estado do site permanentemente…');
+        const saved=await saveBinData('MASTER • Salvamento geral permanente / checkpoint manual');
+        hideAdminSaveProgress();
+        if(!saved){
+          alert('❌ O salvamento geral NÃO foi confirmado pelo Supabase.\n\nNenhuma alteração deve ser considerada permanente. Verifique a sessão e tente novamente.');
+          return false;
+        }
+        renderApp();
+        await fetchBinData(true);
+        alert('✅ SALVAMENTO GERAL CONFIRMADO.\n\nTudo que estava salvo no painel foi enviado ao Supabase.\nFoi criada uma nova revisão no histórico.\n\nRevisão atual: #'+Number(remoteRevision||0)+'\nItens no cardápio: '+(Array.isArray(appData.menu)?appData.menu.length:0));
+        return true;
+      }catch(e){
+        hideAdminSaveProgress();
+        console.error('[Bargunçados] Salvamento geral:',e);
+        alert('❌ Falha no salvamento geral.\n\n'+(e?.message||e));
+        return false;
+      }
+    }
+    window.saveEverythingPermanently=saveEverythingPermanently;
+
     async function initApp() {
       const sessionStillValid = await enforceAdminSessionLifetime();
       // O painel administrativo não depende de GitHub/PAT. A persistência e a autenticação
@@ -2667,10 +2696,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             remoteSnapshot = cloneForSync(incoming) || {};
             persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
-            // Restaura apenas itens do catálogo-base que estejam ausentes no estado remoto.
-            // Itens existentes nunca são substituídos, removidos ou reorganizados aqui.
+            // Reconciliação NÃO destrutiva do catálogo: o estado remoto continua sendo
+            // a fonte de verdade para itens já existentes, mas um estado remoto antigo
+            // ou incompleto nunca mais pode esconder os itens-base/adicionais que fazem
+            // parte do catálogo atual. Só itens ausentes são acrescentados; nada existente
+            // é substituído, removido, renomeado ou tem foto/preço sobrescrito.
             ensureDeletedCatalogRegistry();
-            // NÃO executar ensureDrinkCatalog() após ler o Supabase: o catálogo remoto é a fonte de verdade.
+            const catalogWasCompleted = ensureDefaultCatalogIntegrity();
+            if(catalogWasCompleted) console.info('[Bargunçados] Catálogo local completado sem sobrescrever itens existentes.');
             ensureAdminSystem();
             ensureMenuCategoryLabels();
                   ensureModerationHistory();
@@ -5271,6 +5304,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
       if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
       if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
+      const masterSaveAll=document.getElementById('master-save-all-btn');
+      if(masterSaveAll) masterSaveAll.style.display = isMaster ? 'inline-flex' : 'none';
       if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
       if(appData.permissions) {
