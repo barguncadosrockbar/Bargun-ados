@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BARGUNÇADOS ROCK BAR | Pub, Arcade & Metal</title>
-  <meta name="brg-build-version" content="2026100201">
+  <meta name="brg-build-version" content="2026100202">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2105,6 +2105,30 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(item && item.id !== undefined && item.id !== null && !reg.ids.some(v => String(v) === String(item.id))) reg.ids.push(item.id);
       const name = String(item && item.name || '').trim().toLowerCase();
       if(name && !reg.names.includes(name)) reg.names.push(name);
+    }
+
+    function ensureDefaultCatalogIntegrity() {
+      if(!Array.isArray(appData.menu)) appData.menu = [];
+      const reg = ensureDeletedCatalogRegistry();
+      const existingIds = new Set(appData.menu.map(i => String(i && i.id != null ? i.id : '')));
+      const existingNames = new Set(appData.menu.map(i => String(i && i.name || '').trim().toLowerCase()).filter(Boolean));
+      const catalog = [
+        ...(Array.isArray(defaultMenu) ? defaultMenu : []),
+        ...(Array.isArray(EXTRA_DRINK_CATALOG) ? EXTRA_DRINK_CATALOG : [])
+      ];
+      let changed = false;
+      catalog.forEach(item => {
+        if(!item || item.id == null) return;
+        const id = String(item.id);
+        const name = String(item.name || '').trim().toLowerCase();
+        const deleted = reg.ids.some(v => String(v) === id) || (name && reg.names.includes(name));
+        if(deleted || existingIds.has(id) || (name && existingNames.has(name))) return;
+        appData.menu.push({...item});
+        existingIds.add(id);
+        if(name) existingNames.add(name);
+        changed = true;
+      });
+      return changed;
     }
 
     function ensureDrinkCatalog() {
