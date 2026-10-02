@@ -3277,9 +3277,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         .filter(i => i && i.type === 'drink');
 
       let drinksStr = '';
-      if(featuredDrinks.length){
-        drinksStr += `<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUES')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredDrinks.map(i=>createCard(i, true)).join('')}</div></div></details>`;
-      }
+      drinksStr += `<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUES DO BAR')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredDrinks.length ? featuredDrinks.map(i=>createCard(i)).join('') : '<div class="client-menu-empty">Nenhum item em destaque no momento.</div>'}</div></div></section>`;
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
@@ -3306,7 +3304,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         .map(id=>cMenu.find(i=>Number(i.id)===Number(id)))
         .filter(i=>i && i.type==='portion');
       let portionsStr='';
-      if(featuredPortions.length) portionsStr+=`<details class="menu-collapse drink-featured" open><summary>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUES DAS PORÇÕES')}</summary><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredPortions.map(i=>createCard(i,true)).join('')}</div></div></details>`;
+      portionsStr+=`<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUES DAS PORÇÕES')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredPortions.length ? featuredPortions.map(i=>createCard(i)).join('') : '<div class="client-menu-empty">Nenhuma porção em destaque no momento.</div>'}</div></div></section>`;
       portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`;
       sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i));
       portionsStr+='</div></div></details>';
@@ -3600,16 +3598,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       });
     }
 
-    function createCard(item, showFeaturedBadge = false) {
+    function createCard(item) {
       const hostedImg = normalizeStoredImage(item);
-      const f=Boolean(showFeaturedBadge);
       const organizerClick = `openMenuModalObj(${safeNumericId(item.id)})`;
-      const moveControls = '';
       const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
       const imageMarkup = imageUrl
         ? `<img src="${imageUrl}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<div class="product-img product-img-empty" aria-hidden="true"></div>`;
-      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}${f?'<span class="promo-seal">⭐ DESTAQUE</span>':''}</div>${moveControls}<h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof brgRecipeMap==='function'?brgRecipeMap()[String(item.id)]:null;const cost=recipe?brgCost(recipe):0;const price=recipe?Number(recipe.sale_price||0):brgPrice(item.price);const profit=price-cost;const margin=price>0?profit/price*100:0;const doses=recipe?brgMaxDoses(recipe):Infinity;return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${brgMoney(price)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?brgMoney(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`; }
+      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof window.brgRecipeMap==='function'?window.brgRecipeMap()[String(item.id)]:null;const cost=recipe&&typeof window.brgCost==='function'?window.brgCost(recipe):0;const sale=recipe?Number(recipe.sale_price||0):Number(String(item.price||0).replace(',','.'))||0;const profit=sale-cost;const margin=sale>0?profit/sale*100:0;const doses=recipe&&typeof window.brgMaxDoses==='function'?window.brgMaxDoses(recipe):Infinity;const money=typeof window.brgMoney==='function'?window.brgMoney:(v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${money(sale)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?money(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?money(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`;
+    }
 
     function openMenuModalObj(id) {
       const item = appData.menu.find(i => String(i.id) === String(id));
@@ -6052,6 +6049,284 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   window.brgMaxDoses = brgMaxDoses;
   window.brgProfit = brgProfit;
   window.brgMargin = brgMargin;
+})();
+</script>
+
+<style id="brg-client-catalog-rebuild-css">
+.client-menu-category{margin:14px 0 18px;border:1px solid rgba(255,255,255,.10);border-radius:16px;overflow:hidden;background:rgba(5,7,10,.62);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.client-menu-category-head{padding:15px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(90deg,rgba(255,0,110,.10),rgba(0,188,212,.07));}
+.client-menu-category-head h3{margin:3px 0 2px;font-family:var(--font-title);font-size:1.35rem;color:#fff;letter-spacing:.02em}
+.client-menu-category-head p{margin:4px 0 0;color:#8f9aa0;font-size:.76rem}
+.client-menu-category-kicker{font-size:.64rem;font-weight:900;letter-spacing:.12em;color:var(--c-yellow)}
+.client-menu-featured{border-color:rgba(255,235,59,.45);box-shadow:0 0 22px rgba(255,235,59,.08)}
+.client-menu-featured .drink-featured-grid{padding:12px}
+.client-menu-empty{grid-column:1/-1;padding:20px;text-align:center;color:#7e898f;border:1px dashed rgba(255,255,255,.14);border-radius:10px}
+</style>
+<script id="brg-admin-total-rebuild">
+(function(){
+  'use strict';
+  const esc = window.escapeHTML || function(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));};
+  const numId = v => String(v??'').replace(/[^0-9]/g,'');
+  const money = v => { const n=Number(String(v??'').replace(',','.')); return Number.isFinite(n)?'R$ '+n.toFixed(2).replace('.',','):'—'; };
+  const price = v => { const n=Number(String(v??'').replace(/[^0-9,.-]/g,'').replace(',','.')); return Number.isFinite(n)?n:0; };
+  const logged = ()=>window.getPersistentAdminFlag?.('brg_adm_logged')==='true';
+  const master = ()=>window.getPersistentAdminFlag?.('brg_adm_is_master')==='true';
+  const perms = ()=>window.appData?.permissions||{};
+  const canEdit = ()=>master() || perms().canEdit!==false;
+  const canAdd = ()=>master() || perms().canAdd!==false;
+  const canDel = ()=>master() || perms().canDel!==false;
+  const state = ()=>window.appData || {};
+
+  const CATEGORY_DEFS = [
+    ['featured','⭐ DESTAQUES DO BAR','featured','bebidas'],
+    ['caipirinha','🍋 Linha Caipirinha','drink','bebidas'],
+    ['vodka','🍸 Linha Vodka','drink','bebidas'],
+    ['rum','🍹 Linha Rum','drink','bebidas'],
+    ['tequila','🌵 Linha Tequila','drink','bebidas'],
+    ['gin','🌿 Linha Gin','drink','bebidas'],
+    ['whisky','🥃 Linha Whisky','drink','bebidas'],
+    ['legacy','🔥 Destilados & Clássicos','drink','bebidas'],
+    ['beer','🍺 Cervejas','beer','bebidas'],
+    ['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol','bebidas'],
+    ['portion-featured','⭐ DESTAQUES DAS PORÇÕES','featured','porcoes'],
+    ['portion','🍟 Porções & Larica','portion','porcoes']
+  ];
+
+  function ensureConfig(){
+    const a=state();
+    if(!Array.isArray(a.menu)) a.menu=[];
+    if(!a.menuCategoryLabels||typeof a.menuCategoryLabels!=='object') a.menuCategoryLabels={};
+    a.menuCategoryLabels.bebidas=a.menuCategoryLabels.bebidas||{};
+    a.menuCategoryLabels.porcoes=a.menuCategoryLabels.porcoes||{};
+    const labels={
+      featured:'⭐ DESTAQUES DO BAR',caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris'
+    };
+    Object.keys(labels).forEach(k=>{if(!a.menuCategoryLabels.bebidas[k])a.menuCategoryLabels.bebidas[k]=labels[k]});
+    if(!a.menuCategoryLabels.porcoes.title)a.menuCategoryLabels.porcoes.title='Larica Pesada';
+    if(!a.menuCategoryLabels.porcoes.featured)a.menuCategoryLabels.porcoes.featured='⭐ DESTAQUES DAS PORÇÕES';
+    if(!Array.isArray(a.menuCategoryLabels.bebidas.featuredIds))a.menuCategoryLabels.bebidas.featuredIds=[];
+    if(!Array.isArray(a.menuCategoryLabels.porcoes.featuredIds))a.menuCategoryLabels.porcoes.featuredIds=[];
+    const validIds=new Set(a.menu.map(i=>Number(i.id)).filter(Number.isFinite));
+    a.menuCategoryLabels.bebidas.featuredIds=a.menuCategoryLabels.bebidas.featuredIds.map(Number).filter(id=>validIds.has(id));
+    a.menuCategoryLabels.porcoes.featuredIds=a.menuCategoryLabels.porcoes.featuredIds.map(Number).filter(id=>validIds.has(id));
+
+    const lineFor=item=>{
+      if(item.type==='portion')return 'portion';
+      if(item.type==='beer')return 'beer';
+      if(item.type==='noalcohol')return 'noalcohol';
+      if(item.type==='drink' && ['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(item.drinkLine||'')))return String(item.drinkLine);
+      return 'legacy';
+    };
+    const keys=['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
+    if(!a.menuOrder||typeof a.menuOrder!=='object')a.menuOrder={};
+    keys.forEach(key=>{
+      const current=Array.isArray(a.menuOrder[key])?a.menuOrder[key].map(Number).filter(Number.isFinite):[];
+      const wanted=a.menu.filter(i=>lineFor(i)===key).map(i=>Number(i.id));
+      const merged=[]; const seen=new Set();
+      current.concat(wanted).forEach(id=>{if(validIds.has(id)&&!seen.has(id)){seen.add(id);merged.push(id)}});
+      a.menuOrder[key]=merged;
+    });
+
+    const defs={
+      bebidas:[
+        ['featured','⭐ DESTAQUES DO BAR','featured'],['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],['legacy','🔥 Destilados & Clássicos','drink'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol']
+      ],
+      porcoes:[['featured','⭐ DESTAQUES DAS PORÇÕES','featured'],['portion','🍟 Porções & Larica','portion']]
+    };
+    a.adminMenuCategories={bebidas:[],porcoes:[]};
+    defs.bebidas.forEach(([key,title,type])=>{
+      const ids=key==='featured'?a.menuCategoryLabels.bebidas.featuredIds.slice():a.menu.filter(i=>lineFor(i)===key).map(i=>Number(i.id));
+      a.adminMenuCategories.bebidas.push({key,title,type,ids});
+    });
+    defs.porcoes.forEach(([key,title,type])=>{
+      const ids=key==='featured'?a.menuCategoryLabels.porcoes.featuredIds.slice():a.menu.filter(i=>lineFor(i)===key).map(i=>Number(i.id));
+      a.adminMenuCategories.porcoes.push({key,title,type,ids});
+    });
+    return a;
+  }
+
+  function categoryIds(key,page){
+    const a=ensureConfig();
+    const cfg=a.adminMenuCategories?.[page==='porcoes'?'porcoes':'bebidas'];
+    const ck=key==='portion-featured'?'featured':key;
+    const entry=Array.isArray(cfg)?cfg.find(x=>x.key===ck):null;
+    if(entry&&Array.isArray(entry.ids)) return entry.ids.map(Number).filter(Number.isFinite);
+    if(key==='featured')return (a.menuCategoryLabels.bebidas.featuredIds||[]).map(Number);
+    if(key==='portion-featured')return (a.menuCategoryLabels.porcoes.featuredIds||[]).map(Number);
+    return [];
+  }
+
+  function itemsFor(key,page){
+    const a=ensureConfig(), menu=a.menu;
+    if(key==='featured'){
+      const ids=new Set(categoryIds(key,'bebidas'));return menu.filter(i=>i&&ids.has(Number(i.id)));
+    }
+    if(key==='portion-featured'){
+      const ids=new Set(categoryIds(key,'porcoes'));return menu.filter(i=>i&&i.type==='portion'&&ids.has(Number(i.id)));
+    }
+    if(key==='legacy')return menu.filter(i=>i&&i.type==='drink'&&!['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||'')));
+    if(key==='portion')return menu.filter(i=>i&&i.type==='portion');
+    if(key==='beer')return menu.filter(i=>i&&i.type==='beer');
+    if(key==='noalcohol')return menu.filter(i=>i&&i.type==='noalcohol');
+    return menu.filter(i=>i&&i.type==='drink'&&i.drinkLine===key);
+  }
+
+  function sortItems(items,key){
+    const order=ensureConfig().menuOrder[key]||[]; const pos=new Map(order.map((id,i)=>[String(id),i]));
+    return items.slice().sort((a,b)=>{
+      const pa=pos.has(String(a.id))?pos.get(String(a.id)):999999;
+      const pb=pos.has(String(b.id))?pos.get(String(b.id)):999999;
+      return pa-pb || Number(a.id)-Number(b.id);
+    });
+  }
+
+  function recipeData(item){
+    const bar=window.BRG_BAR?.data||{};
+    const recipes=Array.isArray(bar.recipes)?bar.recipes:[];
+    const comps=Array.isArray(bar.components)?bar.components:[];
+    const recipe=recipes.find(r=>String(r.menu_item_id)===String(item.id));
+    if(!recipe)return {recipe:null,cost:null,profit:null,margin:null};
+    const rows=comps.filter(c=>String(c.recipe_id)===String(recipe.id));
+    let cost=0;
+    rows.forEach(c=>{
+      const q=Number(c.quantity_per_sale||0), unitCost=Number(c.unit_cost||0);
+      let base=q;
+      const unit=String(c.component_unit||c.unit||'un').toLowerCase();
+      if(unit==='kg')base=q*1000; else if(unit==='l')base=q*1000;
+      cost+=base*unitCost;
+    });
+    const sale=Number(recipe.sale_price||price(item.price));
+    const profit=sale-cost, margin=sale>0?profit/sale*100:null;
+    return {recipe,cost,profit,margin};
+  }
+
+  function finance(item){
+    const f=recipeData(item);
+    return `<div class="brg-admin-finance"><div class="brg-admin-finance-title">📊 CUSTO • LUCRO • MARGEM</div><div class="brg-admin-finance-grid"><div><b>${money(f.recipe?f.recipe.sale_price:item.price)}</b><span>Venda</span></div><div><b>${f.cost===null?'—':money(f.cost)}</b><span>Custo</span></div><div><b>${f.profit===null?'—':money(f.profit)}</b><span>Lucro</span></div><div><b>${f.margin===null?'—':f.margin.toFixed(1)+'%'}</b><span>Margem</span></div></div><small>${f.recipe?'🟢 Receita vinculada ao estoque':'🟡 Cadastre a receita para calcular a margem real'}</small></div>`;
+  }
+
+  function imageFor(item){
+    return String(item?.img||item?.image||item?.imageUrl||'').trim();
+  }
+  function imageFallback(el){ if(!el)return; el.onerror=null; el.style.opacity='.2'; }
+
+  function card(item,key,page,organizing){
+    const id=numId(item.id); const featured = page==='porcoes' ? categoryIds('portion-featured','porcoes').includes(Number(item.id)) : categoryIds('featured','bebidas').includes(Number(item.id));
+    const line=item.type==='drink'?`<select id="adm-line-${id}" class="admin-input"><option value="caipirinha" ${item.drinkLine==='caipirinha'?'selected':''}>🍋 Caipirinha</option><option value="vodka" ${item.drinkLine==='vodka'?'selected':''}>🍸 Vodka</option><option value="rum" ${item.drinkLine==='rum'?'selected':''}>🍹 Rum</option><option value="tequila" ${item.drinkLine==='tequila'?'selected':''}>🌵 Tequila</option><option value="gin" ${item.drinkLine==='gin'?'selected':''}>🌿 Gin</option><option value="whisky" ${item.drinkLine==='whisky'?'selected':''}>🥃 Whisky</option><option value="" ${!item.drinkLine?'selected':''}>🔥 Clássicos</option></select>`:'';
+    const controls=organizing&&key!=='featured'&&key!=='portion-featured'?`<div class="brg-admin-arrows"><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','up')">↑</button><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','down')">↓</button></div>`:'';
+    return `<article class="brg-admin-item"><div class="brg-admin-head"><div class="brg-admin-photo">${imageFor(item)?`<img src="${esc(imageFor(item))}" onerror="window.brgAdminImageFallback(this)">`:'📷'}</div><div class="brg-admin-ident"><strong>${esc(item.name||'Produto')}</strong><small>ID ${id}</small></div>${controls}</div><div class="brg-admin-fields"><select id="adm-type-${id}" class="admin-input"><option value="drink" ${item.type==='drink'?'selected':''}>🍹 Bebida</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select><input id="adm-name-${id}" class="admin-input" value="${esc(item.name||'')}" placeholder="Nome"><input id="adm-price-${id}" class="admin-input" value="${esc(item.price||'')}" placeholder="Preço"></div>${line?`<div style="margin-top:7px">${line}</div>`:''}<input id="adm-short-${id}" class="admin-input" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:7px"><textarea id="adm-full-${id}" class="admin-textarea" rows="2" placeholder="Descrição" style="margin-top:7px">${esc(item.full||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${featured?'checked':''} onchange="window.brgAdminSetFeatured(${Number(item.id)},this.checked,'${page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateItemImg?.(${Number(item.id)},this)"></label></div><div class="brg-admin-buttons">${canEdit()?`<button class="action-btn" onclick="window.brgAdminSaveItem(${Number(item.id)})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit()?`<button class="action-btn" onclick="window.openSiteDrinkRecipeEditor?.(${Number(item.id)})">🧪 Receita / Margem</button>`:''}${canDel()?`<button class="action-btn del-btn" onclick="window.removeMenuItem?.(${Number(item.id)})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
+  }
+
+  function renderSection(root,key,title,page,organizing){
+    let items=itemsFor(key,page); if(key!=='featured'&&key!=='portion-featured')items=sortItems(items,key);
+    const body=items.length?items.map(i=>card(i,key,page,organizing)).join(''):`<div class="brg-admin-empty">Nenhum item nesta categoria.</div>`;
+    root.insertAdjacentHTML('beforeend',`<section class="brg-admin-category"><header><h3>${esc(title)}</h3><span>${items.length} ${items.length===1?'item':'itens'}</span></header><div>${body}</div></section>`);
+  }
+
+  function renderEntities(){
+    const a=ensureConfig();
+    const teamRoot=document.getElementById('admin-team-list');
+    if(teamRoot){const list=Array.isArray(a.team)?a.team:[];teamRoot.innerHTML=list.length?list.map(t=>`<article class="brg-admin-entity"><div class="brg-admin-entity-head"><img src="${esc(imageFor(t))}" onerror="window.brgAdminImageFallback(this)"><div><strong>${esc(t.name||'Sem nome')}</strong><small>${esc(t.role||'')}</small></div></div><input id="tname-${esc(t.id)}" class="admin-input" value="${esc(t.name||'')}"><input id="trole-${esc(t.id)}" class="admin-input" value="${esc(t.role||'')}"><input id="tig-${esc(t.id)}" class="admin-input" value="${esc(t.ig||'')}"><textarea id="tdesc-${esc(t.id)}" class="admin-textarea">${esc(t.desc||'')}</textarea><div class="brg-admin-buttons"><button class="action-btn" onclick="window.saveTeamData?.('${esc(t.id)}')">💾 Salvar</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum integrante encontrado.</div>'}
+    const arcRoot=document.getElementById('admin-arcade-list'); if(arcRoot){const list=Array.isArray(a.arcade)?a.arcade:[];arcRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🕹️ #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="arc-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="arc-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="arc-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="arc-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="arc-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><button class="action-btn" onclick="window.saveArcadeData?.(${numId(i.id)})">💾 Salvar</button></article>`).join(''):'<div class="brg-admin-empty">Nenhum jogador cadastrado.</div>'}
+    const caRoot=document.getElementById('admin-cachaceiros-list'); if(caRoot){const list=Array.isArray(a.cachaceiros)?a.cachaceiros:[];caRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🍻 #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="ca-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="ca-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="ca-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="ca-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="ca-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><div class="brg-admin-buttons"><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateCachaceiroImg?.(${numId(i.id)},this)"></label><button class="action-btn" onclick="window.saveCachaceiroData?.(${numId(i.id)})">💾 Salvar</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum cachaceiro cadastrado.</div>'}
+  }
+
+  function renderAdminLists(){
+    if(!logged())return;
+    ensureConfig();
+    const root=document.getElementById('admin-menu-list');
+    if(root){
+      root.innerHTML='';
+      const organizing=!!window.__brgAdminOrganizer?.active;
+      const defs=[
+        ['featured','⭐ DESTAQUES DO BAR','bebidas'],['caipirinha',state().menuCategoryLabels.bebidas.caipirinha,'bebidas'],['vodka',state().menuCategoryLabels.bebidas.vodka,'bebidas'],['rum',state().menuCategoryLabels.bebidas.rum,'bebidas'],['tequila',state().menuCategoryLabels.bebidas.tequila,'bebidas'],['gin',state().menuCategoryLabels.bebidas.gin,'bebidas'],['whisky',state().menuCategoryLabels.bebidas.whisky,'bebidas'],['legacy',state().menuCategoryLabels.bebidas.legacy,'bebidas'],['beer',state().menuCategoryLabels.bebidas.beer,'bebidas'],['noalcohol',state().menuCategoryLabels.bebidas.noalcohol,'bebidas'],['portion-featured','⭐ DESTAQUES DAS PORÇÕES','porcoes'],['portion','🍟 Porções & Larica','porcoes']
+      ];
+      const toolbar=document.createElement('div'); toolbar.className='brg-admin-toolbar';
+      toolbar.innerHTML=`<div><strong>🍹 CARDÁPIO — ADMINISTRAÇÃO RECONSTRUÍDA</strong><small>Mesmos produtos do cliente. Categorias, destaque, ordem, imagens e margem são controlados separadamente.</small></div><div class="brg-admin-toolbar-actions"><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('bebidas')">↕ Organizar Bebidas</button><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('porcoes')">↕ Organizar Porções</button>${organizing?`<button class="action-btn" type="button" onclick="window.brgAdminSaveOrder()">💾 Salvar Ordem</button><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('',false)">✖ Fechar</button>`:''}</div>`;
+      root.appendChild(toolbar);
+      defs.forEach(([key,title,page])=>renderSection(root,key,title,page,organizing&&window.__brgAdminOrganizer.page===page));
+    }
+    renderEntities();
+    if(!window.__brgAdminBarLoadStarted && typeof window.loadBarControl==='function' && (!window.BRG_BAR?.data?.recipes||!window.BRG_BAR?.data?.inventory)){
+      window.__brgAdminBarLoadStarted=true; Promise.resolve(window.loadBarControl(false)).then(()=>renderAdminLists()).catch(()=>{});
+    }
+  }
+
+  window.__brgAdminOrganizer={active:false,page:'',dirty:false};
+  window.brgAdminToggleOrganizer=function(page,force){
+    if(!canEdit())return alert('Acesso Negado: sem permissão de edição.');
+    const o=window.__brgAdminOrganizer;
+    if(force===false){o.active=false;o.page='';o.dirty=false;renderAdminLists();return;}
+    if(o.active&&o.page===page){o.active=false;o.page='';o.dirty=false;renderAdminLists();return;}
+    ensureConfig();o.active=true;o.page=page;o.dirty=false;renderAdminLists();
+  };
+  window.brgAdminMove=function(id,key,direction){
+    if(!canEdit())return;
+    ensureConfig();const list=itemsFor(key,key==='portion'?'porcoes':'bebidas');const ids=sortItems(list,key).map(x=>Number(x.id));const idx=ids.indexOf(Number(id));if(idx<0)return;const ni=direction==='up'?idx-1:idx+1;if(ni<0||ni>=ids.length)return;[ids[idx],ids[ni]]=[ids[ni],ids[idx]];state().menuOrder[key]=ids;window.__brgAdminOrganizer.dirty=true;renderAdminLists();
+  };
+  window.brgAdminSaveOrder=async function(){
+    if(!canEdit())return; const o=window.__brgAdminOrganizer;if(!o.active)return; const ok=await window.saveBinData?.('Reconstrução ADM: salvou a ordem do cardápio por setas'); if(ok!==false){o.dirty=false;renderAdminLists();alert('✅ Ordem salva no Supabase.');}else alert('❌ A ordem não foi confirmada pelo Supabase.');
+  };
+  window.brgAdminSetFeatured=async function(id,checked,page){
+    if(!canEdit())return alert('Acesso Negado: sem permissão de edição.');
+    ensureConfig();
+    const key=page==='porcoes'?'porcoes':'bebidas';
+    const previous=[...(state().menuCategoryLabels[key].featuredIds||[])];
+    const n=Number(id);
+    state().menuCategoryLabels[key].featuredIds=checked
+      ? [...new Set([...previous.map(Number),n])]
+      : previous.map(Number).filter(x=>x!==n);
+    renderAdminLists();
+    try{
+      const ok=await window.saveBinData?.('Catálogo ADM: destaque manual '+(checked?'adicionado':'removido'));
+      if(ok===false) throw new Error('O Supabase não confirmou a alteração.');
+    }catch(e){
+      state().menuCategoryLabels[key].featuredIds=previous;
+      renderAdminLists();
+      alert('❌ Não foi possível salvar o destaque.\n\n'+(e?.message||e));
+    }
+  };
+  window.brgAdminImageFallback=imageFallback;
+
+  window.brgAdminSaveItem=async function(id){
+    if(!canEdit())return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureConfig(),item=a.menu.find(x=>String(x.id)===String(id));if(!item)return;
+    const get=k=>document.getElementById(k+id)?.value??'';
+    const name=String(get('adm-name-')).trim(),type=String(get('adm-type-')||'drink'),line=type==='drink'?String(get('adm-line-')||''):'';
+    const newPrice=String(get('adm-price-')).trim(),short=String(get('adm-short-')).trim(),full=String(get('adm-full-')).trim();
+    if(!name)return alert('Informe o nome.');
+    if(a.menu.some(x=>String(x.id)!==String(id)&&String(x.name||'').trim().toLowerCase()===name.toLowerCase()))return alert('Já existe outro item com esse nome.');
+    const old={...item}; Object.assign(item,{name,type,drinkLine:line,price:newPrice,short,full});
+    try{
+      const f=recipeData(item);
+      if(f.recipe&&typeof window.brgApi==='function'){
+        const comps=(window.BRG_BAR?.data?.components||[]).filter(c=>String(c.recipe_id)===String(f.recipe.id)).map(c=>({inventory_item_id:String(c.inventory_item_id),quantity_per_sale:Number(c.quantity_per_sale||0),component_unit:String(c.component_unit||c.unit||'un')}));
+        const saved=await window.brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:name,sale_price:price(newPrice),yield_qty:Number(f.recipe.yield_qty||1),estimate_source:'Catálogo ADM reconstruído',components:comps}});
+        if(saved?.recipe&&typeof window.brgApplyRecipeSaveResponse==='function')window.brgApplyRecipeSaveResponse(saved);
+      }
+      const ok=await window.saveBinData?.('Catálogo ADM reconstruído: editou '+old.name);
+      if(ok===false)throw new Error('O Supabase não confirmou a gravação.');
+      renderAdminLists(); if(typeof window.renderApp==='function')window.renderApp(); alert('✅ Produto, categoria e preço salvos.');
+    }catch(e){Object.assign(item,old);alert('❌ Não foi possível salvar.\n\n'+(e?.message||e));}
+  };
+
+  // Evita o erro fatal antigo: o catálogo nunca chama brgPrice/brgMoney por escopo lexical.
+  // Os helpers abaixo ficam explicitamente globais para compatibilidade com módulos antigos.
+  window.brgPrice=window.brgPrice||price;
+  window.brgMoney=window.brgMoney||money;
+  window.renderAdminLists=renderAdminLists;
+  window.toggleMenuOrganizer=window.brgAdminToggleOrganizer;
+  window.moveMenuCard=function(id,direction){
+    const key=window.__brgAdminOrganizer?.page==='porcoes'?'portion':window.__brgAdminOrganizer?.page==='bebidas'?'legacy':'';
+    if(key)window.brgAdminMove(id,key,direction);
+  };
+
+  const style=document.createElement('style');style.id='brg-admin-total-rebuild-css';style.textContent=`
+  .brg-admin-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:12px;margin:0 0 14px;border:1px solid rgba(0,188,212,.35);border-radius:12px;background:rgba(0,188,212,.06)}
+  .brg-admin-toolbar strong{display:block;color:#fff;font-family:var(--font-title)}.brg-admin-toolbar small{display:block;color:#89959c;margin-top:3px}.brg-admin-toolbar-actions{display:flex;gap:7px;flex-wrap:wrap}
+  .brg-admin-category{margin:12px 0;border:1px solid rgba(255,235,59,.22);border-radius:12px;background:rgba(0,0,0,.2);overflow:hidden}.brg-admin-category>header{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.08)}.brg-admin-category h3{margin:0;color:var(--c-yellow);font-family:var(--font-title);font-size:1.05rem}.brg-admin-category header span{color:#89959c;font-size:.7rem}.brg-admin-category>div{padding:10px}
+  .brg-admin-item{padding:10px;margin:8px 0;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(8,10,14,.78)}.brg-admin-head{display:flex;gap:9px;align-items:center}.brg-admin-photo{width:58px;height:58px;border-radius:8px;overflow:hidden;background:#09090c;display:grid;place-items:center;color:#555;flex:0 0 58px}.brg-admin-photo img{width:100%;height:100%;object-fit:contain}.brg-admin-ident{min-width:0;flex:1}.brg-admin-ident strong{display:block;color:#fff}.brg-admin-ident small{color:#77838b;font-size:.65rem}.brg-admin-fields{display:grid;grid-template-columns:150px minmax(0,1fr) 110px;gap:7px;margin-top:8px}.brg-admin-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;color:#ddd;font-size:.75rem}.brg-admin-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.brg-admin-finance{margin-top:9px;padding:9px;border:1px solid rgba(0,188,212,.25);border-radius:9px;background:rgba(0,188,212,.04)}.brg-admin-finance-title{font-weight:800;color:#dbe6ea;font-size:.72rem}.brg-admin-finance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}.brg-admin-finance-grid div{padding:6px;border-radius:7px;background:rgba(0,0,0,.25);text-align:center}.brg-admin-finance-grid b{display:block;color:#fff;font-size:.82rem}.brg-admin-finance-grid span{display:block;color:#7f8b92;font-size:.58rem}.brg-admin-finance small{display:block;color:#87949a;margin-top:6px}.brg-admin-arrows{display:flex;gap:5px}.brg-admin-arrows button{width:45px;height:45px;border:2px solid var(--c-yellow);border-radius:9px;background:#09090c;color:#fff;font-size:1.45rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.brg-admin-arrows button:active{transform:scale(.92);background:var(--c-yellow);color:#000}.brg-admin-empty{padding:13px;color:#78858c;border:1px dashed rgba(255,255,255,.12);border-radius:9px;text-align:center}.brg-admin-entity{padding:10px;margin:8px 0;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(8,10,14,.78)}.brg-admin-entity-head{display:flex;gap:9px;align-items:center;margin-bottom:7px}.brg-admin-entity-head img{width:58px;height:58px;border-radius:8px;object-fit:contain;background:#09090c}.brg-admin-entity-head strong{display:block;color:#fff}.brg-admin-entity-head small{display:block;color:#89959c}@media(max-width:650px){.brg-admin-fields{grid-template-columns:1fr}.brg-admin-finance-grid{grid-template-columns:repeat(2,1fr)}.brg-admin-toolbar-actions{width:100%}.brg-admin-toolbar-actions .action-btn{flex:1;min-height:44px}.brg-admin-arrows button{width:52px;height:52px;font-size:1.6rem}}
+  `;document.head.appendChild(style);
 })();
 </script>
 
