@@ -2572,28 +2572,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         throw new Error('O servidor não confirmou a gravação permanente. A alteração continua na tela e será necessário tentar salvar novamente.');
       }
       await finishAdminSaveProgress(true,'Alteração confirmada na nuvem. Aguarde o carregamento terminar.');
-      // Segunda confirmação após a janela de gravação: detecta imediatamente
-      // qualquer sobrescrita por outra aba/sessão antes de liberar o usuário.
-      const finalVerified = await verifyAdminPersistence(changes);
-      if(!finalVerified){
-        const latestToken = await getAdminAccessToken();
-        if(latestToken){
-          const latestRes = await fetchWithTimeout(SUPABASE_FUNCTION_URL + '?scope=admin', {
-            cache:'no-store',
-            headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+latestToken}
-          }, 10000);
-          if(latestRes.ok){
-            const latestJson=await latestRes.json();
-            const latestRecord=latestJson?.record;
-            if(latestRecord && typeof latestRecord==='object'){
-              const latestRev=Number(latestRecord?.__sync?.revision||0);
-              const retry=await queueBinWrite(changes,latestRev);
-              if(retry && await verifyAdminPersistence(changes)){ return true; }
-            }
-          }
-        }
-        throw new Error('A gravação inicial foi aceita, mas a verificação final detectou que os dados não permaneceram iguais no servidor. A tentativa automática de correção não foi confirmada.');
-      }
+      // A confirmação de persistência já é feita dentro de sendAdminPatch().
+      // Não repetir uma segunda leitura aqui: ela podia enxergar uma resposta
+      // normalizada pelo backend e gerar um falso erro depois de um PUT 200.
       return true;
       } catch(e) {
         const progress=document.getElementById('brg-admin-save-progress');
