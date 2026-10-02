@@ -964,7 +964,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         <div class="tab-admin-action-bar" id="bar-action-bebidas">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Bebidas</span>
           <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
-            <button class="action-btn" onclick="toggleMenuOrganizer('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
+            <button class="action-btn" onclick="openCatalogOrganizer('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
             <button class="action-btn" onclick="openCategoryQuickEdit('bebidas')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias / Destaques</button>
             <button class="action-btn" onclick="openCreateItemModal('drink')" style="font-size:0.76rem; padding:6px 10px; background:var(--c-yellow); color:#000;">+ Adicionar Item / Bebida</button>
           </div>
@@ -983,7 +983,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       <section id="porcoes" class="tab-pane">
         <div class="tab-admin-action-bar" id="bar-action-porcoes">
           <span style="color:var(--c-yellow); font-weight:bold;">🛠️ Painel do ADM: Porções</span>
-          <button class="action-btn" onclick="toggleMenuOrganizer('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
+          <button class="action-btn" onclick="openCatalogOrganizer('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-pink); color:#fff;">📐 Organizar Itens</button>
           <button class="action-btn" onclick="openCategoryQuickEdit('porcoes')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-cyan); color:#000;">✏️ Editar Categorias / Destaques</button>
           <button class="action-btn" onclick="openCreateItemModal('portion')" style="font-size:0.8rem; padding:6px 12px; background:var(--c-yellow); color:#000;">+ Adicionar Porção</button>
         </div>
@@ -2981,16 +2981,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
        Não usa drag/drop, long-press, touch handlers ou DOM reorder.
        A fonte da verdade é appData.menuOrder, separada por categoria.
        ========================================================= */
-    let menuOrganizerPage='';
-    let menuOrganizerActive=false;
-    let menuOrganizerDirty=false;
-    let menuOrganizerSnapshot=null;
+    // ORGANIZADOR V3 — reconstruído do zero: modal independente + setas.
+    let catalogOrganizerPage='';
+    let catalogOrganizerOpen=false;
+    let catalogOrganizerDirty=false;
+    let catalogOrganizerSnapshot=null;
 
-    function ensureMenuOrderData(){
+    function organizerEnsureOrder(){
       if(!appData.menuOrder || typeof appData.menuOrder!=='object' || Array.isArray(appData.menuOrder)) appData.menuOrder={};
     }
-    function menuOrderKeyForItem(item){
-      if(typeof adminCatalogCategoryKey==='function') return adminCatalogCategoryKey(item);
+    function organizerKey(item){
       if(!item) return 'legacy';
       if(item.type==='portion') return 'portion';
       if(item.type==='beer') return 'beer';
@@ -2998,90 +2998,118 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(item.type==='drink' && item.drinkLine) return String(item.drinkLine);
       return 'legacy';
     }
-    function brgOrderForKey(key){
-      ensureMenuOrderData();
+    function organizerOrder(key){
+      organizerEnsureOrder();
       const menu=Array.isArray(appData.menu)?appData.menu:[];
-      const valid=menu.filter(i=>menuOrderKeyForItem(i)===key).map(i=>Number(i.id)).filter(Number.isFinite);
-      const validSet=new Set(valid), seen=new Set(), result=[];
-      const old=Array.isArray(appData.menuOrder[key])?appData.menuOrder[key]:[];
-      old.forEach(id=>{const n=Number(id);if(validSet.has(n)&&!seen.has(n)){seen.add(n);result.push(n);}});
-      valid.forEach(n=>{if(!seen.has(n)){seen.add(n);result.push(n);}});
-      appData.menuOrder[key]=result;
-      return result;
+      const valid=menu.filter(x=>organizerKey(x)===key).map(x=>Number(x.id)).filter(Number.isFinite);
+      const set=new Set(valid), out=[];
+      (Array.isArray(appData.menuOrder[key])?appData.menuOrder[key]:[]).forEach(v=>{const n=Number(v);if(set.has(n)&&!out.includes(n))out.push(n);});
+      valid.forEach(n=>{if(!out.includes(n))out.push(n);});
+      appData.menuOrder[key]=out;
+      return out;
     }
-    function sortMenuItemsBySavedOrder(items,key){
-      const order=brgOrderForKey(key), pos=new Map(order.map((id,i)=>[Number(id),i]));
-      return [...items].sort((a,b)=>(pos.get(Number(a.id))??999999)-(pos.get(Number(b.id))??999999));
+    function organizerLabels(){
+      return {caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris',portion:'🍟 Porções & Larica'};
     }
-    function isMenuOrganizerAllowed(){
-      return getPersistentAdminFlag('brg_adm_logged')==='true' && (getPersistentAdminFlag('brg_adm_is_master')==='true' || (appData.permissions||{}).canEdit!==false);
+    function organizerKeysForPage(page){
+      return page==='porcoes'?['portion']:['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol'];
     }
-    function brgOrganizerCategoryKeys(){
-      return ['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
-    }
-    function brgOrganizerSnapshot(){
-      ensureMenuOrderData();
-      brgOrganizerCategoryKeys().forEach(brgOrderForKey);
+    function organizerSnapshot(){
+      organizerEnsureOrder();
+      Object.keys(organizerLabels()).forEach(organizerOrder);
       return JSON.parse(JSON.stringify(appData.menuOrder));
     }
-    function brgRenderAdminOnly(){
-      try{ if(getPersistentAdminFlag('brg_adm_logged')==='true') renderAdminLists(true); }catch(e){console.error('[ADM] render após organização',e);}
+    function organizerItems(key){
+      const byId=new Map((Array.isArray(appData.menu)?appData.menu:[]).map(x=>[Number(x.id),x]));
+      return organizerOrder(key).map(id=>byId.get(Number(id))).filter(Boolean);
     }
-    function toggleMenuOrganizer(page,force){
+    function openCatalogOrganizer(page){
       page=page==='porcoes'?'porcoes':'bebidas';
-      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado: seu administrador não possui permissão para organizar o cardápio.');
-      if(force===false || (menuOrganizerActive && menuOrganizerPage===page)){
-        if(menuOrganizerDirty && !confirm('Existem alterações de ordem não salvas. Fechar e descartar?')) return;
-        if(menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
-        menuOrganizerActive=false; menuOrganizerDirty=false; menuOrganizerPage=''; menuOrganizerSnapshot=null;
-        brgRenderAdminOnly();
-        return;
-      }
-      if(menuOrganizerDirty && menuOrganizerPage!==page && !confirm('Existem alterações de ordem não salvas. Trocar de seção e descartar?')) return;
-      if(menuOrganizerDirty && menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
-      menuOrganizerPage=page;
-      menuOrganizerSnapshot=brgOrganizerSnapshot();
-      menuOrganizerDirty=false;
-      menuOrganizerActive=true;
-      brgRenderAdminOnly();
+      if(getPersistentAdminFlag('brg_adm_logged')!=='true'){alert('Faça login como administrador para organizar o cardápio.');return;}
+      catalogOrganizerPage=page;
+      catalogOrganizerSnapshot=organizerSnapshot();
+      catalogOrganizerDirty=false;
+      catalogOrganizerOpen=true;
+      renderCatalogOrganizer();
     }
-    function moveMenuCard(id,direction){
-      if(!menuOrganizerActive) return;
-      const item=(Array.isArray(appData.menu)?appData.menu:[]).find(x=>String(x.id)===String(id));
-      if(!item) return;
-      const key=menuOrderKeyForItem(item);
-      const page=key==='portion'?'porcoes':'bebidas';
-      if(page!==menuOrganizerPage) return;
-      const order=brgOrderForKey(key), idx=order.indexOf(Number(id));
+    function closeCatalogOrganizer(){
+      if(catalogOrganizerDirty && !confirm('Há alterações de ordem não salvas. Deseja sair e descartar?')) return;
+      if(catalogOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(catalogOrganizerSnapshot));
+      catalogOrganizerOpen=false;
+      catalogOrganizerDirty=false;
+      const el=document.getElementById('brg-catalog-organizer');
+      if(el) el.remove();
+    }
+    function organizerMove(key,id,direction){
+      const order=organizerOrder(key), idx=order.indexOf(Number(id));
       if(idx<0) return;
       const next=direction==='up'?idx-1:idx+1;
       if(next<0 || next>=order.length) return;
       [order[idx],order[next]]=[order[next],order[idx]];
       appData.menuOrder[key]=order;
-      menuOrganizerDirty=JSON.stringify(appData.menuOrder)!==JSON.stringify(menuOrganizerSnapshot);
-      brgRenderAdminOnly();
+      catalogOrganizerDirty=JSON.stringify(appData.menuOrder)!==JSON.stringify(catalogOrganizerSnapshot);
+      renderCatalogOrganizer();
     }
-    async function saveMenuPositions(page){
-      page=page==='porcoes'?'porcoes':'bebidas';
-      if(!menuOrganizerActive || menuOrganizerPage!==page) return false;
-      if(!menuOrganizerDirty) return true;
+    async function saveCatalogOrganizer(){
       try{
-        const ok=await saveBinData('Reorganizou o cardápio de '+page+' usando as setas ↑/↓');
-        if(ok===false) throw new Error('O servidor não confirmou a ordem.');
-        menuOrganizerSnapshot=brgOrganizerSnapshot();
-        menuOrganizerDirty=false;
+        organizerEnsureOrder();
+        const ok=await saveBinData('Organização do cardápio — '+catalogOrganizerPage);
+        if(ok===false) throw new Error('O Supabase não confirmou a gravação.');
+        catalogOrganizerSnapshot=organizerSnapshot();
+        catalogOrganizerDirty=false;
+        renderCatalogOrganizer();
         brgRenderAdminOnly();
-        return true;
+        alert('✅ Organização salva com sucesso.');
       }catch(e){
-        alert('❌ A ordem não foi salva.\n\n'+(e?.message||e));
-        return false;
+        console.error('[ORGANIZADOR V3]',e);
+        alert('❌ Não foi possível salvar a organização.\n\n'+(e?.message||e));
       }
     }
-    function discardMenuPositions(page){
-      if(menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
-      menuOrganizerDirty=false;
-      brgRenderAdminOnly();
+    function renderCatalogOrganizer(){
+      const old=document.getElementById('brg-catalog-organizer');
+      if(old) old.remove();
+      if(!catalogOrganizerOpen) return;
+      const labels=organizerLabels(), esc=typeof escapeHTML==='function'?escapeHTML:(v)=>String(v??'');
+      const groups=organizerKeysForPage(catalogOrganizerPage).map(key=>{
+        const items=organizerItems(key);
+        return `<section style="margin:0 0 18px;border:1px solid rgba(255,214,0,.35);border-radius:14px;overflow:hidden;background:rgba(0,0,0,.55)">
+          <h3 style="margin:0;padding:13px 14px;color:#ffd600;background:rgba(255,214,0,.08);font-size:1rem">${labels[key]}</h3>
+          <div style="padding:8px">${items.length?items.map((item,i)=>`<div style="display:flex;align-items:center;gap:9px;padding:10px 6px;border-bottom:1px solid rgba(255,255,255,.08)">
+            <div style="flex:1;min-width:0"><strong style="color:#fff">${i+1}. ${esc(item.name||'Sem nome')}</strong><div style="color:#aaa;font-size:.72rem">ID ${Number(item.id)||''}</div></div>
+            <button type="button" onclick="organizerMove('${key}',${Number(item.id)},'up')" aria-label="Subir" style="width:48px;height:48px;border:1px solid #00e5ff;border-radius:10px;background:#101820;color:#00e5ff;font-size:1.5rem;font-weight:900;touch-action:manipulation">↑</button>
+            <button type="button" onclick="organizerMove('${key}',${Number(item.id)},'down')" aria-label="Descer" style="width:48px;height:48px;border:1px solid #ff1971;border-radius:10px;background:#201018;color:#ff1971;font-size:1.5rem;font-weight:900;touch-action:manipulation">↓</button>
+          </div>`).join(''):'<div style="padding:14px;color:#999">Nenhum item nesta categoria.</div>'}</div>
+        </section>`;
+      }).join('');
+      const wrap=document.createElement('div');
+      wrap.id='brg-catalog-organizer';
+      wrap.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(0,0,0,.94);overflow:auto;padding:16px 12px 34px;box-sizing:border-box;-webkit-overflow-scrolling:touch';
+      wrap.innerHTML=`<div style="max-width:760px;margin:0 auto;background:#111;border:2px solid #ff1971;border-radius:18px;overflow:hidden">
+        <div style="position:sticky;top:0;z-index:3;padding:14px;background:#151515;border-bottom:1px solid #333">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+            <h2 style="margin:0;color:#ffd600;font-size:1.25rem">📐 ORGANIZAR CARDÁPIO</h2>
+            <button type="button" onclick="closeCatalogOrganizer()" style="width:46px;height:46px;border-radius:50%;background:#e22;color:#fff;border:0;font-size:1.5rem;font-weight:900">×</button>
+          </div>
+          <p style="margin:8px 0 0;color:#bbb;font-size:.82rem">Use somente ↑ e ↓. A ordem é por categoria e só é gravada quando você tocar em SALVAR.</p>
+        </div>
+        <div style="padding:12px">${groups}</div>
+        <div style="position:sticky;bottom:0;z-index:3;padding:12px;background:#151515;border-top:1px solid #333;display:flex;gap:8px">
+          <button type="button" onclick="saveCatalogOrganizer()" style="flex:1;min-height:52px;background:#ffd600;color:#000;border:0;border-radius:10px;font-weight:900;font-size:1rem">${catalogOrganizerDirty?'💾 SALVAR ALTERAÇÕES':'✓ ORDEM ATUAL'}</button>
+          <button type="button" onclick="closeCatalogOrganizer()" style="min-height:52px;padding:0 18px;background:#333;color:#fff;border:1px solid #666;border-radius:10px;font-weight:800">FECHAR</button>
+        </div>
+      </div>`;
+      document.body.appendChild(wrap);
     }
+    function brgRenderAdminOnly(){
+      try{ if(getPersistentAdminFlag('brg_adm_logged')==='true') renderAdminLists(true); }catch(e){console.error('[ADM] render após organização',e);}
+    }
+    function toggleMenuOrganizer(page){openCatalogOrganizer(page);}
+    function moveMenuCard(id,direction){
+      const item=(Array.isArray(appData.menu)?appData.menu:[]).find(x=>String(x.id)===String(id));
+      return item?organizerMove(organizerKey(item),id,direction):false;
+    }
+    async function saveMenuPositions(){return saveCatalogOrganizer();}
+    function discardMenuPositions(){closeCatalogOrganizer();}
 
     function optimizeMenuImageLoading(){
       try {
@@ -4663,8 +4691,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       root.innerHTML=`<div class="admin-catalog-toolbar">
         <div><strong>🍹 CARDÁPIO ADMINISTRATIVO</strong><p>Catálogo reconstruído: mesma fonte de dados do cliente, separado por categorias e com controles ADM.</p></div>
         <div class="admin-toolbar-actions">
-          <button type="button" class="action-btn" onclick="toggleMenuOrganizer('bebidas')">↕ Organizar Bebidas</button>
-          <button type="button" class="action-btn" onclick="toggleMenuOrganizer('porcoes')">↕ Organizar Porções</button>
+          <button type="button" class="action-btn" onclick="openCatalogOrganizer('bebidas')">↕ Organizar Bebidas</button>
+          <button type="button" class="action-btn" onclick="openCatalogOrganizer('porcoes')">↕ Organizar Porções</button>
           ${menuOrganizerActive?`<button type="button" class="action-btn menu-organizer-save" ${menuOrganizerDirty?'':'disabled'} onclick="saveMenuPositions('${menuOrganizerPage}')">💾 Salvar Ordem</button><button type="button" class="action-btn" onclick="toggleMenuOrganizer('${menuOrganizerPage}',false)">✖ Fechar organização</button>`:''}
           ${canAdd?`<button type="button" class="action-btn" onclick="document.getElementById('new-item-name')?.focus()">＋ Novo item</button>`:''}
         </div>
