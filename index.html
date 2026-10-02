@@ -144,14 +144,14 @@
       background-image: var(--card-photo);
       background-position: center;
       background-repeat: no-repeat;
-      background-size: contain;
+      background-size: 100% 100%;
       border-radius: 7px;
       pointer-events: none;
     }
     .product-image-wrap::after { content: none; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
     
-    .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; user-select:none;-webkit-user-drag:none; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
+    .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
     .product-img-empty { background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.055), transparent 55%); }
     .menu-modal-description { margin: 16px 0 14px; padding: 14px 15px; border: 1px solid rgba(0,188,212,0.38); border-left: 4px solid var(--c-cyan); border-radius: 10px; background: rgba(0,188,212,0.08); color: #fff; text-align: left; line-height: 1.65; font-size: 0.98rem; box-shadow: inset 0 0 18px rgba(0,188,212,0.05); }
     .menu-modal-description-label { display:block; color:var(--c-yellow); font-family:var(--font-title); font-size:0.82rem; letter-spacing:1px; text-transform:uppercase; margin-bottom:6px; }
@@ -176,15 +176,15 @@
     .modal-content { isolation:isolate; }
     .modal-content::before { content:''; position:absolute; inset:0; z-index:-1; pointer-events:none; background:radial-gradient(circle at 18% 18%, rgba(0,188,212,.10), transparent 26%), radial-gradient(circle at 82% 72%, rgba(233,30,99,.08), transparent 30%), linear-gradient(135deg, rgba(255,255,255,.025), transparent 45%); opacity:.9; }
     .modal-content::after { content:'✦'; position:absolute; right:18px; top:12px; z-index:-1; font-size:5rem; line-height:1; color:rgba(255,235,59,.035); transform:rotate(-12deg); pointer-events:none; }
-    .modal-content img, .modal-content h3, .modal-content p, .modal-content a, .modal-content button, .modal-content input, .modal-content select, .modal-content textarea, .modal-content div { position:relative; }
+    .modal-content .close-btn, .modal-content img, .modal-content h3, .modal-content p, .modal-content a, .modal-content button, .modal-content input, .modal-content select, .modal-content textarea, .modal-content div { position:relative; }
     .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; padding: 15px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { background: #121218; border: 1px solid var(--c-pink); border-radius: 12px; max-width: 440px; width: 100%; padding: 20px 20px 40px 20px; position: relative; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.9); margin: auto; animation: popUpScale 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; transform-origin: center; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     @keyframes popUpScale { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    .close-btn { position: absolute !important; right: 12px !important; top: 10px !important; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
+    .close-btn { position: absolute; right: 15px; top: 10px; font-size: 1.8rem; color: #fff; cursor: pointer; line-height: 1; z-index: 10;}
     .close-btn:hover { color: var(--c-red); }
     
-    #modalImg { width: 100%; height: 200px; object-fit: contain; object-position:center; background:#09090c; border-radius:8px; border:1px solid var(--c-cyan); margin-bottom:12px; }
+    #modalImg { width: 100%; height: 200px; object-fit: fill; object-position:center; background:#09090c; border-radius:8px; border:1px solid var(--c-cyan); margin-bottom:12px; }
     #create-item-img-preview, #home-edit-img-preview { width: 100%; height: 200px; object-fit: contain; background: #09090c; object-position: center; border-radius: 8px; border: 1px solid var(--c-cyan); margin-bottom: 12px; }
     #modalTitle { font-size: 1.4rem; font-weight: 900; color: #fff; margin-bottom: 8px; text-transform: uppercase; }
     #modalDesc { font-size: 0.9rem; color: #ccc; line-height: 1.4; margin-bottom: 15px; text-align: left; }
@@ -396,35 +396,18 @@
   .menu-organizer-save{display:inline-flex;opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
   .menu-organizer-save.pending{display:inline-flex;opacity:1;filter:none;pointer-events:auto;cursor:pointer}
   .menu-organizer-save[disabled]{opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
-  .menu-organizer-discard{display:inline-flex}
-  .menu-organizer-active .menu-grid .product-card{cursor:default!important;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
-  .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:1;transform:none}
-  .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:none}
-  .menu-organizer-active .menu-grid{min-height:45px}
-  /* FINAL REBUILD: ADM catalog / organizer / finance / modal */
-  .menu-admin-organizer{display:none;margin:12px 0;padding:12px;border:2px solid var(--c-yellow);border-radius:14px;background:rgba(255,215,64,.07);position:relative;z-index:50}
-  .menu-admin-organizer.active{display:block}
-  .menu-admin-organizer-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .menu-admin-category{border:1px solid rgba(0,188,212,.28);border-radius:14px;padding:12px;margin:12px 0;background:rgba(255,255,255,.025)}
-  .menu-admin-category-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.2rem}
-  .menu-admin-item{position:relative;border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:10px;margin:8px 0;background:rgba(0,0,0,.18)}
-  .menu-admin-item-controls{display:flex;gap:7px;align-items:center;margin-left:auto}
-  .menu-admin-item-controls button{width:46px;height:46px;border:1px solid var(--c-yellow);border-radius:9px;background:#09090c;color:#fff;font-size:1.4rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-  .menu-admin-item-controls button:active{transform:scale(.94)}
-  .menu-admin-finance{margin-top:10px;padding:9px;border:1px solid rgba(0,188,212,.25);border-radius:10px;background:rgba(0,188,212,.05)}
-  .menu-admin-finance-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
-  .menu-admin-finance-grid div{padding:7px;border-radius:8px;background:rgba(0,0,0,.22);text-align:center}
-  .menu-admin-finance-grid b{display:block;color:#fff;font-size:.95rem}
-  .menu-admin-finance-grid span{display:block;color:#8d9aa2;font-size:.68rem;margin-top:2px}
-  .modal-close-top{display:flex;justify-content:flex-end;position:sticky;top:0;z-index:100;margin:-8px -8px 8px}
-  .modal-close-top button{width:44px;height:44px;border:2px solid var(--c-yellow);border-radius:50%;background:#08090c;color:#fff;font-size:1.55rem;font-weight:900;cursor:pointer;line-height:1;box-shadow:0 3px 12px rgba(0,0,0,.5)}
-  @media(max-width:700px){.menu-admin-finance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.menu-admin-item-controls button{width:50px;height:50px;font-size:1.5rem}}
-  .menu-move-controls{position:absolute;top:6px;right:6px;z-index:10020;display:flex;gap:5px;align-items:center;pointer-events:auto}
-  .menu-move-controls button{width:38px;height:38px;border:1px solid rgba(255,235,59,.75);border-radius:8px;background:rgba(0,0,0,.92);color:#fff;font-weight:900;font-size:1.15rem;cursor:pointer;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent}
-  .menu-move-controls button:active{transform:scale(.94);background:rgba(255,235,59,.18)}
-  .menu-move-controls .menu-move-label{font-size:.62rem;color:#9eefff;padding:0 3px;white-space:nowrap}
-  @media(max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}.menu-move-controls{top:5px;right:5px}.menu-move-controls button{width:42px;height:42px;font-size:1.25rem}}
+  .menu-organizer-discard{display:none}
   .menu-organizer-discard.pending{display:inline-flex}
+  .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px;user-select:none;-webkit-user-select:none}
+  .menu-organizer-active .menu-grid .product-card:active{cursor:grabbing}
+  .menu-organizer-active .menu-grid .product-card.menu-dragging{opacity:.42;transform:scale(.98)}
+  .menu-organizer-active .menu-grid .product-card.menu-drag-over{outline:2px solid var(--c-yellow);outline-offset:2px}
+  .menu-organizer-active .menu-grid{min-height:45px}
+  .menu-move-controls{position:absolute;top:6px;right:6px;z-index:10020;display:flex;gap:4px;align-items:center;pointer-events:auto}
+  .menu-move-controls button{width:34px;height:34px;border:1px solid rgba(255,235,59,.65);border-radius:7px;background:rgba(0,0,0,.88);color:#fff;font-weight:900;font-size:1rem;cursor:pointer;touch-action:manipulation;pointer-events:auto}
+  .menu-move-controls button:active{transform:scale(.94)}
+
+  @media (max-width:700px){.menu-organizer-bar{padding:9px}.menu-organizer-hint{flex-basis:100%}}
   
     /* === OTIMIZAÇÃO DE IMAGENS V36 === */
     .product-img {
@@ -586,23 +569,6 @@
 #directorModal .director-ig-highlight{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px 0 15px;padding:10px 12px;border-radius:12px;border:1px solid rgba(233,30,99,.65);background:rgba(233,30,99,.08);color:#ff80ab;font-weight:900;font-size:1rem}
 @keyframes brgProfilePop{0%{opacity:0;transform:translateY(18px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media (prefers-reduced-motion:reduce){#directorModal .modal-content{animation:none}}
-
-    .menu-move-controls{display:flex;align-items:center;justify-content:center;gap:8px;margin:4px 0 6px;position:relative;z-index:20;}
-    .menu-move-controls button,.menu-admin-item-controls button{width:52px;height:48px;border:2px solid var(--c-yellow);border-radius:10px;background:#111;color:#fff;font-size:1.55rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
-    .menu-move-controls button:active,.menu-admin-item-controls button:active{transform:scale(.94);background:var(--c-yellow);color:#000;}
-    .menu-admin-category{margin:14px 0;border:1px solid rgba(255,235,59,.22);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.18);}
-    .menu-admin-category-title{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:var(--c-yellow);font-family:var(--font-title);font-weight:800;border-bottom:1px solid rgba(255,255,255,.08);}
-    .menu-admin-item-controls{display:flex;gap:6px;flex-shrink:0;}
-    .modal-content>.close-btn{position:absolute !important;right:12px !important;top:10px !important;z-index:100 !important;}
-
-  
-/* ===== ADMINISTRAÇÃO RECONSTRUÍDA DO ZERO ===== */
-.admin-catalog-toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;padding:14px;margin:0 0 16px;border:1px solid rgba(0,188,212,.28);border-radius:14px;background:rgba(0,188,212,.05)}
-.admin-catalog-toolbar strong{font-family:var(--font-title);color:#fff;font-size:1.12rem}.admin-catalog-toolbar p{margin:4px 0 0;color:#8d9aa2;font-size:.78rem}.admin-toolbar-actions{display:flex;gap:7px;flex-wrap:wrap}
-.admin-client-category{margin:0 0 18px}.admin-client-category-title{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;margin-bottom:10px;border-bottom:1px dashed rgba(255,235,59,.35);color:var(--c-yellow);font-family:var(--font-title);font-size:1.05rem}.admin-client-category-title small{color:#8d9aa2;font-family:var(--font-body);font-size:.7rem}
-.admin-client-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.admin-catalog-card{background:rgba(8,10,14,.72);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;box-shadow:0 8px 25px rgba(0,0,0,.16)}.admin-catalog-head{display:flex;align-items:center;gap:10px}.admin-catalog-photo{width:64px;height:64px;flex:0 0 64px;border-radius:9px;overflow:hidden;background:#09090c;display:grid;place-items:center;color:#555}.admin-catalog-photo img{width:100%;height:100%;object-fit:contain}.admin-catalog-ident{flex:1;min-width:0}.admin-catalog-ident h4{margin:0;color:#fff;font-family:var(--font-title);font-size:1rem}.admin-catalog-ident small{color:#77838b;font-size:.68rem}.admin-catalog-fields{display:grid;grid-template-columns:1fr 120px;gap:8px;margin-top:9px}.admin-catalog-card label{display:block;color:#9ba7ad;font-size:.7rem;margin-top:8px}.admin-catalog-card .admin-input,.admin-catalog-card .admin-textarea{margin-top:4px}.admin-catalog-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.admin-arrow-box{display:flex;gap:5px}.admin-arrow-box button{width:48px;height:48px;border-radius:10px;border:1px solid rgba(255,235,59,.55);background:#111;color:var(--c-yellow);font-size:1.7rem;font-weight:900;cursor:pointer;touch-action:manipulation}.admin-arrow-box button:active{transform:scale(.94)}
-.admin-finance-card{margin-top:11px;padding:9px;border-radius:10px;border:1px solid rgba(0,230,118,.18);background:rgba(0,230,118,.035)}.admin-finance-title{font-size:.7rem;color:#dbe6ea;font-weight:800;margin-bottom:7px}.admin-finance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.admin-finance-grid div{background:rgba(0,0,0,.24);border-radius:7px;padding:6px;text-align:center}.admin-finance-grid b{display:block;color:#fff;font-size:.83rem}.admin-finance-grid span{display:block;color:#7f8a91;font-size:.58rem;margin-top:2px}.admin-finance-status{font-size:.62rem;margin-top:6px}.admin-finance-status.ok{color:#69f0ae}.admin-finance-status.warn{color:#ffd166}.admin-entity-card{padding:12px;margin-bottom:10px;background:rgba(8,10,14,.72);border:1px solid rgba(255,255,255,.1);border-radius:12px}.admin-entity-head{display:flex;gap:10px;align-items:center;margin-bottom:9px}.admin-entity-head img{width:64px;height:64px;border-radius:50%;object-fit:cover;background:#111}.admin-entity-head h4{margin:0;color:#fff;font-family:var(--font-title)}.admin-entity-head small{color:#8d9aa2}.admin-empty{padding:16px;text-align:center;color:#77838b;border:1px dashed #333;border-radius:10px}.modal-close-top{position:sticky;top:0;z-index:50;display:flex;justify-content:flex-end;padding:5px 0 8px;background:linear-gradient(rgba(8,10,14,.98),rgba(8,10,14,.88),transparent)}.modal-close-top button{width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:#161a20;color:#fff;font-size:1.8rem;line-height:1;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.4)}
-@media(max-width:650px){.admin-client-grid{grid-template-columns:1fr}.admin-catalog-fields{grid-template-columns:1fr}.admin-finance-grid{grid-template-columns:repeat(2,1fr)}.admin-toolbar-actions{width:100%}.admin-toolbar-actions .action-btn{flex:1}.admin-arrow-box button{width:52px;height:52px}}
 </style>
 <script>window.fallbackImg = function(el){ if(el){ el.onerror=null; el.src='https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80'; } };
 window.fallbackTeamImg = function(el){ if(!el) return; el.onerror=null; el.removeAttribute('src'); el.style.visibility='hidden'; el.setAttribute('data-image-missing','true'); };
@@ -646,6 +612,24 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <link rel="dns-prefetch" href="//i.ibb.co">
   <link rel="preconnect" href="https://imgdb.io" crossorigin>
   <link rel="dns-prefetch" href="//imgdb.io">
+
+  <style id="brg-admin-rebuild-overrides">
+    .modal-content{position:relative!important;}
+    .modal-close-top{position:sticky!important;top:0!important;right:0!important;z-index:9999!important;display:flex!important;justify-content:flex-end!important;align-items:center!important;width:100%!important;height:0!important;overflow:visible!important;pointer-events:none!important;}
+    .modal-close-top button{pointer-events:auto!important;position:absolute!important;right:8px!important;top:8px!important;width:44px!important;height:44px!important;border-radius:50%!important;border:2px solid var(--c-pink)!important;background:#08080b!important;color:#fff!important;font-size:30px!important;line-height:1!important;font-weight:900!important;display:grid!important;place-items:center!important;cursor:pointer!important;z-index:10000!important;}
+    .menu-admin-category{margin:14px 0;border:1px solid rgba(255,235,59,.22);border-radius:12px;overflow:hidden;background:rgba(0,0,0,.18);padding:12px;}
+    .menu-admin-category-title{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;color:var(--c-yellow);font-family:var(--font-title);font-weight:800;border-bottom:1px solid rgba(255,255,255,.08);}
+    .menu-admin-item-controls{display:flex;gap:7px;flex-shrink:0;}
+    .menu-admin-item-controls button{width:52px;height:52px;border:2px solid var(--c-yellow);border-radius:10px;background:#09090c;color:#fff;font-size:1.65rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+    .menu-admin-item-controls button:active{transform:scale(.94);background:var(--c-yellow);color:#000;}
+    .menu-admin-finance{margin-top:9px;padding:9px;border:1px solid rgba(0,188,212,.25);border-radius:10px;background:rgba(0,188,212,.05);}
+    .menu-admin-finance>small{display:block;color:#8d9aa2;margin-top:6px;}
+    .menu-admin-finance-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:7px;}
+    .menu-admin-finance-grid div{padding:7px;border-radius:8px;background:rgba(0,0,0,.22);text-align:center;}
+    .menu-admin-finance-grid div b{display:block;color:#fff;font-size:.9rem;}
+    .menu-admin-finance-grid div span{display:block;color:#8d9aa2;font-size:.66rem;margin-top:2px;}
+    @media(max-width:650px){.menu-admin-finance-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.menu-admin-item-controls button{width:54px;height:54px;font-size:1.7rem;}}
+  </style>
 </head>
 <body>
 
@@ -663,7 +647,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE CARDÁPIO -->
   <div id="productModal" class="modal">
     <div class="modal-content glass-panel">
-      <div class="modal-close-top"><button type="button" onclick="closeModal('productModal')" aria-label="Fechar">×</button></div>
+      <span class="close-btn" onclick="closeModal('productModal')">×</span>
       <img id="modalImg" src="" alt="Produto" onerror="fallbackMenuImg(this,${Number(item.id)||0})">
       <h3 id="modalTitle">Nome</h3>
       <p id="modalDesc">Descrição</p>
@@ -717,7 +701,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL DE EDIÇÃO RÁPIDA DE CATEGORIAS -->
   <div id="categoryQuickEditModal" class="modal">
     <div class="modal-content glass-panel" style="border-color:var(--c-yellow); text-align:left; max-width:520px;">
-      <div class="modal-close-top"><button type="button" onclick="closeModal('categoryQuickEditModal')" aria-label="Fechar">×</button></div>
+      <span class="close-btn" onclick="closeModal('categoryQuickEditModal')">×</span>
       <h3 style="font-family:var(--font-title); font-size:1.7rem; color:var(--c-yellow); margin-bottom:6px; text-align:center;">✏️ Editar Categorias da Página</h3>
       <p id="category-edit-page-label" style="color:#aaa; font-size:.85rem; text-align:center; margin-bottom:14px;"></p>
       <input type="hidden" id="category-edit-page">
@@ -729,7 +713,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
   <!-- MODAL ILUSTRATIVO DE CRIAÇÃO DIRETA DE ITENS -->
   <div id="itemCreateModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow); text-align: left;">
-      <div class="modal-close-top"><button type="button" onclick="closeModal('itemCreateModal')" aria-label="Fechar">×</button></div>
+      <span class="close-btn" onclick="closeModal('itemCreateModal')">×</span>
       <h3 style="font-family: var(--font-title); font-size: 1.8rem; color: var(--c-yellow); margin-bottom: 12px; text-align: center;">✨ Adicionar Novo Item</h3>
       
       <img id="create-item-img-preview" src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&q=80" alt="Preview">
@@ -969,10 +953,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         <h2 class="section-title">Cardápio de Bebidas</h2>
         <p style="text-align: center; color: var(--c-yellow); font-weight: bold; margin-bottom: 15px; font-size: 0.85rem;">👇 CLIQUE NO PRODUTO PARA VER DETALHES 👇</p>
         <div id="menu-organizer-bebidas" class="menu-organizer-bar">
-          <span class="menu-organizer-hint">Use as setas ↑/↓ em cada card para mudar a ordem dentro da categoria. Não é necessário arrastar ou segurar o card. A mudança só fica permanente depois de salvar.</span>
-          <button id="menu-organizer-save-${menuOrganizerPage||'bebidas'}" class="action-btn menu-organizer-save" onclick="saveMenuPositions(menuOrganizerPage||'bebidas')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
-          <button id="menu-organizer-discard-bebidas" class="action-btn menu-organizer-discard" onclick="discardMenuPositions(menuOrganizerPage||'bebidas')" style="background:#555;color:#fff;">↩ Descartar</button>
-          <button class="action-btn" onclick="toggleMenuOrganizer(menuOrganizerPage||'bebidas',false)" style="background:#333;color:#fff;">✖ Fechar</button>
+          <span class="menu-organizer-hint">Arraste os quadrados para mudar a ordem dentro de cada categoria. No celular, use ↑/↓ no card. A mudança só fica permanente depois de salvar.</span>
+          <button id="menu-organizer-save-bebidas" class="action-btn menu-organizer-save" onclick="saveMenuPositions('bebidas')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
+          <button id="menu-organizer-discard-bebidas" class="action-btn menu-organizer-discard" onclick="discardMenuPositions('bebidas')" style="background:#555;color:#fff;">↩ Descartar</button>
+          <button class="action-btn" onclick="toggleMenuOrganizer('bebidas',false)" style="background:#333;color:#fff;">✖ Fechar</button>
         </div>
         <div id="dynamic-menu-bebidas"></div>
       </section>
@@ -986,7 +970,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         </div>
         <h2 class="section-title">Larica Pesada</h2>
         <div id="menu-organizer-porcoes" class="menu-organizer-bar">
-          <span class="menu-organizer-hint">Use as setas ↑/↓ em cada card para mudar a ordem. Não é necessário arrastar ou segurar o card. A mudança só fica permanente depois de salvar.</span>
+          <span class="menu-organizer-hint">Arraste os quadrados para mudar a ordem. No celular, use ↑/↓ no card. A mudança só fica permanente depois de salvar.</span>
           <button id="menu-organizer-save-porcoes" class="action-btn menu-organizer-save" onclick="saveMenuPositions('porcoes')" style="background:var(--c-yellow);color:#000;">💾 Salvar posições</button>
           <button id="menu-organizer-discard-porcoes" class="action-btn menu-organizer-discard" onclick="discardMenuPositions('porcoes')" style="background:#555;color:#fff;">↩ Descartar</button>
           <button class="action-btn" onclick="toggleMenuOrganizer('porcoes',false)" style="background:#333;color:#fff;">✖ Fechar</button>
@@ -1861,6 +1845,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const name = String(item.name || '').trim().toLowerCase();
       const pools = [
         ...(Array.isArray(defaultMenu) ? defaultMenu : []),
+        ...(Array.isArray(EXTRA_DRINK_CATALOG) ? EXTRA_DRINK_CATALOG : [])
       ];
       const found = pools.find(x => String(x.id ?? '') === id) || pools.find(x => String(x.name || '').trim().toLowerCase() === name);
       return found && found.img ? found.img : '';
@@ -2836,61 +2821,52 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    // ===== CATEGORIAS DO CARDÁPIO — RECONSTRUÇÃO INTEGRAL =====
-    // Somente classifica itens que JÁ existem em appData.menu. Nenhum produto é criado.
-    const BRG_MENU_CATEGORY_DEFS = [
-      ['caipirinha','🍋 Linha Caipirinha'],
-      ['vodka','🍸 Linha Vodka'],
-      ['rum','🍹 Linha Rum'],
-      ['tequila','🌵 Linha Tequila'],
-      ['gin','🌿 Linha Gin'],
-      ['whisky','🥃 Linha Whisky']
-    ];
-
-    function brgCategoryKeyForExistingDrink(item){
-      const name=String(item?.name||'').trim().toLowerCase();
-      const current=String(item?.drinkLine||'').trim().toLowerCase();
-      if(BRG_MENU_CATEGORY_DEFS.some(([k])=>k===current)) return current;
-      const rules=[
-        ['caipirinha',/caipirinha|caipiríssima/i],
-        ['vodka',/caipiroska|vodka|moscow mule|screwdriver|cosmopolitan|sex on the beach|bloody mary/i],
-        ['rum',/cuba libre|mojito|daiquiri|rum sour|rum punch/i],
-        ['tequila',/margarita|tequila sunrise|tequila sour/i],
-        ['gin',/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins|gin sunset/i],
-        ['whisky',/whisk|whiskey|old fashioned|highball/i]
-      ];
-      const found=rules.find(([,rx])=>rx.test(name));
-      return found?found[0]:'';
-    }
-
     function ensureLegacyDrinkLines(){
       if(!Array.isArray(appData.menu)) return;
-      appData.menu.forEach(item=>{
-        if(!item || item.type!=='drink') return;
-        const key=brgCategoryKeyForExistingDrink(item);
-        if(key) item.drinkLine=key;
+      const inferred = {
+        'gin sunset':'gin',
+        'caipirinha':'caipirinha',
+        'caipiroska':'vodka',
+        'bloody mary':'vodka',
+        'fenrir whiskey':'whisky'
+      };
+      const patterns = [
+        [/caipir|caipirinha|caipiríssima/i,'caipirinha'],[/vodka|moscow mule|screwdriver|cosmopolitan|sex on the beach/i,'vodka'],
+        [/mojito|daiquiri|rum sour|rum punch|cuba libre/i,'rum'],[/margarita|tequila sunrise|tequila sour/i,'tequila'],
+        [/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins/i,'gin'],[/whisk|whiskey|old fashioned|highball/i,'whisky']
+      ];
+      appData.menu.forEach(item => {
+        if(!item || item.type !== 'drink') return;
+        if(item.drinkLine && ['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(item.drinkLine))) return;
+        const key = String(item.name || '').trim().toLowerCase();
+        if(inferred[key]) { item.drinkLine = inferred[key]; return; }
+        const match = patterns.find(([rx]) => rx.test(String(item.name||'')));
+        if(match) item.drinkLine = match[1];
       });
     }
 
-    function ensureMenuCategoryLabels(){
-      const old=appData.menuCategoryLabels||{};
-      const b=old.bebidas||{};
-      const p=old.porcoes||{};
-      appData.menuCategoryLabels={
-        bebidas:{
-          featured:'⭐ DESTAQUES DO BAR',
-          featuredIds:Array.isArray(b.featuredIds)?[...new Set(b.featuredIds.map(Number).filter(Number.isFinite).filter(x=>x>0))]:[],
-          caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',
-          tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',
-          legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris'
-        },
-        porcoes:{title:p.title||'🍟 Porções & Larica',featured:'⭐ DESTAQUES DAS PORÇÕES',featuredIds:Array.isArray(p.featuredIds)?[...new Set(p.featuredIds.map(Number).filter(Number.isFinite).filter(x=>x>0))]:[]}
+    function ensureMenuCategoryLabels() {
+      const defaults = {
+        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       };
-      // Destaques só podem apontar para itens que ainda existem.
-      const ids=new Set((appData.menu||[]).map(i=>Number(i.id)));
-      appData.menuCategoryLabels.bebidas.featuredIds=appData.menuCategoryLabels.bebidas.featuredIds.filter(id=>ids.has(id));
-      appData.menuCategoryLabels.porcoes.featuredIds=appData.menuCategoryLabels.porcoes.featuredIds.filter(id=>ids.has(id));
-      ensureLegacyDrinkLines();
+      if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
+      Object.keys(defaults).forEach(page => {
+        if(!appData.menuCategoryLabels[page] || typeof appData.menuCategoryLabels[page] !== 'object') appData.menuCategoryLabels[page] = {};
+        Object.keys(defaults[page]).forEach(key => {
+          if(!appData.menuCategoryLabels[page][key]) appData.menuCategoryLabels[page][key] = defaults[page][key];
+        });
+      });
+      // Compatibilidade com versões anteriores: o selo/destaque NUNCA é automático.
+      // O ADM escolhe manualmente os itens em destaque. A quantidade é ilimitada.
+      const b=appData.menuCategoryLabels.bebidas;
+      const p=appData.menuCategoryLabels.porcoes;
+      if(Object.prototype.hasOwnProperty.call(b,'promoIds')) delete b.promoIds;
+      if(Object.prototype.hasOwnProperty.call(b,'promoTitle')) delete b.promoTitle;
+      if(!Array.isArray(b.featuredIds)) b.featuredIds=[];
+      if(!Array.isArray(p.featuredIds)) p.featuredIds=[];
+      b.featuredIds=Array.from(new Set(b.featuredIds.map(Number).filter(Number.isFinite).filter(id=>id>0)));
+      p.featuredIds=Array.from(new Set(p.featuredIds.map(Number).filter(Number.isFinite).filter(id=>id>0)));
     }
 
     function openCategoryQuickEdit(page) {
@@ -2946,20 +2922,46 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveCategoryQuickEdit() {
-      const logged=getPersistentAdminFlag('brg_adm_logged')==='true', master=getPersistentAdminFlag('brg_adm_is_master')==='true', perms=appData.permissions||{};
-      if(!logged||(!master&&perms.canEdit===false))return alert('Acesso Negado!');
-      ensureMenuCategoryLabels(); ensureMenuOrderData();
-      const page=document.getElementById('category-edit-page')?.value; if(!['bebidas','porcoes'].includes(page))return;
-      const inputs=Array.from(document.querySelectorAll('#category-edit-fields .category-edit-input'));
-      inputs.forEach(input=>{const key=input.dataset.categoryKey;if(key)appData.menuCategoryLabels[page][key]=input.value.trim()});
-      const ids=Array.from(document.querySelectorAll('#category-edit-fields .featured-drink-select,#category-edit-fields .featured-portion-select')).map(x=>Number(x.value)).filter(Number.isFinite).filter(x=>x>0);
-      appData.menuCategoryLabels[page].featuredIds=[...new Set(ids)];
-      const ok=await saveBinData(`Editou categorias e destaques da página ${page}`); if(ok===false)return alert('⚠️ Não foi possível salvar as categorias.');
-      closeModal('categoryQuickEditModal'); renderAdminLists(true); renderApp(); alert('✅ Categorias atualizadas e salvas!');
+      const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      if(!isLoggedIn || (!isMaster && perms.canEdit === false)) return alert('Acesso Negado!');
+      ensureMenuCategoryLabels();
+      const page = document.getElementById('category-edit-page').value;
+      const inputs = Array.from(document.querySelectorAll('#category-edit-fields .category-edit-input'));
+      inputs.forEach(input => {
+        const key = input.dataset.categoryKey;
+        const value = input.value.trim();
+        if(value) appData.menuCategoryLabels[page][key] = value;
+      });
+      if(page === 'bebidas'){
+        appData.menuCategoryLabels.bebidas.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-drink-select'))
+          .map(s=>Number(s.value))
+          .filter(Number.isFinite)
+          .filter(id=>id>0)
+          .filter((id,idx,arr)=>arr.indexOf(id)===idx);
+      }
+      if(page === 'porcoes'){
+        appData.menuCategoryLabels.porcoes.featuredIds = Array.from(document.querySelectorAll('#category-edit-fields .featured-portion-select'))
+          .map(s=>Number(s.value))
+          .filter(Number.isFinite)
+          .filter(id=>id>0)
+          .filter((id,idx,arr)=>arr.indexOf(id)===idx);
+      }
+      await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
+      closeModal('categoryQuickEditModal');
+      renderAdminLists(true);
+      renderApp();
+      alert('✅ Categorias atualizadas e salvas!');
     }
 
-    // ===== ORGANIZADOR DO CARDÁPIO — RECONSTRUÇÃO INTEGRAL =====
-    // Não usa drag/drop, long-press, touch handlers ou HTML5 DnD. Apenas setas.
+    // Organizador visual do cardápio — somente ADM.
+    // A ordem é guardada separadamente por categoria para não alterar os dados dos itens.
+    /* =========================================================
+       ORGANIZADOR DO CARDÁPIO — RECONSTRUÇÃO TOTAL, SETAS ONLY
+       Não usa drag/drop, long-press, touch handlers ou DOM reorder.
+       A fonte da verdade é appData.menuOrder, separada por categoria.
+       ========================================================= */
     let menuOrganizerPage='';
     let menuOrganizerActive=false;
     let menuOrganizerDirty=false;
@@ -2978,95 +2980,87 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
     function brgOrderForKey(key){
       ensureMenuOrderData();
-      if(!Array.isArray(appData.menuOrder[key])) appData.menuOrder[key]=[];
-      const valid=(appData.menu||[]).filter(i=>menuOrderKeyForItem(i)===key).map(i=>Number(i.id)).filter(Number.isFinite);
-      const seen=new Set();
-      const order=[];
-      appData.menuOrder[key].forEach(id=>{id=Number(id);if(valid.includes(id)&&!seen.has(id)){seen.add(id);order.push(id);}});
-      valid.forEach(id=>{if(!seen.has(id)){seen.add(id);order.push(id);}});
-      appData.menuOrder[key]=order;
-      return order;
+      const menu=Array.isArray(appData.menu)?appData.menu:[];
+      const valid=menu.filter(i=>menuOrderKeyForItem(i)===key).map(i=>Number(i.id)).filter(Number.isFinite);
+      const validSet=new Set(valid), seen=new Set(), result=[];
+      const old=Array.isArray(appData.menuOrder[key])?appData.menuOrder[key]:[];
+      old.forEach(id=>{const n=Number(id);if(validSet.has(n)&&!seen.has(n)){seen.add(n);result.push(n);}});
+      valid.forEach(n=>{if(!seen.has(n)){seen.add(n);result.push(n);}});
+      appData.menuOrder[key]=result;
+      return result;
     }
     function sortMenuItemsBySavedOrder(items,key){
-      const order=brgOrderForKey(key),pos=new Map(order.map((id,i)=>[id,i]));
-      return [...items].sort((a,b)=>{const pa=pos.has(Number(a.id))?pos.get(Number(a.id)):999999;const pb=pos.has(Number(b.id))?pos.get(Number(b.id)):999999;return pa-pb;});
+      const order=brgOrderForKey(key), pos=new Map(order.map((id,i)=>[Number(id),i]));
+      return [...items].sort((a,b)=>(pos.get(Number(a.id))??999999)-(pos.get(Number(b.id))??999999));
     }
     function isMenuOrganizerAllowed(){
       return getPersistentAdminFlag('brg_adm_logged')==='true' && (getPersistentAdminFlag('brg_adm_is_master')==='true' || (appData.permissions||{}).canEdit!==false);
     }
-    function updateMenuOrganizerUI(page){
-      const root=document.getElementById('admin-menu-list');
-      if(root){
-        const save=root.querySelector('.menu-organizer-save');
-        if(save) save.disabled=!menuOrganizerDirty;
-        const box=root.querySelector('.menu-admin-organizer');
-        if(box) box.classList.toggle('active',menuOrganizerActive && menuOrganizerPage===page);
-      }
+    function brgOrganizerCategoryKeys(){
+      return ['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
     }
-    function brgRenderAfterOrganizerChange(){
-      try{renderApp();}catch(e){console.error('[Bargunçados] render após organização:',e);}
-      try{if(getPersistentAdminFlag('brg_adm_logged')==='true')renderAdminLists(true);}catch(e){console.error('[Bargunçados] admin após organização:',e);}
+    function brgOrganizerSnapshot(){
+      ensureMenuOrderData();
+      brgOrganizerCategoryKeys().forEach(brgOrderForKey);
+      return JSON.parse(JSON.stringify(appData.menuOrder));
+    }
+    function brgRenderAdminOnly(){
+      try{ if(getPersistentAdminFlag('brg_adm_logged')==='true') renderAdminLists(true); }catch(e){console.error('[ADM] render após organização',e);}
     }
     function toggleMenuOrganizer(page,force){
       page=page==='porcoes'?'porcoes':'bebidas';
       if(!isMenuOrganizerAllowed()) return alert('Acesso Negado: seu administrador não possui permissão para organizar o cardápio.');
-      if(force===false){
-        if(menuOrganizerDirty && !confirm('Há alterações de ordem ainda não salvas. Fechar e descartar?')) return;
-        if(menuOrganizerDirty && menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
+      if(force===false || (menuOrganizerActive && menuOrganizerPage===page)){
+        if(menuOrganizerDirty && !confirm('Existem alterações de ordem não salvas. Fechar e descartar?')) return;
+        if(menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
         menuOrganizerActive=false; menuOrganizerDirty=false; menuOrganizerPage=''; menuOrganizerSnapshot=null;
-        brgRenderAfterOrganizerChange(); return;
+        brgRenderAdminOnly();
+        return;
       }
-      if(menuOrganizerActive && menuOrganizerPage===page){
-        updateMenuOrganizerUI(page); return;
-      }
+      if(menuOrganizerDirty && menuOrganizerPage!==page && !confirm('Existem alterações de ordem não salvas. Trocar de seção e descartar?')) return;
+      if(menuOrganizerDirty && menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
       menuOrganizerPage=page;
-      ensureMenuOrderData();
-      ['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'].forEach(brgOrderForKey);
-      menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
-      menuOrganizerDirty=false; menuOrganizerActive=true;
-      brgRenderAfterOrganizerChange();
+      menuOrganizerSnapshot=brgOrganizerSnapshot();
+      menuOrganizerDirty=false;
+      menuOrganizerActive=true;
+      brgRenderAdminOnly();
     }
     function moveMenuCard(id,direction){
       if(!menuOrganizerActive) return;
-      const item=(appData.menu||[]).find(x=>String(x.id)===String(id));
+      const item=(Array.isArray(appData.menu)?appData.menu:[]).find(x=>String(x.id)===String(id));
       if(!item) return;
       const key=menuOrderKeyForItem(item);
-      if(menuOrganizerPage==='porcoes' && key!=='portion') return;
-      if(menuOrganizerPage==='bebidas' && key==='portion') return;
-      const order=brgOrderForKey(key),idx=order.indexOf(Number(id));
+      const page=key==='portion'?'porcoes':'bebidas';
+      if(page!==menuOrganizerPage) return;
+      const order=brgOrderForKey(key), idx=order.indexOf(Number(id));
       if(idx<0) return;
       const next=direction==='up'?idx-1:idx+1;
-      if(next<0||next>=order.length) return;
+      if(next<0 || next>=order.length) return;
       [order[idx],order[next]]=[order[next],order[idx]];
       appData.menuOrder[key]=order;
-      menuOrganizerDirty=true;
-      brgRenderAfterOrganizerChange();
+      menuOrganizerDirty=JSON.stringify(appData.menuOrder)!==JSON.stringify(menuOrganizerSnapshot);
+      brgRenderAdminOnly();
     }
     async function saveMenuPositions(page){
       page=page==='porcoes'?'porcoes':'bebidas';
-      if(!menuOrganizerActive||menuOrganizerPage!==page)return;
-      ensureMenuOrderData();
-      Object.keys(appData.menuOrder).forEach(brgOrderForKey);
-      const before=menuOrganizerSnapshot?JSON.stringify(menuOrganizerSnapshot):'';
-      const after=JSON.stringify(appData.menuOrder);
-      if(before===after){menuOrganizerDirty=false;updateMenuOrganizerUI(page);return;}
+      if(!menuOrganizerActive || menuOrganizerPage!==page) return false;
+      if(!menuOrganizerDirty) return true;
       try{
-        const ok=await saveBinData('Reorganizou o cardápio de '+page+' usando o organizador por setas');
-        if(ok===false) throw new Error('A persistência remota recusou a alteração.');
-        menuOrganizerSnapshot=JSON.parse(JSON.stringify(appData.menuOrder));
+        const ok=await saveBinData('Reorganizou o cardápio de '+page+' usando as setas ↑/↓');
+        if(ok===false) throw new Error('O servidor não confirmou a ordem.');
+        menuOrganizerSnapshot=brgOrganizerSnapshot();
         menuOrganizerDirty=false;
-        brgRenderAfterOrganizerChange();
-        alert('✅ Ordem salva com sucesso.');
+        brgRenderAdminOnly();
+        return true;
       }catch(e){
-        menuOrganizerDirty=true;
-        alert('❌ Não foi possível salvar a ordem. A alteração continua na tela.\n\n'+(e?.message||e));
+        alert('❌ A ordem não foi salva.\n\n'+(e?.message||e));
+        return false;
       }
     }
     function discardMenuPositions(page){
-      page=page==='porcoes'?'porcoes':'bebidas';
       if(menuOrganizerSnapshot) appData.menuOrder=JSON.parse(JSON.stringify(menuOrganizerSnapshot));
       menuOrganizerDirty=false;
-      brgRenderAfterOrganizerChange();
+      brgRenderAdminOnly();
     }
 
     function optimizeMenuImageLoading(){
@@ -3298,10 +3292,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       portionsStr+='</div></div></details>';
       portionsContainer.innerHTML = portionsStr;
       optimizeMenuImageLoading();
-      
-      
-      updateMenuOrganizerUI('bebidas');
-      updateMenuOrganizerUI('porcoes');
 
       const agendaList = document.getElementById('dynamic-agenda-list');
       agendaList.innerHTML = '';
@@ -3594,7 +3584,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const hostedImg = normalizeStoredImage(item);
       const f=Boolean(showFeaturedBadge);
       const organizerClick = `openMenuModalObj(${safeNumericId(item.id)})`;
-      const moveControls = menuOrganizerActive ? `<div class="menu-move-controls" onclick="event.stopPropagation();"><span class="menu-move-label">ORDEM</span><button type="button" title="Mover para cima" aria-label="Mover para cima" onclick="moveMenuCard(${safeNumericId(item.id)},'up')">↑</button><button type="button" title="Mover para baixo" aria-label="Mover para baixo" onclick="moveMenuCard(${safeNumericId(item.id)},'down')">↓</button></div>` : '';
+      const moveControls = '';
       const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
       const imageMarkup = imageUrl
         ? `<img src="${imageUrl}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
@@ -3645,41 +3635,89 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       document.getElementById('productModal').style.display = 'flex';
     }
 
-    // ================================================================
-    // UPLOAD DE FOTOS — RECONSTRUÇÃO SERVER-FIRST
-    // A foto só é aceita se a Edge Function image-upload confirmar uma URL
-    // HTTPS válida e o navegador conseguir carregar essa URL. Não grava
-    // base64/localStorage. A URL final é persistida no Supabase pelo fluxo
-    // de saveBinData da operação correspondente.
-    // ================================================================
-    async function validateHostedImageUrl(url,timeoutMs=12000){
-      const candidate=safeImageUrl(url);
-      if(!candidate) return false;
-      try{
-        const ok=await new Promise(resolve=>{
-          const img=new Image();
-          let done=false;
-          const finish=v=>{if(done)return;done=true;clearTimeout(timer);img.onload=null;img.onerror=null;resolve(v)};
-          const timer=setTimeout(()=>finish(false),timeoutMs);
-          img.onload=()=>finish(true);
-          img.onerror=()=>finish(false);
-          img.src=candidate+(candidate.includes('?')?'&':'?')+'brg_img_check='+Date.now();
-        });
-        return !!ok;
-      }catch(_){return false;}
-    }
+    async function uploadToImgBB(file, callback) {
+      if (!file) return false;
+      try {
+        if (!file.type || !file.type.startsWith('image/')) {
+          alert('⚠️ Selecione um arquivo de imagem válido.');
+          return false;
+        }
+        if (Number(file.size || 0) > 15 * 1024 * 1024) {
+          alert('⚠️ A imagem é muito grande. O limite é 15 MB.');
+          return false;
+        }
 
-    async function uploadToImgBB(file,callback){
-      if(!file)return false;if(!String(file.type||'').startsWith('image/')){alert('⚠️ Selecione uma imagem válida.');return false}if(Number(file.size||0)>15*1024*1024){alert('⚠️ A imagem ultrapassa 15 MB.');return false}
-      try{const form=new FormData();form.append('file',file,file.name||'imagem');form.append('key',IMGBB_KEY);const res=await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL,{method:'POST',body:form,cache:'no-store',headers:{apikey:SUPABASE_PUBLISHABLE_KEY}},30000);const json=await res.json().catch(()=>null),url=String(json?.url||'').trim();if(!res.ok||!url)throw new Error(json?.error||json?.message||('HTTP '+res.status));const probe=new Image();await new Promise((ok,bad)=>{probe.onload=ok;probe.onerror=()=>bad(new Error('A imagem hospedada não pôde ser carregada.'));probe.src=url+(url.includes('?')?'&':'?')+'verify='+Date.now()});if(typeof callback==='function')await callback(url);return true}catch(e){alert('❌ Upload não concluído.\n\n'+(e?.message||e));return false}
+        // 1) Caminho principal: Edge Function. Evita CORS/bloqueios do navegador.
+        try {
+          const proxyForm = new FormData();
+          proxyForm.append('file', file, file.name || 'imagem');
+          proxyForm.append('key', IMGBB_KEY);
+          const proxyRes = await fetchWithTimeout(IMAGE_UPLOAD_FUNCTION_URL, {
+            method: 'POST',
+            body: proxyForm,
+            cache: 'no-store',
+            headers: { 'apikey': SUPABASE_PUBLISHABLE_KEY }
+          }, 30000);
+          let proxyJson = null;
+          try { proxyJson = await proxyRes.json(); } catch (e) {}
+          const proxyUrl = proxyJson && typeof proxyJson.url === 'string' ? proxyJson.url.trim() : '';
+          if (proxyRes.ok && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(proxyUrl)) {
+            if (typeof callback === 'function') callback(proxyUrl);
+            console.info('[Bargunçados] Upload confirmado pelo proxy ImgBB.', proxyUrl);
+            return true;
+          }
+          console.warn('[Bargunçados] Proxy ImgBB não confirmou o upload; usando fallback direto.', proxyJson);
+        } catch (proxyError) {
+          console.warn('[Bargunçados] Proxy de imagem indisponível; usando fallback direto.', proxyError);
+        }
+
+        // 2) Fallback compatível com o uploader original: ImgBB + ImgDB em paralelo.
+        const uploadImgBB = async () => {
+          try {
+            const formData = new FormData();
+            formData.append('image', file, file.name || 'imagem');
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(IMGBB_KEY)}`, {
+              method: 'POST', body: formData, cache: 'no-store'
+            });
+            let json = null; try { json = await res.json(); } catch (e) {}
+            const url = json && json.data && typeof json.data.url === 'string' ? json.data.url.trim() : '';
+            return (res.ok && json && json.success === true && /^https:\/\/i\.ibb\.co\/[^\s]+$/i.test(url))
+              ? { url, error: '' }
+              : { url: '', error: (json && (json.error?.message || json.error || json.message)) || `HTTP ${res.status}` };
+          } catch (e) { return { url: '', error: e?.message || 'Erro de rede' }; }
+        };
+        const uploadImgDB = async () => {
+          try {
+            const formData = new FormData();
+            formData.append('file', file, file.name || 'imagem');
+            const res = await fetch(IMGDB_UPLOAD_URL, { method: 'POST', body: formData, cache: 'no-store' });
+            let json = null; try { json = await res.json(); } catch (e) {}
+            const url = json && typeof json.url === 'string' ? json.url.trim() : '';
+            return (res.ok && /^https:\/\/imgdb\.io\/i\/[^\s]+$/i.test(url))
+              ? { url, error: '' }
+              : { url: '', error: (json && (json.error || json.message)) || `HTTP ${res.status}` };
+          } catch (e) { return { url: '', error: e?.message || 'Erro de rede' }; }
+        };
+        const [imgbbResult, imgdbResult] = await Promise.all([uploadImgBB(), uploadImgDB()]);
+        const hostedUrl = imgbbResult.url || imgdbResult.url;
+        if (!hostedUrl) {
+          alert(`⚠️ A foto não foi hospedada.\n\nImgBB: ${imgbbResult.error || 'sem resposta válida'}\nImgDB: ${imgdbResult.error || 'sem resposta válida'}\n\nNada foi salvo no banco de dados.`);
+          return false;
+        }
+        if (typeof callback === 'function') callback(hostedUrl);
+        return true;
+      } catch (e) {
+        console.error('Upload de imagem: erro inesperado.', e);
+        alert('⚠️ Erro ao enviar a foto. Nada foi salvo no banco de dados.');
+        return false;
+      }
     }
 
     async function modalUploadImg(input) {
-      uploadToImgBB(input.files[0], async res => {
+      uploadToImgBB(input.files[0], res => {
         document.getElementById('modal-edit-img').value = res;
-        const preview=document.getElementById('modalImg');
-        if(preview){preview.style.objectFit='contain';preview.src=res;}
-        alert('Foto carregada e validada pelo servidor!');
+        document.getElementById('modalImg').src = res;
+        alert("Foto carregada com sucesso!");
       });
     }
 
@@ -3757,10 +3795,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function createUploadImg(input) {
-      uploadToImgBB(input.files[0], async res => {
+      uploadToImgBB(input.files[0], res => {
         document.getElementById('create-item-img').value = res;
         document.getElementById('create-item-img-preview').src = res;
-        alert('Foto carregada e validada pelo servidor!');
+        alert("Foto ilustrativa carregada com sucesso!");
       });
     }
 
@@ -4291,21 +4329,59 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    async function moderateInteractionRemote(type,id,status){
-      if(!canModerateInline())throw new Error('Acesso Negado: seu administrador não possui permissão de moderação.');
-      const t=type==='song'?'song':'message', st=status==='accepted'?'accepted':'rejected'; let token=await getAdminAccessToken(); if(!token)throw new Error('Sessão administrativa inválida ou expirada. Faça login novamente.');
-      const call=async tok=>fetchWithTimeout(SUPABASE_FUNCTION_URL,{method:'POST',cache:'no-store',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+tok},body:JSON.stringify({action:'moderate_interaction',type:t,id:String(id),status:st})},15000);
-      let res=await call(token);if(res.status===401){const refreshed=await supabaseRefreshSession();token=refreshed?.access_token||null;if(token)res=await call(token)}
-      let json=null;try{json=await res.json()}catch(_){ } if(!res.ok||!json?.ok)throw new Error((json?.error||('HTTP_'+res.status))+': '+(json?.message||'O servidor não confirmou a moderação.'));return json;
+    async function moderateInteractionRemote(type, id, status) {
+      if(!canModerateInline()) throw new Error('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const normalizedType = type === 'song' ? 'song' : 'message';
+      const normalizedStatus = status === 'accepted' ? 'accepted' : 'rejected';
+      let token = await getAdminAccessToken();
+      if(!token) throw new Error('Sessão administrativa inválida ou expirada. Faça login novamente.');
+      const request = async(accessToken) => fetchWithTimeout(SUPABASE_FUNCTION_URL,{
+        method:'POST',cache:'no-store',
+        headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+accessToken},
+        body:JSON.stringify({action:'moderate_interaction',type:normalizedType,id:String(id),status:normalizedStatus})
+      },15000);
+      let res=await request(token);
+      if(res.status===401){const refreshed=await supabaseRefreshSession();token=refreshed?.access_token||null;if(token)res=await request(token);}
+      let json=null;try{json=await res.json()}catch(e){}
+      if(!res.ok||!json?.ok)throw new Error((json?.error||('HTTP_'+res.status))+': '+(json?.message||'O servidor não confirmou a moderação.'));
+      return json;
     }
 
-    async function approveSong(id){if(!canModerateInline())return alert('Acesso Negado: seu administrador não possui permissão de moderação.');const arr=appData.pendingSongs||[];if(!arr.some(x=>String(x.id)===String(id)))return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');if(interactionMutationBusy)return;interactionMutationBusy=true;try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido de música aprovado e publicado no mural para o cliente!');return true}catch(e){console.error('[Mural]',e);await refreshModerationQueue();alert('❌ Não foi possível aprovar. Nada foi alterado.\n\n'+(e?.message||e));return false}finally{interactionMutationBusy=false}}
+    async function approveSong(id) {
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      if(!(appData.pendingSongs||[]).some(s=>String(s.id)===String(id))) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('song',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Pedido aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
+    }
 
-    async function rejectSong(id){if(!canModerateInline())return alert('Acesso Negado: seu administrador não possui permissão de moderação.');const arr=appData.pendingSongs||[];const item=arr.find(x=>String(x.id)===String(id));if(!item)return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');if(!confirm('Excluir este pedido da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||'')))return;if(interactionMutationBusy)return;interactionMutationBusy=true;try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Item excluído da fila.');return true}catch(e){console.error('[Mural]',e);await refreshModerationQueue();alert('❌ Não foi possível excluir. Nada foi removido.\n\n'+(e?.message||e));return false}finally{interactionMutationBusy=false}}
+    async function rejectSong(id) {
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item=(appData.pendingSongs||[]).find(s=>String(s.id)===String(id));
+      if(!item) return alert('Pedido de música não encontrado. Atualize a fila e tente novamente.');
+      if(!confirm('Excluir este pedido de música da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||''))) return;
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('song',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Pedido excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao excluir pedido de música:',e);await refreshModerationQueue();alert('❌ O pedido não foi excluído. Nada foi removido.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
+    }
 
-    async function approveMsg(id){if(!canModerateInline())return alert('Acesso Negado: seu administrador não possui permissão de moderação.');const arr=appData.pendingMessages||[];if(!arr.some(x=>String(x.id)===String(id)))return alert('Recado não encontrado. Atualize a fila e tente novamente.');if(interactionMutationBusy)return;interactionMutationBusy=true;try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true}catch(e){console.error('[Mural]',e);await refreshModerationQueue();alert('❌ Não foi possível aprovar. Nada foi alterado.\n\n'+(e?.message||e));return false}finally{interactionMutationBusy=false}}
+    async function approveMsg(id) {
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      if(!(appData.pendingMessages||[]).some(m=>String(m.id)===String(id))) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('message',id,'accepted');await refreshModerationQueue();renderPublicInteractions();alert('✅ Recado aprovado e publicado no mural para o cliente!');return true;}catch(e){console.error('[Bargunçados] Falha ao aprovar recado:',e);await refreshModerationQueue();alert('❌ O recado não foi aprovado. Nada foi alterado no mural.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
+    }
 
-    async function rejectMsg(id){if(!canModerateInline())return alert('Acesso Negado: seu administrador não possui permissão de moderação.');const arr=appData.pendingMessages||[];const item=arr.find(x=>String(x.id)===String(id));if(!item)return alert('Recado não encontrado. Atualize a fila e tente novamente.');if(!confirm('Excluir este pedido da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||'')))return;if(interactionMutationBusy)return;interactionMutationBusy=true;try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Item excluído da fila.');return true}catch(e){console.error('[Mural]',e);await refreshModerationQueue();alert('❌ Não foi possível excluir. Nada foi removido.\n\n'+(e?.message||e));return false}finally{interactionMutationBusy=false}}
+    async function rejectMsg(id) {
+      if(!canModerateInline()) return alert('Acesso Negado: seu administrador não possui permissão de moderação.');
+      const item=(appData.pendingMessages||[]).find(m=>String(m.id)===String(id));
+      if(!item) return alert('Recado não encontrado. Atualize a fila e tente novamente.');
+      if(!confirm('Excluir este recado da fila?\n\n'+String(item.ig||'')+' — '+String(item.text||''))) return;
+      if(interactionMutationBusy) return;
+      interactionMutationBusy=true;
+      try{await moderateInteractionRemote('message',id,'rejected');await refreshModerationQueue();renderPublicInteractions();alert('🗑️ Recado excluído da fila. Ele não foi publicado no mural.');return true;}catch(e){console.error('[Bargunçados] Falha ao excluir recado:',e);await refreshModerationQueue();alert('❌ O recado não foi excluído. Nada foi removido.\n\n'+(e?.message||e));return false;}finally{interactionMutationBusy=false;}
+    }
 
     let tempNewTabImg = '';
     document.getElementById('new-tab-img-file').addEventListener('change', e => {
@@ -4387,100 +4463,111 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
-    let __adminCatalogBarLoading=false;
-    async function ensureAdminCatalogBarData(){
-      if(__adminCatalogBarLoading || !brgIsAdmin || !brgIsAdmin()) return;
-      if(BRG_BAR?.data && Array.isArray(BRG_BAR.data.recipes)) return;
-      __adminCatalogBarLoading=true;
-      try{
-        await loadBarControl(false);
-        if(getPersistentAdminFlag('brg_adm_logged')==='true') renderAdminLists(true);
-      }catch(e){ console.warn('[ADM] Não foi possível carregar margem/estoque para o catálogo:',e); }
-      finally{ __adminCatalogBarLoading=false; }
-    }
-
     function renderAdminLists(force=false){
-      const logged=getPersistentAdminFlag('brg_adm_logged')==='true';
-      if(!logged) return;
-      ensureAdminSystem(); ensureDeletedCatalogRegistry(); ensureMenuCategoryLabels(); ensureMenuOrderData();
-      const menu=Array.isArray(appData.menu)?appData.menu:[];
-      const team=Array.isArray(appData.team)?appData.team:[];
-      const arcade=Array.isArray(appData.arcade)?appData.arcade:[];
-      const cachaceiros=Array.isArray(appData.cachaceiros)?appData.cachaceiros:[];
+      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return;
+      if(!force && document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
       const master=getPersistentAdminFlag('brg_adm_is_master')==='true';
       const perms=appData.permissions||{};
       const canEdit=master||perms.canEdit!==false;
       const canDel=master||perms.canDel!==false;
       const canAdd=master||perms.canAdd!==false;
       const esc=v=>escapeHTML(String(v??''));
-      const image=v=>{try{return safeImageUrl(normalizeStoredImage(v))||safeImageUrl(v?.img||'')}catch(_){return safeImageUrl(v?.img||'')}};
-      const labels=appData.menuCategoryLabels||{};
-      const bLabels=labels.bebidas||{};
-      const pLabels=labels.porcoes||{};
-      const featured=new Set((Array.isArray(bLabels.featuredIds)?bLabels.featuredIds:[]).map(Number));
-      const pFeatured=new Set((Array.isArray(pLabels.featuredIds)?pLabels.featuredIds:[]).map(Number));
-      const drinkKeys=['caipirinha','vodka','rum','tequila','gin','whisky'];
-      const categoryDefs=[
-        {key:'featured',title:bLabels.featured||'⭐ DESTAQUES DO BAR',items:menu.filter(i=>featured.has(Number(i.id))),orderKey:null},
-        ...drinkKeys.map(key=>({key,title:bLabels[key]||({'caipirinha':'🍋 Linha Caipirinha','vodka':'🍸 Linha Vodka','rum':'🍹 Linha Rum','tequila':'🌵 Linha Tequila','gin':'🌿 Linha Gin','whisky':'🥃 Linha Whisky'}[key]),items:menu.filter(i=>i.type==='drink'&&String(i.drinkLine||'')===key),orderKey:key})),
-        {key:'legacy',title:bLabels.legacy||'🔥 Destilados & Clássicos',items:menu.filter(i=>i.type==='drink'&&!drinkKeys.includes(String(i.drinkLine||''))),orderKey:'legacy'},
-        {key:'beer',title:bLabels.beer||'🍺 Cervejas',items:menu.filter(i=>i.type==='beer'),orderKey:'beer'},
-        {key:'noalcohol',title:bLabels.noalcohol||'🥤 Sem Álcool / Sucos / Refris',items:menu.filter(i=>i.type==='noalcohol'),orderKey:'noalcohol'},
-        {key:'portion-featured',title:pLabels.featured||'⭐ DESTAQUES DAS PORÇÕES',items:menu.filter(i=>i.type==='portion'&&pFeatured.has(Number(i.id))),orderKey:null},
-        {key:'portion',title:pLabels.title||'🍟 Porções & Larica',items:menu.filter(i=>i.type==='portion'),orderKey:'portion'}
-      ];
-      const rm=typeof brgRecipeMap==='function'?brgRecipeMap():{};
-      const recipeFor=id=>rm[String(id)]||null;
-      const finance=i=>{
-        const r=recipeFor(i.id); const sale=r&&Number.isFinite(Number(r.sale_price))?Number(r.sale_price):brgPrice(i.price);
-        const cost=r?Number(brgCost(r)||0):null; const profit=cost===null?null:sale-cost; const margin=cost===null||sale<=0?null:(profit/sale)*100;
-        return `<div class="admin-finance-card"><div class="admin-finance-title">📊 Margem / Estoque</div><div class="admin-finance-grid"><div><b>${brgMoney(sale)}</b><span>Venda</span></div><div><b>${cost===null?'—':brgMoney(cost)}</b><span>Custo</span></div><div><b>${profit===null?'—':brgMoney(profit)}</b><span>Lucro</span></div><div><b>${margin===null?'—':margin.toFixed(1)+'%'}</b><span>Margem</span></div></div><div class="admin-finance-status ${r?'ok':'warn'}">${r?'🟢 Receita vinculada ao Controle do Bar':'🟡 Sem receita vinculada — cadastre em Estoque / Margem'}</div></div>`;
-      };
-      const card=(i,key,organizable)=>{
-        const id=Number(i.id); const drink=i.type==='drink'; const img=image(i); const active=menuAdminOrderEditing && menuAdminOrderEditing.page===((i.type==='portion')?'porcoes':'bebidas');
-        return `<article class="admin-catalog-card" data-admin-item-id="${esc(i.id)}" data-admin-order-key="${esc(key)}">
-          <div class="admin-catalog-head"><div class="admin-catalog-photo">${img?`<img src="${img}" alt="${esc(i.name)}" onerror="this.onerror=null;this.style.opacity='.2'">`:'<span>📷</span>'}</div><div class="admin-catalog-ident"><h4>${esc(i.name||'Produto')}</h4><small>ID ${esc(i.id)} • ${esc(i.type)}</small></div>${active&&organizable?`<div class="admin-arrow-box"><button type="button" onclick="event.stopPropagation();adminMoveCatalog(${id},'${esc(key)}','up')" aria-label="Subir">↑</button><button type="button" onclick="event.stopPropagation();adminMoveCatalog(${id},'${esc(key)}','down')" aria-label="Descer">↓</button></div>`:''}</div>
-          <div class="admin-catalog-fields"><div><label>Nome</label><input class="admin-input" id="name-${id}" value="${esc(i.name)}"></div><div><label>Preço</label><input class="admin-input" id="price-${id}" value="${esc(i.price)}"></div></div>
-          ${drink?`<label>Categoria<select class="admin-input" id="drinkline-${id}"><option value="caipirinha" ${i.drinkLine==='caipirinha'?'selected':''}>🍋 Linha Caipirinha</option><option value="vodka" ${i.drinkLine==='vodka'?'selected':''}>🍸 Linha Vodka</option><option value="rum" ${i.drinkLine==='rum'?'selected':''}>🍹 Linha Rum</option><option value="tequila" ${i.drinkLine==='tequila'?'selected':''}>🌵 Linha Tequila</option><option value="gin" ${i.drinkLine==='gin'?'selected':''}>🌿 Linha Gin</option><option value="whisky" ${i.drinkLine==='whisky'?'selected':''}>🥃 Linha Whisky</option><option value="" ${!i.drinkLine?'selected':''}>🔥 Destilados & Clássicos</option></select></label>`:''}
-          <label>Resumo<input class="admin-input" id="short-${id}" value="${esc(i.short||'')}"></label><label>Descrição<textarea class="admin-textarea" id="full-${id}" rows="2">${esc(i.full||'')}</textarea></label>
-          <div class="admin-catalog-actions">${canEdit?`<button class="action-btn" type="button" onclick="saveItemData(${id})">💾 Salvar</button>`:''}${drink&&canEdit?`<button class="action-btn" type="button" onclick="openSiteDrinkRecipeEditor(${id})">🧪 Estoque / Margem</button>`:''}${canDel?`<button class="action-btn del-btn" type="button" onclick="removeMenuItem(${id})">🗑️ Excluir</button>`:''}<label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="updateItemImg(${id},this)"></label></div>
-          ${finance(i)}
-        </article>`;
-      };
-      const menuRoot=document.getElementById('admin-menu-list');
-      if(menuRoot){
-        menuRoot.innerHTML=`<div class="admin-catalog-toolbar"><div><strong>🍹 CARDÁPIO ADMINISTRATIVO</strong><p>Visão idêntica à organização do cliente, com edição, estoque, margem e organização por categoria.</p></div><div class="admin-toolbar-actions"><button class="action-btn" type="button" onclick="toggleAdminCatalogOrganizer('bebidas')">↕ Organizar Bebidas</button><button class="action-btn" type="button" onclick="toggleAdminCatalogOrganizer('porcoes')">↕ Organizar Porções</button><button class="action-btn" type="button" onclick="saveAdminCatalogOrder()" style="background:var(--c-yellow);color:#000">💾 Salvar Ordem</button>${canAdd?`<button class="action-btn" type="button" onclick="document.getElementById('new-item-name')?.focus()">＋ Novo item</button>`:''}</div></div>`+
-          categoryDefs.map(g=>{const page=g.key==='portion'||g.key==='portion-featured'?'porcoes':'bebidas';let items=g.items;if(g.orderKey)items=sortMenuItemsBySavedOrder(items,g.orderKey);if(!items.length)return '';return `<section class="admin-client-category"><div class="admin-client-category-title"><span>${esc(g.title)}</span><small>${items.length} ${items.length===1?'item':'itens'}</small></div><div class="admin-client-grid">${items.map(i=>card(i,g.orderKey||'featured',!!g.orderKey)).join('')}</div></section>`;}).join('');
-      }
-      const renderTeam=()=>{const root=document.getElementById('admin-team-list');if(!root)return;root.innerHTML=team.length?team.map(t=>`<article class="admin-entity-card"><div class="admin-entity-head"><img src="${image(t)}" alt="${esc(t.name)}"><div><h4>${esc(t.name)}</h4><small>${esc(t.role)} • ${esc(t.type)}</small></div></div><input class="admin-input" id="tname-${esc(t.id)}" value="${esc(t.name)}" placeholder="Nome"><input class="admin-input" id="trole-${esc(t.id)}" value="${esc(t.role)}" placeholder="Cargo"><input class="admin-input" id="tig-${esc(t.id)}" value="${esc(t.ig)}" placeholder="Instagram"><textarea class="admin-textarea" id="tdesc-${esc(t.id)}">${esc(t.desc)}</textarea><div class="admin-catalog-actions"><button class="action-btn" onclick="saveTeamData('${esc(t.id)}')">💾 Salvar</button><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="updateTeamImg('${esc(t.id)}',this)"></label></div></article>`).join(''):'<div class="admin-empty">Nenhum integrante encontrado no estado remoto.</div>';};
-      renderTeam();
-      const renderArcade=()=>{const r=document.getElementById('admin-arcade-list');if(r)r.innerHTML=arcade.map(i=>`<article class="admin-entity-card"><h4>🕹️ Posição #${esc(i.id)} — ${esc(i.name)}</h4><div class="admin-catalog-fields"><input class="admin-input" id="arc-name-${i.id}" value="${esc(i.name)}"><input class="admin-input" id="arc-sub-${i.id}" value="${esc(i.sub)}"></div><div class="admin-catalog-fields"><input class="admin-input" id="arc-score-${i.id}" value="${esc(i.score)}"><input class="admin-input" id="arc-prize-${i.id}" value="${esc(i.prize)}"></div><input class="admin-input" id="arc-ig-${i.id}" value="${esc(i.ig)}"><textarea class="admin-textarea" id="arc-quote-${i.id}">${esc(i.quote)}</textarea><button class="action-btn" onclick="saveArcadeData(${Number(i.id)})">💾 Salvar</button></article>`).join('')||'<div class="admin-empty">Nenhum jogador cadastrado.</div>';};
-      renderArcade();
-      const renderCacha=()=>{const r=document.getElementById('admin-cachaceiros-list');if(r)r.innerHTML=cachaceiros.map(i=>`<article class="admin-entity-card"><h4>🍻 Posição #${esc(i.id)} — ${esc(i.name)}</h4><div class="admin-catalog-fields"><input class="admin-input" id="ca-name-${i.id}" value="${esc(i.name)}"><input class="admin-input" id="ca-score-${i.id}" value="${esc(i.score)}"></div><div class="admin-catalog-fields"><input class="admin-input" id="ca-sub-${i.id}" value="${esc(i.sub)}"><input class="admin-input" id="ca-prize-${i.id}" value="${esc(i.prize)}"></div><textarea class="admin-textarea" id="ca-quote-${i.id}">${esc(i.quote)}</textarea><div class="admin-catalog-actions"><button class="action-btn" onclick="saveCachaceiroData(${Number(i.id)})">💾 Salvar</button><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="updateCachaceiroImg(${Number(i.id)},this)"></label></div></article>`).join('')||'<div class="admin-empty">Nenhum cachaceiro cadastrado.</div>';};
-      renderCacha();
-      if(!BRG_BAR?.data?.recipes || !Array.isArray(BRG_BAR.data.recipes) || !BRG_BAR.data.inventory){ ensureAdminCatalogBarData(); }
+      const setv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v==null?'':String(v)};
+      const imageUrl=item=>{try{return getStoredImageUrl(item)||safeImageUrl(item?.img||'')}catch(e){return safeImageUrl(item?.img||'')}};
+      const menu=Array.isArray(appData.menu)?appData.menu:[];
+      const team=Array.isArray(appData.team)?appData.team:[];
+      const arcade=Array.isArray(appData.arcade)?appData.arcade:[];
+      const cach=Array.isArray(appData.cachaceiros)?appData.cachaceiros:[];
+      ensureMenuOrderData();
+      ensureMenuCategoryLabels();
+
+      // Home
+      try{
+        setv('adm-h-title',appData.home?.title);setv('adm-h-desc1',appData.home?.desc1);setv('adm-h-desc2',appData.home?.desc2);
+        setv('adm-h-promo-title',appData.home?.promoTitle);setv('adm-h-promo1',appData.home?.promo1);setv('adm-h-promo2',appData.home?.promo2);setv('adm-h-promo3',appData.home?.promo3);
+      }catch(e){console.error('[ADM] Home',e)}
+
+      // Abas personalizadas
+      try{
+        const box=document.getElementById('admin-custom-tabs-list');
+        if(box){const tabs=Array.isArray(appData.customTabs)?appData.customTabs:[];box.innerHTML=tabs.length?tabs.map(t=>`<div class="admin-card"><div class="admin-card-row"><strong>${esc(t.name)}</strong><div><button class="action-btn" onclick="editCustomTab(${escapeJSString(String(t.id))})">✏️ Editar</button><button class="action-btn del-btn" onclick="removeCustomTab(${escapeJSString(String(t.id))})">🗑️ Apagar</button></div></div></div>`).join(''):'<p style="color:#777;font-size:.85rem;">Nenhuma aba personalizada criada ainda.</p>';}
+      }catch(e){console.error('[ADM] Abas',e)}
+
+      // CARDÁPIO: a mesma fonte de dados do cliente, apenas com controles de edição.
+      try{
+        const root=document.getElementById('admin-menu-list');
+        if(root){
+          const b=appData.menuCategoryLabels?.bebidas||{}, p=appData.menuCategoryLabels?.porcoes||{};
+          const featured=new Set((Array.isArray(b.featuredIds)?b.featuredIds:[]).map(Number));
+          const pFeatured=new Set((Array.isArray(p.featuredIds)?p.featuredIds:[]).map(Number));
+          const defs=[
+            {key:'featured',title:'⭐ DESTAQUES DO BAR',items:menu.filter(i=>featured.has(Number(i.id))),order:null,page:'bebidas'},
+            {key:'caipirinha',title:'🍋 Linha Caipirinha',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='caipirinha'),order:'caipirinha',page:'bebidas'},
+            {key:'vodka',title:'🍸 Linha Vodka',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='vodka'),order:'vodka',page:'bebidas'},
+            {key:'rum',title:'🍹 Linha Rum',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='rum'),order:'rum',page:'bebidas'},
+            {key:'tequila',title:'🌵 Linha Tequila',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='tequila'),order:'tequila',page:'bebidas'},
+            {key:'gin',title:'🌿 Linha Gin',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='gin'),order:'gin',page:'bebidas'},
+            {key:'whisky',title:'🥃 Linha Whisky',items:menu.filter(i=>i.type==='drink'&&i.drinkLine==='whisky'),order:'whisky',page:'bebidas'},
+            {key:'legacy',title:'🔥 Destilados & Clássicos',items:menu.filter(i=>i.type==='drink'&&!['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(i.drinkLine||''))),order:'legacy',page:'bebidas'},
+            {key:'beer',title:'🍺 Cervejas',items:menu.filter(i=>i.type==='beer'),order:'beer',page:'bebidas'},
+            {key:'noalcohol',title:'🥤 Sem Álcool / Sucos / Refris',items:menu.filter(i=>i.type==='noalcohol'),order:'noalcohol',page:'bebidas'},
+            {key:'portion-featured',title:'⭐ DESTAQUES DAS PORÇÕES',items:menu.filter(i=>i.type==='portion'&&pFeatured.has(Number(i.id))),order:null,page:'porcoes'},
+            {key:'portion',title:'🍟 Porções & Larica',items:menu.filter(i=>i.type==='portion'),order:'portion',page:'porcoes'}
+          ];
+          const rm=typeof brgRecipeMap==='function'?brgRecipeMap():{};
+          const finance=item=>{const r=rm[String(item.id)];const sale=r?Number(r.sale_price):brgPrice(item.price);const cost=r?Number(brgCost(r)||0):null;const profit=cost==null?null:sale-cost;const margin=cost==null||sale<=0?null:profit/sale*100;return `<div class="menu-admin-finance"><b>📊 Margem / Estoque</b><div class="menu-admin-finance-grid"><div><b>${brgMoney(sale)}</b><span>Venda</span></div><div><b>${cost==null?'—':brgMoney(cost)}</b><span>Custo</span></div><div><b>${profit==null?'—':brgMoney(profit)}</b><span>Lucro</span></div><div><b>${margin==null?'—':margin.toFixed(1)+'%'}</b><span>Margem</span></div></div><small>${r?'🟢 Receita vinculada ao Controle do Bar':'🟡 Sem receita vinculada'}</small></div>`};
+          const itemCard=(item,g)=>{
+            const id=safeNumericId(item.id), img=imageUrl(item), selected=featured.has(Number(item.id))||(pFeatured.has(Number(item.id))&&item.type==='portion');
+            const editing=menuOrganizerActive&&menuOrganizerPage===g.page&&!!g.order;
+            const typeOptions=`<select class="admin-input" id="type-${id}"><option value="drink" ${item.type==='drink'?'selected':''}>🔥 Destilado</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem Álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select>`;
+            const line=item.type==='drink'?`<select class="admin-input" id="drinkline-${id}"><option value="caipirinha" ${item.drinkLine==='caipirinha'?'selected':''}>🍋 Caipirinha</option><option value="vodka" ${item.drinkLine==='vodka'?'selected':''}>🍸 Vodka</option><option value="rum" ${item.drinkLine==='rum'?'selected':''}>🍹 Rum</option><option value="tequila" ${item.drinkLine==='tequila'?'selected':''}>🌵 Tequila</option><option value="gin" ${item.drinkLine==='gin'?'selected':''}>🌿 Gin</option><option value="whisky" ${item.drinkLine==='whisky'?'selected':''}>🥃 Whisky</option><option value="" ${!item.drinkLine?'selected':''}>🔥 Clássicos</option></select>`:'';
+            return `<article class="menu-admin-item"><div class="admin-card-row" style="align-items:center"><div style="display:flex;align-items:center;gap:9px;flex:1;min-width:0"><img src="${esc(img)}" data-admin-img-id="${id}" style="width:58px;height:58px;object-fit:contain;border-radius:8px;border:1px solid #444;background:#09090c" onerror="adminImageFallback(${id},this)"><div><strong style="color:#fff">${esc(item.name||'Produto')}</strong><div style="color:#78858c;font-size:.68rem">ID ${id}</div></div></div>${editing?`<div class="menu-admin-item-controls"><button type="button" onclick="event.stopPropagation();moveMenuCard(${id},'up')" aria-label="Subir">↑</button><button type="button" onclick="event.stopPropagation();moveMenuCard(${id},'down')" aria-label="Descer">↓</button></div>`:''}</div><div class="admin-card-row" style="margin-top:7px">${typeOptions}<input class="admin-input" id="name-${id}" value="${esc(item.name||'')}" placeholder="Nome"><input class="admin-input" id="price-${id}" value="${esc(item.price||'')}" placeholder="Preço"></div>${item.type==='drink'?`<div style="margin-top:6px">${line}</div>`:''}<input class="admin-input" id="short-${id}" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:6px"><textarea class="admin-textarea" id="full-${id}" rows="2" placeholder="Descrição" style="margin-top:6px">${esc(item.full||'')}</textarea><div class="admin-card-row" style="margin-top:7px;align-items:center"><label style="display:flex;align-items:center;gap:6px;color:#fff;font-size:.78rem"><input type="checkbox" ${selected?'checked':''} onchange="setAdminFeatured(${id},this.checked,'${g.page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper" style="padding:5px 10px">📷 Foto<input type="file" accept="image/*" onchange="updateItemImg(${id},this)"></label></div><div class="admin-card-row" style="margin-top:7px">${canEdit?`<button class="action-btn" onclick="saveItemData(${id})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit?`<button class="action-btn" style="background:var(--c-cyan);color:#000" onclick="openSiteDrinkRecipeEditor(${id})">🧪 Estoque / Margem</button>`:''}${canDel?`<button class="action-btn del-btn" onclick="removeMenuItem(${id})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
+          };
+          root.innerHTML=`<div class="admin-catalog-toolbar"><div><strong>🍹 CARDÁPIO ADMINISTRATIVO</strong><p>Mesmos dados e mesmas categorias do cliente. Aqui existem somente controles administrativos.</p></div><div class="admin-toolbar-actions"><button class="action-btn" onclick="toggleMenuOrganizer('bebidas')">↕ Organizar Bebidas</button><button class="action-btn" onclick="toggleMenuOrganizer('porcoes')">↕ Organizar Porções</button>${menuOrganizerActive?`<button class="action-btn menu-organizer-save" ${menuOrganizerDirty?'':'disabled'} onclick="saveMenuPositions('${menuOrganizerPage}')">💾 Salvar Ordem</button><button class="action-btn" onclick="toggleMenuOrganizer('${menuOrganizerPage}',false)">✖ Fechar organização</button>`:''}${canAdd?`<button class="action-btn" onclick="document.getElementById('new-item-name')?.focus()">＋ Novo item</button>`:''}</div></div>`+defs.map(g=>{let items=g.items;if(g.order)items=sortMenuItemsBySavedOrder(items,g.order);return `<section class="menu-admin-category"><div class="menu-admin-category-title"><span>${esc(g.title)}</span><small>${items.length} ${items.length===1?'item':'itens'}</small></div><div style="display:flex;flex-direction:column;gap:8px">${items.length?items.map(i=>itemCard(i,g)).join(''):'<div style="padding:10px;color:#77838b;border:1px dashed rgba(255,255,255,.12);border-radius:9px">Nenhum item nesta categoria.</div>'}</div></section>`}).join('');
+        }
+      }catch(e){console.error('[ADM] Cardápio',e);const root=document.getElementById('admin-menu-list');if(root)root.innerHTML=`<div class="admin-card" style="border-color:var(--c-red)"><strong>⚠️ Erro ao renderizar o catálogo administrativo.</strong><pre style="white-space:pre-wrap;color:#aaa;font-size:.7rem">${esc(e?.message||e)}</pre></div>`}
+
+      // Agenda
+      try {
+        const root=document.getElementById('admin-agenda-list');
+        if(root){
+          const canAgenda=master||perms.canAgenda!==false;
+          if(!canAgenda){ root.innerHTML='<p style="color:var(--c-red)">⚠️ Permissão de agenda desativada.</p>'; }
+          else {
+            const list=Array.isArray(appData.agenda)?appData.agenda:[];
+            root.innerHTML=list.length?list.map(i=>`<div class="admin-card"><div class="admin-card-row"><input class="admin-input" id="a-date-${safeNumericId(i.id)}" value="${esc(i.date||'')}"><input class="admin-input" id="a-title-${safeNumericId(i.id)}" value="${esc(i.title||'')}"></div><textarea class="admin-textarea" id="a-desc-${safeNumericId(i.id)}">${esc(i.desc||'')}</textarea><div class="admin-card-row"><img src="${esc(imageUrl(i))}" style="width:48px;height:48px;object-fit:contain;border-radius:6px"><label class="file-upload-wrapper">📷 Flyer<input type="file" accept="image/*" onchange="updateAgendaImg(${safeNumericId(i.id)},this)"></label>${canEdit?`<button class="action-btn" onclick="saveAgendaData(${safeNumericId(i.id)})">💾 Salvar</button>`:''}${canDel?`<button class="action-btn del-btn" onclick="removeAgendaItem(${safeNumericId(i.id)})">🗑️ Excluir</button>`:''}</div></div>`).join(''):'<p style="color:#777">Nenhum evento cadastrado.</p>';
+          }
+        }
+      } catch(e){ console.error('[ADM] Agenda',e); }
+
+      // Equipe — independente do catálogo.
+      try{const root=document.getElementById('admin-team-list');if(root)root.innerHTML=team.length?team.map(t=>`<article class="admin-card"><div class="admin-card-row"><img src="${esc(imageUrl(t))}" style="width:62px;height:62px;object-fit:contain;border-radius:8px;border:1px solid #444" onerror="adminEntityImageFallback('${esc(String(t.id))}',this)"><div><strong style="color:var(--c-cyan)">${esc(t.name||'Sem nome')}</strong><div style="color:#8a969d;font-size:.7rem">${esc(t.role||'')} • ${esc(t.type||'')}</div></div></div><input class="admin-input" id="tname-${esc(String(t.id))}" value="${esc(t.name||'')}" placeholder="Nome"><input class="admin-input" id="trole-${esc(String(t.id))}" value="${esc(t.role||'')}" placeholder="Cargo"><input class="admin-input" id="tig-${esc(String(t.id))}" value="${esc(t.ig||'')}" placeholder="Instagram"><textarea class="admin-textarea" id="tdesc-${esc(String(t.id))}">${esc(t.desc||'')}</textarea><div class="admin-card-row"><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="updateTeamImg('${esc(String(t.id))}',this)"></label><button class="action-btn" onclick="saveTeamData('${esc(String(t.id))}')">💾 Salvar</button></div></article>`).join(''):'<p style="color:#777">Nenhum integrante encontrado.</p>'}catch(e){console.error('[ADM] Equipe',e)}
+
+      // Arcade e Cachaceiros — independentes.
+      try{const root=document.getElementById('admin-arcade-list');if(root)root.innerHTML=arcade.length?arcade.map(i=>`<article class="admin-card"><strong style="color:var(--c-purple)">🕹️ Posição #${esc(i.id)} — ${esc(i.name)}</strong><div class="admin-card-row"><input class="admin-input" id="arc-name-${safeNumericId(i.id)}" value="${esc(i.name||'')}"><input class="admin-input" id="arc-sub-${safeNumericId(i.id)}" value="${esc(i.sub||'')}"></div><div class="admin-card-row"><input class="admin-input" id="arc-score-${safeNumericId(i.id)}" value="${esc(i.score||'')}"><input class="admin-input" id="arc-prize-${safeNumericId(i.id)}" value="${esc(i.prize||'')}"></div><input class="admin-input" id="arc-ig-${safeNumericId(i.id)}" value="${esc(i.ig||'')}"><textarea class="admin-textarea" id="arc-quote-${safeNumericId(i.id)}">${esc(i.quote||'')}</textarea><button class="action-btn" onclick="saveArcadeData(${safeNumericId(i.id)})">💾 Salvar</button></article>`).join(''):'<p style="color:#777">Nenhum jogador cadastrado.</p>'}catch(e){console.error('[ADM] Arcade',e)}
+      try{const root=document.getElementById('admin-cachaceiros-list');if(root)root.innerHTML=cach.length?cach.map(i=>`<article class="admin-card"><strong style="color:#ff9800">🍻 Posição #${esc(i.id)} — ${esc(i.name)}</strong><div class="admin-card-row"><input class="admin-input" id="ca-name-${safeNumericId(i.id)}" value="${esc(i.name||'')}"><input class="admin-input" id="ca-score-${safeNumericId(i.id)}" value="${esc(i.score||'')}"></div><div class="admin-card-row"><input class="admin-input" id="ca-sub-${safeNumericId(i.id)}" value="${esc(i.sub||'')}"><input class="admin-input" id="ca-prize-${safeNumericId(i.id)}" value="${esc(i.prize||'')}"></div><textarea class="admin-textarea" id="ca-quote-${safeNumericId(i.id)}">${esc(i.quote||'')}</textarea><div class="admin-card-row"><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="updateCachaceiroImg(${safeNumericId(i.id)},this)"></label><button class="action-btn" onclick="saveCachaceiroData(${safeNumericId(i.id)})">💾 Salvar</button></div></article>`).join(''):'<p style="color:#777">Nenhum cachaceiro cadastrado.</p>'}catch(e){console.error('[ADM] Cachaceiros',e)}
+
+      // Carrega dados de estoque sem bloquear o restante da administração.
+      if(!BRG_BAR?.data?.recipes || !Array.isArray(BRG_BAR.data.recipes) || !Array.isArray(BRG_BAR.data.inventory)) ensureAdminCatalogBarData();
     }
 
-    let menuAdminOrderEditing={page:'',dirty:false};
-    function toggleAdminCatalogOrganizer(page){
-      if(!isMenuOrganizerAllowed()) return alert('Acesso Negado.');
-      page=page==='porcoes'?'porcoes':'bebidas';
-      if(menuAdminOrderEditing.page===page){ menuAdminOrderEditing={page:'',dirty:false}; renderAdminLists(true); return; }
-      ensureMenuOrderData(); menuAdminOrderEditing={page,dirty:false}; renderAdminLists(true);
+    function adminImageFallback(id,el){
+      try{const item=(appData.menu||[]).find(x=>String(x.id)===String(id));if(!item||!el)return;const candidates=getStoredImageCandidates(item);const next=candidates.find(u=>u&&u!==el.src);if(next){el.src=next;return}const fallback=getCatalogFallbackImage(item);if(fallback&&el.src!==fallback){el.src=fallback;return}el.removeAttribute('src');el.style.opacity='.25';}catch(e){el.removeAttribute('src');}
     }
-    function adminMoveCatalog(id,key,direction){
-      if(!menuAdminOrderEditing.page)return;
-      ensureMenuOrderData();
-      const arr=Array.isArray(appData.menuOrder[key])?appData.menuOrder[key].map(Number):[];
-      const present=arr.indexOf(Number(id)); if(present<0){const items=(appData.menu||[]).filter(i=>Number(i.id)===Number(id));if(items.length)arr.push(Number(id));}
-      const idx=arr.indexOf(Number(id)); if(idx<0)return;
-      const next=direction==='up'?idx-1:idx+1; if(next<0||next>=arr.length)return;
-      [arr[idx],arr[next]]=[arr[next],arr[idx]]; appData.menuOrder[key]=arr; menuAdminOrderEditing.dirty=true; renderAdminLists(true);
+    function adminEntityImageFallback(id,el){
+      try{const item=(appData.team||[]).find(x=>String(x.id)===String(id));if(!item||!el)return;const candidates=getStoredImageCandidates(item);const next=candidates.find(u=>u&&u!==el.src);if(next){el.src=next;return}el.removeAttribute('src');el.style.opacity='.25';}catch(e){el.removeAttribute('src');}
     }
-    async function saveAdminCatalogOrder(){
-      if(!menuAdminOrderEditing.page)return;
-      const ok=await saveBinData('Reorganizou a ordem do cardápio administrativo');
-      if(ok){menuAdminOrderEditing={page:'',dirty:false};renderAdminLists(true);renderApp();alert('✅ Ordem do cardápio salva.');}
+    function setAdminFeatured(id,checked,page){
+      if(getPersistentAdminFlag('brg_adm_logged')!=='true') return;
+      const master=getPersistentAdminFlag('brg_adm_is_master')==='true', perms=appData.permissions||{};
+      if(!master&&perms.canEdit===false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
+      ensureMenuCategoryLabels();
+      const key=page==='porcoes'?'porcoes':'bebidas';
+      const labels=appData.menuCategoryLabels[key]||(appData.menuCategoryLabels[key]={});
+      if(!Array.isArray(labels.featuredIds)) labels.featuredIds=[];
+      const n=Number(id);
+      labels.featuredIds=checked?[...new Set([...labels.featuredIds.map(Number),n])]:labels.featuredIds.map(Number).filter(x=>x!==n);
+      renderAdminLists(true);
     }
 
     /* === CENTRAL PRIVADA DOS SOCIOS === */
@@ -4861,17 +4948,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
           await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Categoria: ${newType}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
-          if(BRG_BAR?.data && typeof brgRecipeMap==='function') {
-            const recipe=brgRecipeMap()[String(id)];
-            if(recipe && Number.isFinite(brgPrice(item.price))) {
-              try{
-                const salePrice=brgPrice(item.price);
-                const cs=(brgCompMap()[String(recipe.id)]||[]).map(c=>({inventory_item_id:String(c.inventory_item_id),quantity_per_sale:Number(c.quantity_per_sale||0),component_unit:String(c.component_unit||c.unit||'un')}));
-                const synced=await brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:String(item.name),sale_price:salePrice,yield_qty:Number(recipe.yield_qty||1),estimate_source:'Sincronização automática pelo Catálogo ADM',components:cs}});
-                if(synced?.recipe) brgApplyRecipeSaveResponse(synced);
-              }catch(syncRecipeErr){ console.warn('[ADM] preço alterado; não foi possível atualizar a receita no mesmo instante:',syncRecipeErr); }
-            }
-          }
           if(typeof window.syncBarProductFromMenu === 'function') {
             try {
               await window.syncBarProductFromMenu(item);
@@ -5027,11 +5103,9 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       alert("Dados do Destaque Salvos!");
     }
 
-    function closeModal(modalId) {
-      const modal=document.getElementById(modalId); if(!modal)return;
-      modal.classList.remove('is-open'); modal.style.display='none'; modal.setAttribute('aria-hidden','true');
-      if(modalId==='categoryQuickEditModal'){const f=document.getElementById('category-edit-fields');if(f)f.innerHTML='';}
-      if(!document.querySelector('.modal.is-open')) document.body.style.overflow='';
+    function closeModal(modalId) { 
+      const modal = document.getElementById(modalId);
+      if(modal){ modal.classList.remove('is-open'); modal.style.display = 'none'; } 
     }
 
     window.onclick = function(event) { 
