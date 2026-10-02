@@ -150,6 +150,8 @@
     }
     .product-image-wrap::after { content: none; }
     .product-card:hover { transform: translateY(-4px); border-color: var(--c-cyan); box-shadow: 0 6px 20px rgba(0, 188, 212, 0.25); }
+    .featured-limited-badge { position:absolute; top:8px; left:8px; z-index:4; display:inline-flex; align-items:center; gap:5px; max-width:calc(100% - 16px); box-sizing:border-box; padding:5px 8px 4px; border:1px solid rgba(255,235,59,.9); border-radius:999px; background:linear-gradient(90deg,rgba(233,30,99,.96),rgba(255,193,7,.96)); color:#09090b; font-family:var(--font-title); font-size:.64rem; font-weight:900; line-height:1; letter-spacing:.02em; text-transform:uppercase; box-shadow:0 3px 12px rgba(0,0,0,.42),0 0 12px rgba(255,193,7,.22); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; }
+    .menu-admin-featured-badge { display:inline-flex; align-items:center; gap:5px; margin-top:5px; padding:4px 7px; border:1px solid rgba(255,193,7,.65); border-radius:999px; background:rgba(255,193,7,.10); color:#ffd740; font-size:.67rem; font-weight:900; text-transform:uppercase; }
     
     .product-img { width: 100%; height: 100%; object-fit: contain; object-position: center; border-radius: 7px; background: transparent; display: block; position: relative; z-index: 2; }
     .product-img-empty { background: radial-gradient(circle at 50% 40%, rgba(255,255,255,.055), transparent 55%); }
@@ -706,8 +708,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           <input type="file" accept="image/*" onchange="modalUploadImg(this)">
         </div>
         <input type="hidden" id="modal-edit-img">
-        <button type="button" class="action-btn" style="width:100%; margin:8px 0; background:linear-gradient(90deg,#00bcd4,#00e676); color:#000; font-family:var(--font-title);" onclick="openSiteDrinkRecipeEditor(document.getElementById('modal-edit-id').value)">🧪 ADICIONAR / EDITAR INGREDIENTES • CUSTO • MARGEM</button>
+        <button type="button" class="action-btn" style="width:100%; margin:8px 0; background:linear-gradient(90deg,#00bcd4,#00e676); color:#000; font-family:var(--font-title);" onclick="event.preventDefault();event.stopPropagation();openAdminRecipeEditor(document.getElementById('modal-edit-id').value)">🧪 ADICIONAR / EDITAR INGREDIENTES • CUSTO • MARGEM</button>
         <div style="font-size:.78rem;color:#9aa7ad;margin:0 0 8px;text-align:center;">Selecione os ingredientes do estoque, defina as quantidades e veja custo, lucro e margem em tempo real. Ao salvar, a receita passa a ser a receita oficial deste item no Controle do Bar.</div>
+        <div id="modal-edit-finance-summary" class="menu-admin-finance" style="margin:8px 0 10px;text-align:left;"><b>📊 Margem / Estoque</b><div class="menu-admin-finance-grid"><div><b id="modal-fin-sale">—</b><span>Venda</span></div><div><b id="modal-fin-cost">—</b><span>Custo</span></div><div><b id="modal-fin-profit">—</b><span>Lucro</span></div><div><b id="modal-fin-margin">—</b><span>Margem</span></div></div><small id="modal-fin-status">Carregando receita...</small></div>
         
         <div style="display:flex; gap:8px; margin-top:10px; margin-bottom: 10px;">
           <button class="action-btn" onclick="saveModalEdit()" style="background: var(--c-cyan); color: #000; flex: 2; padding: 10px; font-family: var(--font-title); font-size: 1.1rem;">💾 Salvar Alterações</button>
@@ -3333,7 +3336,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         .filter(i => i && i.type === 'drink');
 
       let drinksStr = '';
-      drinksStr += `<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUES DO BAR')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredDrinks.length ? featuredDrinks.map(i=>createCard(i)).join('') : '<div class="client-menu-empty">Nenhum item em destaque no momento.</div>'}</div></div></section>`;
+      drinksStr += `<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.bebidas.featured || '⭐ DESTAQUES DO BAR')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredDrinks.length ? featuredDrinks.map(i=>createCard(i,true)).join('') : '<div class="client-menu-empty">Nenhum item em destaque no momento.</div>'}</div></div></section>`;
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
@@ -3359,7 +3362,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         .map(id=>cMenu.find(i=>Number(i.id)===Number(id)))
         .filter(i=>i && i.type==='portion');
       let portionsStr='';
-      portionsStr+=`<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUES DAS PORÇÕES')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredPortions.length ? featuredPortions.map(i=>createCard(i)).join('') : '<div class="client-menu-empty">Nenhuma porção em destaque no momento.</div>'}</div></div></section>`;
+      portionsStr+=`<section class="client-menu-category client-menu-featured"><div class="client-menu-category-head"><div><span class="client-menu-category-kicker">⭐ CATEGORIA ESPECIAL</span><h3>${escapeHTML(categoryLabels.porcoes.featured || '⭐ DESTAQUES DAS PORÇÕES')}</h3><p>Escolha no painel ADM quais itens aparecem aqui.</p></div></div><div class="menu-collapse-body"><div class="drink-featured-grid">${featuredPortions.length ? featuredPortions.map(i=>createCard(i,true)).join('') : '<div class="client-menu-empty">Nenhuma porção em destaque no momento.</div>'}</div></div></section>`;
       portionsStr+=`<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.porcoes.title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="portion">`;
       sortMenuItemsBySavedOrder(cMenu.filter(i=>i.type==='portion'), 'portion').forEach(i=>portionsStr+=createCard(i));
       portionsStr+='</div></div></details>';
@@ -3653,14 +3656,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       });
     }
 
-    function createCard(item) {
+    function createCard(item, isFeatured=false) {
       const hostedImg = normalizeStoredImage(item);
       const organizerClick = `openMenuModalObj(${safeNumericId(item.id)})`;
       const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
       const imageMarkup = imageUrl
         ? `<img src="${imageUrl}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<div class="product-img product-img-empty" aria-hidden="true"></div>`;
-      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}"><div class="product-image-wrap">${imageMarkup}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof window.brgRecipeMap==='function'?window.brgRecipeMap()[String(item.id)]:null;const cost=recipe&&typeof window.brgCost==='function'?window.brgCost(recipe):0;const sale=recipe?Number(recipe.sale_price||0):Number(String(item.price||0).replace(',','.'))||0;const profit=sale-cost;const margin=sale>0?profit/sale*100:0;const doses=recipe&&typeof window.brgMaxDoses==='function'?window.brgMaxDoses(recipe):Infinity;const money=typeof window.brgMoney==='function'?window.brgMoney:(v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${money(sale)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?money(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?money(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`;
+      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}">${isFeatured?'<span class="featured-limited-badge">🔥 PROMOÇÃO LIMITADA</span>':''}<div class="product-image-wrap">${imageMarkup}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof window.brgRecipeMap==='function'?window.brgRecipeMap()[String(item.id)]:null;const cost=recipe&&typeof window.brgCost==='function'?window.brgCost(recipe):0;const sale=recipe?Number(recipe.sale_price||0):Number(String(item.price||0).replace(',','.'))||0;const profit=sale-cost;const margin=sale>0?profit/sale*100:0;const doses=recipe&&typeof window.brgMaxDoses==='function'?window.brgMaxDoses(recipe):Infinity;const money=typeof window.brgMoney==='function'?window.brgMoney:(v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${money(sale)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?money(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?money(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`;
     }
 
     function openMenuModalObj(id) {
@@ -3700,6 +3703,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         document.getElementById('modal-edit-full').value = item.full;
         document.getElementById('modal-edit-img').value = item.img;
         document.getElementById('modal-item-del-btn').style.display = canDel ? 'inline-block' : 'none';
+        try {
+          const recipe = typeof window.brgRecipeMap==='function' ? window.brgRecipeMap()[String(item.id)] : null;
+          const sale = recipe ? Number(recipe.sale_price||0) : Number(String(item.price||0).replace(',','.'))||0;
+          const cost = recipe && typeof window.brgCost==='function' ? Number(window.brgCost(recipe)) : null;
+          const profit = cost==null ? null : sale-cost;
+          const margin = cost==null || sale<=0 ? null : profit/sale*100;
+          const money = typeof window.brgMoney==='function' ? window.brgMoney : (v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));
+          const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+          set('modal-fin-sale',money(sale)); set('modal-fin-cost',cost==null?'—':money(cost)); set('modal-fin-profit',profit==null?'—':money(profit)); set('modal-fin-margin',margin==null?'—':margin.toFixed(1)+'%');
+          set('modal-fin-status',recipe?'🟢 Receita vinculada ao Controle do Bar':'🟡 Sem receita vinculada — use o botão acima para adicionar ingredientes.');
+        } catch(e) { console.warn('[Bargunçados] resumo financeiro do item:',e); }
       } else {
         editBox.style.display = 'none';
       }
@@ -4679,6 +4693,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             <label style="display:flex;align-items:center;gap:6px;color:#fff;font-size:.78rem">
               <input type="checkbox" ${selected?'checked':''} onchange="setAdminFeatured(${id},this.checked,'${g.page}')"> ⭐ Destaque manual
             </label>
+            ${g.featured&&selected?'<span class="menu-admin-featured-badge">🔥 PROMOÇÃO LIMITADA</span>':''}
             <label class="file-upload-wrapper" style="padding:5px 10px">📷 Foto
               <input type="file" accept="image/*" onchange="updateItemImg(${id},this)">
             </label>
@@ -5133,6 +5148,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       }
     }
 
+    window.openAdminRecipeEditor = openAdminRecipeEditor;
     window.openSiteDrinkRecipeEditor=async function(id){
       const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true',perms=appData.permissions||{};
       if(!isMaster&&perms.canEdit===false)return alert('Acesso Negado: o Master desativou a permissão de edição.');
@@ -5877,7 +5893,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   window.syncBarProductFromMenu=async function(item){if(!item)return;await brgApi('sync_product',{menu_item_id:String(item.id),menu_item_name:String(item.name||''),sale_price:Number(brgPrice(item.price)||0)})};
   window.barCtlSaveRecipe=async function(id){
     const item=brgMenu().find(x=>String(x.id)===String(id));
-    const comps=[...document.querySelectorAll('#bar-r-components>[data-inv]')].map(x=>({inventory_item_id:x.dataset.inv,quantity_per_sale:Number(x.querySelector('.bar-recipe-qty')?.value||x.dataset.qty||0)}));
+    const comps=[...document.querySelectorAll('#bar-r-components>[data-inv]')].map(x=>({inventory_item_id:x.dataset.inv,quantity_per_sale:Number(x.querySelector('.bar-recipe-qty')?.value||x.dataset.qty||0),component_unit:String(x.querySelector('.bar-recipe-unit')?.value||'un')}));
     if(!item)return alert('Produto não encontrado.');
     try{
       const salePrice=Number(document.getElementById('bar-r-price').value||0),yieldQty=Number(document.getElementById('bar-r-yield').value||1);
@@ -6249,7 +6265,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const id=numId(item.id); const featured = page==='porcoes' ? categoryIds('portion-featured','porcoes').includes(Number(item.id)) : categoryIds('featured','bebidas').includes(Number(item.id));
     const line=item.type==='drink'?`<select id="adm-line-${id}" class="admin-input"><option value="caipirinha" ${item.drinkLine==='caipirinha'?'selected':''}>🍋 Caipirinha</option><option value="vodka" ${item.drinkLine==='vodka'?'selected':''}>🍸 Vodka</option><option value="rum" ${item.drinkLine==='rum'?'selected':''}>🍹 Rum</option><option value="tequila" ${item.drinkLine==='tequila'?'selected':''}>🌵 Tequila</option><option value="gin" ${item.drinkLine==='gin'?'selected':''}>🌿 Gin</option><option value="whisky" ${item.drinkLine==='whisky'?'selected':''}>🥃 Whisky</option><option value="" ${!item.drinkLine?'selected':''}>🔥 Clássicos</option></select>`:'';
     const controls=organizing&&key!=='featured'&&key!=='portion-featured'?`<div class="brg-admin-arrows"><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','up')">↑</button><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','down')">↓</button></div>`:'';
-    return `<article class="brg-admin-item"><div class="brg-admin-head"><div class="brg-admin-photo">${imageFor(item)?`<img src="${esc(imageFor(item))}" onerror="window.brgAdminImageFallback(this)">`:'📷'}</div><div class="brg-admin-ident"><strong>${esc(item.name||'Produto')}</strong><small>ID ${id}</small></div>${controls}</div><div class="brg-admin-fields"><select id="adm-type-${id}" class="admin-input"><option value="drink" ${item.type==='drink'?'selected':''}>🍹 Bebida</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select><input id="adm-name-${id}" class="admin-input" value="${esc(item.name||'')}" placeholder="Nome"><input id="adm-price-${id}" class="admin-input" value="${esc(item.price||'')}" placeholder="Preço"></div>${line?`<div style="margin-top:7px">${line}</div>`:''}<input id="adm-short-${id}" class="admin-input" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:7px"><textarea id="adm-full-${id}" class="admin-textarea" rows="2" placeholder="Descrição" style="margin-top:7px">${esc(item.full||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${featured?'checked':''} onchange="window.brgAdminSetFeatured(${Number(item.id)},this.checked,'${page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateItemImg?.(${Number(item.id)},this)"></label></div><div class="brg-admin-buttons">${canEdit()?`<button class="action-btn" onclick="window.brgAdminSaveItem(${Number(item.id)})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit()?`<button class="action-btn" onclick="window.openSiteDrinkRecipeEditor?.(${Number(item.id)})">🧪 Receita / Margem</button>`:''}${canDel()?`<button class="action-btn del-btn" onclick="window.removeMenuItem?.(${Number(item.id)})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
+    return `<article class="brg-admin-item"><div class="brg-admin-head"><div class="brg-admin-photo">${imageFor(item)?`<img src="${esc(imageFor(item))}" onerror="window.brgAdminImageFallback(this)">`:'📷'}</div><div class="brg-admin-ident"><strong>${esc(item.name||'Produto')}</strong><small>ID ${id}</small>${featured?'<span class="menu-admin-featured-badge">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${controls}</div><div class="brg-admin-fields"><select id="adm-type-${id}" class="admin-input"><option value="drink" ${item.type==='drink'?'selected':''}>🍹 Bebida</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select><input id="adm-name-${id}" class="admin-input" value="${esc(item.name||'')}" placeholder="Nome"><input id="adm-price-${id}" class="admin-input" value="${esc(item.price||'')}" placeholder="Preço"></div>${line?`<div style="margin-top:7px">${line}</div>`:''}<input id="adm-short-${id}" class="admin-input" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:7px"><textarea id="adm-full-${id}" class="admin-textarea" rows="2" placeholder="Descrição" style="margin-top:7px">${esc(item.full||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${featured?'checked':''} onchange="window.brgAdminSetFeatured(${Number(item.id)},this.checked,'${page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateItemImg?.(${Number(item.id)},this)"></label></div><div class="brg-admin-buttons">${canEdit()?`<button class="action-btn" onclick="window.brgAdminSaveItem(${Number(item.id)})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit()?`<button class="action-btn" onclick="event.preventDefault();event.stopPropagation();window.openAdminRecipeEditor?.(${Number(item.id)})">🧪 Receita / Margem</button>`:''}${canDel()?`<button class="action-btn del-btn" onclick="window.removeMenuItem?.(${Number(item.id)})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
   }
 
   function renderSection(root,key,title,page,organizing){
