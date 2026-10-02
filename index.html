@@ -2635,9 +2635,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             remoteSnapshot = cloneForSync(incoming) || {};
             persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
+            // Restaura apenas itens do catálogo-base que estejam ausentes no estado remoto.
+            // Itens existentes nunca são substituídos, removidos ou reorganizados aqui.
+            ensureDeletedCatalogRegistry();
+            ensureDrinkCatalog();
             ensureAdminSystem();
             ensureMenuCategoryLabels();
-            ensureDeletedCatalogRegistry();
                   ensureModerationHistory();
             renderApp();
             updateTrafficUI();
