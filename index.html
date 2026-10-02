@@ -1986,7 +1986,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES DO BAR", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       },
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
@@ -2821,6 +2821,60 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
     }
 
+    // === CATEGORIAS V6 — fonte única para CLIENTE + ADM + ORGANIZADOR ===
+    // A organização anterior removeu os helpers usados pelo renderizador original.
+    // Isso fazia o cliente cair no menu de emergência (uma grade única) e o ADM
+    // interromper a renderização ao chamar ensureMenuOrderData().
+    function menuCategoryKey(item){
+      if(!item) return 'legacy';
+      const type=String(item.type||'').toLowerCase();
+      if(type==='portion') return 'portion';
+      if(type==='beer') return 'beer';
+      if(type==='noalcohol') return 'noalcohol';
+      if(type!=='drink') return 'legacy';
+
+      const explicit=String(item.drinkLine||'').trim().toLowerCase();
+      if(['caipirinha','vodka','rum','tequila','gin','whisky'].includes(explicit)) return explicit;
+
+      const n=String(item.name||'').trim().toLowerCase();
+      if(/caipir|caipirinha|caipiríssima|caipirissima/.test(n)) return 'caipirinha';
+      if(/caipiroska|screwdriver|sex on the beach|cosmopolitan|moscow mule|bloody mary|\bvodka\b/.test(n)) return 'vodka';
+      if(/cuba libre|mojito|daiquiri|caipiríssima|caipirissima|rum sour|rum punch|\brum\b/.test(n)) return 'rum';
+      if(/tequila|margarita/.test(n)) return 'tequila';
+      if(/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins|\bgin\b/.test(n)) return 'gin';
+      if(/whisky|whiskey|old fashioned|whisky highball/.test(n)) return 'whisky';
+      return 'legacy';
+    }
+
+    function ensureMenuOrderData(){
+      if(!appData || typeof appData!=='object') return;
+      if(!Array.isArray(appData.menu)) appData.menu=[];
+      if(!appData.menuOrder || typeof appData.menuOrder!=='object' || Array.isArray(appData.menuOrder)) appData.menuOrder={};
+      const keys=['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
+      const validIds=new Set(appData.menu.map(i=>Number(i?.id)).filter(Number.isFinite));
+      keys.forEach(key=>{
+        const current=Array.isArray(appData.menuOrder[key]) ? appData.menuOrder[key].map(Number).filter(Number.isFinite) : [];
+        const wanted=appData.menu.filter(i=>menuCategoryKey(i)===key).map(i=>Number(i.id));
+        const out=[],seen=new Set();
+        current.concat(wanted).forEach(id=>{
+          if(validIds.has(id) && !seen.has(id)){seen.add(id);out.push(id);}
+        });
+        appData.menuOrder[key]=out;
+      });
+    }
+
+    function sortMenuItemsBySavedOrder(items,key){
+      const list=Array.isArray(items)?items.slice():[];
+      ensureMenuOrderData();
+      const order=Array.isArray(appData.menuOrder?.[key])?appData.menuOrder[key]:[];
+      const pos=new Map(order.map((id,index)=>[String(id),index]));
+      return list.sort((a,b)=>{
+        const pa=pos.has(String(a?.id))?pos.get(String(a.id)):999999;
+        const pb=pos.has(String(b?.id))?pos.get(String(b.id)):999999;
+        return pa-pb || (Number(a?.id)||0)-(Number(b?.id)||0);
+      });
+    }
+
     function ensureLegacyDrinkLines(){
       if(!Array.isArray(appData.menu)) return;
       const inferred = {
@@ -2971,14 +3025,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     function organizerEnsureOrder(){
       if(!appData.menuOrder || typeof appData.menuOrder!=='object' || Array.isArray(appData.menuOrder)) appData.menuOrder={};
     }
-    function organizerKey(item){
-      if(!item) return 'legacy';
-      if(item.type==='portion') return 'portion';
-      if(item.type==='beer') return 'beer';
-      if(item.type==='noalcohol') return 'noalcohol';
-      if(item.type==='drink' && item.drinkLine) return String(item.drinkLine);
-      return 'legacy';
-    }
+    function organizerKey(item){ return menuCategoryKey(item); }
     function organizerOrder(key){
       organizerEnsureOrder();
       const menu=Array.isArray(appData.menu)?appData.menu:[];
@@ -3290,14 +3337,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       const drinksWithLine = new Set();
       lineConfig.forEach(([line, title]) => {
-        const items = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && i.drinkLine === line), line);
+        const items = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && menuCategoryKey(i) === line), line);
         if(items.length) {
-          items.forEach(i => drinksWithLine.add(i.id));
           drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas[line] || title)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="${line}">${items.map(createCard).join('')}</div></div></details>`;
         }
       });
 
-      const legacyDrinks = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && !drinksWithLine.has(i.id)), 'legacy');
+      const legacyDrinks = sortMenuItemsBySavedOrder(cMenu.filter(i => i.type === 'drink' && menuCategoryKey(i) === 'legacy'), 'legacy');
       if(legacyDrinks.length) {
         drinksStr += `<details class="menu-collapse" open><summary>${escapeHTML(categoryLabels.bebidas.legacy)}</summary><div class="menu-collapse-body"><div class="menu-grid" data-order-key="legacy">${legacyDrinks.map(createCard).join('')}</div></div></details>`;
       }
@@ -4533,21 +4579,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       },0);
     }
     function adminCatalogCategoryKey(item){
-      if(!item) return 'legacy';
-      if(item.type==='portion') return 'portion';
-      if(item.type==='beer') return 'beer';
-      if(item.type==='noalcohol') return 'noalcohol';
-      if(item.type!=='drink') return 'legacy';
-      const explicit=String(item.drinkLine||'').trim().toLowerCase();
-      if(['caipirinha','vodka','rum','tequila','gin','whisky'].includes(explicit)) return explicit;
-      const n=String(item.name||'').toLowerCase();
-      if(n.includes('caipirinha')) return 'caipirinha';
-      if(/caipiroska|screwdriver|sex on the beach|cosmopolitan|moscow mule|\bvodka\b/.test(n)) return 'vodka';
-      if(/cuba libre|mojito|daiquiri|caipiríssima|caipirissima|\brum\b/.test(n)) return 'rum';
-      if(/tequila|margarita/.test(n)) return 'tequila';
-      if(/\bgin\b|gin-|gin /.test(n)) return 'gin';
-      if(/whisky|whiskey|old fashioned/.test(n)) return 'whisky';
-      return 'legacy';
+      return menuCategoryKey(item);
     }
     function adminCatalogCategoryDefinitions(menu,featured,pFeatured){
       const drinks=Array.isArray(menu)?menu:[];
@@ -6119,13 +6151,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     a.menuCategoryLabels.bebidas.featuredIds=a.menuCategoryLabels.bebidas.featuredIds.map(Number).filter(id=>validIds.has(id));
     a.menuCategoryLabels.porcoes.featuredIds=a.menuCategoryLabels.porcoes.featuredIds.map(Number).filter(id=>validIds.has(id));
 
-    const lineFor=item=>{
-      if(item.type==='portion')return 'portion';
-      if(item.type==='beer')return 'beer';
-      if(item.type==='noalcohol')return 'noalcohol';
-      if(item.type==='drink' && ['caipirinha','vodka','rum','tequila','gin','whisky'].includes(String(item.drinkLine||'')))return String(item.drinkLine);
-      return 'legacy';
-    };
+    const lineFor=item=>menuCategoryKey(item);
     const keys=['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
     if(!a.menuOrder||typeof a.menuOrder!=='object')a.menuOrder={};
     keys.forEach(key=>{
