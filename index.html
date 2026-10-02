@@ -3657,6 +3657,20 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     function createCard(item, isFeatured=false) {
+      // O selo nunca é automático: mesmo que algum chamador peça destaque,
+      // só mostramos a tag quando o ID estiver explicitamente selecionado
+      // na configuração manual da página correspondente.
+      const manualFeatured = (()=>{
+        const id=Number(item?.id);
+        if(!Number.isFinite(id)) return false;
+        try{
+          ensureMenuCategoryLabels();
+          const page=item?.type==='portion'?'porcoes':'bebidas';
+          const ids=appData?.menuCategoryLabels?.[page]?.featuredIds;
+          return Array.isArray(ids) && ids.map(Number).includes(id);
+        }catch(_){ return false; }
+      })();
+      isFeatured = isFeatured === true && manualFeatured;
       const hostedImg = normalizeStoredImage(item);
       const organizerClick = `openMenuModalObj(${safeNumericId(item.id)})`;
       const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
@@ -5141,13 +5155,17 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       if(!isLoggedIn) return alert('🔐 Faça login como administrador antes de editar os ingredientes.');
       if(!isMaster && perms.canEdit === false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
       try {
-        await loadBarControl(false);
+        if(typeof window.loadBarControl !== 'function') throw new Error('Controle do Bar ainda não foi carregado. Reabra o painel e tente novamente.');
+        await window.loadBarControl(false);
         openBarRecipeEditor(String(id));
       } catch(e) {
         alert('❌ Não foi possível abrir a gestão de ingredientes.\n\n'+(e?.message||e));
       }
     }
 
+    // O Controle do Bar foi definido em outro bloco <script>. Exponha o
+    // carregador explicitamente para que o editor aberto pelo modal ADM não
+    // dependa do escopo lexical de outro bloco.
     window.openAdminRecipeEditor = openAdminRecipeEditor;
     window.openSiteDrinkRecipeEditor=async function(id){
       const isMaster=getPersistentAdminFlag('brg_adm_is_master')==='true',perms=appData.permissions||{};
@@ -5629,6 +5647,8 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       await syncBarSalesToPartnersFinance();
       renderBarControl();
     }finally{BRG_BAR.loading=false}}
+  // API pública usada pelos editores do catálogo, que vivem em outro bloco <script>.
+  window.loadBarControl = loadBarControl;
   window.openBarControl=async function(){if(!brgIsAdmin()){alert('🔐 Faça login como administrador antes de abrir o Controle do Bar.');return}const o=document.getElementById('bar-control-overlay');if(!o)return;o.style.display='block';o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-control-empty">⏳ Carregando Controle do Bar…</div>';try{await loadBarControl(false)}catch(e){document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-alert">Não foi possível abrir o Controle do Bar.<br><small>'+brgEsc(e.message)+'</small></div>';alert('Não foi possível abrir o Controle do Bar.\n\n'+e.message)}};
   window.closeBarControl=function(){const o=document.getElementById('bar-control-overlay');if(o)o.style.display='none';document.body.style.overflow=''};
   window.barCtlReload=async function(){try{await loadBarControl(false)}catch(e){alert('Falha ao atualizar: '+e.message)}};
