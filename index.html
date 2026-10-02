@@ -561,6 +561,35 @@
 .bar-mini-kpi span{display:block;color:#8d9aa2;font-size:.7rem;margin-top:3px}
 @media(max-width:650px){.bar-analytics-grid{grid-template-columns:1fr}.bar-inline-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-goal-grid{grid-template-columns:1fr}}
 @media(max-width:1000px){.bar-products{grid-template-columns:repeat(3,minmax(0,1fr))}.bar-kpis{grid-template-columns:repeat(3,minmax(120px,1fr))}.bar-control-form{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* === AJUSTE MOBILE — EDITOR DE RECEITA/INGREDIENTES === */
+#bar-recipe-modal{box-sizing:border-box!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+#bar-recipe-modal>div{box-sizing:border-box!important;max-width:980px!important;width:min(980px,100%)!important;max-height:92vh!important;overflow-x:hidden!important;overflow-y:auto!important;}
+#bar-recipe-modal .bar-control-form{min-width:0!important;}
+#bar-recipe-modal .bar-control-full{min-width:0!important;overflow:visible!important;}
+#bar-recipe-modal .bar-control-full>div:first-child{min-width:0!important;}
+#bar-recipe-modal .bar-recipe-row{min-width:0!important;overflow:hidden!important;}
+#bar-recipe-modal .bar-recipe-row>div{min-width:0!important;}
+#bar-recipe-modal .bar-recipe-row span,#bar-recipe-modal .bar-recipe-row label{min-width:0!important;overflow-wrap:anywhere!important;word-break:break-word!important;}
+#bar-recipe-modal input,#bar-recipe-modal select,#bar-recipe-modal button{max-width:100%!important;box-sizing:border-box!important;}
+#site-drink-recipe-modal .site-recipe-row{min-width:0!important;overflow:hidden!important;}
+#site-drink-recipe-modal .site-recipe-row>div{min-width:0!important;}
+#site-drink-recipe-modal input,#site-drink-recipe-modal select,#site-drink-recipe-modal button{max-width:100%!important;box-sizing:border-box!important;}
+@media(max-width:650px){
+  #bar-recipe-modal{padding:0!important;align-items:stretch!important;justify-content:stretch!important;}
+  #bar-recipe-modal>div{width:100%!important;max-width:none!important;height:100%!important;max-height:none!important;min-height:100%!important;border-radius:0!important;border-left:0!important;border-right:0!important;padding:14px 12px 88px!important;}
+  #bar-recipe-modal .bar-control-form{grid-template-columns:1fr!important;gap:9px!important;}
+  #bar-recipe-modal .bar-control-full>div:first-child{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;align-items:end!important;}
+  #bar-recipe-modal .bar-control-full>div:first-child>label{min-width:0!important;}
+  #bar-recipe-modal .bar-control-full>div:first-child>button{grid-column:1/-1!important;width:100%!important;min-height:48px!important;}
+  #bar-recipe-modal .bar-recipe-row>div{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;align-items:end!important;}
+  #bar-recipe-modal .bar-recipe-row>div>span{grid-column:1/-1!important;width:100%!important;}
+  #bar-recipe-modal .bar-recipe-row>div>input,#bar-recipe-modal .bar-recipe-row>div>select{width:100%!important;min-width:0!important;}
+  #bar-recipe-modal .bar-recipe-row>div>button{grid-column:1/-1!important;width:100%!important;min-height:44px!important;}
+  #site-drink-recipe-modal .site-recipe-row>div{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:9px!important;align-items:end!important;}
+  #site-drink-recipe-modal .site-recipe-row>div>div{grid-column:1/-1!important;}
+  #site-drink-recipe-modal .site-recipe-row>div>button{grid-column:1/-1!important;width:100%!important;min-height:44px!important;}
+}
+
 @media(max-width:650px){.bar-control-overlay{padding:0}.bar-control-shell{min-height:100vh;border-radius:0;border-left:0;border-right:0}.bar-products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.bar-product-img{height:100px}.bar-kpis{grid-template-columns:repeat(2,minmax(120px,1fr))}.bar-control-form{grid-template-columns:1fr}.bar-control-detail{grid-template-columns:1fr}.bar-control-view{padding:12px}.bar-control-head{padding:14px}}
 <style>.bar-field-help{display:block;margin-top:5px;font-size:.78rem;line-height:1.35;color:#8fa0ad}.bar-unit-help{line-height:1.45}
 /* V44 — popups de Diretoria/Promoter */
