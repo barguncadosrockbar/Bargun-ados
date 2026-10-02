@@ -235,7 +235,7 @@
     .dir-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 15px; margin-top: 10px;}
     .promo-seal{position:absolute;left:8px;bottom:8px;z-index:5;background:linear-gradient(135deg,var(--c-red),var(--c-pink));color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:5px 8px;font-family:var(--font-title);font-size:.64rem;letter-spacing:.4px;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.45);pointer-events:none;}
     .agenda-feature-badge{position:absolute;left:0;right:0;bottom:0;z-index:3;background:rgba(20,8,18,.94);color:#fff;border-top:1px solid rgba(255,255,255,.35);padding:6px 10px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;text-align:center;box-shadow:0 -3px 10px rgba(0,0,0,.35);} .featured-agenda-badge{display:block;width:100%;box-sizing:border-box;background:linear-gradient(135deg,var(--c-red),var(--c-purple));color:#fff;border-top:1px solid rgba(255,255,255,.45);padding:8px 10px;text-align:center;font-family:var(--font-title);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 -2px 10px rgba(0,0,0,.25);}
-    .home-social-promo{margin-top:15px;padding:14px 16px;border:1px solid rgba(255,235,59,.42);background:linear-gradient(135deg,rgba(255,235,59,.08),rgba(233,30,99,.08));border-radius:12px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18)}.home-social-promo h3{margin:0 0 6px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.18rem}.home-social-promo p{margin:0;color:#fff;font-weight:800;line-height:1.4}
+    .home-social-promo{margin-top:15px;padding:14px 16px;border:1px solid rgba(255,235,59,.42);background:linear-gradient(135deg,rgba(255,235,59,.08),rgba(233,30,99,.08));border-radius:12px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18)}.home-social-promo h3{margin:0 0 6px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.18rem}.home-social-promo p{margin:0;color:#fff;font-weight:800;line-height:1.4}.brg-public-edit-btn{display:none;margin:10px auto 0;padding:7px 12px;border:1px solid var(--c-cyan);border-radius:8px;background:rgba(0,188,212,.12);color:#fff;font-weight:900;font-size:.72rem;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.brg-public-edit-btn:active{transform:scale(.97);background:var(--c-cyan);color:#000}
     .home-agenda-wrap{margin-top:15px;display:flex;justify-content:center}.home-agenda-card{width:min(100%,330px);aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:12px;border:2px solid var(--c-red);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(0,0,0,.4)}.home-agenda-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.05) 65%)}.home-agenda-content{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px;text-align:center}.home-agenda-content .tag{display:inline-block;background:var(--c-red);color:#fff;padding:4px 8px;border-radius:5px;font-family:var(--font-title);font-size:.72rem;margin-bottom:5px}.home-agenda-content .title{color:#fff;font-family:var(--font-title);font-size:1.25rem;text-transform:uppercase;line-height:1.1}
     .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:auto}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
@@ -986,6 +986,40 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     </div>
   </div>
 
+  <!-- MODAL DE EDIÇÃO DOS BLOCOS CONTATO/REDES E POSTE/MARQUE/GANHE -->
+  <div id="contactSocialEditModal" class="modal">
+    <div class="modal-content glass-panel" style="border-color:var(--c-cyan);text-align:left;max-width:720px;">
+      <span class="close-btn" onclick="closeModal('contactSocialEditModal')">×</span>
+      <h3 style="font-family:var(--font-title);font-size:1.8rem;color:var(--c-cyan);margin-bottom:6px;text-align:center;">✏️ Editar Contato & Redes</h3>
+      <p style="color:#9aa7ad;font-size:.8rem;text-align:center;margin-bottom:15px;">Apenas administradores com permissão de edição podem alterar estes textos. O restante do site permanece intacto.</p>
+
+      <div class="admin-card" style="border-color:rgba(255,235,59,.45);">
+        <h5 style="color:var(--c-yellow);font-family:var(--font-title);font-size:1.1rem;margin-bottom:8px;">📸 POSTE • MARQUE • GANHE</h5>
+        <label style="font-size:.75rem;color:#aaa;">Título:</label>
+        <input id="edit-social-title" class="admin-input" type="text">
+        <label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Mensagem:</label>
+        <textarea id="edit-social-text" class="admin-textarea" rows="5"></textarea>
+      </div>
+
+      <div class="admin-card" style="border-color:rgba(233,30,99,.45);margin-top:12px;">
+        <h5 style="color:var(--c-pink);font-family:var(--font-title);font-size:1.1rem;margin-bottom:8px;">💬 CONTATO & REDES</h5>
+        <label style="font-size:.75rem;color:#aaa;">Título:</label>
+        <input id="edit-contact-title" class="admin-input" type="text">
+        <label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Subtítulo:</label>
+        <input id="edit-contact-subtitle" class="admin-input" type="text">
+        <label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Texto do WhatsApp:</label>
+        <input id="edit-contact-whatsapp-text" class="admin-input" type="text">
+        <label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Link do WhatsApp:</label>
+        <input id="edit-contact-whatsapp-url" class="admin-input" type="url" placeholder="https://wa.me/..."><label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Texto do Instagram:</label>
+        <input id="edit-contact-instagram-text" class="admin-input" type="text">
+        <label style="font-size:.75rem;color:#aaa;display:block;margin-top:8px;">Link do Instagram:</label>
+        <input id="edit-contact-instagram-url" class="admin-input" type="url" placeholder="https://instagram.com/...">
+      </div>
+
+      <button class="action-btn" onclick="saveContactSocialEdit()" style="margin-top:14px;background:var(--c-cyan);color:#000;width:100%;min-height:46px;">💾 Salvar Alterações</button>
+    </div>
+  </div>
+
   <!-- MODAL DE DETALHES / EDIÇÃO / EXCLUSÃO DE RANKINGS -->
   <div id="playerModal" class="modal">
     <div class="modal-content glass-panel" style="border-color: var(--c-yellow);">
@@ -1134,7 +1168,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           </div>
         </div>
 
-        <div class="home-social-promo"><h3>📸 POSTE • MARQUE • GANHE</h3><p>Poste fotos ou vídeos do Bargunçados, marque <strong>@barguncadosrockbar</strong> e participe de descontos de <strong>até 15%</strong>. Mostre que você vive a noite com a gente e aproveite a vantagem!</p></div><div class="home-agenda-wrap"><div id="home-featured-agenda" class="home-agenda-card" onclick="openAgendaModal('featured')"><div class="agenda-feature-badge">📅 PRÓXIMO EVENTO</div><div class="home-agenda-content"><div class="tag" id="home-agenda-tag">DESTAQUE</div><div class="title" id="home-agenda-title">Agenda em destaque</div></div></div></div>
+        <div class="home-social-promo" id="home-social-promo"><h3 id="home-social-promo-title">📸 POSTE • MARQUE • GANHE</h3><p id="home-social-promo-text">Poste fotos ou vídeos do Bargunçados, marque @barguncadosrockbar e participe de descontos de até 15%. Mostre que você vive a noite com a gente e aproveite a vantagem!</p><button type="button" id="home-social-promo-edit" class="brg-public-edit-btn" onclick="event.stopPropagation();openContactSocialEdit('social')">✏️ Editar</button></div><div class="home-agenda-wrap"><div id="home-featured-agenda" class="home-agenda-card" onclick="openAgendaModal('featured')"><div class="agenda-feature-badge">📅 PRÓXIMO EVENTO</div><div class="home-agenda-content"><div class="tag" id="home-agenda-tag">DESTAQUE</div><div class="title" id="home-agenda-title">Agenda em destaque</div></div></div></div>
       </section>
 
       <section id="bebidas" class="tab-pane">
@@ -1223,11 +1257,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
       <section id="contato" class="tab-pane">
         <h2 class="section-title">Contato & Redes</h2>
-        <div class="glass-panel contact-card">
-          <h3 style="font-family: var(--font-title); font-size: 2.5rem; color: var(--c-pink); margin-bottom: 10px;">BARGUNÇADOS ROCK BAR</h3>
-          <p style="color: #ccc; margin-bottom: 25px; font-size: 1rem;">Siga, mande mensagem e faça sua reserva.</p>
-          <a href="https://wa.me/5511959427214" target="_blank" class="contact-link" style="border-left: 4px solid #25D366;"><span style="font-size: 1.5rem;">💬</span> WhatsApp: (11) 95942-7214</a>
-          <a href="https://instagram.com/barguncadosrockbar" target="_blank" class="contact-link" style="border-left: 4px solid var(--c-pink);"><span style="font-size: 1.5rem;">📸</span> Instagram: @barguncadosrockbar</a>
+        <div class="glass-panel contact-card" id="contact-social-card">
+          <h3 id="contact-card-title" style="font-family: var(--font-title); font-size: 2.5rem; color: var(--c-pink); margin-bottom: 10px;">BARGUNÇADOS ROCK BAR</h3>
+          <p id="contact-card-subtitle" style="color: #ccc; margin-bottom: 25px; font-size: 1rem;">Siga, mande mensagem e faça sua reserva.</p>
+          <a id="contact-whatsapp-link" href="https://wa.me/5511959427214" target="_blank" rel="noopener noreferrer" class="contact-link" style="border-left: 4px solid #25D366;"><span style="font-size: 1.5rem;">💬</span> <span id="contact-whatsapp-text">WhatsApp: (11) 95942-7214</span></a>
+          <a id="contact-instagram-link" href="https://instagram.com/barguncadosrockbar" target="_blank" rel="noopener noreferrer" class="contact-link" style="border-left: 4px solid var(--c-pink);"><span style="font-size: 1.5rem;">📸</span> <span id="contact-instagram-text">Instagram: @barguncadosrockbar</span></a>
+          <button type="button" id="contact-social-edit" class="brg-public-edit-btn" onclick="event.stopPropagation();openContactSocialEdit('contact')">✏️ Editar</button>
         </div>
       </section>
 
@@ -1855,6 +1890,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(supabaseAccessToken && user && user.id) setPersistentAdminFlag('brg_supabase_user_id', user.id);
     }
 
+    const defaultSocialPromo = { title: "📸 POSTE • MARQUE • GANHE", text: "Poste fotos ou vídeos do Bargunçados, marque @barguncadosrockbar e participe de descontos de até 15%. Mostre que você vive a noite com a gente e aproveite a vantagem!" };
+    const defaultContact = { title: "BARGUNÇADOS ROCK BAR", subtitle: "Siga, mande mensagem e faça sua reserva.", whatsappText: "WhatsApp: (11) 95942-7214", whatsappUrl: "https://wa.me/5511959427214", instagramText: "Instagram: @barguncadosrockbar", instagramUrl: "https://instagram.com/barguncadosrockbar" };
     const defaultHome = { title: "SOM PESADO & BEBIDA TRINCANDO", desc1: "Bem-vindo ao Bargunçados Rock Bar. Aqui a regra é clara: som no talo, copo cheio e zero frescura.", desc2: "O seu novo QG no Pimentas. Tocamos todos os estilos de Rock, do Indie al Heavy Metal pesado.", promoTitle: "🔥 DIVERSÃO GARANTIDA", promo1: "🎸 Agenda de Shows Coberta o Mês Todo", promo2: "🕹️ Fliperama Arcades Liberados", promo3: "🍻 Bebidas Baratas & Porções Brutas", isOpen: true, img: "" };
     const defaultMenu = [
       { id: 1, type: 'drink', name: 'Gin Sunset', short: 'Gin, laranja e especiarias.', full: 'Gin artesanal vibrante.', price: '8,00', img: 'https://images.unsplash.com/photo-1609951651556-5334e2706168?q=80&w=400' },
@@ -3565,6 +3602,29 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       document.getElementById('h-promo2').innerText = cHome.promo2;
       document.getElementById('h-promo3').innerText = cHome.promo3;
 
+      const socialPromo = (cHome.socialPromo && typeof cHome.socialPromo === 'object') ? cHome.socialPromo : defaultSocialPromo;
+      const contact = (appData.contact && typeof appData.contact === 'object') ? appData.contact : defaultContact;
+      const socialTitleEl = document.getElementById('home-social-promo-title');
+      const socialTextEl = document.getElementById('home-social-promo-text');
+      if(socialTitleEl) socialTitleEl.innerText = socialPromo.title || defaultSocialPromo.title;
+      if(socialTextEl) {
+        const socialText = String(socialPromo.text || defaultSocialPromo.text);
+        const socialSafe = escapeHTML(socialText).replace(/(@barguncadosrockbar)/gi,'<strong>$1</strong>').replace(/(até 15%)/gi,'<strong>$1</strong>');
+        socialTextEl.innerHTML = socialSafe;
+      }
+      const contactTitleEl = document.getElementById('contact-card-title');
+      const contactSubtitleEl = document.getElementById('contact-card-subtitle');
+      const whatsappTextEl = document.getElementById('contact-whatsapp-text');
+      const whatsappLinkEl = document.getElementById('contact-whatsapp-link');
+      const instagramTextEl = document.getElementById('contact-instagram-text');
+      const instagramLinkEl = document.getElementById('contact-instagram-link');
+      if(contactTitleEl) contactTitleEl.innerText = contact.title || defaultContact.title;
+      if(contactSubtitleEl) contactSubtitleEl.innerText = contact.subtitle || defaultContact.subtitle;
+      if(whatsappTextEl) whatsappTextEl.innerText = contact.whatsappText || defaultContact.whatsappText;
+      if(whatsappLinkEl) whatsappLinkEl.href = contact.whatsappUrl || defaultContact.whatsappUrl;
+      if(instagramTextEl) instagramTextEl.innerText = contact.instagramText || defaultContact.instagramText;
+      if(instagramLinkEl) instagramLinkEl.href = contact.instagramUrl || defaultContact.instagramUrl;
+
       const statusDot = document.getElementById('status-dot-el');
       const statusText = document.getElementById('status-text-el');
       if(cHome.isOpen !== false) {
@@ -3589,6 +3649,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const perms = appData.permissions || {};
       const canAdd = isMaster || perms.canAdd !== false;
       const canEdit = isMaster || perms.canEdit !== false;
+
+      const publicEditButtons = [document.getElementById('home-social-promo-edit'), document.getElementById('contact-social-edit')];
+      publicEditButtons.forEach(btn => { if(btn) btn.style.display = (isAdmLogged && canEdit) ? 'block' : 'none'; });
 
       const bHome = document.getElementById('bar-action-home');
       const bBebidas = document.getElementById('bar-action-bebidas');
@@ -4292,6 +4355,79 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }
 
       document.getElementById('homeDirectEditModal').style.display = 'flex';
+    }
+
+    function openContactSocialEdit(section){
+      const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      if(!isLoggedIn) return alert('🔐 Faça login como administrador antes de editar.');
+      if(!isMaster && perms.canEdit === false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
+
+      const social = (appData.home?.socialPromo && typeof appData.home.socialPromo === 'object') ? appData.home.socialPromo : defaultSocialPromo;
+      const contact = (appData.contact && typeof appData.contact === 'object') ? appData.contact : defaultContact;
+      const setv=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v==null?'':String(v)};
+      setv('edit-social-title', social.title || defaultSocialPromo.title);
+      setv('edit-social-text', social.text || defaultSocialPromo.text);
+      setv('edit-contact-title', contact.title || defaultContact.title);
+      setv('edit-contact-subtitle', contact.subtitle || defaultContact.subtitle);
+      setv('edit-contact-whatsapp-text', contact.whatsappText || defaultContact.whatsappText);
+      setv('edit-contact-whatsapp-url', contact.whatsappUrl || defaultContact.whatsappUrl);
+      setv('edit-contact-instagram-text', contact.instagramText || defaultContact.instagramText);
+      setv('edit-contact-instagram-url', contact.instagramUrl || defaultContact.instagramUrl);
+
+      const modal=document.getElementById('contactSocialEditModal');
+      if(modal){ modal.style.display='flex'; modal.classList.add('is-open'); }
+      setTimeout(()=>{
+        const target=section==='contact'?'edit-contact-title':'edit-social-title';
+        document.getElementById(target)?.focus();
+      },50);
+    }
+
+    function safeEditableExternalUrl(value, fallback){
+      const raw=String(value??'').trim();
+      if(!raw) return fallback;
+      try{
+        const url=new URL(raw,window.location.href);
+        return /^https?:$/i.test(url.protocol) ? url.href : fallback;
+      }catch(e){ return fallback; }
+    }
+
+    async function saveContactSocialEdit(){
+      const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
+      const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
+      const perms = appData.permissions || {};
+      if(!isLoggedIn) return alert('🔐 Faça login como administrador antes de salvar.');
+      if(!isMaster && perms.canEdit === false) return alert('Acesso Negado: permissão de edição desativada pelo Master.');
+
+      if(!appData.home || typeof appData.home !== 'object') appData.home = { ...defaultHome };
+      const previousHome = cloneForSync(appData.home);
+      const previousContact = cloneForSync(appData.contact);
+      appData.home.socialPromo = {
+        title: document.getElementById('edit-social-title')?.value ?? defaultSocialPromo.title,
+        text: document.getElementById('edit-social-text')?.value ?? defaultSocialPromo.text
+      };
+      appData.contact = {
+        title: document.getElementById('edit-contact-title')?.value ?? defaultContact.title,
+        subtitle: document.getElementById('edit-contact-subtitle')?.value ?? defaultContact.subtitle,
+        whatsappText: document.getElementById('edit-contact-whatsapp-text')?.value ?? defaultContact.whatsappText,
+        whatsappUrl: safeEditableExternalUrl(document.getElementById('edit-contact-whatsapp-url')?.value, defaultContact.whatsappUrl),
+        instagramText: document.getElementById('edit-contact-instagram-text')?.value ?? defaultContact.instagramText,
+        instagramUrl: safeEditableExternalUrl(document.getElementById('edit-contact-instagram-url')?.value, defaultContact.instagramUrl)
+      };
+
+      try{
+        const saved=await saveBinData('Modificou o bloco de Contato & Redes e/ou Poste • Marque • Ganhe');
+        if(!saved) throw new Error('O servidor não confirmou a gravação permanente.');
+        renderApp();
+        closeModal('contactSocialEditModal');
+        alert('✅ Alterações de Contato & Redes salvas permanentemente no Supabase.');
+      }catch(e){
+        appData.home = previousHome || { ...defaultHome };
+        if(previousContact) appData.contact=previousContact; else delete appData.contact;
+        renderApp();
+        alert('❌ A alteração não foi salva.\n\n'+(e?.message||e));
+      }
     }
 
     async function homeDirectUploadImg(input) {
@@ -5738,6 +5874,7 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       if (event.target == document.getElementById('playerModal')) closeModal('playerModal');
       if (event.target == document.getElementById('itemCreateModal')) closeModal('itemCreateModal');
       if (event.target == document.getElementById('homeDirectEditModal')) closeModal('homeDirectEditModal');
+      if (event.target == document.getElementById('contactSocialEditModal')) closeModal('contactSocialEditModal');
     };
 
     function fallbackImg(el) {
