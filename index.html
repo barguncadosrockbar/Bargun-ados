@@ -2205,6 +2205,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     // Isso impede que uma gravação antiga chegue depois de uma edição nova e a sobrescreva.
     let binWriteChain = Promise.resolve();
     let binWriteBusy = false;
+    // Enquanto uma ação explícita de salvar está em andamento, a sincronização
+    // periódica NÃO pode baixar uma versão antiga e substituir appData antes do PUT.
+    // Esse lock cobre também a etapa de autenticação/upload, antes de binWriteBusy.
+    let adminSaveInProgress = 0;
     let binWriteGeneration = 0;
     let remoteRevision = 0;
     let publicRevision = 0;
@@ -2591,6 +2595,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     async function fetchBinData(force=false) {
       const adminExpected = getPersistentAdminFlag('brg_adm_logged') === 'true';
+      // Nem mesmo uma leitura forçada pode substituir appData enquanto uma
+      // gravação administrativa está em andamento.
+      if(adminSaveInProgress > 0) return;
       if(!force && interactionMutationBusy) return;
       if(!force && document.activeElement && ['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)) {
         return;
@@ -2598,7 +2605,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       // Nunca permita que uma aba administrativa caia silenciosamente para o
       // snapshot público. Esse era o ponto que fazia edições recentes
       // desaparecerem quando a sessão sofria uma falha transitória.
-      if(binWriteBusy) return;
+      if(binWriteBusy || adminSaveInProgress > 0) return;
       const readGeneration = binWriteGeneration;
       try {
         let adminToken = null;
@@ -2724,6 +2731,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     window.masterSaveEverything = async function(){
       if(!isCurrentMaster()) return alert('Acesso restrito: somente o Administrador Master pode usar este salvamento geral.');
+      adminSaveInProgress++;
+      if(adminSaveInProgress === 1) binWriteGeneration++;
       try {
         showAdminSaveProgress('Salvando tudo permanentemente…');
         const changes = getChangedTopLevelFields();
@@ -2741,6 +2750,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       } catch(e) {
         await finishAdminSaveProgress(false);
         alert('❌ O salvamento geral não foi confirmado.\n\n' + (e?.message || e));
+      } finally {
+        adminSaveInProgress = Math.max(0, adminSaveInProgress - 1);
+        if(adminSaveInProgress === 0 && !binWriteBusy) {
+          const generation = binWriteGeneration;
+          setTimeout(() => {
+            if(adminSaveInProgress === 0 && !binWriteBusy && generation === binWriteGeneration) fetchBinData();
+          }, 0);
+        }
       }
     };
 
@@ -2808,52 +2825,74 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
     async function saveBinData(actionDesc = '') {
+      // O lock começa ANTES da autenticação. O problema observado podia ocorrer
+      // exatamente aqui: o sync de 5s tinha permissão para ler o Supabase antigo
+      // enquanto esta gravação ainda estava preparando o PUT.
+      adminSaveInProgress++;
+      if(adminSaveInProgress === 1) binWriteGeneration++;
+
       if(!(await enforceAdminSessionLifetime())) {
+        adminSaveInProgress = Math.max(0, adminSaveInProgress - 1);
         throw new Error('A sessão administrativa de 12 horas expirou. Faça login novamente para salvar alterações.');
       }
       if(getPersistentAdminFlag('brg_adm_logged') !== 'true') {
+        adminSaveInProgress = Math.max(0, adminSaveInProgress - 1);
         throw new Error('É necessário estar autenticado como administrador para salvar alterações permanentes.');
       }
+
       showAdminSaveProgress();
       try {
-      if(actionDesc) {
-        const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
-        const now = new Date().toLocaleString('pt-BR');
-        if(!appData.adminLogs) appData.adminLogs = [];
-        appData.adminLogs.unshift({
-          id: Date.now(),
-          admin: loggedName,
-          action: actionDesc,
-          date: now
-        });
-      }
-      renderApp();
-      updateTrafficUI();
-      const changes = getChangedTopLevelFields();
-      if(!Object.keys(changes).length){
-        await finishAdminSaveProgress(true,'Nenhuma alteração nova para gravar.');
-        return true;
-      }
-      // Ponte permanente: a alteração fica registrada localmente até o servidor
-      // confirmar. Assim uma queda de sessão/conexão não devolve a interface ao estado antigo.
-      const baseRevision = remoteRevision;
-      const saved = await queueBinWrite(changes, baseRevision);
-      if (!saved) {
-        // Mantém appData intacto: não substituímos a edição do administrador
-        // por uma cópia antiga em caso de falha.
+        if(actionDesc) {
+          const loggedName = sessionStorage.getItem('brg_adm_name') || 'Administrador';
+          const now = new Date().toLocaleString('pt-BR');
+          if(!appData.adminLogs) appData.adminLogs = [];
+          appData.adminLogs.unshift({
+            id: Date.now(),
+            admin: loggedName,
+            action: actionDesc,
+            date: now
+          });
+        }
+
         renderApp();
-        await finishAdminSaveProgress(false);
-        throw new Error('O servidor não confirmou a gravação permanente. A alteração continua na tela e será necessário tentar salvar novamente.');
-      }
-      await finishAdminSaveProgress(true,'Alteração confirmada na nuvem. Aguarde o carregamento terminar.');
-      // A confirmação de persistência já é feita dentro de sendAdminPatch().
-      // Não repetir uma segunda leitura aqui: ela podia enxergar uma resposta
-      // normalizada pelo backend e gerar um falso erro depois de um PUT 200.
-      return true;
+        updateTrafficUI();
+
+        const changes = getChangedTopLevelFields();
+        if(!Object.keys(changes).length){
+          await finishAdminSaveProgress(true,'Nenhuma alteração nova para gravar.');
+          return true;
+        }
+
+        // Mantém a versão base capturada ANTES do PUT. Nenhuma leitura remota
+        // concorrente pode substituir appData/remoteSnapshot enquanto o save
+        // está em andamento.
+        const baseRevision = remoteRevision;
+        const saved = await queueBinWrite(changes, baseRevision);
+
+        if(!saved) {
+          renderApp();
+          await finishAdminSaveProgress(false);
+          throw new Error('O servidor não confirmou a gravação permanente. A alteração continua na tela e será necessário tentar salvar novamente.');
+        }
+
+        await finishAdminSaveProgress(true,'Alteração confirmada na nuvem. Aguarde o carregamento terminar.');
+        return true;
       } catch(e) {
         const progress=document.getElementById('brg-admin-save-progress');
         if(progress && adminSaveUiDepth>0) await finishAdminSaveProgress(false);
         throw e;
+      } finally {
+        adminSaveInProgress = Math.max(0, adminSaveInProgress - 1);
+        // Libera uma sincronização que tenha sido solicitada durante o save.
+        // Ela só pode entrar depois que o último save terminou.
+        if(adminSaveInProgress === 0 && !binWriteBusy) {
+          const generation = binWriteGeneration;
+          setTimeout(() => {
+            if(adminSaveInProgress === 0 && !binWriteBusy && generation === binWriteGeneration) {
+              fetchBinData();
+            }
+          }, 0);
+        }
       }
     }
 
@@ -4123,9 +4162,16 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       item.full = document.getElementById('modal-edit-full').value;
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
-      closeModal('productModal');
-      await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Categoria: ${newCat}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
-      alert("✅ Item atualizado com sucesso!");
+      try {
+        const saved = await saveBinData(`Editou no cardápio o item "${oldName}" para "${item.name}" (Categoria: ${newCat}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
+        if(saved !== true) throw new Error('O servidor não confirmou a gravação permanente.');
+        closeModal('productModal');
+        alert("✅ Item atualizado e confirmado permanentemente no Supabase!");
+      } catch(e) {
+        // Não mascarar falha de persistência como sucesso.
+        // A edição permanece em memória para o administrador tentar novamente.
+        alert("❌ O item NÃO foi confirmado no servidor.\n\n"+(e?.message||e));
+      }
     }
 
     async function deleteModalItemDirect() {
