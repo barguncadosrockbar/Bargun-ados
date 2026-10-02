@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BARGUNÇADOS ROCK BAR | Pub, Arcade & Metal</title>
-  <meta name="brg-build-version" content="2026100202">
+  <meta name="brg-build-version" content="2026100201">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1309,7 +1309,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
 <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(0,188,212,.28);background:linear-gradient(135deg,rgba(0,188,212,.07),rgba(233,30,99,.05));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">📦 Controle Profissional do Bar</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Estoque, receitas, vendas, custo real, margem, lucro e capacidade de produção.</div></div><button class="action-btn" onclick="openBarControl()" style="background:linear-gradient(90deg,#00bcd4,#00e676);color:#000;padding:11px 16px;">📦 Abrir Controle do Bar</button></div></div>
 
-          <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(255,193,7,.32);background:linear-gradient(135deg,rgba(255,193,7,.07),rgba(233,30,99,.04));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">🛡️ Histórico permanente de edições</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Cada alteração importante do site fica guardada no Supabase. Se houver problema, o Master pode restaurar uma revisão salva sem apagar o histórico.</div></div><div style="display:flex;gap:8px;flex-wrap:wrap;"><button id="master-save-all-btn" class="action-btn" onclick="saveEverythingPermanently()" style="display:none;background:linear-gradient(90deg,#00e676,#00bcd4);color:#000;padding:11px 16px;font-weight:900;">💾 SALVAR TUDO PERMANENTEMENTE</button><button class="action-btn" onclick="openSiteBackupManager()" style="background:linear-gradient(90deg,#ffeb3b,#ff9800);color:#000;padding:11px 16px;">🛡️ Histórico / Backup</button></div></div></div>
+          <div class="glass-panel" style="padding:14px 16px;margin-bottom:15px;border:1px solid rgba(255,193,7,.32);background:linear-gradient(135deg,rgba(255,193,7,.07),rgba(233,30,99,.04));"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;"><div><strong style="font-family:var(--font-title);color:#fff;font-size:1.1rem;">🛡️ Histórico permanente de edições</strong><div style="color:#8d9aa2;font-size:.82rem;margin-top:3px;">Cada alteração importante do site fica guardada no Supabase. Se houver problema, o Master pode restaurar uma revisão salva sem apagar o histórico.</div></div><button class="action-btn" onclick="openSiteBackupManager()" style="background:linear-gradient(90deg,#ffeb3b,#ff9800);color:#000;padding:11px 16px;">🛡️ Abrir Histórico / Backup</button><button class="action-btn" onclick="masterSaveEverything()" style="background:linear-gradient(90deg,#00e676,#00bcd4);color:#000;padding:11px 16px;">💾 SALVAR TUDO PERMANENTEMENTE</button></div></div>
 
           <!-- ANALYTICS DO SITE -->
           <div class="traffic-dashboard">
@@ -2107,30 +2107,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(name && !reg.names.includes(name)) reg.names.push(name);
     }
 
-    function ensureDefaultCatalogIntegrity() {
-      if(!Array.isArray(appData.menu)) appData.menu = [];
-      const reg = ensureDeletedCatalogRegistry();
-      const existingIds = new Set(appData.menu.map(i => String(i && i.id != null ? i.id : '')));
-      const existingNames = new Set(appData.menu.map(i => String(i && i.name || '').trim().toLowerCase()).filter(Boolean));
-      const catalog = [
-        ...(Array.isArray(defaultMenu) ? defaultMenu : []),
-        ...(Array.isArray(EXTRA_DRINK_CATALOG) ? EXTRA_DRINK_CATALOG : [])
-      ];
-      let changed = false;
-      catalog.forEach(item => {
-        if(!item || item.id == null) return;
-        const id = String(item.id);
-        const name = String(item.name || '').trim().toLowerCase();
-        const deleted = reg.ids.some(v => String(v) === id) || (name && reg.names.includes(name));
-        if(deleted || existingIds.has(id) || (name && existingNames.has(name))) return;
-        appData.menu.push({...item});
-        existingIds.add(id);
-        if(name) existingNames.add(name);
-        changed = true;
-      });
-      return changed;
-    }
-
     function ensureDrinkCatalog() {
       if(!Array.isArray(appData.menu)) appData.menu = [];
       let changed = false;
@@ -2544,37 +2520,25 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     }
 
 
-    function hydrateLastKnownRemoteSnapshot(){ return false; }
-    function persistLastKnownRemoteSnapshot(data,revision){ try { if(!data||!Number.isFinite(Number(revision))) return false; localStorage.setItem('brg_last_confirmed_revision',String(Number(revision))); localStorage.setItem('brg_last_confirmed_snapshot',JSON.stringify(data)); return true; } catch(e){ return false; } }
-
-    async function saveEverythingPermanently(){
-      if(getPersistentAdminFlag('brg_adm_is_master')!=='true') return alert('Acesso restrito: somente o ADM Master pode executar o salvamento geral.');
-      if(binWriteBusy) return alert('⏳ Já existe um salvamento em andamento. Aguarde terminar.');
-      try{
-        // Antes do salvamento geral, completa somente itens ausentes do catálogo.
-        // Itens existentes permanecem exatamente como estão.
+    function hydrateLastKnownRemoteSnapshot(){
+      try {
+        const raw = localStorage.getItem('brg_last_confirmed_snapshot');
+        const rev = Number(localStorage.getItem('brg_last_confirmed_revision') || 0);
+        if(!raw || !Number.isFinite(rev) || rev<=0) return false;
+        const snapshot = JSON.parse(raw);
+        if(!snapshot || typeof snapshot !== 'object') return false;
+        appData = { ...appData, ...cloneForSync(snapshot) };
+        remoteSnapshot = cloneForSync(snapshot);
+        remoteRevision = rev;
+        publicRevision = rev;
         ensureDeletedCatalogRegistry();
-        const catalogCompleted=ensureDefaultCatalogIntegrity();
-        ensureAdminSystem();
-        showAdminSaveProgress('Salvando TODO o estado do site permanentemente…');
-        const saved=await saveBinData('MASTER • Salvamento geral permanente / checkpoint manual');
-        hideAdminSaveProgress();
-        if(!saved){
-          alert('❌ O salvamento geral NÃO foi confirmado pelo Supabase.\n\nNenhuma alteração deve ser considerada permanente. Verifique a sessão e tente novamente.');
-          return false;
-        }
-        renderApp();
-        await fetchBinData(true);
-        alert('✅ SALVAMENTO GERAL CONFIRMADO.\n\nTudo que estava salvo no painel foi enviado ao Supabase.\nFoi criada uma nova revisão no histórico.\n\nRevisão atual: #'+Number(remoteRevision||0)+'\nItens no cardápio: '+(Array.isArray(appData.menu)?appData.menu.length:0));
         return true;
-      }catch(e){
-        hideAdminSaveProgress();
-        console.error('[Bargunçados] Salvamento geral:',e);
-        alert('❌ Falha no salvamento geral.\n\n'+(e?.message||e));
+      } catch(e) {
+        console.warn('[Bargunçados] Não foi possível hidratar o último snapshot remoto confirmado:', e);
         return false;
       }
     }
-    window.saveEverythingPermanently=saveEverythingPermanently;
+    function persistLastKnownRemoteSnapshot(data,revision){ try { if(!data||!Number.isFinite(Number(revision))) return false; localStorage.setItem('brg_last_confirmed_revision',String(Number(revision))); localStorage.setItem('brg_last_confirmed_snapshot',JSON.stringify(data)); return true; } catch(e){ return false; } }
 
     async function initApp() {
       const sessionStillValid = await enforceAdminSessionLifetime();
@@ -2584,7 +2548,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       // Primeiro recupera o último estado remoto confirmado neste aparelho.
       // Se a API estiver temporariamente indisponível, isso impede o retorno aos
       // dados padrão antigos e preserva a última versão conhecida.
-      // Depois pinta o catálogo local e completo. A rede nunca pode deixar a página vazia.
+      hydrateLastKnownRemoteSnapshot();
       ensureAdminSystem();
       ensureDeletedCatalogRegistry();
       renderApp();
@@ -2641,14 +2605,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(adminExpected) {
           adminToken = await getAdminAccessToken();
           if(!adminToken) {
-            console.warn('[Bargunçados] Sessão administrativa temporariamente indisponível; mantendo o estado atual e NÃO carregando o catálogo público.');
-            return;
+            // A sessão administrativa pode estar indisponível sem que o catálogo público
+            // esteja indisponível. O menu público continua sendo fonte remota de verdade.
+            console.warn('[Bargunçados] Sessão administrativa indisponível; carregando o catálogo público em vez de voltar aos defaults antigos.');
           }
         } else {
           adminToken = await getAdminAccessToken();
         }
 
-        const endpoint = adminToken ? (SUPABASE_FUNCTION_URL + '?scope=admin') : SUPABASE_FUNCTION_URL;
+        let endpoint = adminToken ? (SUPABASE_FUNCTION_URL + '?scope=admin') : SUPABASE_FUNCTION_URL;
         const keys=[SUPABASE_PUBLISHABLE_KEY,SUPABASE_LEGACY_ANON_KEY].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i);
         let res=null;
         let lastError=null;
@@ -2666,6 +2631,19 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           }
           if(res?.ok)break;
           if(attempt<2) await new Promise(r=>setTimeout(r,500*(attempt+1)));
+        }
+        if(!res?.ok && adminToken) {
+          // Se o endpoint administrativo falhar (token expirado, 401/403 ou sessão inconsistente),
+          // tente explicitamente a leitura pública antes de desistir. Isso preserva o catálogo remoto
+          // mesmo quando apenas a sessão administrativa está quebrada.
+          try {
+            const publicRes = await fetchWithTimeout(SUPABASE_FUNCTION_URL,{cache:'no-store',headers:{'apikey':SUPABASE_PUBLISHABLE_KEY,'Cache-Control':'no-cache'}},10000);
+            if(publicRes.ok) {
+              res = publicRes;
+              endpoint = SUPABASE_FUNCTION_URL;
+              adminToken = null;
+            }
+          } catch(e) { lastError = e; }
         }
         if(!res?.ok){
           console.warn('[Bargunçados] API segura indisponível; mantendo o último estado confirmado.',{status:res?.status||null,error:lastError||null});
@@ -2696,14 +2674,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
             remoteSnapshot = cloneForSync(incoming) || {};
             persistLastKnownRemoteSnapshot(remoteSnapshot,remoteRevision);
             appData = { ...appData, ...incoming };
-            // Reconciliação NÃO destrutiva do catálogo: o estado remoto continua sendo
-            // a fonte de verdade para itens já existentes, mas um estado remoto antigo
-            // ou incompleto nunca mais pode esconder os itens-base/adicionais que fazem
-            // parte do catálogo atual. Só itens ausentes são acrescentados; nada existente
-            // é substituído, removido, renomeado ou tem foto/preço sobrescrito.
+            // Restaura apenas itens do catálogo-base que estejam ausentes no estado remoto.
+            // Itens existentes nunca são substituídos, removidos ou reorganizados aqui.
             ensureDeletedCatalogRegistry();
-            const catalogWasCompleted = ensureDefaultCatalogIntegrity();
-            if(catalogWasCompleted) console.info('[Bargunçados] Catálogo local completado sem sobrescrever itens existentes.');
+            // NÃO executar ensureDrinkCatalog() após ler o Supabase: o catálogo remoto é a fonte de verdade.
             ensureAdminSystem();
             ensureMenuCategoryLabels();
                   ensureModerationHistory();
@@ -2747,6 +2721,28 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(success){ if(bar) bar.style.width='100%'; if(st) st.textContent=message; await new Promise(r=>setTimeout(r,1000)); }
       if(adminSaveUiDepth===0){ el.style.display='none'; if(adminSaveUiTimer) clearTimeout(adminSaveUiTimer); }
     }
+
+    window.masterSaveEverything = async function(){
+      if(!isCurrentMaster()) return alert('Acesso restrito: somente o Administrador Master pode usar este salvamento geral.');
+      try {
+        showAdminSaveProgress('Salvando tudo permanentemente…');
+        const changes = getChangedTopLevelFields();
+        if(!Object.keys(changes).length) {
+          // Mesmo sem diferenças, confirme que a revisão remota atual está acessível.
+          const verified = await verifyAdminPersistence({});
+          await finishAdminSaveProgress(true, verified ? 'Estado atual confirmado na nuvem.' : 'Nenhuma alteração nova encontrada.');
+          return;
+        }
+        const baseRevision = remoteRevision;
+        const saved = await queueBinWrite(changes, baseRevision);
+        if(!saved) throw new Error('O Supabase não confirmou o salvamento geral.');
+        await finishAdminSaveProgress(true, 'Tudo foi confirmado na nuvem e uma nova revisão foi criada.');
+        alert('✅ SALVAMENTO GERAL CONCLUÍDO\n\nRevisão remota confirmada: #' + Number(remoteRevision || 0));
+      } catch(e) {
+        await finishAdminSaveProgress(false);
+        alert('❌ O salvamento geral não foi confirmado.\n\n' + (e?.message || e));
+      }
+    };
 
     window.openSiteBackupManager=async function(){
       const modal=document.createElement('div');
@@ -5304,8 +5300,6 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
 
       if(masterTabsSec) masterTabsSec.style.display = isMaster ? 'block' : 'none';
       if(masterCtrlSec) masterCtrlSec.style.display = isMaster ? 'block' : 'none';
-      const masterSaveAll=document.getElementById('master-save-all-btn');
-      if(masterSaveAll) masterSaveAll.style.display = isMaster ? 'inline-flex' : 'none';
       if(clearLogsBtn) clearLogsBtn.style.display = isMaster ? 'inline-block' : 'none';
 
       if(appData.permissions) {
