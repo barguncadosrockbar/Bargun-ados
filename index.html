@@ -5387,15 +5387,42 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
           item.short = document.getElementById(`short-${id}`).value;
           item.full = document.getElementById(`full-${id}`).value;
           await saveBinData(`Editou no painel ADM o item "${oldName}" para "${item.name}" (Categoria: ${newType}, Preço: R$ ${oldPrice} ➔ R$ ${item.price})`);
+          // Sincronização de preço: mantém o cardápio, o produto do Controle do Bar
+          // e a receita oficial com o mesmo preço de venda. Não altera ingredientes.
           if(typeof window.syncBarProductFromMenu === 'function') {
             try {
               await window.syncBarProductFromMenu(item);
+              const recipeMap = typeof window.brgRecipeMap === 'function' ? window.brgRecipeMap() : {};
+              const recipe = recipeMap[String(item.id)];
+              if(recipe && typeof window.brgApi === 'function') {
+                const components = (window.BRG_BAR?.data?.components || [])
+                  .filter(c => String(c.recipe_id) === String(recipe.id))
+                  .map(c => ({
+                    inventory_item_id: String(c.inventory_item_id),
+                    quantity_per_sale: Number(c.quantity_per_sale || 0),
+                    component_unit: String(c.component_unit || c.unit || 'un')
+                  }));
+                const synced = await window.brgApi('save_recipe', {
+                  recipe: {
+                    menu_item_id: String(item.id),
+                    menu_item_name: String(item.name),
+                    sale_price: Number(window.brgPrice ? window.brgPrice(item.price) : String(item.price || '0').replace(',','.')),
+                    yield_qty: Number(recipe.yield_qty || 1),
+                    estimate_source: recipe.estimate_source || 'Sincronização automática pelo Catálogo ADM',
+                    components
+                  }
+                });
+                if(!synced?.recipe) throw new Error('O servidor não confirmou a atualização da receita/preço.');
+                if(typeof window.brgApplyRecipeSaveResponse === 'function') window.brgApplyRecipeSaveResponse(synced);
+              }
             } catch(syncErr) {
-              console.error('[Bargunçados] Menu salvo, mas sincronização com Controle do Bar falhou:', syncErr);
-              return alert('⚠️ O item do cardápio foi salvo na nuvem, mas o preço/cadastro do Controle do Bar não pôde ser sincronizado agora. Tente salvar o item novamente.\n\n'+(syncErr?.message||syncErr));
+              console.error('[Bargunçados] Menu salvo, mas sincronização de preço com Controle do Bar/receita falhou:', syncErr);
+              return alert('⚠️ O item do cardápio foi salvo, mas a sincronização do preço com a Gestão do Bar não pôde ser confirmada.\n\n'+(syncErr?.message||syncErr));
             }
           }
-          alert('Produto Salvo e sincronizado com a Gestão do Bar!');
+          renderAdminLists();
+          if(typeof window.renderApp === 'function') window.renderApp();
+          alert('✅ Produto salvo e preço sincronizado com a Gestão do Bar. Lucro e margem agora usam o novo preço.');
        }
     }
 
@@ -6546,9 +6573,13 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       const f=recipeData(item);
       if(f.recipe&&typeof window.brgApi==='function'){
         const comps=(window.BRG_BAR?.data?.components||[]).filter(c=>String(c.recipe_id)===String(f.recipe.id)).map(c=>({inventory_item_id:String(c.inventory_item_id),quantity_per_sale:Number(c.quantity_per_sale||0),component_unit:String(c.component_unit||c.unit||'un')}));
-        const saved=await window.brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:name,sale_price:price(newPrice),yield_qty:Number(f.recipe.yield_qty||1),estimate_source:'Catálogo ADM reconstruído',components:comps}});
-        if(saved?.recipe&&typeof window.brgApplyRecipeSaveResponse==='function')window.brgApplyRecipeSaveResponse(saved);
+        const saved=await window.brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:name,sale_price:price(newPrice),yield_qty:Number(f.recipe.yield_qty||1),estimate_source:f.recipe.estimate_source||'Catálogo ADM reconstruído',components:comps}});
+        if(!saved?.recipe)throw new Error('O servidor não confirmou a atualização do preço da receita.');
+        if(typeof window.brgApplyRecipeSaveResponse==='function')window.brgApplyRecipeSaveResponse(saved);
       }
+      // Mesmo sem receita cadastrada, o produto do Controle do Bar precisa
+      // receber o novo preço para não ficar divergente do cardápio.
+      if(typeof window.syncBarProductFromMenu==='function') await window.syncBarProductFromMenu(item);
       const ok=await window.saveBinData?.('Catálogo ADM reconstruído: editou '+old.name);
       if(ok===false)throw new Error('O Supabase não confirmou a gravação.');
       renderAdminLists(); if(typeof window.renderApp==='function')window.renderApp(); alert('✅ Produto, categoria e preço salvos.');
