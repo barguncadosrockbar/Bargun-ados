@@ -4230,11 +4230,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         if(saved !== true) throw new Error('O servidor não confirmou a gravação permanente.');
         // Única integração adicional: se o preço mudou, sincroniza a receita
         // oficial e a Gestão do Bar, preservando integralmente os ingredientes.
-        if(price(oldPrice) !== price(item.price) && typeof window.brgSyncCatalogPriceToBar === 'function') {
+        if(window.brgPrice(oldPrice) !== window.brgPrice(item.price) && typeof window.brgSyncCatalogPriceToBar === 'function') {
           await window.brgSyncCatalogPriceToBar(item);
         }
         closeModal('productModal');
-        alert(price(oldPrice) !== price(item.price)
+        alert(window.brgPrice(oldPrice) !== window.brgPrice(item.price)
           ? "✅ Item salvo permanentemente e novo preço sincronizado com a Gestão do Bar/receita."
           : "✅ Item atualizado e confirmado permanentemente no Supabase!");
       } catch(e) {
