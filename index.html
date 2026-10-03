@@ -923,7 +923,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       </select>
       <label style="font-size: 0.8rem; color: #aaa;">Linha da Bebida:</label>
       <select id="create-item-line" class="interaction-input" style="padding: 8px;">
-        <option value="">Destilados & Clássicos</option><option value="caipirinha">🍋 Linha Caipirinha</option><option value="vodka">🍸 Linha Vodka</option><option value="rum">🍹 Linha Rum</option><option value="tequila">🌵 Linha Tequila</option><option value="gin">🌿 Linha Gin</option><option value="whisky">🥃 Linha Whisky</option>
+        <option value="">Destilados & Clássicos</option><option value="caipirinha">🍋 Linha Caipirinha</option><option value="vodka">🍸 Linha Vodka</option><option value="rum">🍹 Linha Rum</option><option value="tequila">🌵 Linha Tequila</option><option value="gin">🌿 Linha Gin</option><option value="whisky">🥃 Linha Whisky</option><option value="batida">🥤 Linha Batidas</option><option value="baratos">💥 Baratos & Brutais</option>
       </select>
 
       <label style="font-size: 0.8rem; color: #aaa;">Nome do Item:</label>
@@ -2202,7 +2202,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         "rafa369@gmail.com": { canAdd:true, canEdit:true, canDel:true, canTabs:true, canMod:true, canRank:true, canAgenda:true, canTeam:true }
       },
       menuCategoryLabels: {
-        bebidas: { featured: "⭐ DESTAQUES DO BAR", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUES DO BAR", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", batida: "🥤 Linha Batidas", baratos: "💥 Baratos & Brutais", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       },
       traffic: { totalViews: 0, totalClicks: 0, devices: [], daily: {}, lastVisit: '' },
@@ -3184,7 +3184,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(type!=='drink') return 'legacy';
 
       const explicit=String(item.drinkLine||'').trim().toLowerCase();
-      if(['caipirinha','vodka','rum','tequila','gin','whisky'].includes(explicit)) return explicit;
+      if(['caipirinha','vodka','rum','tequila','gin','whisky','batida','baratos'].includes(explicit)) return explicit;
+      const customCategories = Array.isArray(appData?.menuCategoryLabels?.bebidas?.customCategories)
+        ? appData.menuCategoryLabels.bebidas.customCategories : [];
+      if(customCategories.some(c=>String(c?.key||'').toLowerCase()===explicit)) return explicit;
 
       const n=String(item.name||'').trim().toLowerCase();
       if(/caipir|caipirinha|caipiríssima|caipirissima/.test(n)) return 'caipirinha';
@@ -3193,6 +3196,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(/tequila|margarita/.test(n)) return 'tequila';
       if(/gin[- ]?t[oô]nica|gin sour|gin fizz|gimlet|tom collins|\bgin\b/.test(n)) return 'gin';
       if(/whisky|whiskey|old fashioned|whisky highball/.test(n)) return 'whisky';
+      if(/batida|batidas/.test(n)) return 'batida';
+      if(/baratos|brutais/.test(n)) return 'baratos';
       return 'legacy';
     }
 
@@ -3200,7 +3205,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!appData || typeof appData!=='object') return;
       if(!Array.isArray(appData.menu)) appData.menu=[];
       if(!appData.menuOrder || typeof appData.menuOrder!=='object' || Array.isArray(appData.menuOrder)) appData.menuOrder={};
-      const keys=['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
+      const customKeys = Array.isArray(appData.menuCategoryLabels?.bebidas?.customCategories)
+        ? appData.menuCategoryLabels.bebidas.customCategories.map(c=>String(c?.key||'').trim().toLowerCase()).filter(Boolean) : [];
+      const keys=[...new Set(['caipirinha','vodka','rum','tequila','gin','whisky','batida','baratos','legacy','beer','noalcohol','portion',...customKeys])];
       const validIds=new Set(appData.menu.map(i=>Number(i?.id)).filter(Number.isFinite));
       keys.forEach(key=>{
         const current=Array.isArray(appData.menuOrder[key]) ? appData.menuOrder[key].map(Number).filter(Number.isFinite) : [];
@@ -3251,10 +3258,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
     function ensureMenuCategoryLabels() {
       const defaults = {
-        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
+        bebidas: { featured: "⭐ DESTAQUE", featuredIds: [], caipirinha: "🍋 Linha Caipirinha", vodka: "🍸 Linha Vodka", rum: "🍹 Linha Rum", tequila: "🌵 Linha Tequila", gin: "🌿 Linha Gin", whisky: "🥃 Linha Whisky", batida: "🥤 Linha Batidas", baratos: "💥 Baratos & Brutais", legacy: "🔥 DESTILADOS & CLÁSSICOS", beer: "🍺 CERVEJAS", noalcohol: "🥤 SEM ÁLCOOL / SUCOS / REFRIS" },
         porcoes: { title: "Larica Pesada", featured: "⭐ DESTAQUES DAS PORÇÕES", featuredIds: [] }
       };
       if(!appData.menuCategoryLabels || typeof appData.menuCategoryLabels !== 'object') appData.menuCategoryLabels = {};
+      if(!Array.isArray(appData.menuCategoryLabels.bebidas.customCategories)) appData.menuCategoryLabels.bebidas.customCategories = [];
+      appData.menuCategoryLabels.bebidas.customCategories = appData.menuCategoryLabels.bebidas.customCategories
+        .filter(c=>c && typeof c==='object' && /^[a-z0-9_-]+$/.test(String(c.key||'')) && String(c.title||'').trim())
+        .map(c=>({key:String(c.key).toLowerCase(), title:String(c.title).trim(), type:'drink'}))
+        .filter((c,i,arr)=>arr.findIndex(x=>x.key===c.key)===i);
       Object.keys(defaults).forEach(page => {
         if(!appData.menuCategoryLabels[page] || typeof appData.menuCategoryLabels[page] !== 'object') appData.menuCategoryLabels[page] = {};
         Object.keys(defaults[page]).forEach(key => {
@@ -3273,6 +3285,29 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       p.featuredIds=Array.from(new Set(p.featuredIds.map(Number).filter(Number.isFinite).filter(id=>id>0)));
     }
 
+    function brgCategorySlug(value){
+      return String(value||'').trim().toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,42);
+    }
+
+    function brgGetCustomDrinkCategories(){
+      ensureMenuCategoryLabels();
+      return Array.isArray(appData.menuCategoryLabels?.bebidas?.customCategories)
+        ? appData.menuCategoryLabels.bebidas.customCategories : [];
+    }
+
+    function brgBuildDrinkLineOptions(selected){
+      ensureMenuCategoryLabels();
+      const fixed=[
+        ['', 'Destilados & Clássicos'],['caipirinha','🍋 Linha Caipirinha'],['vodka','🍸 Linha Vodka'],
+        ['rum','🍹 Linha Rum'],['tequila','🌵 Linha Tequila'],['gin','🌿 Linha Gin'],['whisky','🥃 Linha Whisky'],
+        ['batida','🥤 Linha Batidas'],['baratos','💥 Baratos & Brutais']
+      ];
+      const custom=brgGetCustomDrinkCategories().map(c=>[c.key,c.title]);
+      return [...fixed,...custom].map(([key,title])=>`<option value="${escapeHTML(key)}" ${String(selected||'')===String(key)?'selected':''}>${escapeHTML(title)}</option>`).join('');
+    }
+
     function openCategoryQuickEdit(page) {
       const isLoggedIn = getPersistentAdminFlag('brg_adm_logged') === 'true';
       const isMaster = getPersistentAdminFlag('brg_adm_is_master') === 'true';
@@ -3287,9 +3322,35 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       pageEl.value = page;
       title.innerText = page === 'bebidas' ? 'Bebidas — altere somente os nomes/títulos que aparecem no cardápio.' : 'Porções — altere o título exibido nessa página.';
       const names = page === 'bebidas' ? [
-        ['featured','Título do Destaque'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
+        ['featured','Título do Destaque'],['caipirinha','Linha Caipirinha'],['vodka','Linha Vodka'],['rum','Linha Rum'],['tequila','Linha Tequila'],['gin','Linha Gin'],['whisky','Linha Whisky'],['batida','Linha Batidas'],['baratos','Baratos & Brutais'],['legacy','Destilados & Clássicos'],['beer','Cervejas'],['noalcohol','Sem Álcool / Sucos / Refris']
       ] : [['title','Título da página de porções'],['featured','Título dos Destaques']];
       fields.innerHTML = names.map(([key,label]) => `<label style="font-size:.78rem;color:#aaa;">${escapeHTML(label)}<input type="text" class="interaction-input category-edit-input" data-category-key="${key}" value="${escapeHTML(labels[key] || '')}" style="padding:8px;margin-top:4px;margin-bottom:0;"></label>`).join('');
+      if(page === 'bebidas'){
+        const customWrap=document.createElement('div');
+        customWrap.style.cssText='margin-top:10px;padding:10px;border:1px dashed rgba(0,229,255,.38);border-radius:10px;background:rgba(0,188,212,.035);';
+        customWrap.innerHTML=`<div style="color:var(--c-cyan);font-weight:800;margin-bottom:7px;">➕ Nova categoria personalizada</div><div style="font-size:.75rem;color:#aaa;margin-bottom:8px;">Crie uma nova linha para bebidas. Depois você poderá escolher essa categoria na edição de qualquer item.</div><div style="display:flex;gap:7px;align-items:center;"><input type="text" id="new-custom-drink-category" class="interaction-input" placeholder="Ex.: Shots, Drinks da Casa, Promoções" style="padding:8px;flex:1;margin:0;"><button type="button" id="add-custom-drink-category-btn" class="action-btn" style="background:var(--c-cyan);color:#000;padding:8px 11px;white-space:nowrap;">＋ Adicionar</button></div><div id="custom-drink-category-list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;"></div>`;
+        fields.appendChild(customWrap);
+        const customList=customWrap.querySelector('#custom-drink-category-list');
+        const renderCustomList=()=>{
+          const cats=brgGetCustomDrinkCategories();
+          customList.innerHTML=cats.length ? cats.map(c=>`<label style="font-size:.76rem;color:#aaa;">Categoria personalizada<input type="text" class="interaction-input custom-category-title-input" data-custom-category-key="${escapeHTML(c.key)}" value="${escapeHTML(c.title)}" style="padding:7px;margin-top:3px;"></label>`).join('') : '<div style="font-size:.74rem;color:#777;">Nenhuma categoria personalizada criada.</div>';
+        };
+        renderCustomList();
+        customWrap.querySelector('#add-custom-drink-category-btn').addEventListener('click',()=>{
+          const input=customWrap.querySelector('#new-custom-drink-category');
+          const titleValue=String(input?.value||'').trim();
+          if(!titleValue) return alert('Digite o nome da nova categoria.');
+          const base=brgCategorySlug(titleValue);
+          if(!base) return alert('Use pelo menos uma letra ou número no nome da categoria.');
+          const fixedKeys=new Set(['featured','caipirinha','vodka','rum','tequila','gin','whisky','batida','baratos','legacy','beer','noalcohol','portion']);
+          const used=new Set(brgGetCustomDrinkCategories().map(c=>String(c.key||'')));
+          let key='custom-'+base, n=2;
+          while(fixedKeys.has(key)||used.has(key)) key='custom-'+base+'-'+(n++);
+          appData.menuCategoryLabels.bebidas.customCategories.push({key,title:titleValue,type:'drink'});
+          input.value='';
+          renderCustomList();
+        });
+      }
       const addFeaturedSelector = (kind, selectedId='') => {
         const menuType = kind === 'drink' ? 'drink' : 'portion';
         const cls = kind === 'drink' ? 'featured-drink-select' : 'featured-portion-select';
@@ -3352,6 +3413,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           .filter(id=>id>0)
           .filter((id,idx,arr)=>arr.indexOf(id)===idx);
       }
+      if(page === 'bebidas'){
+        const custom=Array.isArray(appData.menuCategoryLabels.bebidas.customCategories) ? appData.menuCategoryLabels.bebidas.customCategories : [];
+        document.querySelectorAll('#category-edit-fields .custom-category-title-input').forEach(input=>{
+          const key=String(input.dataset.customCategoryKey||'');
+          const value=String(input.value||'').trim();
+          const cat=custom.find(c=>String(c.key)===key);
+          if(cat && value) cat.title=value;
+        });
+      }
       await saveBinData(`Editou os nomes das categorias/destaques da página ${page}`);
       closeModal('categoryQuickEditModal');
       renderAdminLists(true);
@@ -3387,10 +3457,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       return out;
     }
     function organizerLabels(){
-      return {caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris',portion:'🍟 Porções & Larica'};
+      return {caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',batida:'🥤 Linha Batidas',baratos:'💥 Baratos & Brutais',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris',portion:'🍟 Porções & Larica'};
     }
     function organizerKeysForPage(page){
-      return page==='porcoes'?['portion']:['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol'];
+      return page==='porcoes'?['portion']:['caipirinha','vodka','rum','tequila','gin','whisky','batida','baratos','legacy','beer','noalcohol'];
     }
     function organizerSnapshot(){
       organizerEnsureOrder();
@@ -3693,7 +3763,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         ['rum', '🍹 Linha Rum'],
         ['tequila', '🌵 Linha Tequila'],
         ['gin', '🌿 Linha Gin'],
-        ['whisky', '🥃 Linha Whisky']
+        ['whisky', '🥃 Linha Whisky'],
+        ['batida', '🥤 Linha Batidas'],
+        ['baratos', '💥 Baratos & Brutais'],
+        ...(Array.isArray(categoryLabels.bebidas.customCategories) ? categoryLabels.bebidas.customCategories.map(c=>[c.key,c.title]) : [])
       ];
 
       const findDrink = (name, fallbackPrice) => {
@@ -4081,6 +4154,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         editBox.style.display = 'block';
         document.getElementById('modal-edit-id').value = item.id;
         document.getElementById('modal-edit-category').value = item.type;
+        document.getElementById('modal-edit-line').innerHTML = brgBuildDrinkLineOptions(item.drinkLine || '');
         document.getElementById('modal-edit-line').value = item.drinkLine || '';
         document.getElementById('modal-edit-name').value = item.name;
         const dupEdit = document.getElementById('modal-edit-allow-duplicate');
@@ -4268,6 +4342,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: Permissão para adicionar itens desativada!");
 
       document.getElementById('create-item-category').value = defaultCategory;
+      document.getElementById('create-item-line').innerHTML = brgBuildDrinkLineOptions('');
       document.getElementById('create-item-line').value = '';
       document.getElementById('create-item-name').value = '';
       const dupCreate = document.getElementById('create-item-allow-duplicate');
@@ -5080,9 +5155,12 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         {key:'tequila',title:'🌵 Linha Tequila',items:by('tequila'),order:'tequila',page:'bebidas'},
         {key:'gin',title:'🌿 Linha Gin',items:by('gin'),order:'gin',page:'bebidas'},
         {key:'whisky',title:'🥃 Linha Whisky',items:by('whisky'),order:'whisky',page:'bebidas'},
+        {key:'batida',title:'🥤 Linha Batidas',items:by('batida'),order:'batida',page:'bebidas'},
+        {key:'baratos',title:'💥 Baratos & Brutais',items:by('baratos'),order:'baratos',page:'bebidas'},
         {key:'legacy',title:'🔥 Destilados & Clássicos',items:by('legacy'),order:'legacy',page:'bebidas'},
         {key:'beer',title:'🍺 Cervejas',items:by('beer'),order:'beer',page:'bebidas'},
         {key:'noalcohol',title:'🥤 Sem Álcool / Sucos / Refris',items:by('noalcohol'),order:'noalcohol',page:'bebidas'},
+        ...brgGetCustomDrinkCategories().map(c=>({key:c.key,title:c.title,items:by(c.key),order:c.key,page:'bebidas'})),
         {key:'portion-featured',title:'⭐ DESTAQUES DAS PORÇÕES',items:drinks.filter(i=>i.type==='portion'&&pFeatured.has(Number(i.id))),order:null,page:'porcoes',featured:true},
         {key:'portion',title:'🍟 Porções & Larica',items:by('portion'),order:'portion',page:'porcoes'}
       ];
@@ -5137,7 +5215,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               <option value="tequila" ${adminCatalogCategoryKey(item)==='tequila'?'selected':''}>🌵 Tequila</option>
               <option value="gin" ${adminCatalogCategoryKey(item)==='gin'?'selected':''}>🌿 Gin</option>
               <option value="whisky" ${adminCatalogCategoryKey(item)==='whisky'?'selected':''}>🥃 Whisky</option>
+              <option value="batida" ${adminCatalogCategoryKey(item)==='batida'?'selected':''}>🥤 Batidas</option>
+              <option value="baratos" ${adminCatalogCategoryKey(item)==='baratos'?'selected':''}>💥 Baratos & Brutais</option>
               <option value="" ${adminCatalogCategoryKey(item)==='legacy'?'selected':''}>🔥 Clássicos</option>
+              ${brgGetCustomDrinkCategories().map(c=>`<option value="${esc(c.key)}" ${adminCatalogCategoryKey(item)===c.key?'selected':''}>${esc(c.title)}</option>`).join('')}
             </select>` : '';
         return `<article class="menu-admin-item" data-admin-menu-id="${id}">
           <div class="admin-card-row" style="align-items:center">
@@ -6712,6 +6793,8 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     ['tequila','🌵 Linha Tequila','drink','bebidas'],
     ['gin','🌿 Linha Gin','drink','bebidas'],
     ['whisky','🥃 Linha Whisky','drink','bebidas'],
+    ['batida','🥤 Linha Batidas','drink','bebidas'],
+    ['baratos','💥 Baratos & Brutais','drink','bebidas'],
     ['legacy','🔥 Destilados & Clássicos','drink','bebidas'],
     ['beer','🍺 Cervejas','beer','bebidas'],
     ['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol','bebidas'],
@@ -6726,7 +6809,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     a.menuCategoryLabels.bebidas=a.menuCategoryLabels.bebidas||{};
     a.menuCategoryLabels.porcoes=a.menuCategoryLabels.porcoes||{};
     const labels={
-      featured:'⭐ DESTAQUES DO BAR',caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris'
+      featured:'⭐ DESTAQUES DO BAR',caipirinha:'🍋 Linha Caipirinha',vodka:'🍸 Linha Vodka',rum:'🍹 Linha Rum',tequila:'🌵 Linha Tequila',gin:'🌿 Linha Gin',whisky:'🥃 Linha Whisky',batida:'🥤 Linha Batidas',baratos:'💥 Baratos & Brutais',legacy:'🔥 Destilados & Clássicos',beer:'🍺 Cervejas',noalcohol:'🥤 Sem Álcool / Sucos / Refris'
     };
     Object.keys(labels).forEach(k=>{if(!a.menuCategoryLabels.bebidas[k])a.menuCategoryLabels.bebidas[k]=labels[k]});
     if(!a.menuCategoryLabels.porcoes.title)a.menuCategoryLabels.porcoes.title='Larica Pesada';
@@ -6738,7 +6821,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     a.menuCategoryLabels.porcoes.featuredIds=a.menuCategoryLabels.porcoes.featuredIds.map(Number).filter(id=>validIds.has(id));
 
     const lineFor=item=>menuCategoryKey(item);
-    const keys=['caipirinha','vodka','rum','tequila','gin','whisky','legacy','beer','noalcohol','portion'];
+    const keys=['caipirinha','vodka','rum','tequila','gin','whisky','batida','baratos','legacy','beer','noalcohol','portion'];
     if(!a.menuOrder||typeof a.menuOrder!=='object')a.menuOrder={};
     keys.forEach(key=>{
       const current=Array.isArray(a.menuOrder[key])?a.menuOrder[key].map(Number).filter(Number.isFinite):[];
@@ -6750,7 +6833,8 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 
     const defs={
       bebidas:[
-        ['featured','⭐ DESTAQUES DO BAR','featured'],['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],['legacy','🔥 Destilados & Clássicos','drink'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol']
+        ['featured','⭐ DESTAQUES DO BAR','featured'],['caipirinha','🍋 Linha Caipirinha','drink'],['vodka','🍸 Linha Vodka','drink'],['rum','🍹 Linha Rum','drink'],['tequila','🌵 Linha Tequila','drink'],['gin','🌿 Linha Gin','drink'],['whisky','🥃 Linha Whisky','drink'],['batida','🥤 Linha Batidas','drink'],['baratos','💥 Baratos & Brutais','drink'],['legacy','🔥 Destilados & Clássicos','drink'],['beer','🍺 Cervejas','beer'],['noalcohol','🥤 Sem Álcool / Sucos / Refris','noalcohol'],
+        ...((Array.isArray(a.menuCategoryLabels.bebidas.customCategories)?a.menuCategoryLabels.bebidas.customCategories:[]).map(c=>[c.key,c.title,'drink']))
       ],
       porcoes:[['featured','⭐ DESTAQUES DAS PORÇÕES','featured'],['portion','🍟 Porções & Larica','portion']]
     };
@@ -6860,7 +6944,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       root.innerHTML='';
       const organizing=!!window.__brgAdminOrganizer?.active;
       const defs=[
-        ['featured','⭐ DESTAQUES DO BAR','bebidas'],['caipirinha',state().menuCategoryLabels.bebidas.caipirinha,'bebidas'],['vodka',state().menuCategoryLabels.bebidas.vodka,'bebidas'],['rum',state().menuCategoryLabels.bebidas.rum,'bebidas'],['tequila',state().menuCategoryLabels.bebidas.tequila,'bebidas'],['gin',state().menuCategoryLabels.bebidas.gin,'bebidas'],['whisky',state().menuCategoryLabels.bebidas.whisky,'bebidas'],['legacy',state().menuCategoryLabels.bebidas.legacy,'bebidas'],['beer',state().menuCategoryLabels.bebidas.beer,'bebidas'],['noalcohol',state().menuCategoryLabels.bebidas.noalcohol,'bebidas'],['portion-featured','⭐ DESTAQUES DAS PORÇÕES','porcoes'],['portion','🍟 Porções & Larica','porcoes']
+        ['featured','⭐ DESTAQUES DO BAR','bebidas'],['caipirinha',state().menuCategoryLabels.bebidas.caipirinha,'bebidas'],['vodka',state().menuCategoryLabels.bebidas.vodka,'bebidas'],['rum',state().menuCategoryLabels.bebidas.rum,'bebidas'],['tequila',state().menuCategoryLabels.bebidas.tequila,'bebidas'],['gin',state().menuCategoryLabels.bebidas.gin,'bebidas'],['whisky',state().menuCategoryLabels.bebidas.whisky,'bebidas'],['batida',state().menuCategoryLabels.bebidas.batida,'bebidas'],['baratos',state().menuCategoryLabels.bebidas.baratos,'bebidas'],['legacy',state().menuCategoryLabels.bebidas.legacy,'bebidas'],['beer',state().menuCategoryLabels.bebidas.beer,'bebidas'],['noalcohol',state().menuCategoryLabels.bebidas.noalcohol,'bebidas'],...((Array.isArray(state().menuCategoryLabels.bebidas.customCategories)?state().menuCategoryLabels.bebidas.customCategories:[]).map(c=>[c.key,c.title,'bebidas'])),['portion-featured','⭐ DESTAQUES DAS PORÇÕES','porcoes'],['portion','🍟 Porções & Larica','porcoes']
       ];
       const toolbar=document.createElement('div'); toolbar.className='brg-admin-toolbar';
       toolbar.innerHTML=`<div><strong>🍹 CARDÁPIO — ADMINISTRAÇÃO RECONSTRUÍDA</strong><small>Mesmos produtos do cliente. Categorias, destaque, ordem, imagens e margem são controlados separadamente.</small></div><div class="brg-admin-toolbar-actions"><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('bebidas')">↕ Organizar Bebidas</button><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('porcoes')">↕ Organizar Porções</button>${organizing?`<button class="action-btn" type="button" onclick="window.brgAdminSaveOrder()">💾 Salvar Ordem</button><button class="action-btn" type="button" onclick="window.brgAdminToggleOrganizer('',false)">✖ Fechar</button>`:''}</div>`;
