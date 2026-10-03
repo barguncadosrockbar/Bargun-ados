@@ -6816,7 +6816,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       if(unit==='kg')base=q*1000; else if(unit==='l')base=q*1000;
       cost+=base*unitCost;
     });
-    const sale=Number(recipe.sale_price||price(item.price));
+    const sale=Number(recipe.sale_price||window.brgPrice(item.price));
     const profit=sale-cost, margin=sale>0?profit/sale*100:null;
     return {recipe,cost,profit,margin};
   }
@@ -6922,7 +6922,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       const f=recipeData(item);
       if(f.recipe&&typeof window.brgApi==='function'){
         const comps=(window.BRG_BAR?.data?.components||[]).filter(c=>String(c.recipe_id)===String(f.recipe.id)).map(c=>({inventory_item_id:String(c.inventory_item_id),quantity_per_sale:Number(c.quantity_per_sale||0),component_unit:String(c.component_unit||c.unit||'un')}));
-        const saved=await window.brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:name,sale_price:price(newPrice),yield_qty:Number(f.recipe.yield_qty||1),estimate_source:f.recipe.estimate_source||'Catálogo ADM reconstruído',components:comps}});
+        const saved=await window.brgApi('save_recipe',{recipe:{menu_item_id:String(id),menu_item_name:name,sale_price:window.brgPrice(newPrice),yield_qty:Number(f.recipe.yield_qty||1),estimate_source:f.recipe.estimate_source||'Catálogo ADM reconstruído',components:comps}});
         if(!saved?.recipe)throw new Error('O servidor não confirmou a atualização do preço da receita.');
         if(typeof window.brgApplyRecipeSaveResponse==='function')window.brgApplyRecipeSaveResponse(saved);
       }
@@ -6934,7 +6934,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 
       // Se o preço mudou, faz a sincronização definitiva também neste editor
       // do Catálogo ADM. Ingredientes, estoque e demais campos permanecem intactos.
-      const oldPriceNumber=price(old.price), newPriceNumber=price(newPrice);
+      const oldPriceNumber=window.brgPrice(old.price), newPriceNumber=window.brgPrice(newPrice);
       if(oldPriceNumber!==newPriceNumber && typeof window.brgSyncCatalogPriceToBar==='function'){
         await window.brgSyncCatalogPriceToBar(item);
       }
@@ -6947,10 +6947,21 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     }catch(e){Object.assign(item,old);alert('❌ Não foi possível salvar.\n\n'+(e?.message||e));}
   };
 
-  // Evita o erro fatal antigo: o catálogo nunca chama brgPrice/brgMoney por escopo lexical.
-  // Os helpers abaixo ficam explicitamente globais para compatibilidade com módulos antigos.
-  window.brgPrice=window.brgPrice||price;
-  window.brgMoney=window.brgMoney||money;
+  // Helpers globais de compatibilidade: não dependem de variáveis lexicais de outro bloco.
+  // Isso evita ReferenceError em navegadores quando o script é reinicializado.
+  if(typeof window.brgPrice!=='function'){
+    window.brgPrice=function(v){
+      if(v===null||v===undefined||v==='')return 0;
+      if(typeof v==='number')return Number.isFinite(v)?v:0;
+      let s=String(v).trim().replace(/R\$|\s/gi,'');
+      if(s.includes(',')&&s.includes('.'))s=s.replace(/\./g,'').replace(',','.');
+      else if(s.includes(','))s=s.replace(',','.');
+      const n=Number(s);return Number.isFinite(n)?n:0;
+    };
+  }
+  if(typeof window.brgMoney!=='function'){
+    window.brgMoney=function(v){const n=Number(v||0);return Number.isFinite(n)?n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}):'—';};
+  }
   window.renderAdminLists=renderAdminLists;
   window.toggleMenuOrganizer=window.brgAdminToggleOrganizer;
   window.moveMenuCard=function(id,direction){
