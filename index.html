@@ -6884,7 +6884,32 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       if(typeof window.syncBarProductFromMenu==='function') await window.syncBarProductFromMenu(item);
       const ok=await window.saveBinData?.('Catálogo ADM reconstruído: editou '+old.name);
       if(ok===false)throw new Error('O Supabase não confirmou a gravação.');
-      renderAdminLists(); if(typeof window.renderApp==='function')window.renderApp(); alert('✅ Produto, categoria e preço salvos.');
+
+      // Integração adicional e cirúrgica: quando o preço do item do catálogo muda,
+      // confirma no servidor que a Gestão do Bar recebeu exatamente o mesmo preço
+      // antes de informar sucesso. Não altera ingredientes, estoque ou outras áreas.
+      const oldPriceNumber=price(old.price), newPriceNumber=price(newPrice);
+      if(oldPriceNumber!==newPriceNumber && typeof window.brgApi==='function'){
+        const barCheck=await window.brgApi('bootstrap');
+        const syncedRecipe=(barCheck?.recipes||[]).find(r=>String(r.menu_item_id)===String(id));
+        const syncedPrice=Number(syncedRecipe?.sale_price);
+        if(!syncedRecipe || !Number.isFinite(syncedPrice) || Math.abs(syncedPrice-newPriceNumber)>0.000001){
+          throw new Error('O preço do cardápio foi salvo, mas a Gestão do Bar não confirmou o novo preço.');
+        }
+        // Atualiza somente a receita correspondente em memória para que os KPIs
+        // de custo/lucro/margem reflitam imediatamente o novo preço confirmado.
+        if(window.BRG_BAR?.data){
+          const oldRecipes=Array.isArray(window.BRG_BAR.data.recipes)?window.BRG_BAR.data.recipes:[];
+          window.BRG_BAR.data.recipes=oldRecipes.map(r=>String(r.menu_item_id)===String(id)?syncedRecipe:r);
+          if(!oldRecipes.some(r=>String(r.menu_item_id)===String(id))) window.BRG_BAR.data.recipes.push(syncedRecipe);
+        }
+      }
+      renderAdminLists();
+      if(typeof renderBarControl==='function') renderBarControl();
+      if(typeof window.renderApp==='function')window.renderApp();
+      alert(oldPriceNumber!==newPriceNumber
+        ? '✅ Produto salvo. O novo preço foi sincronizado e confirmado na Gestão do Bar; lucro e margem foram recalculados.'
+        : '✅ Produto, categoria e preço salvos.');
     }catch(e){Object.assign(item,old);alert('❌ Não foi possível salvar.\n\n'+(e?.message||e));}
   };
 
