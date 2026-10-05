@@ -401,6 +401,12 @@
   .menu-organizer-save.pending{display:inline-flex;opacity:1;filter:none;pointer-events:auto;cursor:pointer}
   .menu-organizer-save[disabled]{opacity:.48;filter:saturate(.55);pointer-events:none;cursor:not-allowed}
   .menu-organizer-discard{display:none}
+  /* SELO DE DISPONIBILIDADE — faixa de destaque sobre a foto, no mesmo espírito visual da PROMOÇÃO LIMITADA. */
+  .brg-availability-badge{position:absolute;top:57px;left:50%;z-index:6;width:calc(100% - 18px);min-height:42px;box-sizing:border-box;display:flex;align-items:center;justify-content:center;padding:9px 12px;border-radius:8px;font-family:var(--font-title);font-weight:900;font-size:clamp(.82rem,3.4vw,1.02rem);letter-spacing:.06em;line-height:1;text-align:center;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transform:translateX(-50%) rotate(-5deg);transform-origin:center;pointer-events:none;background:rgba(0,0,0,.88);border:2px solid rgba(255,255,255,.5);box-shadow:0 5px 16px rgba(0,0,0,.58),0 0 18px rgba(0,0,0,.28);text-shadow:0 2px 4px rgba(0,0,0,.8)}
+  .brg-availability-badge.unavailable{color:#fff;border-color:#ff1744;background:linear-gradient(90deg,rgba(120,0,20,.96),rgba(210,20,45,.96),rgba(120,0,20,.96));box-shadow:0 5px 18px rgba(0,0,0,.62),0 0 18px rgba(255,23,68,.26)}
+  .brg-availability-badge.soon{color:#111;border-color:#ffd740;background:linear-gradient(90deg,rgba(255,193,7,.96),rgba(255,235,59,.98),rgba(255,193,7,.96));text-shadow:0 1px 2px rgba(255,255,255,.45);box-shadow:0 5px 18px rgba(0,0,0,.58),0 0 18px rgba(255,215,64,.24)}
+  .brg-card-unavailable{filter:saturate(.55);}
+
   .menu-organizer-discard.pending{display:inline-flex}
   .menu-organizer-active .menu-grid .product-card{cursor:grab;outline:1px dashed rgba(0,229,255,.35);outline-offset:2px;user-select:none;-webkit-user-select:none}
   .menu-organizer-active .menu-grid .product-card:active{cursor:grabbing}
@@ -877,6 +883,14 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         
         <label style="font-size: 0.75rem; color: #aaa;">Resumo Curto:</label>
         <input type="text" id="modal-edit-short" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+        
+        <label style="font-size: 0.75rem; color: #aaa;">Selo de disponibilidade no cardápio:</label>
+        <select id="modal-edit-availability" class="interaction-input" style="padding: 6px; font-size: 0.85rem;">
+          <option value="available">🟢 Disponível</option>
+          <option value="unavailable">🔴 Indisponível</option>
+          <option value="soon">🟡 Em breve</option>
+        </select>
+        <small style="display:block;color:#8d9aa2;margin:3px 0 8px;">O ADM define manualmente o selo. Indisponível e Em breve não removem o item do cardápio.</small>
         
         <label style="font-size: 0.75rem; color: #aaa;">Descrição Completa:</label>
         <textarea id="modal-edit-full" class="interaction-textarea" rows="2" style="padding: 6px; font-size: 0.85rem;"></textarea>
@@ -3596,7 +3610,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
         const card = item => {
           const hostedImg = normalizeStoredImage(item);
-          return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" onclick="openMenuModalObj(${safeNumericId(item.id)})"><div class="product-image-wrap"><img src="${safeImageUrl(hostedImg || '')}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
+          return `<div class="product-card glass-panel${availabilityClass}" data-menu-id="${safeNumericId(item.id)}" onclick="openMenuModalObj(${safeNumericId(item.id)})"><div class="product-image-wrap"><img src="${safeImageUrl(hostedImg || '')}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})"></div><h4 class="m-title">${esc(item.name || 'Produto')}</h4><div class="m-short">${esc(item.short || '')}</div><div class="menu-price">R$ ${esc(item.price || '')}</div></div>`;
         };
         const drinks = source.filter(i => i && ['drink','beer','noalcohol'].includes(i.type));
         const portions = source.filter(i => i && i.type === 'portion');
@@ -4124,10 +4138,13 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const hostedImg = normalizeStoredImage(item);
       const organizerClick = `openMenuModalObj(${safeNumericId(item.id)})`;
       const imageUrl = safeImageUrl(hostedImg || getCatalogFallbackImage(item));
+      const availability = ['unavailable','soon'].includes(String(item.availability||item.availabilityStatus||'')) ? String(item.availability||item.availabilityStatus) : 'available';
+      const availabilityBadge = availability==='unavailable' ? '<span class="brg-availability-badge unavailable">🚫 INDISPONÍVEL</span>' : availability==='soon' ? '<span class="brg-availability-badge soon">🕐 EM BREVE</span>' : '';
+      const availabilityClass = availability==='unavailable' ? ' brg-card-unavailable' : '';
       const imageMarkup = imageUrl
         ? `<img src="${imageUrl}" class="product-img" loading="lazy" decoding="async" fetchpriority="low" onerror="fallbackMenuImg(this,${Number(item.id)||0})">`
         : `<div class="product-img product-img-empty" aria-hidden="true"></div>`;
-      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}">${isFeatured?'<span class="featured-limited-badge">🔥 PROMOÇÃO LIMITADA</span>':''}<div class="product-image-wrap">${imageMarkup}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof window.brgRecipeMap==='function'?window.brgRecipeMap()[String(item.id)]:null;const cost=recipe&&typeof window.brgCost==='function'?window.brgCost(recipe):0;const sale=recipe?Number(recipe.sale_price||0):Number(String(item.price||0).replace(',','.'))||0;const profit=sale-cost;const margin=sale>0?profit/sale*100:0;const doses=recipe&&typeof window.brgMaxDoses==='function'?window.brgMaxDoses(recipe):Infinity;const money=typeof window.brgMoney==='function'?window.brgMoney:(v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${money(sale)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?money(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?money(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`;
+      return `<div class="product-card glass-panel" data-menu-id="${safeNumericId(item.id)}" style="--card-photo:url('${safeCssImageUrl(hostedImg||'')}')" onclick="${organizerClick}">${availabilityBadge}${isFeatured?'<span class="featured-limited-badge">🔥 PROMOÇÃO LIMITADA</span>':''}<div class="product-image-wrap">${imageMarkup}</div><h4 class="m-title">${escapeHTML(item.name)}</h4><div class="m-short">${escapeHTML(item.short||'')}</div><div class="menu-price">R$ ${escapeHTML(item.price)}</div>${(()=>{if(getPersistentAdminFlag('brg_adm_logged')!=='true')return '';const recipe=typeof window.brgRecipeMap==='function'?window.brgRecipeMap()[String(item.id)]:null;const cost=recipe&&typeof window.brgCost==='function'?window.brgCost(recipe):0;const sale=recipe?Number(recipe.sale_price||0):Number(String(item.price||0).replace(',','.'))||0;const profit=sale-cost;const margin=sale>0?profit/sale*100:0;const doses=recipe&&typeof window.brgMaxDoses==='function'?window.brgMaxDoses(recipe):Infinity;const money=typeof window.brgMoney==='function'?window.brgMoney:(v=>'R$ '+Number(v||0).toFixed(2).replace('.',','));return `<div class="bar-admin-finance" onclick="event.stopPropagation()"><div class="bar-fin-kpi"><b>${money(sale)}</b><span>Preço de venda</span></div><div class="bar-fin-kpi"><b>${recipe?money(cost):'—'}</b><span>Custo</span></div><div class="bar-fin-kpi"><b>${recipe?money(profit):'—'}</b><span>Lucro bruto</span></div><div class="bar-fin-kpi"><b>${recipe?margin.toFixed(1)+'%':'—'}</b><span>Margem</span></div><div class="bar-fin-note">${recipe?'📊 Visão ADM • capacidade atual: '+(doses===Infinity?'∞':doses)+' unidade(s).':'⚠️ Receita não cadastrada: custo/lucro/margem indisponíveis.'}</div></div>`;})()}</div>`;
     }
 
     function openMenuModalObj(id) {
@@ -4166,6 +4183,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         document.getElementById('modal-edit-price').value = item.price;
         document.getElementById('modal-edit-short').value = item.short;
         document.getElementById('modal-edit-full').value = item.full;
+        document.getElementById('modal-edit-availability').value = ['unavailable','soon'].includes(String(item.availability||item.availabilityStatus||'')) ? String(item.availability||item.availabilityStatus) : 'available';
         document.getElementById('modal-edit-img').value = item.img;
         document.getElementById('modal-item-del-btn').style.display = canDel ? 'inline-block' : 'none';
         try {
@@ -4286,6 +4304,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       const oldCat = item.type;
       const newName = document.getElementById('modal-edit-name').value.trim();
       const newCat = document.getElementById('modal-edit-category').value;
+      const newAvailability = document.getElementById('modal-edit-availability')?.value || 'available';
 
       const allowDuplicateEdit = !!document.getElementById('modal-edit-allow-duplicate')?.checked;
       if(newName.toLowerCase() !== oldName.toLowerCase() && !allowDuplicateEdit) {
@@ -4301,6 +4320,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       item.price = document.getElementById('modal-edit-price').value;
       item.short = document.getElementById('modal-edit-short').value;
       item.full = document.getElementById('modal-edit-full').value;
+      item.availability = ['unavailable','soon'].includes(newAvailability) ? newAvailability : 'available';
       item.img = document.getElementById('modal-edit-img').value || item.img;
 
       try {
@@ -6947,7 +6967,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const id=numId(item.id); const featured = page==='porcoes' ? categoryIds('portion-featured','porcoes').includes(Number(item.id)) : categoryIds('featured','bebidas').includes(Number(item.id));
     const line=item.type==='drink'?`<select id="adm-line-${id}" class="admin-input"><option value="caipirinha" ${item.drinkLine==='caipirinha'?'selected':''}>🍋 Caipirinha</option><option value="vodka" ${item.drinkLine==='vodka'?'selected':''}>🍸 Vodka</option><option value="rum" ${item.drinkLine==='rum'?'selected':''}>🍹 Rum</option><option value="tequila" ${item.drinkLine==='tequila'?'selected':''}>🌵 Tequila</option><option value="gin" ${item.drinkLine==='gin'?'selected':''}>🌿 Gin</option><option value="whisky" ${item.drinkLine==='whisky'?'selected':''}>🥃 Whisky</option><option value="" ${!item.drinkLine?'selected':''}>🔥 Clássicos</option></select>`:'';
     const controls=organizing&&key!=='featured'&&key!=='portion-featured'?`<div class="brg-admin-arrows"><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','up')">↑</button><button type="button" onclick="event.stopPropagation();window.brgAdminMove(${Number(item.id)},'${esc(key)}','down')">↓</button></div>`:'';
-    return `<article class="brg-admin-item"><div class="brg-admin-head"><div class="brg-admin-photo">${imageFor(item)?`<img src="${esc(imageFor(item))}" onerror="window.brgAdminImageFallback(this)">`:'📷'}</div><div class="brg-admin-ident"><strong>${esc(item.name||'Produto')}</strong><small>ID ${id}</small>${featured?'<span class="menu-admin-featured-badge">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${controls}</div><div class="brg-admin-fields"><select id="adm-type-${id}" class="admin-input"><option value="drink" ${item.type==='drink'?'selected':''}>🍹 Bebida</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select><input id="adm-name-${id}" class="admin-input" value="${esc(item.name||'')}" placeholder="Nome"><input id="adm-price-${id}" class="admin-input" value="${esc(item.price||'')}" placeholder="Preço"></div>${line?`<div style="margin-top:7px">${line}</div>`:''}<input id="adm-short-${id}" class="admin-input" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:7px"><textarea id="adm-full-${id}" class="admin-textarea" rows="2" placeholder="Descrição" style="margin-top:7px">${esc(item.full||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${featured?'checked':''} onchange="window.brgAdminSetFeatured(${Number(item.id)},this.checked,'${page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateItemImg?.(${Number(item.id)},this)"></label></div><div class="brg-admin-buttons">${canEdit()?`<button class="action-btn" onclick="window.brgAdminSaveItem(${Number(item.id)})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit()?`<button class="action-btn" onclick="event.preventDefault();event.stopPropagation();window.openAdminRecipeEditor?.(${Number(item.id)})">🧪 Receita / Margem</button>`:''}${canDel()?`<button class="action-btn del-btn" onclick="window.removeMenuItem?.(${Number(item.id)})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
+    return `<article class="brg-admin-item"><div class="brg-admin-head"><div class="brg-admin-photo">${imageFor(item)?`<img src="${esc(imageFor(item))}" onerror="window.brgAdminImageFallback(this)">`:'📷'}</div><div class="brg-admin-ident"><strong>${esc(item.name||'Produto')}</strong><small>ID ${id}</small>${featured?'<span class="menu-admin-featured-badge">🔥 PROMOÇÃO LIMITADA</span>':''}</div>${controls}</div><div class="brg-admin-fields"><select id="adm-type-${id}" class="admin-input"><option value="drink" ${item.type==='drink'?'selected':''}>🍹 Bebida</option><option value="beer" ${item.type==='beer'?'selected':''}>🍺 Cerveja</option><option value="noalcohol" ${item.type==='noalcohol'?'selected':''}>🥤 Sem álcool</option><option value="portion" ${item.type==='portion'?'selected':''}>🍟 Porção</option></select><input id="adm-name-${id}" class="admin-input" value="${esc(item.name||'')}" placeholder="Nome"><input id="adm-price-${id}" class="admin-input" value="${esc(item.price||'')}" placeholder="Preço"></div><select id="adm-availability-${id}" class="admin-input" style="margin-top:7px"><option value="available" ${!['unavailable','soon'].includes(String(item.availability||item.availabilityStatus||'available'))?'selected':''}>🟢 Disponível</option><option value="unavailable" ${String(item.availability||item.availabilityStatus)==='unavailable'?'selected':''}>🚫 Indisponível</option><option value="soon" ${String(item.availability||item.availabilityStatus)==='soon'?'selected':''}>🕐 Em breve</option></select>${line?`<div style="margin-top:7px">${line}</div>`:''}<input id="adm-short-${id}" class="admin-input" value="${esc(item.short||'')}" placeholder="Resumo" style="margin-top:7px"><textarea id="adm-full-${id}" class="admin-textarea" rows="2" placeholder="Descrição" style="margin-top:7px">${esc(item.full||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${featured?'checked':''} onchange="window.brgAdminSetFeatured(${Number(item.id)},this.checked,'${page}')"> ⭐ Destaque manual</label><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateItemImg?.(${Number(item.id)},this)"></label></div><div class="brg-admin-buttons">${canEdit()?`<button class="action-btn" onclick="window.brgAdminSaveItem(${Number(item.id)})">💾 Salvar</button>`:''}${item.type==='drink'&&canEdit()?`<button class="action-btn" onclick="event.preventDefault();event.stopPropagation();window.openAdminRecipeEditor?.(${Number(item.id)})">🧪 Receita / Margem</button>`:''}${canDel()?`<button class="action-btn del-btn" onclick="window.removeMenuItem?.(${Number(item.id)})">🗑️ Excluir</button>`:''}</div>${finance(item)}</article>`;
   }
 
   function renderSection(root,key,title,page,organizing){
@@ -7027,9 +7047,10 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const get=k=>document.getElementById(k+id)?.value??'';
     const name=String(get('adm-name-')).trim(),type=String(get('adm-type-')||'drink'),line=type==='drink'?String(get('adm-line-')||''):'';
     const newPrice=String(get('adm-price-')).trim(),short=String(get('adm-short-')).trim(),full=String(get('adm-full-')).trim();
+    const availability=String(get('adm-availability-')||'available');
     if(!name)return alert('Informe o nome.');
     if(a.menu.some(x=>String(x.id)!==String(id)&&String(x.name||'').trim().toLowerCase()===name.toLowerCase()))return alert('Já existe outro item com esse nome.');
-    const old={...item}; Object.assign(item,{name,type,drinkLine:line,price:newPrice,short,full});
+    const old={...item}; Object.assign(item,{name,type,drinkLine:line,price:newPrice,short,full,availability:['unavailable','soon'].includes(availability)?availability:'available'});
     try{
       const f=recipeData(item);
       if(f.recipe&&typeof window.brgApi==='function'){
