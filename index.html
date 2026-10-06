@@ -1139,10 +1139,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       </audio>
     </div>
 
-    <div class="promo-banner">
-      <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
-    </div>
-
     <header>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
@@ -1157,6 +1153,8 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
         <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
         <button class="tab-btn" onclick="switchTab('promoters')">🎤 Promoter</button>
+        <button class="tab-btn" id="nav-parcerias" onclick="switchTab('parcerias')" style="display:none;">🤝 Parcerias</button>
+        <button class="tab-btn" id="nav-fotos-bar" onclick="switchTab('fotos-bar')" style="display:none;">📸 Fotos do Bar</button>
         <button class="tab-btn" onclick="switchTab('contato')">💬 Contato</button>
         <button class="tab-btn" onclick="switchTab('como-chegar')">📍 Como Chegar</button>
         <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
@@ -1283,6 +1281,17 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       <section id="promoters" class="tab-pane">
         <h2 class="section-title">Promoters</h2>
         <div class="dir-grid" id="dynamic-pro-list"></div>
+      </section>
+
+      <section id="parcerias" class="tab-pane">
+        <h2 class="section-title">🤝 Parcerias do Bar</h2>
+        <div id="public-partners-list" class="dir-grid"></div>
+      </section>
+
+      <section id="fotos-bar" class="tab-pane">
+        <h2 class="section-title">📸 Fotos do Bar</h2>
+        <div id="public-bar-gallery-featured"></div>
+        <div id="public-bar-gallery-list" class="brg-photo-gallery-grid"></div>
       </section>
 
       <section id="contato" class="tab-pane">
@@ -1677,6 +1686,54 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               <textarea class="admin-textarea" id="new-team-desc" rows="3" placeholder="Descrição do membro..." style="margin-top:10px;"></textarea>`:''}
             </div>
             <div id="admin-team-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-parcerias')">🤝 Gerenciar Parcerias</button>
+          <div id="adm-parcerias" class="admin-accordion-content" style="border-color: var(--c-purple);">
+            <div class="admin-card" style="border-color:var(--c-purple);">
+              <div class="admin-card-row" style="align-items:center;justify-content:space-between;gap:10px;">
+                <div>
+                  <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 4px;">🤝 Cadastro de parceiros</h5>
+                  <p style="color:#8a969d;font-size:.8rem;margin:0;">Mesmos campos da equipe/promoter. A visibilidade pública pode ser ligada ou desligada sem apagar os dados.</p>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;color:#fff;font-size:.82rem;white-space:nowrap;"><input type="checkbox" id="partners-visible" onchange="savePartnersVisibility(this.checked)"> Mostrar aba pública</label>
+              </div>
+              <div class="admin-card-row" style="margin-top:10px;">
+                <input type="text" class="admin-input" id="new-partner-name" placeholder="Nome da parceria">
+                <input type="text" class="admin-input" id="new-partner-category" placeholder="Categoria / segmento">
+                <input type="text" class="admin-input" id="new-partner-ig" placeholder="Instagram">
+              </div>
+              <div class="admin-card-row" style="margin-top:10px;">
+                <label class="file-upload-wrapper">📷 Foto / logo<input type="file" id="new-partner-img" accept="image/*"></label>
+                <button type="button" class="action-btn" onclick="addBarPartner()">➕ Adicionar parceria</button>
+              </div>
+              <textarea class="admin-textarea" id="new-partner-desc" rows="3" placeholder="Descrição da parceria..." style="margin-top:10px;"></textarea>
+            </div>
+            <div id="admin-partners-list"></div>
+          </div>
+
+          <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-fotos-bar')">📸 Fotos do Bar</button>
+          <div id="adm-fotos-bar" class="admin-accordion-content" style="border-color: var(--c-cyan);">
+            <div class="admin-card" style="border-color:var(--c-cyan);">
+              <div class="admin-card-row" style="align-items:center;justify-content:space-between;gap:10px;">
+                <div>
+                  <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 4px;">📸 Galeria do bar</h5>
+                  <p style="color:#8a969d;font-size:.8rem;margin:0;">Destaques entram no carrossel automático. As demais fotos ficam na galeria abaixo.</p>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;color:#fff;font-size:.82rem;white-space:nowrap;"><input type="checkbox" id="bar-photos-visible" onchange="saveBarPhotosVisibility(this.checked)"> Mostrar aba pública</label>
+              </div>
+              <div class="admin-card-row" style="margin-top:10px;">
+                <input type="text" class="admin-input" id="new-bar-photo-title" placeholder="Título / nome da foto">
+                <input type="text" class="admin-input" id="new-bar-photo-ig" placeholder="Instagram / crédito (opcional)">
+                <label style="display:flex;align-items:center;gap:8px;color:#fff;font-size:.8rem;padding:8px 10px;border:1px solid #333;border-radius:8px;"><input type="checkbox" id="new-bar-photo-featured"> ⭐ Destaque</label>
+              </div>
+              <textarea class="admin-textarea" id="new-bar-photo-desc" rows="2" placeholder="Descrição / legenda..." style="margin-top:10px;"></textarea>
+              <div class="admin-card-row" style="margin-top:10px;">
+                <label class="file-upload-wrapper">📷 Upload da foto<input type="file" id="new-bar-photo-img" accept="image/*"></label>
+                <button type="button" class="action-btn" onclick="addBarPhoto()">➕ Adicionar foto</button>
+              </div>
+            </div>
+            <div id="admin-bar-photos-list"></div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-arcade')">🕹️ Gerenciar Arcade Top 10</button>
@@ -2279,6 +2336,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       userMessages: [],
       pendingMessages: [],
       moderationHistory: [],
+      customerSuggestions: [],
+      partners: [],
+      partnersConfig: { visible: true },
+      barPhotos: [],
+      barPhotosConfig: { visible: true },
       adminLogs: [],
       permissions: { canAdd: true, canEdit: true, canDel: true, canTabs: true, canMod: true, canRank: true, canAgenda: true, canTeam: true },
       adminAccounts: [
@@ -2796,7 +2858,11 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           // remota não mudou, NÃO reconstruímos nenhum card/imagem. Isso elimina
           // o efeito de piscar causado por re-renderizações desnecessárias.
           if(incomingRevision && Number(remoteRevision || 0) > incomingRevision) { console.warn('[Bargunçados] Bloqueado estado remoto mais antigo; mantendo a versão mais nova já carregada.'); return; }
-          if(!force && incomingRevision && Number(remoteRevision || 0) === incomingRevision) return;
+          const sameRevision = !force && incomingRevision && Number(remoteRevision || 0) === incomingRevision;
+          const localMenuCount = Array.isArray(appData?.menu) ? appData.menu.length : 0;
+          const localHasPartnersConfig = appData?.partnersConfig && typeof appData.partnersConfig === 'object';
+          const localHasPhotosConfig = appData?.barPhotosConfig && typeof appData.barPhotosConfig === 'object';
+          if(sameRevision && localMenuCount > 0 && localHasPartnersConfig && localHasPhotosConfig) return;
           const localBeforeRemote = appData;
           try {
             const incoming = cloneForSync(json.record) || {};
@@ -3915,6 +3981,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       }).join('');
 
       renderPublicInteractions();
+      renderPartnersGallery();
       renderCustomTabs(cCustomTabs);
       renderAdminLists();
       renderModerationLists();
@@ -6989,6 +7056,12 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   function ensureConfig(){
     const a=state();
     if(!Array.isArray(a.menu)) a.menu=[];
+    if(!Array.isArray(a.partners)) a.partners=[];
+    if(!a.partnersConfig || typeof a.partnersConfig!=='object') a.partnersConfig={visible:true};
+    if(typeof a.partnersConfig.visible!=='boolean') a.partnersConfig.visible=true;
+    if(!Array.isArray(a.barPhotos)) a.barPhotos=[];
+    if(!a.barPhotosConfig || typeof a.barPhotosConfig!=='object') a.barPhotosConfig={visible:true};
+    if(typeof a.barPhotosConfig.visible!=='boolean') a.barPhotosConfig.visible=true;
     if(!a.menuCategoryLabels||typeof a.menuCategoryLabels!=='object') a.menuCategoryLabels={};
     a.menuCategoryLabels.bebidas=a.menuCategoryLabels.bebidas||{};
     a.menuCategoryLabels.porcoes=a.menuCategoryLabels.porcoes||{};
@@ -7161,6 +7234,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       defs.forEach(([key,title,page])=>renderSection(root,key,title,page,organizing&&window.__brgAdminOrganizer.page===page));
     }
     renderEntities();
+    if(typeof renderPartnersGalleryAdmin==='function') renderPartnersGalleryAdmin();
     if(!window.__brgAdminBarLoadStarted && typeof window.loadBarControl==='function' && (!window.BRG_BAR?.data?.recipes||!window.BRG_BAR?.data?.inventory)){
       window.__brgAdminBarLoadStarted=true; Promise.resolve(window.loadBarControl(false)).then(()=>renderAdminLists()).catch(()=>{});
     }
@@ -7264,11 +7338,325 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   };
 
   const style=document.createElement('style');style.id='brg-admin-total-rebuild-css';style.textContent=`
+  .brg-photo-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+  .brg-photo-card{position:relative;overflow:hidden;border:1px solid rgba(0,229,255,.24);border-radius:16px;background:linear-gradient(145deg,rgba(10,12,16,.96),rgba(20,5,14,.9));box-shadow:0 12px 32px rgba(0,0,0,.25)}
+  .brg-photo-card img{width:100%;height:240px;display:block;object-fit:cover;background:#08090b}
+  .brg-photo-card-body{padding:12px}.brg-photo-card-body h3{margin:0;color:#fff;font-family:var(--font-title);font-size:1.05rem}.brg-photo-card-body p{margin:6px 0 0;color:#c5cdd1;line-height:1.45;font-size:.82rem}
+  .brg-photo-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+  .brg-photo-carousel{position:relative;min-height:330px;border-radius:18px;overflow:hidden;border:1px solid rgba(255,235,59,.35);background:#07080a;box-shadow:0 16px 45px rgba(0,0,0,.38)}
+  .brg-photo-carousel img{width:100%;height:330px;display:block;object-fit:cover}.brg-photo-carousel-overlay{position:absolute;inset:auto 0 0;padding:48px 18px 18px;background:linear-gradient(transparent,rgba(0,0,0,.92));text-align:left}.brg-photo-carousel-overlay h3{margin:0;color:#fff;font-family:var(--font-title);font-size:1.5rem}.brg-photo-carousel-overlay p{margin:6px 0 0;color:#ddd}
+  .brg-public-edit-btn{border:1px solid var(--c-cyan);background:rgba(0,188,212,.08);color:#8defff;border-radius:9px;padding:7px 10px;font-weight:800;cursor:pointer}
+  #interaja .interaction-box{min-height:250px;padding:28px;margin-bottom:30px}
+  #interaja .interaction-box .interaction-input,#interaja .interaction-box .interaction-textarea{font-size:1rem;padding:13px}
+  @media(max-width:650px){.brg-photo-gallery-grid{grid-template-columns:1fr}.brg-photo-card img{height:220px}.brg-photo-carousel,.brg-photo-carousel img{min-height:260px;height:260px}#interaja .interaction-box{padding:20px;min-height:230px}}
   .brg-admin-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;padding:12px;margin:0 0 14px;border:1px solid rgba(0,188,212,.35);border-radius:12px;background:rgba(0,188,212,.06)}
   .brg-admin-toolbar strong{display:block;color:#fff;font-family:var(--font-title)}.brg-admin-toolbar small{display:block;color:#89959c;margin-top:3px}.brg-admin-toolbar-actions{display:flex;gap:7px;flex-wrap:wrap}
   .brg-admin-category{margin:12px 0;border:1px solid rgba(255,235,59,.22);border-radius:12px;background:rgba(0,0,0,.2);overflow:hidden}.brg-admin-category>header{display:flex;justify-content:space-between;align-items:center;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,.08)}.brg-admin-category h3{margin:0;color:var(--c-yellow);font-family:var(--font-title);font-size:1.05rem}.brg-admin-category header span{color:#89959c;font-size:.7rem}.brg-admin-category>div{padding:10px}
   .brg-admin-item{padding:10px;margin:8px 0;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(8,10,14,.78)}.brg-admin-head{display:flex;gap:9px;align-items:center}.brg-admin-photo{width:58px;height:58px;border-radius:8px;overflow:hidden;background:#09090c;display:grid;place-items:center;color:#555;flex:0 0 58px}.brg-admin-photo img{width:100%;height:100%;object-fit:contain}.brg-admin-ident{min-width:0;flex:1}.brg-admin-ident strong{display:block;color:#fff}.brg-admin-ident small{color:#77838b;font-size:.65rem}.brg-admin-fields{display:grid;grid-template-columns:150px minmax(0,1fr) 110px;gap:7px;margin-top:8px}.brg-admin-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px;color:#ddd;font-size:.75rem}.brg-admin-buttons{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.brg-admin-finance{margin-top:9px;padding:9px;border:1px solid rgba(0,188,212,.25);border-radius:9px;background:rgba(0,188,212,.04)}.brg-admin-finance-title{font-weight:800;color:#dbe6ea;font-size:.72rem}.brg-admin-finance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px}.brg-admin-finance-grid div{padding:6px;border-radius:7px;background:rgba(0,0,0,.25);text-align:center}.brg-admin-finance-grid b{display:block;color:#fff;font-size:.82rem}.brg-admin-finance-grid span{display:block;color:#7f8b92;font-size:.58rem}.brg-admin-finance small{display:block;color:#87949a;margin-top:6px}.brg-admin-arrows{display:flex;gap:5px}.brg-admin-arrows button{width:45px;height:45px;border:2px solid var(--c-yellow);border-radius:9px;background:#09090c;color:#fff;font-size:1.45rem;font-weight:900;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.brg-admin-arrows button:active{transform:scale(.92);background:var(--c-yellow);color:#000}.brg-admin-empty{padding:13px;color:#78858c;border:1px dashed rgba(255,255,255,.12);border-radius:9px;text-align:center}.brg-admin-entity{padding:10px;margin:8px 0;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(8,10,14,.78)}.brg-admin-entity-head{display:flex;gap:9px;align-items:center;margin-bottom:7px}.brg-admin-entity-head img{width:58px;height:58px;border-radius:8px;object-fit:contain;background:#09090c}.brg-admin-entity-head strong{display:block;color:#fff}.brg-admin-entity-head small{display:block;color:#89959c}@media(max-width:650px){.brg-admin-fields{grid-template-columns:1fr}.brg-admin-finance-grid{grid-template-columns:repeat(2,1fr)}.brg-admin-toolbar-actions{width:100%}.brg-admin-toolbar-actions .action-btn{flex:1;min-height:44px}.brg-admin-arrows button{width:52px;height:52px;font-size:1.6rem}}
   `;document.head.appendChild(style);
+})();
+</script>
+
+
+<script>
+/* BARGUNÇADOS — PARCERIAS + GALERIA V1
+   Isolado do catálogo: nenhuma função abaixo reconstrói, completa ou substitui appData.menu.
+   Alterações só são enviadas ao Supabase após ação explícita do ADM. */
+(function(){
+  const esc = v => (typeof window.escapeHTML==='function' ? window.escapeHTML(v ?? '') : String(v ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])));
+  const img = v => (typeof window.safeImageUrl==='function' ? window.safeImageUrl(v) : /^https:\/\//i.test(String(v||'')) ? String(v) : '');
+  const loggedAdmin = () => typeof window.isAuthenticatedAdmin==='function' ? !!window.isAuthenticatedAdmin() : (typeof logged==='function' ? !!logged() : false);
+  const editable = () => {
+    if(!loggedAdmin()) return false;
+    try { return getPersistentAdminFlag('brg_adm_is_master')==='true' || (appData.permissions||{}).canEdit!==false; }
+    catch(_){ return false; }
+  };
+  const deletable = () => {
+    if(!loggedAdmin()) return false;
+    try { return getPersistentAdminFlag('brg_adm_is_master')==='true' || (appData.permissions||{}).canDel!==false; }
+    catch(_){ return false; }
+  };
+  const stateSafe = () => typeof window.state==='function' ? window.state() : appData;
+
+  function ensureData(){
+    const a=stateSafe();
+    if(!Array.isArray(a.partners)) a.partners=[];
+    if(!a.partnersConfig || typeof a.partnersConfig!=='object') a.partnersConfig={visible:true};
+    if(typeof a.partnersConfig.visible!=='boolean') a.partnersConfig.visible=true;
+    if(!Array.isArray(a.barPhotos)) a.barPhotos=[];
+    if(!a.barPhotosConfig || typeof a.barPhotosConfig!=='object') a.barPhotosConfig={visible:true};
+    if(typeof a.barPhotosConfig.visible!=='boolean') a.barPhotosConfig.visible=true;
+    return a;
+  }
+
+  function uniqueId(prefix){
+    return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+  }
+
+  async function persist(reason){
+    if(typeof window.saveBinData!=='function') throw new Error('Mecanismo de salvamento não disponível.');
+    const ok=await window.saveBinData(reason);
+    if(ok===false) throw new Error('O Supabase não confirmou a gravação.');
+    return true;
+  }
+
+  window.savePartnersVisibility=async function(v){
+    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),old=!!a.partnersConfig.visible;
+    a.partnersConfig.visible=!!v;
+    try{await persist('Parcerias: alterou visibilidade pública');renderPartnersGallery();renderPartnersGalleryAdmin();}
+    catch(e){a.partnersConfig.visible=old;renderPartnersGallery();renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar a visibilidade das parcerias.\n\n'+(e?.message||e));}
+  };
+
+  window.saveBarPhotosVisibility=async function(v){
+    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),old=!!a.barPhotosConfig.visible;
+    a.barPhotosConfig.visible=!!v;
+    try{await persist('Fotos do Bar: alterou visibilidade pública');renderPartnersGallery();renderPartnersGalleryAdmin();}
+    catch(e){a.barPhotosConfig.visible=old;renderPartnersGallery();renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar a visibilidade das fotos.\n\n'+(e?.message||e));}
+  };
+
+  window.addBarPartner=async function(){
+    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData();
+    const name=String(document.getElementById('new-partner-name')?.value||'').trim();
+    const category=String(document.getElementById('new-partner-category')?.value||'').trim();
+    const ig=String(document.getElementById('new-partner-ig')?.value||'').trim();
+    const desc=String(document.getElementById('new-partner-desc')?.value||'').trim();
+    const file=document.getElementById('new-partner-img')?.files?.[0]||null;
+    if(!name) return alert('Informe o nome da parceria.');
+    const item={id:uniqueId('partner'),name,category,ig,desc,img:''};
+    try{
+      if(file){
+        let uploaded='';
+        const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
+        if(!ok||!uploaded) throw new Error('O upload da imagem não foi confirmado.');
+        item.img=uploaded;
+      }
+      a.partners.push(item);
+      await persist('Parcerias: adicionou '+name);
+      ['new-partner-name','new-partner-category','new-partner-ig','new-partner-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+      const f=document.getElementById('new-partner-img');if(f)f.value='';
+      renderPartnersGallery();renderPartnersGalleryAdmin();
+      alert('✅ Parceria adicionada e salva no Supabase.');
+    }catch(e){
+      a.partners=a.partners.filter(x=>String(x.id)!==String(item.id));
+      renderPartnersGalleryAdmin();
+      alert('❌ Não foi possível adicionar a parceria.\n\n'+(e?.message||e));
+    }
+  };
+
+  window.saveBarPartner=async function(id){
+    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),item=a.partners.find(x=>String(x.id)===String(id));if(!item)return;
+    const old={...item};
+    const get=k=>document.getElementById(k+id)?.value??'';
+    const name=String(get('partner-name-')).trim();
+    if(!name)return alert('Informe o nome da parceria.');
+    Object.assign(item,{name,category:String(get('partner-category-')).trim(),ig:String(get('partner-ig-')).trim(),desc:String(get('partner-desc-')).trim()});
+    try{await persist('Parcerias: editou '+name);renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Parceria salva.')}
+    catch(e){Object.assign(item,old);renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar a parceria.\n\n'+(e?.message||e));}
+  };
+
+  window.replaceBarPartnerImg=async function(id,input){
+    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),item=a.partners.find(x=>String(x.id)===String(id)),file=input?.files?.[0];if(!item||!file)return;
+    const old=item.img;
+    try{
+      let uploaded='';
+      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
+      if(!ok||!uploaded)throw new Error('O upload não foi confirmado.');
+      item.img=uploaded;
+      await persist('Parcerias: substituiu foto de '+item.name);
+      renderPartnersGallery();renderPartnersGalleryAdmin();
+      alert('✅ Foto da parceria substituída.');
+    }catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+  };
+
+  window.deleteBarPartner=async function(id){
+    if(!deletable())return alert('Acesso Negado: sem permissão de exclusão.');
+    const a=ensureData(),idx=a.partners.findIndex(x=>String(x.id)===String(id));if(idx<0)return;
+    const [removed]=a.partners.splice(idx,1);
+    if(!confirm('Excluir a parceria "'+String(removed.name||'')+'"?')){a.partners.splice(idx,0,removed);return;}
+    try{await persist('Parcerias: excluiu '+String(removed.name||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Parceria excluída.')}
+    catch(e){a.partners.splice(idx,0,removed);renderPartnersGalleryAdmin();alert('❌ Não foi possível excluir a parceria.\n\n'+(e?.message||e));}
+  };
+
+  window.addBarPhoto=async function(){
+    if(!editable())return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),file=document.getElementById('new-bar-photo-img')?.files?.[0]||null;
+    const title=String(document.getElementById('new-bar-photo-title')?.value||'').trim();
+    const ig=String(document.getElementById('new-bar-photo-ig')?.value||'').trim();
+    const desc=String(document.getElementById('new-bar-photo-desc')?.value||'').trim();
+    const featured=!!document.getElementById('new-bar-photo-featured')?.checked;
+    if(!file)return alert('Selecione uma foto.');
+    const item={id:uniqueId('photo'),title,ig,desc,img:'',featured,createdAt:Date.now()};
+    try{
+      let uploaded='';
+      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
+      if(!ok||!uploaded)throw new Error('O upload da imagem não foi confirmado.');
+      item.img=uploaded;a.barPhotos.push(item);
+      await persist('Fotos do Bar: adicionou '+(title||'foto'));
+      ['new-bar-photo-title','new-bar-photo-ig','new-bar-photo-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+      const f=document.getElementById('new-bar-photo-img');if(f)f.value='';
+      const c=document.getElementById('new-bar-photo-featured');if(c)c.checked=false;
+      renderPartnersGallery();renderPartnersGalleryAdmin();
+      alert('✅ Foto adicionada e salva.');
+    }catch(e){a.barPhotos=a.barPhotos.filter(x=>String(x.id)!==String(item.id));renderPartnersGalleryAdmin();alert('❌ Não foi possível adicionar a foto.\n\n'+(e?.message||e));}
+  };
+
+  window.saveBarPhoto=async function(id){
+    if(!editable())return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
+    const old={...item};
+    const get=k=>document.getElementById(k+id)?.value??'';
+    const title=String(get('photo-title-')).trim(),ig=String(get('photo-ig-')).trim(),desc=String(get('photo-desc-')).trim();
+    item.title=title;item.ig=ig;item.desc=desc;
+    try{await persist('Fotos do Bar: editou '+(title||item.id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Dados da foto salvos.')}
+    catch(e){Object.assign(item,old);renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar os dados da foto.\n\n'+(e?.message||e));}
+  };
+
+  window.replaceBarPhoto=async function(id,input){
+    if(!editable())return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id)),file=input?.files?.[0];if(!item||!file)return;
+    const old=item.img;
+    try{
+      let uploaded='';
+      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
+      if(!ok||!uploaded)throw new Error('O upload não foi confirmado.');
+      item.img=uploaded;await persist('Fotos do Bar: substituiu '+(item.title||item.id));
+      renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto substituída.');
+    }catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+  };
+
+  window.deleteBarPhoto=async function(id){
+    if(!deletable())return alert('Acesso Negado: sem permissão de exclusão.');
+    const a=ensureData(),idx=a.barPhotos.findIndex(x=>String(x.id)===String(id));if(idx<0)return;
+    const [removed]=a.barPhotos.splice(idx,1);
+    if(!confirm('Excluir esta foto da galeria?')){a.barPhotos.splice(idx,0,removed);return;}
+    try{await persist('Fotos do Bar: excluiu '+(removed.title||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Foto excluída.')}
+    catch(e){a.barPhotos.splice(idx,0,removed);renderPartnersGalleryAdmin();alert('❌ Não foi possível excluir a foto.\n\n'+(e?.message||e));}
+  };
+
+  window.toggleBarPhotoFeatured=async function(id,checked){
+    if(!editable())return;
+    const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
+    const old=!!item.featured;item.featured=!!checked;
+    try{await persist('Fotos do Bar: '+(item.featured?'adicionou':'removeu')+' destaque de '+(item.title||id));renderPartnersGallery();renderPartnersGalleryAdmin();}
+    catch(e){item.featured=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar o destaque.\n\n'+(e?.message||e));}
+  };
+
+  window.openPartnerModal=function(id){
+    const a=ensureData(),p=a.partners.find(x=>String(x.id)===String(id));if(!p)return;
+    document.getElementById('brg-partner-modal')?.remove();
+    const modal=document.createElement('div');modal.id='brg-partner-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000060;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto';
+    modal.innerHTML=`<div class="glass-panel" style="max-width:620px;width:100%;padding:18px;border:1px solid var(--c-purple);text-align:center">
+      <button type="button" class="action-btn del-btn" style="float:right" onclick="this.closest('#brg-partner-modal')?.remove()">✕</button>
+      <img src="${img(p.img)}" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid var(--c-purple);margin:4px auto 12px;display:block" onerror="this.style.visibility='hidden'">
+      <h2 style="margin:0;color:#fff;font-family:var(--font-title)">${esc(p.name||'Parceria')}</h2>
+      <div style="color:#c58cff;font-weight:900;margin-top:5px">${esc(p.category||'Parceria')}</div>
+      ${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:12px;text-decoration:none" onclick="event.stopPropagation()">📸 ${esc(p.ig)}</a>`:''}
+      <p style="color:#ddd;line-height:1.6;margin:16px 0 0">${esc(p.desc||'')}</p>
+      ${loggedAdmin()?`<div style="margin-top:16px"><button type="button" class="brg-public-edit-btn" onclick="this.closest('#brg-partner-modal')?.remove();switchTab('admin');setTimeout(()=>document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'}),80)">⚙️ Editar no ADM</button></div>`:''}
+    </div>`;
+    document.body.appendChild(modal);
+  };
+
+  window.openBarPhotoEditor=async function(id){
+    if(!loggedAdmin())return;
+    const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
+    const modal=document.createElement('div');modal.id='brg-photo-editor-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000060;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto';
+    modal.innerHTML=`<div class="glass-panel" style="max-width:720px;width:100%;padding:18px;border:1px solid var(--c-cyan);max-height:calc(100vh - 28px);overflow:auto">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center"><h2 style="margin:0;font-family:var(--font-title);color:var(--c-cyan)">✏️ Editar foto</h2><button type="button" class="action-btn del-btn" onclick="document.getElementById('brg-photo-editor-modal')?.remove()">✕</button></div>
+      <img src="${img(item.img)}" style="width:100%;max-height:320px;object-fit:cover;border-radius:12px;margin:12px 0" onerror="this.style.display='none'">
+      <input id="public-photo-title-${esc(item.id)}" class="admin-input" value="${esc(item.title||'')}" placeholder="Título">
+      <input id="public-photo-ig-${esc(item.id)}" class="admin-input" value="${esc(item.ig||'')}" placeholder="Instagram / crédito">
+      <textarea id="public-photo-desc-${esc(item.id)}" class="admin-textarea" rows="3" placeholder="Descrição">${esc(item.desc||'')}</textarea>
+      <div class="brg-admin-buttons">
+        <button type="button" class="action-btn" onclick="saveBarPhotoFromPublicEditor('${esc(item.id)}')">💾 Salvar</button>
+        <label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(item.id)}',this)"></label>
+        ${deletable()?`<button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(item.id)}');document.getElementById('brg-photo-editor-modal')?.remove()">🗑️ Excluir</button>`:''}
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+  };
+
+  window.saveBarPhotoFromPublicEditor=async function(id){
+    const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
+    const title=String(document.getElementById('public-photo-title-'+id)?.value||'').trim();
+    const ig=String(document.getElementById('public-photo-ig-'+id)?.value||'').trim();
+    const desc=String(document.getElementById('public-photo-desc-'+id)?.value||'').trim();
+    const old={...item};Object.assign(item,{title,ig,desc});
+    try{await persist('Fotos do Bar: edição pública da foto '+(title||id));document.getElementById('brg-photo-editor-modal')?.remove();renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto atualizada.')}
+    catch(e){Object.assign(item,old);alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}
+  };
+
+  function renderPartnersGallery(){
+    const a=ensureData();
+    const navP=document.getElementById('nav-parcerias'),navG=document.getElementById('nav-fotos-bar');
+    const secP=document.getElementById('parcerias'),secG=document.getElementById('fotos-bar');
+    const visibleP=!!a.partnersConfig.visible,visibleG=!!a.barPhotosConfig.visible;
+    if(navP)navP.style.display=visibleP?'':'none';
+    if(navG)navG.style.display=visibleG?'':'none';
+    if(secP)secP.style.display=visibleP?'':'none';
+    if(secG)secG.style.display=visibleG?'':'none';
+    const pRoot=document.getElementById('public-partners-list');
+    if(pRoot){
+      pRoot.innerHTML=a.partners.length?a.partners.map(p=>`<div class="glass-panel dir-card clickable-card" onclick="openPartnerModal('${esc(p.id)}')"><img src="${img(p.img)}" class="dir-img" alt="${esc(p.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${esc(p.name)}</h3><p class="dir-role" style="color:var(--c-cyan);">${esc(p.category||'Parceria')}</p>${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">📸 ${esc(p.ig)}</a>`:''}<p class="dir-desc">${esc(p.desc||'')}</p></div>`).join(''):'<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma parceria publicada no momento.</div>';
+      if(loggedAdmin()) pRoot.insertAdjacentHTML('beforeend',`<div style="grid-column:1/-1;text-align:center;margin-top:8px;"><button type="button" class="brg-public-edit-btn" onclick="switchTab('admin');setTimeout(()=>{document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'});},80)">⚙️ Gerenciar parcerias</button></div>`);
+    }
+    const fRoot=document.getElementById('public-bar-gallery-featured'),gRoot=document.getElementById('public-bar-gallery-list');
+    if(fRoot&&gRoot){
+      const photos=a.barPhotos.filter(x=>img(x.img));
+      const featured=photos.filter(x=>x.featured);
+      if(window.__brgGalleryTimer){clearInterval(window.__brgGalleryTimer);window.__brgGalleryTimer=null;}
+      if(featured.length){
+        let index=0;
+        const paint=()=>{
+          const x=featured[index%featured.length];
+          fRoot.innerHTML=`<div class="brg-photo-carousel"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" onerror="this.style.display='none'"><div class="brg-photo-carousel-overlay"><h3>${esc(x.title||'Destaque do Bar')}</h3><p>${esc(x.desc||'')}</p>${x.ig?`<div style="margin-top:5px;color:#ff80ab;font-weight:800;">📸 ${esc(x.ig)}</div>`:''}</div>${loggedAdmin()?`<button type="button" class="brg-public-edit-btn" style="position:absolute;right:12px;top:12px;" onclick="openBarPhotoEditor('${esc(x.id)}')">✏️ Editar</button>`:''}</div>`;
+          index=(index+1)%featured.length;
+        };
+        paint();
+        if(featured.length>1)window.__brgGalleryTimer=setInterval(paint,4500);
+      }else{
+        fRoot.innerHTML='<div class="glass-panel" style="padding:22px;text-align:center;color:#8b969c;margin-bottom:16px;">Nenhuma foto em destaque ainda.</div>';
+      }
+      gRoot.innerHTML=photos.map(x=>`<article class="brg-photo-card"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" onerror="this.style.display='none'"><div class="brg-photo-card-body"><h3>${esc(x.title||'Foto do Bar')}</h3><p>${esc(x.desc||'')}</p>${x.ig?`<div style="margin-top:7px;color:#ff80ab;font-weight:800;font-size:.78rem;">📸 ${esc(x.ig)}</div>`:''}${loggedAdmin()?`<div class="brg-photo-card-actions"><button type="button" class="brg-public-edit-btn" onclick="openBarPhotoEditor('${esc(x.id)}')">✏️ Editar</button></div>`:''}</div></article>`).join('') || '<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma foto publicada ainda.</div>';
+    }
+  }
+
+  function renderPartnersGalleryAdmin(){
+    if(!loggedAdmin())return;
+    const a=ensureData();
+    const pc=document.getElementById('partners-visible');if(pc)pc.checked=!!a.partnersConfig.visible;
+    const bc=document.getElementById('bar-photos-visible');if(bc)bc.checked=!!a.barPhotosConfig.visible;
+    const pr=document.getElementById('admin-partners-list');
+    if(pr){
+      pr.innerHTML=a.partners.length?a.partners.map(p=>`<article class="brg-admin-entity">
+        <div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.name||'Sem nome')}</strong><small>🤝 ${esc(p.category||'Parceria')}</small></div></div>
+        <input id="partner-name-${esc(p.id)}" class="admin-input" value="${esc(p.name||'')}" placeholder="Nome">
+        <input id="partner-category-${esc(p.id)}" class="admin-input" value="${esc(p.category||'')}" placeholder="Categoria / segmento">
+        <input id="partner-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram">
+        <textarea id="partner-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea>
+        <div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPartnerImg('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPartner('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPartner('${esc(p.id)}')">🗑️ Excluir</button></div>
+      </article>`).join(''):'<div class="brg-admin-empty">Nenhuma parceria cadastrada.</div>';
+    }
+    const pg=document.getElementById('admin-bar-photos-list');
+    if(pg){
+      pg.innerHTML=a.barPhotos.length?a.barPhotos.map(p=>`<article class="brg-admin-entity">
+        <div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.title||'Foto do Bar')}</strong><small>📸 ${p.featured?'Destaque no carrossel':'Galeria'}</small></div></div>
+        <input id="photo-title-${esc(p.id)}" class="admin-input" value="${esc(p.title||'')}" placeholder="Título">
+        <input id="photo-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram / crédito">
+        <textarea id="photo-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea>
+        <div class="brg-admin-actions"><label><input type="checkbox" ${p.featured?'checked':''} onchange="toggleBarPhotoFeatured('${esc(p.id)}',this.checked)"> ⭐ Mostrar no carrossel</label></div>
+        <div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPhoto('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(p.id)}')">🗑️ Excluir</button></div>
+      </article>`).join(''):'<div class="brg-admin-empty">Nenhuma foto cadastrada.</div>';
+    }
+  }
+
+  window.renderPartnersGallery=renderPartnersGallery;
+  window.renderPartnersGalleryAdmin=renderPartnersGalleryAdmin;
 })();
 </script>
 
