@@ -2334,9 +2334,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       flyer: defaultFlyer,
       customTabs: [],
       partners: [],
-      partnersConfig: { visible: false },
+      partnersConfig: { visible: true },
       barPhotos: [],
-      barPhotosConfig: { visible: false },
+      barPhotosConfig: { visible: true },
       userSongs: [],
       pendingSongs: [],
       userMessages: [],
@@ -2859,7 +2859,15 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           // remota não mudou, NÃO reconstruímos nenhum card/imagem. Isso elimina
           // o efeito de piscar causado por re-renderizações desnecessárias.
           if(incomingRevision && Number(remoteRevision || 0) > incomingRevision) { console.warn('[Bargunçados] Bloqueado estado remoto mais antigo; mantendo a versão mais nova já carregada.'); return; }
-          if(!force && incomingRevision && Number(remoteRevision || 0) === incomingRevision) return;
+          // A mesma revisão remota só pode ser ignorada quando o estado local já
+          // possui conteúdo essencial. Isso evita que um snapshot local vazio/incompleto
+          // fique preso para sempre na tela mesmo com a revisão correta no Supabase.
+          // Em especial, o cardápio nunca pode permanecer vazio se o servidor possui itens.
+          const sameRevision = !force && incomingRevision && Number(remoteRevision || 0) === incomingRevision;
+          const localMenuCount = Array.isArray(appData?.menu) ? appData.menu.length : 0;
+          const localHasPartnersConfig = appData?.partnersConfig && typeof appData.partnersConfig === 'object';
+          const localHasPhotosConfig = appData?.barPhotosConfig && typeof appData.barPhotosConfig === 'object';
+          if(sameRevision && localMenuCount > 0 && localHasPartnersConfig && localHasPhotosConfig) return;
           const localBeforeRemote = appData;
           try {
             const incoming = cloneForSync(json.record) || {};
@@ -7178,10 +7186,10 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 
   function brgEnsurePartnersGalleryData(){
     if(!Array.isArray(appData.partners)) appData.partners=[];
-    if(!appData.partnersConfig||typeof appData.partnersConfig!=='object') appData.partnersConfig={visible:false};
+    if(!appData.partnersConfig||typeof appData.partnersConfig!=='object') appData.partnersConfig={visible:true};
     appData.partnersConfig.visible=appData.partnersConfig.visible===true;
     if(!Array.isArray(appData.barPhotos)) appData.barPhotos=[];
-    if(!appData.barPhotosConfig||typeof appData.barPhotosConfig!=='object') appData.barPhotosConfig={visible:false};
+    if(!appData.barPhotosConfig||typeof appData.barPhotosConfig!=='object') appData.barPhotosConfig={visible:true};
     appData.barPhotosConfig.visible=appData.barPhotosConfig.visible===true;
     appData.partners.forEach(x=>{if(x&&typeof x==='object')normalizeStoredImage(x)});
     appData.barPhotos.forEach(x=>{if(x&&typeof x==='object')normalizeStoredImage(x)});
