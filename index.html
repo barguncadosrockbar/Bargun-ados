@@ -7612,7 +7612,16 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       photo.classList.remove('brg-viewer-change-left','brg-viewer-change-right');
       void photo.offsetWidth;
       photo.classList.add(dir>=0?'brg-viewer-change-right':'brg-viewer-change-left');
-      photo.src=img(x.img);photo.alt=x.title||title||'Foto';
+      const safeSrc=img(x.img);
+      const rawSrc=String(x.img||'').trim();
+      photo.style.visibility='hidden';
+      photo.onload=()=>{photo.style.visibility='visible';};
+      photo.onerror=()=>{
+        if(rawSrc && photo.src!==rawSrc){ photo.src=rawSrc; return; }
+        photo.style.visibility='visible';
+      };
+      photo.src=safeSrc || rawSrc;
+      photo.alt=x.title||title||'Foto';
       caption.innerHTML=`${x.title?`<strong>${esc(x.title)}</strong>`:''}${x.desc?`<span>${esc(x.desc)}</span>`:''}`;
       counter.textContent=(index+1)+' / '+items.length;
       dots.querySelectorAll('.brg-viewer-dot').forEach((d,i)=>d.classList.toggle('active',i===index));
@@ -7759,7 +7768,10 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     /* V3 — visualizador sempre acima de qualquer modal/galeria existente. */
     #brg-photo-viewer-modal{position:fixed!important;inset:0!important;z-index:1000090!important}
     #brg-photo-viewer-modal .brg-viewer-backdrop{z-index:0!important}
-    #brg-photo-viewer-modal .brg-photo-viewer{z-index:1!important}
+    #brg-photo-viewer-modal .brg-photo-viewer{z-index:1!important;isolation:isolate;background:transparent!important}
+    #brg-photo-viewer-modal .brg-viewer-stage{position:relative!important;z-index:2!important;background:transparent!important;overflow:visible!important}
+    #brg-photo-viewer-modal .brg-viewer-img{position:relative!important;z-index:4!important;display:block!important;visibility:visible;opacity:1!important;background:transparent!important}
+    #brg-photo-viewer-modal .brg-viewer-arrow{z-index:5!important}
     /* V3 — editor de receita no celular: informação em largura total, controles abaixo. */
     #site-drink-recipe-modal .site-recipe-row > div{min-width:0!important;width:100%!important;box-sizing:border-box!important;}
     #site-drink-recipe-modal .site-recipe-row > div > div:first-child{width:100%!important;max-width:none!important;min-width:0!important;grid-column:1/-1!important;overflow:visible!important;white-space:normal!important;word-break:normal!important;overflow-wrap:break-word!important;}
