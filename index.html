@@ -1654,6 +1654,28 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
 
           <button class="admin-accordion-btn" style="border-color: var(--c-cyan);" onclick="toggleAdminSection('adm-equipe')">👔 Gerenciar Equipe</button>
           <div id="adm-equipe" class="admin-accordion-content" style="border-color: var(--c-cyan);">
+            <div class="admin-card" style="border-color:var(--c-cyan);margin-bottom:12px;">
+              <div class="admin-card-row" style="align-items:center;justify-content:space-between;gap:10px;">
+                <div>
+                  <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 4px;">➕ Adicionar membro da equipe</h5>
+                  <p style="color:#8a969d;font-size:.8rem;margin:0;">Cadastre um novo integrante e escolha a categoria. Se selecionar <b>Promoter</b>, ele será exibido automaticamente na aba 🎤 Promoter.</p>
+                </div>
+                ${canAdd?`<button type="button" class="action-btn" onclick="addTeamMember()" style="background:var(--c-cyan);color:#000;white-space:nowrap;">➕ Adicionar membro</button>`:`<span style="color:var(--c-red);font-size:.8rem;">⚠️ Permissão de adicionar desativada.</span>`}
+              </div>
+              ${canAdd?`<div class="admin-card-row" style="margin-top:10px;">
+                <input type="text" class="admin-input" id="new-team-name" placeholder="Nome do membro">
+                <select class="admin-input" id="new-team-type">
+                  <option value="dir">👔 Diretoria</option>
+                  <option value="pro">🎤 Promoter</option>
+                </select>
+                <input type="text" class="admin-input" id="new-team-role" placeholder="Cargo / função">
+              </div>
+              <div class="admin-card-row" style="margin-top:10px;">
+                <input type="text" class="admin-input" id="new-team-ig" placeholder="Instagram (ex.: @usuario)">
+                <label class="file-upload-wrapper">📷 Foto do membro<input type="file" id="new-team-img" accept="image/*"></label>
+              </div>
+              <textarea class="admin-textarea" id="new-team-desc" rows="3" placeholder="Descrição do membro..." style="margin-top:10px;"></textarea>`:''}
+            </div>
             <div id="admin-team-list"></div>
           </div>
 
@@ -5811,6 +5833,56 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
           item.desc = document.getElementById(`a-desc-${id}`).value;
           await saveBinData(`Editou o evento de agenda "${oldTitle}" para "${item.title}" (${item.date})`);
           alert('Evento Salvo!');
+       }
+    }
+
+    async function addTeamMember() {
+       const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
+       const perms = appData.permissions || {};
+       if(!isMaster && perms.canAdd === false) return alert("Acesso Negado: permissão para adicionar itens/membros desativada pelo Master!");
+       const nameEl=document.getElementById('new-team-name');
+       const typeEl=document.getElementById('new-team-type');
+       const roleEl=document.getElementById('new-team-role');
+       const igEl=document.getElementById('new-team-ig');
+       const descEl=document.getElementById('new-team-desc');
+       const imgEl=document.getElementById('new-team-img');
+       const name=String(nameEl?.value||'').trim();
+       const type=typeEl?.value==='pro'?'pro':'dir';
+       const role=String(roleEl?.value||'').trim();
+       const ig=String(igEl?.value||'').trim();
+       const desc=String(descEl?.value||'').trim();
+       if(!name) return alert('Informe o nome do novo membro.');
+       if(!Array.isArray(appData.team)) appData.team=[];
+       const base='team_'+Date.now();
+       let id=base, n=1;
+       while(appData.team.some(x=>String(x?.id)===String(id))){id=base+'_'+(n++);}
+       const member={id,type,name,role,ig,desc,img:'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&background=00bcd4&color=fff'};
+       appData.team.push(member);
+       try {
+         const saved=await saveBinData(`Adicionou membro da equipe "${name}"${type==='pro'?' como Promoter':''}`);
+         if(!saved){
+           appData.team=appData.team.filter(x=>String(x.id)!==String(id));
+           renderAdminLists(true);
+           return alert('⚠️ O novo membro não foi confirmado no banco. Nenhuma alteração permanente foi mantida.');
+         }
+         const file=imgEl?.files?.[0];
+         if(file){
+           uploadToImgBB(file, async res => {
+             try {
+               member.img=res;
+               const imgSaved=await saveBinData(`Atualizou a foto do novo membro da equipe: ${name}`);
+               alert(imgSaved?'✅ Membro adicionado e foto salva na nuvem!':'⚠️ Membro adicionado, mas a foto não foi confirmada no banco.');
+             } catch(e){ alert('⚠️ Membro adicionado, mas houve erro ao salvar a foto: '+(e?.message||e)); }
+           });
+         } else {
+           alert(type==='pro'?'✅ Promoter adicionado com sucesso! Ele já foi incluído na aba 🎤 Promoter.':'✅ Membro da equipe adicionado com sucesso!');
+         }
+         if(nameEl)nameEl.value=''; if(roleEl)roleEl.value=''; if(igEl)igEl.value=''; if(descEl)descEl.value=''; if(typeEl)typeEl.value='dir'; if(imgEl)imgEl.value='';
+         renderAdminLists(true);
+       } catch(e){
+         appData.team=appData.team.filter(x=>String(x.id)!==String(id));
+         renderAdminLists(true);
+         alert('⚠️ Não foi possível adicionar o membro: '+(e?.message||e));
        }
     }
 
