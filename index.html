@@ -238,10 +238,7 @@
     .agenda-feature-badge{position:absolute;left:0;right:0;bottom:0;z-index:3;background:rgba(20,8,18,.94);color:#fff;border-top:1px solid rgba(255,255,255,.35);padding:6px 10px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.5px;text-transform:uppercase;text-align:center;box-shadow:0 -3px 10px rgba(0,0,0,.35);} .featured-agenda-badge{display:block;width:100%;box-sizing:border-box;background:linear-gradient(135deg,var(--c-red),var(--c-purple));color:#fff;border-top:1px solid rgba(255,255,255,.45);padding:8px 10px;text-align:center;font-family:var(--font-title);font-size:.78rem;letter-spacing:.5px;text-transform:uppercase;box-shadow:0 -2px 10px rgba(0,0,0,.25);}
     .home-social-promo{margin-top:15px;padding:14px 16px;border:1px solid rgba(255,235,59,.42);background:linear-gradient(135deg,rgba(255,235,59,.08),rgba(233,30,99,.08));border-radius:12px;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18)}.home-social-promo h3{margin:0 0 6px;font-family:var(--font-title);color:var(--c-yellow);font-size:1.18rem}.home-social-promo p{margin:0;color:#fff;font-weight:800;line-height:1.4}.brg-public-edit-btn{display:none;margin:10px auto 0;padding:7px 12px;border:1px solid var(--c-cyan);border-radius:8px;background:rgba(0,188,212,.12);color:#fff;font-weight:900;font-size:.72rem;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.brg-public-edit-btn:active{transform:scale(.97);background:var(--c-cyan);color:#000}
     .home-agenda-wrap{margin-top:15px;display:flex;justify-content:center}.home-agenda-card{width:min(100%,330px);aspect-ratio:1/1;position:relative;overflow:hidden;border-radius:12px;border:2px solid var(--c-red);cursor:pointer;background-size:cover;background-position:center;box-shadow:0 10px 26px rgba(0,0,0,.4)}.home-agenda-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.88),rgba(0,0,0,.05) 65%)}.home-agenda-content{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:14px;text-align:center}.home-agenda-content .tag{display:inline-block;background:var(--c-red);color:#fff;padding:4px 8px;border-radius:5px;font-family:var(--font-title);font-size:.72rem;margin-bottom:5px}.home-agenda-content .title{color:#fff;font-family:var(--font-title);font-size:1.25rem;text-transform:uppercase;line-height:1.1}
-    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:linear-gradient(to bottom,var(--c-purple),rgba(126,55,255,.35));z-index:6;box-shadow:0 0 7px rgba(126,55,255,.28)}
-#promoters .promoter-child{overflow:visible!important}
-#promoters .promoter-children{overflow:visible}
-#promoters .promoter-children::before{z-index:5;box-shadow:0 0 8px rgba(126,55,255,.22)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:auto}
+    .promoter-hierarchy{width:100%;display:flex;flex-direction:column;align-items:center}.promoter-root{width:min(100%,450px);position:relative;z-index:2;border:2px solid var(--c-yellow)!important;box-shadow:0 12px 30px rgba(255,235,59,.16)}.promoter-children{width:min(100%,900px);display:flex;justify-content:center;flex-wrap:wrap;gap:15px;margin-top:24px;position:relative;padding-top:18px}.promoter-children::before{content:'';position:absolute;top:0;left:12%;right:12%;height:2px;background:linear-gradient(90deg,transparent,var(--c-purple),transparent)}.promoter-child{flex:1 1 250px;max-width:400px;position:relative}.promoter-child::before{content:'';position:absolute;width:2px;height:18px;top:-18px;left:50%;background:var(--c-purple)}.dir-card.clickable-card{cursor:pointer}.dir-card.clickable-card .ig-button{pointer-events:auto}
     .dir-card { flex: 1 1 calc(33% - 15px); min-width: 250px; padding: 25px 15px; text-align: center; border-top: 2px solid transparent; transition: transform 0.3s ease; }
     .dir-card:hover { transform: translateY(-4px); }
     .dir-img { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-color, var(--c-cyan)); margin: 0 auto 15px; display: block; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
@@ -256,10 +253,6 @@
     .creator-signature { margin: 2px 0 10px; font-family: var(--font-title); font-size: 1.05rem; letter-spacing: 1.5px; color: rgba(255,255,255,.7); text-transform: uppercase; }
     .creator-signature strong { color: var(--c-yellow); text-shadow: 0 0 8px rgba(255,235,59,.22); }
 
-    .brg-public-gallery-admin{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:14px;padding:12px;border:1px dashed rgba(233,30,99,.55);border-radius:12px;background:rgba(233,30,99,.06);color:#fff}.brg-public-gallery-admin div{display:flex;flex-direction:column;gap:3px}.brg-public-gallery-admin span{color:#9aa7ad;font-size:.75rem}.brg-gallery-editor-preview{width:100%;aspect-ratio:16/9;border:1px dashed #555;border-radius:10px;overflow:hidden;margin:10px 0;background:#080a0d;display:flex;align-items:center;justify-content:center;color:#777}.brg-gallery-editor-preview img{width:100%;height:100%;object-fit:cover}.brg-photo-editor-box{max-height:92vh;overflow:auto}
-    .brg-section-lead{text-align:center;color:#9aa7ad;max-width:760px;margin:-6px auto 20px;line-height:1.55}
-    .partner-card{max-width:400px;position:relative;overflow:hidden}.partner-badge{font-family:var(--font-title);font-size:.72rem;letter-spacing:.7px;color:var(--c-purple);margin-bottom:9px}.brg-empty-public{width:100%;padding:28px;text-align:center;color:#8a969d}.brg-photo-featured{margin:10px auto 24px;max-width:900px}.brg-photo-carousel{position:relative;width:100%;aspect-ratio:16/9;min-height:250px;border-radius:18px;overflow:hidden;border:1px solid rgba(233,30,99,.45);box-shadow:0 15px 40px rgba(0,0,0,.38);background:#05070a}.brg-photo-slide{position:absolute;inset:0;margin:0;opacity:0;transform:scale(1.03);transition:opacity .7s ease,transform 4.5s ease}.brg-photo-slide.active{opacity:1;transform:scale(1)}.brg-photo-slide img{width:100%;height:100%;object-fit:cover;display:block}.brg-photo-slide:after{content:'';position:absolute;inset:45% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.9));pointer-events:none}.brg-photo-slide figcaption{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:18px;color:#fff;display:flex;flex-direction:column;gap:4px}.brg-photo-slide figcaption b{font-family:var(--font-title);font-size:1.2rem}.brg-photo-slide figcaption span{color:#ddd;font-size:.82rem}.brg-photo-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}.brg-gallery-card{background:rgba(10,12,16,.9);border:1px solid rgba(255,255,255,.1);border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.24)}.brg-gallery-card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}.brg-gallery-caption{padding:10px 11px;display:flex;flex-direction:column;gap:4px;color:#fff;font-size:.8rem}.brg-gallery-caption span{color:var(--c-pink);font-weight:800}.brg-gallery-admin-preview{width:100%;aspect-ratio:16/8;overflow:hidden;border-radius:10px;border:1px solid #333;margin-bottom:8px;background:#080a0d}.brg-gallery-admin-preview img{width:100%;height:100%;object-fit:cover;display:block}.brg-partner-modal{position:fixed;inset:0;z-index:1000050;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}.brg-partner-modal-box{position:relative;width:min(520px,100%);background:linear-gradient(145deg,#101319,#170913);border:1px solid var(--c-purple);border-radius:20px;padding:25px;text-align:center;box-shadow:0 20px 70px rgba(0,0,0,.6)}.brg-partner-modal-box img{width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid var(--c-purple);box-shadow:0 0 28px rgba(126,55,255,.3)}.brg-partner-modal-box h2{font-family:var(--font-title);color:#fff;font-size:2.1rem;margin:14px 0 4px}.brg-partner-modal-box h4{color:var(--c-purple);margin:0;text-transform:uppercase}.brg-partner-modal-box p{color:#ccc;line-height:1.6;margin-top:15px}.brg-modal-close{position:absolute;right:12px;top:12px;border:1px solid #555;background:#08090b;color:#fff;border-radius:50%;width:34px;height:34px;cursor:pointer}
-    #interaja .interaction-box{padding:26px 24px;margin-bottom:28px;min-height:210px}#interaja .feed-card{min-height:125px;padding:20px}#interaja .section-title{margin-bottom:20px}
     .contact-card { text-align: center; padding: 3rem 1rem; }
     .contact-link { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; text-decoration: none; color: #fff; font-size: 1.2rem; font-weight: bold; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); transition: 0.3s; }
     .contact-link:hover { background: rgba(255,255,255,0.1); border-color: var(--c-cyan); }
@@ -1146,6 +1139,10 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       </audio>
     </div>
 
+    <div class="promo-banner">
+      <span id="skull-btn" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span> SÓ ROCK, CERVEJA E CACHAÇA <span id="skull-btn2" style="cursor:pointer;" ondblclick="triggerEasterEgg()">💀</span>
+    </div>
+
     <header>
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCsoBmqPE2nWj7rFdVVvIETVDsDxHWzIqjU9d7JfjpTQ&s" alt="Logo" class="logo-img" />
     </header>
@@ -1160,8 +1157,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         <button class="tab-btn" onclick="switchTab('rankings')">🏆 Rankings</button>
         <button class="tab-btn" onclick="switchTab('diretoria')">👔 Diretoria</button>
         <button class="tab-btn" onclick="switchTab('promoters')">🎤 Promoter</button>
-        <button class="tab-btn" id="nav-parcerias" onclick="switchTab('parcerias')" style="display:none;">🤝 Parcerias</button>
-        <button class="tab-btn" id="nav-fotos-bar" onclick="switchTab('fotos-bar')" style="display:none;">📸 Fotos do Bar</button>
         <button class="tab-btn" onclick="switchTab('contato')">💬 Contato</button>
         <button class="tab-btn" onclick="switchTab('como-chegar')">📍 Como Chegar</button>
         <button class="tab-btn" onclick="switchTab('interaja')">🎸 Mural & Som</button>
@@ -1288,19 +1283,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       <section id="promoters" class="tab-pane">
         <h2 class="section-title">Promoters</h2>
         <div class="dir-grid" id="dynamic-pro-list"></div>
-      </section>
-
-      <section id="parcerias" class="tab-pane" style="display:none;">
-        <h2 class="section-title">🤝 Parcerias do Bar</h2>
-        <p class="brg-section-lead">Parceiros que fazem parte da cena e ajudam a fortalecer o Bargunçados.</p>
-        <div class="dir-grid" id="dynamic-partner-list"></div>
-      </section>
-
-      <section id="fotos-bar" class="tab-pane" style="display:none;">
-        <h2 class="section-title">📸 Fotos do Bar</h2>
-        <p class="brg-section-lead">Momentos, eventos e registros do Bargunçados.</p>
-        <div id="brg-photo-featured" class="brg-photo-featured"></div>
-        <div id="brg-photo-gallery" class="brg-photo-gallery"></div>
       </section>
 
       <section id="contato" class="tab-pane">
@@ -1678,9 +1660,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                   <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 4px;">➕ Adicionar membro da equipe</h5>
                   <p style="color:#8a969d;font-size:.8rem;margin:0;">Cadastre um novo integrante e escolha a categoria. Se selecionar <b>Promoter</b>, ele será exibido automaticamente na aba 🎤 Promoter.</p>
                 </div>
-                <button type="button" class="action-btn" onclick="addTeamMember()" style="background:var(--c-cyan);color:#000;white-space:nowrap;">➕ Adicionar membro</button>
+                ${canAdd?`<button type="button" class="action-btn" onclick="addTeamMember()" style="background:var(--c-cyan);color:#000;white-space:nowrap;">➕ Adicionar membro</button>`:`<span style="color:var(--c-red);font-size:.8rem;">⚠️ Permissão de adicionar desativada.</span>`}
               </div>
-              <div class="admin-card-row" style="margin-top:10px;">
+              ${canAdd?`<div class="admin-card-row" style="margin-top:10px;">
                 <input type="text" class="admin-input" id="new-team-name" placeholder="Nome do membro">
                 <select class="admin-input" id="new-team-type">
                   <option value="dir">👔 Diretoria</option>
@@ -1692,48 +1674,9 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
                 <input type="text" class="admin-input" id="new-team-ig" placeholder="Instagram (ex.: @usuario)">
                 <label class="file-upload-wrapper">📷 Foto do membro<input type="file" id="new-team-img" accept="image/*"></label>
               </div>
-              <textarea class="admin-textarea" id="new-team-desc" rows="3" placeholder="Descrição do membro..." style="margin-top:10px;"></textarea>
+              <textarea class="admin-textarea" id="new-team-desc" rows="3" placeholder="Descrição do membro..." style="margin-top:10px;"></textarea>`:''}
             </div>
             <div id="admin-team-list"></div>
-          </div>
-
-          <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-parcerias')">🤝 Parceiros do Bar</button>
-          <div id="adm-parcerias" class="admin-accordion-content" style="border-color: var(--c-purple);">
-            <div class="admin-card" style="border-color:var(--c-purple);margin-bottom:12px;">
-              <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 6px;">🤝 Gerenciar Parcerias</h5>
-              <p style="color:#8a969d;font-size:.8rem;margin:0 0 12px;">Cadastre parceiros com o mesmo padrão visual da Diretoria e dos Promoters. Você pode ocultar ou publicar a aba inteira.</p>
-              <label style="display:flex;align-items:center;gap:9px;color:#fff;font-weight:800;margin-bottom:12px;"><input type="checkbox" id="partners-visible" onchange="savePartnersVisibility(this.checked)"> Mostrar a aba Parcerias para o público</label>
-              <div class="admin-card-row">
-                <input type="text" class="admin-input" id="new-partner-name" placeholder="Nome do parceiro">
-                <input type="text" class="admin-input" id="new-partner-role" placeholder="Categoria / parceria">
-              </div>
-              <div class="admin-card-row" style="margin-top:10px;">
-                <input type="text" class="admin-input" id="new-partner-ig" placeholder="Instagram (ex.: @parceiro)">
-                <label class="file-upload-wrapper">📷 Foto / logo<input type="file" id="new-partner-img" accept="image/*"></label>
-              </div>
-              <textarea class="admin-textarea" id="new-partner-desc" rows="3" placeholder="Descrição do parceiro..." style="margin-top:10px;"></textarea>
-              <button type="button" class="action-btn" onclick="addBarPartner()" style="margin-top:10px;background:var(--c-purple);color:#fff;">➕ Adicionar parceiro</button>
-            </div>
-            <div id="admin-partners-list"></div>
-          </div>
-
-          <button class="admin-accordion-btn" style="border-color: var(--c-pink);" onclick="toggleAdminSection('adm-fotos-bar')">📸 Fotos do Bar</button>
-          <div id="adm-fotos-bar" class="admin-accordion-content" style="border-color: var(--c-pink);">
-            <div class="admin-card" style="border-color:var(--c-pink);margin-bottom:12px;">
-              <h5 style="color:#fff;font-family:var(--font-title);font-size:1.15rem;margin:0 0 6px;">📸 Gerenciar Galeria do Bar</h5>
-              <p style="color:#8a969d;font-size:.8rem;margin:0 0 12px;">A primeira foto marcada como destaque entra no carrossel automático. As demais aparecem na galeria abaixo.</p>
-              <label style="display:flex;align-items:center;gap:9px;color:#fff;font-weight:800;margin-bottom:12px;"><input type="checkbox" id="bar-photos-visible" onchange="saveBarPhotosVisibility(this.checked)"> Mostrar a aba Fotos do Bar para o público</label>
-              <div class="admin-card-row">
-                <input type="text" class="admin-input" id="new-bar-photo-desc" placeholder="Descrição / legenda da foto">
-                <input type="text" class="admin-input" id="new-bar-photo-ig" placeholder="Instagram marcado (opcional)">
-              </div>
-              <div class="admin-card-row" style="margin-top:10px;">
-                <label class="file-upload-wrapper">📷 Selecionar foto<input type="file" id="new-bar-photo-img" accept="image/*"></label>
-                <label style="display:flex;align-items:center;gap:8px;color:#fff;font-size:.82rem;padding:10px;border:1px solid #444;border-radius:8px;"><input type="checkbox" id="new-bar-photo-featured"> ⭐ Destaque no carrossel</label>
-                <button type="button" class="action-btn" onclick="addBarPhoto()" style="background:var(--c-pink);color:#fff;">➕ Adicionar foto</button>
-              </div>
-            </div>
-            <div id="admin-bar-photos-list"></div>
           </div>
 
           <button class="admin-accordion-btn" style="border-color: var(--c-purple);" onclick="toggleAdminSection('adm-arcade')">🕹️ Gerenciar Arcade Top 10</button>
@@ -2244,8 +2187,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         normalizeList(appData.cachaceiros);
         normalizeStoredImage(appData.flyer);
         if(Array.isArray(appData.customTabs)) normalizeList(appData.customTabs);
-        if(Array.isArray(appData.partners)) normalizeList(appData.partners);
-        if(Array.isArray(appData.barPhotos)) normalizeList(appData.barPhotos);
       }catch(e){ console.warn('[Bargunçados] normalização das imagens hospedadas:', e); }
     }
 
@@ -2333,10 +2274,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       cachaceiros: defaultCachaceiros,
       flyer: defaultFlyer,
       customTabs: [],
-      partners: [],
-      partnersConfig: { visible: true },
-      barPhotos: [],
-      barPhotosConfig: { visible: true },
       userSongs: [],
       pendingSongs: [],
       userMessages: [],
@@ -2859,15 +2796,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
           // remota não mudou, NÃO reconstruímos nenhum card/imagem. Isso elimina
           // o efeito de piscar causado por re-renderizações desnecessárias.
           if(incomingRevision && Number(remoteRevision || 0) > incomingRevision) { console.warn('[Bargunçados] Bloqueado estado remoto mais antigo; mantendo a versão mais nova já carregada.'); return; }
-          // A mesma revisão remota só pode ser ignorada quando o estado local já
-          // possui conteúdo essencial. Isso evita que um snapshot local vazio/incompleto
-          // fique preso para sempre na tela mesmo com a revisão correta no Supabase.
-          // Em especial, o cardápio nunca pode permanecer vazio se o servidor possui itens.
-          const sameRevision = !force && incomingRevision && Number(remoteRevision || 0) === incomingRevision;
-          const localMenuCount = Array.isArray(appData?.menu) ? appData.menu.length : 0;
-          const localHasPartnersConfig = appData?.partnersConfig && typeof appData.partnersConfig === 'object';
-          const localHasPhotosConfig = appData?.barPhotosConfig && typeof appData.barPhotosConfig === 'object';
-          if(sameRevision && localMenuCount > 0 && localHasPartnersConfig && localHasPhotosConfig) return;
+          if(!force && incomingRevision && Number(remoteRevision || 0) === incomingRevision) return;
           const localBeforeRemote = appData;
           try {
             const incoming = cloneForSync(json.record) || {};
@@ -2985,7 +2914,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
         const j=await res.json().catch(()=>({}));
         if(!res.ok)throw new Error(j?.message||j?.error||('HTTP '+res.status));
         if(j.record&&typeof j.record==='object'){
-          const incoming=cloneForSync(j.record)||{};remoteRevision=Number(j.new_revision||j.record?.__sync?.revision||0);delete incoming.__sync;remoteSnapshot=cloneForSync(incoming)||{};appData={...appData,...incoming};brgEnsurePartnersGalleryData();renderApp();updateTrafficUI();
+          const incoming=cloneForSync(j.record)||{};remoteRevision=Number(j.new_revision||j.record?.__sync?.revision||0);delete incoming.__sync;remoteSnapshot=cloneForSync(incoming)||{};appData={...appData,...incoming};renderApp();updateTrafficUI();
         }
         alert('✅ Revisão #'+revision+' restaurada como nova revisão #'+Number(j.new_revision||0)+'.\n\nO histórico anterior foi preservado.');
         document.getElementById('brg-site-backup-modal')?.remove();
@@ -3762,7 +3691,6 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
       cAgenda.forEach(x => normalizeStoredImage(x));
       normalizeStoredImage(cFlyer);
       ensureLegacyDrinkLines();
-      renderPublicPartnersAndGallery();
       ensureMenuCategoryLabels();
       const categoryLabels = appData.menuCategoryLabels;
 
@@ -7184,85 +7112,6 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     root.insertAdjacentHTML('beforeend',`<section class="brg-admin-category"><header><h3>${esc(title)}</h3><span>${items.length} ${items.length===1?'item':'itens'}</span></header><div>${body}</div></section>`);
   }
 
-  function brgEnsurePartnersGalleryData(){
-    if(!Array.isArray(appData.partners)) appData.partners=[];
-    if(!appData.partnersConfig||typeof appData.partnersConfig!=='object') appData.partnersConfig={visible:true};
-    appData.partnersConfig.visible=appData.partnersConfig.visible===true;
-    if(!Array.isArray(appData.barPhotos)) appData.barPhotos=[];
-    if(!appData.barPhotosConfig||typeof appData.barPhotosConfig!=='object') appData.barPhotosConfig={visible:true};
-    appData.barPhotosConfig.visible=appData.barPhotosConfig.visible===true;
-    appData.partners.forEach(x=>{if(x&&typeof x==='object')normalizeStoredImage(x)});
-    appData.barPhotos.forEach(x=>{if(x&&typeof x==='object')normalizeStoredImage(x)});
-    return appData;
-  }
-  function brgInstagramHref(v){const s=String(v||'').trim();if(!s)return '';return getInstagramProfileUrl(s)||('https://instagram.com/'+encodeURIComponent(s.replace(/^@/,'')))}
-  function renderPublicPartnersAndGallery(){
-    brgEnsurePartnersGalleryData();
-    const pc=appData.partnersConfig.visible===true, gc=appData.barPhotosConfig.visible===true;
-    const navP=document.getElementById('nav-parcerias'),navG=document.getElementById('nav-fotos-bar'),secP=document.getElementById('parcerias'),secG=document.getElementById('fotos-bar');
-    if(navP)navP.style.display=pc?'':'none'; if(secP)secP.style.display=pc?'':'none';
-    if(navG)navG.style.display=gc?'':'none'; if(secG)secG.style.display=gc?'':'none';
-    const pRoot=document.getElementById('dynamic-partner-list');
-    if(pRoot){
-      const list=Array.isArray(appData.partners)?appData.partners:[];
-      pRoot.innerHTML=list.length?list.map((x,i)=>{const c=i%3===0?'var(--c-purple)':i%3===1?'var(--c-cyan)':'var(--c-pink)';const href=brgInstagramHref(x.ig);return `<div class="glass-panel dir-card clickable-card partner-card" style="--card-color:${c};border-top-color:${c}!important;" onclick="openPartnerModal(${escapeJSString(x.id)})"><div class="partner-badge">🤝 PARCEIRO DO BAR</div><img src="${safeImageUrl(x.img)}" class="dir-img" alt="${escapeHTML(x.name||'Parceiro')}" style="border-color:${c};" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${escapeHTML(x.name||'Parceiro')}</h3><p class="dir-role" style="color:${c};">${escapeHTML(x.role||'PARCERIA')}</p>${x.ig?`<a class="ig-button" href="${href||'#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="border-color:${c};color:${c};text-decoration:none;">📸 <span>${escapeHTML(x.ig)}</span></a>`:''}<p class="dir-desc">${escapeHTML(x.desc||'')}</p></div>`;}).join(''):'<div class="glass-panel brg-empty-public">Nenhuma parceria publicada no momento.</div>';
-    }
-    const gRoot=document.getElementById('brg-photo-gallery'),fRoot=document.getElementById('brg-photo-featured');
-    if(gRoot&&fRoot){
-      const photos=Array.isArray(appData.barPhotos)?appData.barPhotos.filter(x=>x&&x.img):[];
-      const featured=photos.filter(x=>x.featured);
-      const slides=featured.length?featured:photos.slice(0,3);
-      const publicPhotoAdmin=isAuthenticatedAdmin()?`<div class="brg-public-gallery-admin"><div><b>🛠️ MODO ADM</b><span>Você pode adicionar, editar, substituir ou excluir fotos diretamente desta aba.</span></div><button type="button" class="action-btn" onclick="openBarPhotoEditor()" style="background:var(--c-pink);color:#fff;">📸 Adicionar / Gerenciar Fotos</button></div>`:'';
-      fRoot.innerHTML=publicPhotoAdmin+(slides.length?`<div class="brg-photo-carousel">${slides.map((x,i)=>`<figure class="brg-photo-slide ${i===0?'active':''}"><img src="${safeImageUrl(x.img)}" alt="${escapeHTML(x.desc||'Foto do Bargunçados')}" onerror="this.style.display='none'"><figcaption><b>${escapeHTML(x.desc||'Bargunçados Rock Bar')}</b>${x.ig?`<span>📸 ${escapeHTML(x.ig)}</span>`:''}</figcaption></figure>`).join('')}</div>`:'<div class="glass-panel brg-empty-public">Ainda não há fotos publicadas.</div>');
-      gRoot.innerHTML=photos.length?photos.map(x=>`<article class="brg-gallery-card"><img src="${safeImageUrl(x.img)}" loading="lazy" alt="${escapeHTML(x.desc||'Foto do Bargunçados')}" onerror="this.style.display='none'"><div class="brg-gallery-caption"><strong>${escapeHTML(x.desc||'')}</strong>${x.ig?`<span>📸 ${escapeHTML(x.ig)}</span>`:''}${isAuthenticatedAdmin()?`<button type="button" class="action-btn" onclick="openBarPhotoEditor('${escapeJSString(x.id)}')" style="margin-top:6px;background:rgba(233,30,99,.16);border:1px solid var(--c-pink);color:#fff;">✏️ Editar esta foto</button>`:''}</div></article>`).join(''):'<div class="brg-empty-public">Nenhuma foto abaixo do destaque ainda.</div>';
-      clearInterval(window.__brgPhotoCarouselTimer);
-      if(slides.length>1){let idx=0;window.__brgPhotoCarouselTimer=setInterval(()=>{const els=document.querySelectorAll('#brg-photo-featured .brg-photo-slide');if(!els.length)return;els.forEach(e=>e.classList.remove('active'));idx=(idx+1)%els.length;els[idx].classList.add('active');},4500);}
-    }
-  }
-  async function savePartnersVisibility(v){if(!isCurrentMaster() && (appData.permissions||{}).canTeam===false)return alert('Acesso Negado: permissão de equipe desativada pelo Master!');brgEnsurePartnersGalleryData();const old=appData.partnersConfig.visible;appData.partnersConfig.visible=!!v;try{const ok=await saveBinData('Alterou visibilidade da aba Parcerias: '+(v?'visível':'oculta'));if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderPublicPartnersAndGallery();}catch(e){appData.partnersConfig.visible=old;renderPublicPartnersAndGallery();alert('❌ Não foi possível salvar a visibilidade das parcerias.\n\n'+(e?.message||e));}}
-  async function saveBarPhotosVisibility(v){if(!isCurrentMaster() && (appData.permissions||{}).canTeam===false)return alert('Acesso Negado: permissão de equipe desativada pelo Master!');brgEnsurePartnersGalleryData();const old=appData.barPhotosConfig.visible;appData.barPhotosConfig.visible=!!v;try{const ok=await saveBinData('Alterou visibilidade da aba Fotos do Bar: '+(v?'visível':'oculta'));if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderPublicPartnersAndGallery();}catch(e){appData.barPhotosConfig.visible=old;renderPublicPartnersAndGallery();alert('❌ Não foi possível salvar a visibilidade da galeria.\n\n'+(e?.message||e));}}
-  async function addBarPartner(){if(!isCurrentMaster() && (appData.permissions||{}).canAdd===false)return alert('Acesso Negado: permissão para adicionar desativada pelo Master!');const n=document.getElementById('new-partner-name'),r=document.getElementById('new-partner-role'),ig=document.getElementById('new-partner-ig'),d=document.getElementById('new-partner-desc'),f=document.getElementById('new-partner-img');if(!n||!r||!ig||!d||!f)return alert('⚠️ Formulário de parceria não carregado.');const name=n.value.trim();if(!name)return alert('Informe o nome do parceiro.');brgEnsurePartnersGalleryData();const id='partner_'+Date.now();const item={id,name,role:r.value.trim(),ig:ig.value.trim(),desc:d.value.trim(),img:'https://ui-avatars.com/api/?name='+encodeURIComponent(name)+'&background=7e37ff&color=fff'};appData.partners.unshift(item);try{if(f.files?.[0]){await new Promise((resolve,reject)=>uploadToImgBB(f.files[0],res=>{if(res){item.img=res;resolve(res)}else reject(new Error('Falha ao hospedar a foto.'))}));}const ok=await saveBinData('Adicionou parceiro do bar: '+name);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');[n,r,ig,d].forEach(e=>e.value='');f.value='';renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Parceiro adicionado e salvo na nuvem.');}catch(e){appData.partners=appData.partners.filter(x=>String(x.id)!==String(id));renderAdminLists(true);alert('❌ Não foi possível adicionar o parceiro.\n\n'+(e?.message||e));}}
-  async function saveBarPartner(id){if(!isCurrentMaster() && (appData.permissions||{}).canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master!');const x=appData.partners.find(v=>String(v.id)===String(id));if(!x)return;const get=k=>document.getElementById(k+id);const name=get('bp-name-')?.value.trim();if(!name)return alert('Informe o nome do parceiro.');x.name=name;x.role=get('bp-role-')?.value.trim()||'';x.ig=get('bp-ig-')?.value.trim()||'';x.desc=get('bp-desc-')?.value.trim()||'';try{const ok=await saveBinData('Editou parceiro do bar: '+x.name);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Parceiro salvo.');}catch(e){alert('❌ Não foi possível salvar o parceiro.\n\n'+(e?.message||e));}}
-  async function replaceBarPartnerImg(id,input){if(!isCurrentMaster() && (appData.permissions||{}).canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master!');const x=appData.partners.find(v=>String(v.id)===String(id));if(!x||!input?.files?.[0])return;uploadToImgBB(input.files[0],async res=>{try{if(!res)throw new Error('Upload sem URL válida.');x.img=res;const ok=await saveBinData('Substituiu foto do parceiro: '+x.name);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Foto do parceiro substituída e salva.');}catch(e){alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}})}
-  async function deleteBarPartner(id){if(!isCurrentMaster() && (appData.permissions||{}).canDel===false)return alert('Acesso Negado: exclusão desativada pelo Master!');const x=appData.partners.find(v=>String(v.id)===String(id));if(!x)return;if(!confirm('Excluir o parceiro '+x.name+'?'))return;const old=[...appData.partners];appData.partners=appData.partners.filter(v=>String(v.id)!==String(id));try{const ok=await saveBinData('Excluiu parceiro do bar: '+x.name);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();}catch(e){appData.partners=old;renderAdminLists(true);alert('❌ Não foi possível excluir o parceiro.\n\n'+(e?.message||e));}}
-  async function addBarPhoto(){if(!isCurrentMaster() && (appData.permissions||{}).canAdd===false)return alert('Acesso Negado: permissão para adicionar desativada pelo Master!');const f=document.getElementById('new-bar-photo-img'),d=document.getElementById('new-bar-photo-desc'),ig=document.getElementById('new-bar-photo-ig'),feat=document.getElementById('new-bar-photo-featured');if(!f||!d||!ig||!feat)return alert('⚠️ Formulário da galeria não carregado.');if(!f.files?.[0])return alert('Selecione uma foto.');const item={id:'barphoto_'+Date.now(),img:'',desc:d.value.trim(),ig:ig.value.trim(),featured:!!feat.checked,createdAt:Date.now()};try{await new Promise((resolve,reject)=>uploadToImgBB(f.files[0],res=>{if(res){item.img=res;resolve(res)}else reject(new Error('Falha ao hospedar a foto.'))}));brgEnsurePartnersGalleryData();if(item.featured)appData.barPhotos.forEach(x=>x.featured=false);appData.barPhotos.unshift(item);const ok=await saveBinData('Adicionou foto à galeria do Bar: '+(item.desc||item.id));if(ok===false)throw new Error('O Supabase não confirmou a gravação.');f.value='';d.value='';ig.value='';feat.checked=false;renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Foto adicionada à galeria e salva.');}catch(e){appData.barPhotos=appData.barPhotos.filter(x=>String(x.id)!==String(item.id));alert('❌ Não foi possível adicionar a foto.\n\n'+(e?.message||e));}}
-  async function saveBarPhoto(id){if(!isCurrentMaster() && (appData.permissions||{}).canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master!');const x=appData.barPhotos.find(v=>String(v.id)===String(id));if(!x)return;const d=document.getElementById('bph-desc-'+id),ig=document.getElementById('bph-ig-'+id),feat=document.getElementById('bph-featured-'+id);if(d)x.desc=d.value.trim();if(ig)x.ig=ig.value.trim();if(feat&&feat.checked){appData.barPhotos.forEach(v=>v.featured=false);x.featured=true;}else if(feat)x.featured=false;try{const ok=await saveBinData('Editou foto da galeria do Bar: '+x.id);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Foto/descrição salva.');}catch(e){alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}}
-  async function replaceBarPhoto(id,input){if(!isCurrentMaster() && (appData.permissions||{}).canEdit===false)return alert('Acesso Negado: permissão de edição desativada pelo Master!');const x=appData.barPhotos.find(v=>String(v.id)===String(id));if(!x||!input?.files?.[0])return;uploadToImgBB(input.files[0],async res=>{try{if(!res)throw new Error('Upload sem URL válida.');x.img=res;const ok=await saveBinData('Substituiu foto da galeria do Bar: '+x.id);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Foto substituída e salva.');}catch(e){alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}})}
-  async function deleteBarPhoto(id){if(!isCurrentMaster() && (appData.permissions||{}).canDel===false)return alert('Acesso Negado: exclusão desativada pelo Master!');const x=appData.barPhotos.find(v=>String(v.id)===String(id));if(!x)return;if(!confirm('Excluir esta foto da galeria?'))return;const old=[...appData.barPhotos];appData.barPhotos=appData.barPhotos.filter(v=>String(v.id)!==String(id));try{const ok=await saveBinData('Excluiu foto da galeria do Bar: '+x.id);if(ok===false)throw new Error('O Supabase não confirmou a gravação.');renderAdminLists(true);renderPublicPartnersAndGallery();}catch(e){appData.barPhotos=old;renderAdminLists(true);alert('❌ Não foi possível excluir a foto.\n\n'+(e?.message||e));}}
-  function openBarPhotoEditor(id){
-    if(!isAuthenticatedAdmin())return alert('Acesso Negado: entre no painel ADM para editar fotos.');
-    brgEnsurePartnersGalleryData();
-    const existing=id?(appData.barPhotos||[]).find(v=>String(v.id)===String(id)):null;
-    const modal=document.createElement('div');modal.className='brg-partner-modal';
-    modal.innerHTML=`<div class="brg-partner-modal-box brg-photo-editor-box"><button type="button" class="brg-modal-close" onclick="this.closest('.brg-partner-modal').remove()">✕</button><h2 style="font-size:1.7rem">${existing?'✏️ Editar Foto':'📸 Nova Foto'}</h2><div class="brg-gallery-editor-preview">${existing?`<img src="${safeImageUrl(existing.img)}" alt="">`:'<span>Selecione uma foto abaixo</span>'}</div><input type="text" id="brg-photo-editor-desc" class="interaction-input" value="${escapeHTML(existing?.desc||'')}" placeholder="Descrição / legenda"><input type="text" id="brg-photo-editor-ig" class="interaction-input" value="${escapeHTML(existing?.ig||'')}" placeholder="Instagram marcado (opcional)"><label style="display:flex;align-items:center;gap:8px;color:#fff;text-align:left;margin:8px 0"><input type="checkbox" id="brg-photo-editor-featured" ${existing?.featured?'checked':''}> ⭐ Usar no carrossel de destaque</label><label class="file-upload-wrapper" style="display:block;margin-top:8px">📷 ${existing?'Substituir foto':'Selecionar foto'}<input type="file" id="brg-photo-editor-file" accept="image/*"></label><div class="brg-admin-buttons" style="margin-top:12px"><button type="button" class="action-btn" onclick="saveBarPhotoFromPublicEditor('${existing?escapeJSString(existing.id):''}')" style="background:var(--c-pink);color:#fff">💾 Salvar Foto</button>${existing?`<button type="button" class="action-btn del-btn" onclick="deleteBarPhotoFromPublicEditor('${escapeJSString(existing.id)}')">🗑️ Excluir</button>`:''}</div></div>`;document.body.appendChild(modal);
-  }
-  async function saveBarPhotoFromPublicEditor(id){
-    if(!isAuthenticatedAdmin())return;
-    const d=document.getElementById('brg-photo-editor-desc'),ig=document.getElementById('brg-photo-editor-ig'),feat=document.getElementById('brg-photo-editor-featured'),file=document.getElementById('brg-photo-editor-file');
-    if(!d||!ig||!feat||!file)return;
-    let x=id?(appData.barPhotos||[]).find(v=>String(v.id)===String(id)):null;
-    const isNew=!x;
-    if(isNew)x={id:'barphoto_'+Date.now(),img:'',desc:'',ig:'',featured:false,createdAt:Date.now()};
-    const old=JSON.parse(JSON.stringify(x));
-    try{
-      if(file.files?.[0])await new Promise((resolve,reject)=>uploadToImgBB(file.files[0],res=>res?resolve(x.img=res):reject(new Error('Falha ao hospedar a foto.'))));
-      if(!x.img)return alert('Selecione uma foto.');
-      x.desc=d.value.trim();x.ig=ig.value.trim();x.featured=feat.checked;
-      if(x.featured)(appData.barPhotos||[]).forEach(v=>v.featured=false);
-      if(isNew)appData.barPhotos.unshift(x);
-      const ok=await saveBinData(isNew?'Adicionou foto pela aba Fotos do Bar.':'Editou foto pela aba Fotos do Bar.');if(ok===false)throw new Error('O Supabase não confirmou a gravação.');
-      document.querySelector('.brg-partner-modal')?.remove();renderAdminLists(true);renderPublicPartnersAndGallery();alert(isNew?'✅ Foto adicionada e salva.':'✅ Foto atualizada e salva.');
-    }catch(e){if(isNew)appData.barPhotos=appData.barPhotos.filter(v=>String(v.id)!==String(x.id));else Object.assign(x,old);alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}
-  }
-  async function deleteBarPhotoFromPublicEditor(id){if(!isAuthenticatedAdmin())return;if(!confirm('Excluir esta foto da galeria?'))return;const x=appData.barPhotos.find(v=>String(v.id)===String(id));if(!x)return;const old=[...appData.barPhotos];appData.barPhotos=appData.barPhotos.filter(v=>String(v.id)!==String(id));try{const ok=await saveBinData('Excluiu foto pela aba Fotos do Bar.');if(ok===false)throw new Error('O Supabase não confirmou a gravação.');document.querySelector('.brg-partner-modal')?.remove();renderAdminLists(true);renderPublicPartnersAndGallery();alert('✅ Foto excluída.');}catch(e){appData.barPhotos=old;alert('❌ Não foi possível excluir a foto.\n\n'+(e?.message||e));}}
-  function renderPartnersGalleryAdmin(){
-    brgEnsurePartnersGalleryData();
-    const pv=document.getElementById('partners-visible'),gv=document.getElementById('bar-photos-visible');if(pv)pv.checked=appData.partnersConfig.visible===true;if(gv)gv.checked=appData.barPhotosConfig.visible===true;
-    const pr=document.getElementById('admin-partners-list');if(pr){const list=appData.partners||[];pr.innerHTML=list.length?list.map(x=>`<article class="brg-admin-entity"><div class="brg-admin-entity-head"><img src="${esc(imageFor(x))}" onerror="window.brgAdminImageFallback(this)"><div><strong>${esc(x.name||'Parceiro')}</strong><small>🤝 ${esc(x.role||'Parceria')}</small></div></div><input id="bp-name-${esc(x.id)}" class="admin-input" value="${esc(x.name||'')}" placeholder="Nome"><input id="bp-role-${esc(x.id)}" class="admin-input" value="${esc(x.role||'')}" placeholder="Categoria / parceria"><input id="bp-ig-${esc(x.id)}" class="admin-input" value="${esc(x.ig||'')}" placeholder="Instagram"><textarea id="bp-desc-${esc(x.id)}" class="admin-textarea">${esc(x.desc||'')}</textarea><div class="brg-admin-buttons"><label class="file-upload-wrapper">📷 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPartnerImg('${esc(x.id)}',this)"></label><button class="action-btn" onclick="saveBarPartner('${esc(x.id)}')">💾 Salvar</button><button class="action-btn del-btn" onclick="deleteBarPartner('${esc(x.id)}')">🗑️ Excluir</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum parceiro cadastrado.</div>'}
-    const gr=document.getElementById('admin-bar-photos-list');if(gr){const list=appData.barPhotos||[];gr.innerHTML=list.length?list.map(x=>`<article class="brg-admin-entity"><div class="brg-gallery-admin-preview"><img src="${esc(imageFor(x))}" onerror="this.style.opacity='.2'"></div><input id="bph-desc-${esc(x.id)}" class="admin-input" value="${esc(x.desc||'')}" placeholder="Descrição / legenda"><input id="bph-ig-${esc(x.id)}" class="admin-input" value="${esc(x.ig||'')}" placeholder="Instagram marcado"><label style="display:flex;align-items:center;gap:8px;color:#fff;font-size:.8rem;margin:8px 0"><input type="checkbox" id="bph-featured-${esc(x.id)}" ${x.featured?'checked':''}> ⭐ Usar no carrossel de destaque</label><div class="brg-admin-buttons"><label class="file-upload-wrapper">📷 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(x.id)}',this)"></label><button class="action-btn" onclick="saveBarPhoto('${esc(x.id)}')">💾 Salvar</button><button class="action-btn del-btn" onclick="deleteBarPhoto('${esc(x.id)}')">🗑️ Excluir</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhuma foto cadastrada.</div>'}
-  }
-  function openPartnerModal(id){const x=(appData.partners||[]).find(v=>String(v.id)===String(id));if(!x)return;const href=brgInstagramHref(x.ig);const modal=document.createElement('div');modal.className='brg-partner-modal';modal.innerHTML=`<div class="brg-partner-modal-box"><button type="button" class="brg-modal-close" onclick="this.closest('.brg-partner-modal').remove()">✕</button><img src="${safeImageUrl(x.img)}" alt="${escapeHTML(x.name||'Parceiro')}"><h2>${escapeHTML(x.name||'Parceiro')}</h2><h4>${escapeHTML(x.role||'PARCERIA')}</h4>${x.ig?`<a class="ig-button" href="${href}" target="_blank" rel="noopener noreferrer">📸 ${escapeHTML(x.ig)}</a>`:''}<p>${escapeHTML(x.desc||'')}</p></div>`;document.body.appendChild(modal);}
-
   function renderEntities(){
     const a=ensureConfig();
     const teamRoot=document.getElementById('admin-team-list');
@@ -7292,7 +7141,6 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
         </article>`;
       }).join(''):'<div class="brg-admin-empty">Nenhum integrante encontrado.</div>'
     }
-    renderPartnersGalleryAdmin();
     const arcRoot=document.getElementById('admin-arcade-list'); if(arcRoot){const list=Array.isArray(a.arcade)?a.arcade:[];arcRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🕹️ #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="arc-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="arc-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="arc-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="arc-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="arc-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><button class="action-btn" onclick="window.saveArcadeData?.(${numId(i.id)})">💾 Salvar</button></article>`).join(''):'<div class="brg-admin-empty">Nenhum jogador cadastrado.</div>'}
     const caRoot=document.getElementById('admin-cachaceiros-list'); if(caRoot){const list=Array.isArray(a.cachaceiros)?a.cachaceiros:[];caRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🍻 #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="ca-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="ca-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="ca-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="ca-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="ca-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><div class="brg-admin-buttons"><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateCachaceiroImg?.(${numId(i.id)},this)"></label><button class="action-btn" onclick="window.saveCachaceiroData?.(${numId(i.id)})">💾 Salvar</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum cachaceiro cadastrado.</div>'}
   }
