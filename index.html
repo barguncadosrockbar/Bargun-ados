@@ -7614,13 +7614,30 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       photo.classList.add(dir>=0?'brg-viewer-change-right':'brg-viewer-change-left');
       const safeSrc=img(x.img);
       const rawSrc=String(x.img||'').trim();
+      const candidates=[safeSrc,rawSrc].filter((u,i,a)=>u&&a.indexOf(u)===i);
       photo.style.visibility='hidden';
-      photo.onload=()=>{photo.style.visibility='visible';};
-      photo.onerror=()=>{
-        if(rawSrc && photo.src!==rawSrc){ photo.src=rawSrc; return; }
-        photo.style.visibility='visible';
+      photo.style.display='block';
+      photo.removeAttribute('src');
+      let loadToken=Date.now()+Math.random();
+      photo.dataset.loadToken=String(loadToken);
+      const showCandidate=(pos)=>{
+        if(String(photo.dataset.loadToken)!==String(loadToken))return;
+        const src=candidates[pos];
+        if(!src){
+          photo.style.visibility='visible';
+          photo.alt=x.title||title||'Foto';
+          return;
+        }
+        const probe=new Image();
+        probe.onload=()=>{
+          if(String(photo.dataset.loadToken)!==String(loadToken))return;
+          photo.src=probe.currentSrc||probe.src||src;
+          photo.style.visibility='visible';
+        };
+        probe.onerror=()=>showCandidate(pos+1);
+        probe.src=src;
       };
-      photo.src=safeSrc || rawSrc;
+      showCandidate(0);
       photo.alt=x.title||title||'Foto';
       caption.innerHTML=`${x.title?`<strong>${esc(x.title)}</strong>`:''}${x.desc?`<span>${esc(x.desc)}</span>`:''}`;
       counter.textContent=(index+1)+' / '+items.length;
@@ -7770,7 +7787,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     #brg-photo-viewer-modal .brg-viewer-backdrop{z-index:0!important}
     #brg-photo-viewer-modal .brg-photo-viewer{z-index:1!important;isolation:isolate;background:transparent!important}
     #brg-photo-viewer-modal .brg-viewer-stage{position:relative!important;z-index:2!important;background:transparent!important;overflow:visible!important}
-    #brg-photo-viewer-modal .brg-viewer-img{position:relative!important;z-index:4!important;display:block!important;visibility:visible;opacity:1!important;background:transparent!important}
+    #brg-photo-viewer-modal .brg-viewer-img{position:relative!important;z-index:4!important;display:block!important;visibility:visible!important;opacity:1!important;background:transparent!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
     #brg-photo-viewer-modal .brg-viewer-arrow{z-index:5!important}
     /* V3 — editor de receita no celular: informação em largura total, controles abaixo. */
     #site-drink-recipe-modal .site-recipe-row > div{min-width:0!important;width:100%!important;box-sizing:border-box!important;}
