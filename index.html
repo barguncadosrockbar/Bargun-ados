@@ -5846,8 +5846,10 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const igEl=document.getElementById('new-team-ig');
        const descEl=document.getElementById('new-team-desc');
        const imgEl=document.getElementById('new-team-img');
-       const name=String(nameEl?.value||'').trim();
-       const type=typeEl?.value==='pro'?'pro':'dir';
+       if(!nameEl || !typeEl || !roleEl || !igEl || !descEl || !imgEl) return alert('⚠️ O formulário de equipe não foi carregado corretamente. Feche e abra novamente a seção Equipe.');
+       if(!isMaster && perms.canTeam === false) return alert("Acesso Negado: permissão de equipe desativada pelo Master!");
+       const name=String(nameEl.value||'').trim();
+       const type=typeEl.value==='pro'?'pro':'dir';
        const role=String(roleEl?.value||'').trim();
        const ig=String(igEl?.value||'').trim();
        const desc=String(descEl?.value||'').trim();
@@ -5890,14 +5892,24 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
        const isMaster = (getPersistentAdminFlag('brg_adm_is_master') === 'true');
        const perms = appData.permissions || {};
        if(!isMaster && perms.canTeam === false) return alert("Acesso Negado: permissão de equipe desativada pelo Master!");
-       const t = appData.team.find(i => String(i.id) === String(id));
-       if(t) {
-          t.name = document.getElementById(`tname-${id}`).value;
-          t.role = document.getElementById(`trole-${id}`).value;
-          t.ig = document.getElementById(`tig-${id}`).value;
-          t.desc = document.getElementById(`tdesc-${id}`).value;
-          await saveBinData("Modificou dados da equipe: " + t.name);
-          alert('Membro salvo!');
+       const t = Array.isArray(appData.team) ? appData.team.find(i => String(i.id) === String(id)) : null;
+       if(!t) return alert('⚠️ Membro da equipe não encontrado. Recarregue a equipe e tente novamente.');
+       const nameEl=document.getElementById(`tname-${id}`), roleEl=document.getElementById(`trole-${id}`), igEl=document.getElementById(`tig-${id}`), descEl=document.getElementById(`tdesc-${id}`), typeEl=document.getElementById(`ttype-${id}`);
+       if(!nameEl || !roleEl || !igEl || !descEl) return alert('⚠️ Não foi possível localizar todos os campos deste membro. Abra novamente a seção Equipe e tente salvar.');
+       const name=String(nameEl.value||'').trim();
+       if(!name) return alert('Informe o nome do membro antes de salvar.');
+       t.name=name;
+       t.type=typeEl?.value==='pro'?'pro':'dir';
+       t.role=String(roleEl.value||'').trim();
+       t.ig=String(igEl.value||'').trim();
+       t.desc=String(descEl.value||'').trim();
+       try {
+          const saved=await saveBinData("Modificou dados da equipe: " + t.name + (t.type==='pro'?' (Promoter)':''));
+          if(!saved) return alert('⚠️ O membro foi alterado na tela, mas a gravação permanente não foi confirmada.');
+          alert(t.type==='pro'?'✅ Promoter salvo!':'✅ Membro salvo!');
+          renderAdminLists(true);
+       } catch(e) {
+          alert('⚠️ Não foi possível salvar o membro: '+(e?.message||e));
        }
     }
 
@@ -7103,7 +7115,32 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   function renderEntities(){
     const a=ensureConfig();
     const teamRoot=document.getElementById('admin-team-list');
-    if(teamRoot){const list=Array.isArray(a.team)?a.team:[];teamRoot.innerHTML=list.length?list.map(t=>`<article class="brg-admin-entity"><div class="brg-admin-entity-head"><img src="${esc(imageFor(t))}" onerror="window.brgAdminImageFallback(this)"><div><strong>${esc(t.name||'Sem nome')}</strong><small>${esc(t.role||'')}</small></div></div><input id="tname-${esc(t.id)}" class="admin-input" value="${esc(t.name||'')}"><input id="trole-${esc(t.id)}" class="admin-input" value="${esc(t.role||'')}"><input id="tig-${esc(t.id)}" class="admin-input" value="${esc(t.ig||'')}"><textarea id="tdesc-${esc(t.id)}" class="admin-textarea">${esc(t.desc||'')}</textarea><div class="brg-admin-buttons"><button class="action-btn" onclick="window.saveTeamData?.('${esc(t.id)}')">💾 Salvar</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum integrante encontrado.</div>'}
+    if(teamRoot){
+      const list=Array.isArray(a.team)?a.team:[];
+      teamRoot.innerHTML=list.length?list.map(t=>{
+        const type=String(t?.type||'dir')==='pro'?'pro':'dir';
+        const typeLabel=type==='pro'?'🎤 PROMOTER':'👔 DIRETORIA';
+        return `<article class="brg-admin-entity">
+          <div class="brg-admin-entity-head">
+            <img src="${esc(imageFor(t))}" onerror="window.brgAdminImageFallback(this)">
+            <div><strong>${esc(t.name||'Sem nome')}</strong><small>${typeLabel} • ${esc(t.role||'')}</small></div>
+          </div>
+          <label style="display:block;color:#8a969d;font-size:.72rem;margin:7px 0 4px;">Categoria</label>
+          <select id="ttype-${esc(t.id)}" class="admin-input">
+            <option value="dir" ${type==='dir'?'selected':''}>👔 Diretoria</option>
+            <option value="pro" ${type==='pro'?'selected':''}>🎤 Promoter</option>
+          </select>
+          <input id="tname-${esc(t.id)}" class="admin-input" value="${esc(t.name||'')}" placeholder="Nome">
+          <input id="trole-${esc(t.id)}" class="admin-input" value="${esc(t.role||'')}" placeholder="Cargo / função">
+          <input id="tig-${esc(t.id)}" class="admin-input" value="${esc(t.ig||'')}" placeholder="Instagram">
+          <textarea id="tdesc-${esc(t.id)}" class="admin-textarea" placeholder="Descrição">${esc(t.desc||'')}</textarea>
+          <div class="brg-admin-buttons">
+            <label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateTeamImg?.('${esc(t.id)}',this)"></label>
+            <button type="button" class="action-btn" onclick="window.saveTeamData?.('${esc(t.id)}')">💾 Salvar</button>
+          </div>
+        </article>`;
+      }).join(''):'<div class="brg-admin-empty">Nenhum integrante encontrado.</div>'
+    }
     const arcRoot=document.getElementById('admin-arcade-list'); if(arcRoot){const list=Array.isArray(a.arcade)?a.arcade:[];arcRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🕹️ #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="arc-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="arc-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="arc-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="arc-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="arc-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><button class="action-btn" onclick="window.saveArcadeData?.(${numId(i.id)})">💾 Salvar</button></article>`).join(''):'<div class="brg-admin-empty">Nenhum jogador cadastrado.</div>'}
     const caRoot=document.getElementById('admin-cachaceiros-list'); if(caRoot){const list=Array.isArray(a.cachaceiros)?a.cachaceiros:[];caRoot.innerHTML=list.length?list.map(i=>`<article class="brg-admin-entity"><strong>🍻 #${esc(i.id)} — ${esc(i.name||'')}</strong><input id="ca-name-${numId(i.id)}" class="admin-input" value="${esc(i.name||'')}"><input id="ca-score-${numId(i.id)}" class="admin-input" value="${esc(i.score||'')}"><input id="ca-sub-${numId(i.id)}" class="admin-input" value="${esc(i.sub||'')}"><input id="ca-prize-${numId(i.id)}" class="admin-input" value="${esc(i.prize||'')}"><textarea id="ca-quote-${numId(i.id)}" class="admin-textarea">${esc(i.quote||'')}</textarea><div class="brg-admin-buttons"><label class="file-upload-wrapper">📷 Foto<input type="file" accept="image/*" onchange="window.updateCachaceiroImg?.(${numId(i.id)},this)"></label><button class="action-btn" onclick="window.saveCachaceiroData?.(${numId(i.id)})">💾 Salvar</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhum cachaceiro cadastrado.</div>'}
   }
