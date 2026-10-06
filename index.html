@@ -1705,6 +1705,7 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
               </div>
               <div class="admin-card-row" style="margin-top:10px;">
                 <label class="file-upload-wrapper">📷 Foto / logo<input type="file" id="new-partner-img" accept="image/*"></label>
+                <label class="file-upload-wrapper">🖼️ Fotos do evento (várias)<input type="file" id="new-partner-photos" accept="image/*" multiple></label>
                 <button type="button" class="action-btn" onclick="addBarPartner()">➕ Adicionar parceria</button>
               </div>
               <textarea class="admin-textarea" id="new-partner-desc" rows="3" placeholder="Descrição da parceria..." style="margin-top:10px;"></textarea>
@@ -7359,10 +7360,14 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 
 
 <script>
-/* BARGUNÇADOS — PARCERIAS + GALERIA V1
-   Isolado do catálogo: nenhuma função abaixo reconstrói, completa ou substitui appData.menu.
-   Alterações só são enviadas ao Supabase após ação explícita do ADM. */
+/* BARGUNÇADOS — PARCERIAS + GALERIA V2
+   EXTENSÃO ISOLADA E RETROCOMPATÍVEL.
+   - Não recria, completa, ordena ou substitui appData.menu.
+   - Mantém partners/barPhotos existentes e apenas acrescenta fotos de evento.
+   - Toda alteração persistente acontece somente após ação explícita do ADM.
+*/
 (function(){
+  'use strict';
   const esc = v => (typeof window.escapeHTML==='function' ? window.escapeHTML(v ?? '') : String(v ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])));
   const img = v => (typeof window.safeImageUrl==='function' ? window.safeImageUrl(v) : /^https:\/\//i.test(String(v||'')) ? String(v) : '');
   const loggedAdmin = () => typeof window.isAuthenticatedAdmin==='function' ? !!window.isAuthenticatedAdmin() : (typeof logged==='function' ? !!logged() : false);
@@ -7386,11 +7391,34 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(!Array.isArray(a.barPhotos)) a.barPhotos=[];
     if(!a.barPhotosConfig || typeof a.barPhotosConfig!=='object') a.barPhotosConfig={visible:true};
     if(typeof a.barPhotosConfig.visible!=='boolean') a.barPhotosConfig.visible=true;
+    // Migração somente em memória: parceiros antigos continuam válidos e ganham uma lista vazia.
+    a.partners.forEach(p=>{ if(!Array.isArray(p.photos)) p.photos=[]; });
+    a.barPhotos.forEach(p=>{ if(!p.createdAt) p.createdAt=Date.now(); });
     return a;
   }
 
   function uniqueId(prefix){
     return prefix+'-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8);
+  }
+
+  function uploadFile(file){
+    return new Promise((resolve,reject)=>{
+      if(!file) return reject(new Error('Arquivo não informado.'));
+      if(typeof window.uploadToImgBB!=='function') return reject(new Error('Sistema de upload de imagens indisponível.'));
+      let settled=false;
+      const done=(url)=>{ if(settled)return; const u=String(url||'').trim(); if(!u)return; settled=true; resolve(u); };
+      Promise.resolve(window.uploadToImgBB(file,done)).then(ok=>{
+        if(ok===false && !settled) reject(new Error('O upload da imagem foi recusado.'));
+      }).catch(reject);
+      setTimeout(()=>{ if(!settled) reject(new Error('O upload da imagem demorou demais para ser confirmado.')); },60000);
+    });
+  }
+
+  async function uploadMany(files){
+    const list=Array.from(files||[]).filter(Boolean);
+    const urls=[];
+    for(const file of list) urls.push(await uploadFile(file));
+    return urls;
   }
 
   async function persist(reason){
@@ -7400,18 +7428,26 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     return true;
   }
 
+  function photoObj(url,index=0){
+    return {id:uniqueId('partner-photo'),img:url,title:'',desc:'',createdAt:Date.now()+index};
+  }
+
+  function partnerPhotos(p){
+    return Array.isArray(p?.photos) ? p.photos.filter(x=>x && img(x.img)) : [];
+  }
+
+  function closeModal(id){ document.getElementById(id)?.remove(); }
+
   window.savePartnersVisibility=async function(v){
     if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
-    const a=ensureData(),old=!!a.partnersConfig.visible;
-    a.partnersConfig.visible=!!v;
+    const a=ensureData(),old=!!a.partnersConfig.visible;a.partnersConfig.visible=!!v;
     try{await persist('Parcerias: alterou visibilidade pública');renderPartnersGallery();renderPartnersGalleryAdmin();}
     catch(e){a.partnersConfig.visible=old;renderPartnersGallery();renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar a visibilidade das parcerias.\n\n'+(e?.message||e));}
   };
 
   window.saveBarPhotosVisibility=async function(v){
     if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
-    const a=ensureData(),old=!!a.barPhotosConfig.visible;
-    a.barPhotosConfig.visible=!!v;
+    const a=ensureData(),old=!!a.barPhotosConfig.visible;a.barPhotosConfig.visible=!!v;
     try{await persist('Fotos do Bar: alterou visibilidade pública');renderPartnersGallery();renderPartnersGalleryAdmin();}
     catch(e){a.barPhotosConfig.visible=old;renderPartnersGallery();renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar a visibilidade das fotos.\n\n'+(e?.message||e));}
   };
@@ -7423,20 +7459,19 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const category=String(document.getElementById('new-partner-category')?.value||'').trim();
     const ig=String(document.getElementById('new-partner-ig')?.value||'').trim();
     const desc=String(document.getElementById('new-partner-desc')?.value||'').trim();
-    const file=document.getElementById('new-partner-img')?.files?.[0]||null;
+    const mainFile=document.getElementById('new-partner-img')?.files?.[0]||null;
+    const photoFiles=document.getElementById('new-partner-photos')?.files||[];
     if(!name) return alert('Informe o nome da parceria.');
-    const item={id:uniqueId('partner'),name,category,ig,desc,img:''};
+    const item={id:uniqueId('partner'),name,category,ig,desc,img:'',photos:[]};
     try{
-      if(file){
-        let uploaded='';
-        const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
-        if(!ok||!uploaded) throw new Error('O upload da imagem não foi confirmado.');
-        item.img=uploaded;
-      }
+      if(mainFile) item.img=await uploadFile(mainFile);
+      const urls=await uploadMany(photoFiles);
+      item.photos=urls.map((u,i)=>photoObj(u,i));
       a.partners.push(item);
       await persist('Parcerias: adicionou '+name);
       ['new-partner-name','new-partner-category','new-partner-ig','new-partner-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
       const f=document.getElementById('new-partner-img');if(f)f.value='';
+      const pf=document.getElementById('new-partner-photos');if(pf)pf.value='';
       renderPartnersGallery();renderPartnersGalleryAdmin();
       alert('✅ Parceria adicionada e salva no Supabase.');
     }catch(e){
@@ -7449,7 +7484,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   window.saveBarPartner=async function(id){
     if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
     const a=ensureData(),item=a.partners.find(x=>String(x.id)===String(id));if(!item)return;
-    const old={...item};
+    const old=JSON.parse(JSON.stringify(item));
     const get=k=>document.getElementById(k+id)?.value??'';
     const name=String(get('partner-name-')).trim();
     if(!name)return alert('Informe o nome da parceria.');
@@ -7459,18 +7494,38 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
   };
 
   window.replaceBarPartnerImg=async function(id,input){
-    if(!editable()) return alert('Acesso Negado: sem permissão de edição.');
+    if(!editable())return alert('Acesso Negado: sem permissão de edição.');
     const a=ensureData(),item=a.partners.find(x=>String(x.id)===String(id)),file=input?.files?.[0];if(!item||!file)return;
     const old=item.img;
+    try{item.img=await uploadFile(file);await persist('Parcerias: substituiu foto de '+item.name);renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto principal da parceria substituída.');}
+    catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+    finally{if(input)input.value='';}
+  };
+
+  window.addPartnerEventPhotos=async function(id,input){
+    if(!editable())return alert('Acesso Negado: sem permissão de edição.');
+    const a=ensureData(),item=a.partners.find(x=>String(x.id)===String(id));
+    const files=input?.files||[];if(!item||!files.length)return;
+    const old=JSON.parse(JSON.stringify(item.photos||[]));
     try{
-      let uploaded='';
-      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
-      if(!ok||!uploaded)throw new Error('O upload não foi confirmado.');
-      item.img=uploaded;
-      await persist('Parcerias: substituiu foto de '+item.name);
+      const urls=await uploadMany(files);
+      if(!Array.isArray(item.photos))item.photos=[];
+      urls.forEach((u,i)=>item.photos.push(photoObj(u,i)));
+      await persist('Parcerias: adicionou '+urls.length+' foto(s) de evento em '+item.name);
       renderPartnersGallery();renderPartnersGalleryAdmin();
-      alert('✅ Foto da parceria substituída.');
-    }catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+      alert('✅ '+urls.length+' foto(s) de evento adicionada(s) à parceria.');
+    }catch(e){item.photos=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível adicionar as fotos do evento.\n\n'+(e?.message||e));}
+    finally{if(input)input.value='';}
+  };
+
+  window.deletePartnerEventPhoto=async function(partnerId,photoId){
+    if(!deletable())return alert('Acesso Negado: sem permissão de exclusão.');
+    const a=ensureData(),p=a.partners.find(x=>String(x.id)===String(partnerId));if(!p)return;
+    const photos=Array.isArray(p.photos)?p.photos:[],idx=photos.findIndex(x=>String(x.id)===String(photoId));if(idx<0)return;
+    const [removed]=photos.splice(idx,1);
+    if(!confirm('Excluir esta foto do evento desta parceria?')){photos.splice(idx,0,removed);return;}
+    try{await persist('Parcerias: excluiu foto de evento de '+p.name);renderPartnersGallery();renderPartnersGalleryAdmin();}
+    catch(e){photos.splice(idx,0,removed);renderPartnersGalleryAdmin();alert('❌ Não foi possível excluir a foto.\n\n'+(e?.message||e));}
   };
 
   window.deleteBarPartner=async function(id){
@@ -7478,7 +7533,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const a=ensureData(),idx=a.partners.findIndex(x=>String(x.id)===String(id));if(idx<0)return;
     const [removed]=a.partners.splice(idx,1);
     if(!confirm('Excluir a parceria "'+String(removed.name||'')+'"?')){a.partners.splice(idx,0,removed);return;}
-    try{await persist('Parcerias: excluiu '+String(removed.name||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Parceria excluída.')}
+    try{await persist('Parcerias: excluiu '+String(removed.name||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Parceria excluída.');}
     catch(e){a.partners.splice(idx,0,removed);renderPartnersGalleryAdmin();alert('❌ Não foi possível excluir a parceria.\n\n'+(e?.message||e));}
   };
 
@@ -7492,27 +7547,22 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(!file)return alert('Selecione uma foto.');
     const item={id:uniqueId('photo'),title,ig,desc,img:'',featured,createdAt:Date.now()};
     try{
-      let uploaded='';
-      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
-      if(!ok||!uploaded)throw new Error('O upload da imagem não foi confirmado.');
-      item.img=uploaded;a.barPhotos.push(item);
-      await persist('Fotos do Bar: adicionou '+(title||'foto'));
+      item.img=await uploadFile(file);
+      a.barPhotos.push(item);await persist('Fotos do Bar: adicionou '+(title||'foto'));
       ['new-bar-photo-title','new-bar-photo-ig','new-bar-photo-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
       const f=document.getElementById('new-bar-photo-img');if(f)f.value='';
       const c=document.getElementById('new-bar-photo-featured');if(c)c.checked=false;
-      renderPartnersGallery();renderPartnersGalleryAdmin();
-      alert('✅ Foto adicionada e salva.');
+      renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto adicionada e salva.');
     }catch(e){a.barPhotos=a.barPhotos.filter(x=>String(x.id)!==String(item.id));renderPartnersGalleryAdmin();alert('❌ Não foi possível adicionar a foto.\n\n'+(e?.message||e));}
   };
 
   window.saveBarPhoto=async function(id){
     if(!editable())return alert('Acesso Negado: sem permissão de edição.');
     const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
-    const old={...item};
-    const get=k=>document.getElementById(k+id)?.value??'';
+    const old={...item},get=k=>document.getElementById(k+id)?.value??'';
     const title=String(get('photo-title-')).trim(),ig=String(get('photo-ig-')).trim(),desc=String(get('photo-desc-')).trim();
-    item.title=title;item.ig=ig;item.desc=desc;
-    try{await persist('Fotos do Bar: editou '+(title||item.id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Dados da foto salvos.')}
+    Object.assign(item,{title,ig,desc});
+    try{await persist('Fotos do Bar: editou '+(title||item.id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Dados da foto salvos.');}
     catch(e){Object.assign(item,old);renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar os dados da foto.\n\n'+(e?.message||e));}
   };
 
@@ -7520,13 +7570,9 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(!editable())return alert('Acesso Negado: sem permissão de edição.');
     const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id)),file=input?.files?.[0];if(!item||!file)return;
     const old=item.img;
-    try{
-      let uploaded='';
-      const ok=await window.uploadToImgBB?.(file,url=>{uploaded=String(url||'').trim()});
-      if(!ok||!uploaded)throw new Error('O upload não foi confirmado.');
-      item.img=uploaded;await persist('Fotos do Bar: substituiu '+(item.title||item.id));
-      renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto substituída.');
-    }catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+    try{item.img=await uploadFile(file);await persist('Fotos do Bar: substituiu '+(item.title||item.id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto substituída.');}
+    catch(e){item.img=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível substituir a foto.\n\n'+(e?.message||e));}
+    finally{if(input)input.value='';}
   };
 
   window.deleteBarPhoto=async function(id){
@@ -7534,7 +7580,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const a=ensureData(),idx=a.barPhotos.findIndex(x=>String(x.id)===String(id));if(idx<0)return;
     const [removed]=a.barPhotos.splice(idx,1);
     if(!confirm('Excluir esta foto da galeria?')){a.barPhotos.splice(idx,0,removed);return;}
-    try{await persist('Fotos do Bar: excluiu '+(removed.title||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Foto excluída.')}
+    try{await persist('Fotos do Bar: excluiu '+(removed.title||id));renderPartnersGallery();renderPartnersGalleryAdmin();alert('🗑️ Foto excluída.');}
     catch(e){a.barPhotos.splice(idx,0,removed);renderPartnersGalleryAdmin();alert('❌ Não foi possível excluir a foto.\n\n'+(e?.message||e));}
   };
 
@@ -7546,20 +7592,64 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     catch(e){item.featured=old;renderPartnersGalleryAdmin();alert('❌ Não foi possível salvar o destaque.\n\n'+(e?.message||e));}
   };
 
-  window.openPartnerModal=function(id){
-    const a=ensureData(),p=a.partners.find(x=>String(x.id)===String(id));if(!p)return;
-    document.getElementById('brg-partner-modal')?.remove();
-    const modal=document.createElement('div');modal.id='brg-partner-modal';modal.style.cssText='position:fixed;inset:0;z-index:1000060;background:rgba(0,0,0,.94);display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto';
-    modal.innerHTML=`<div class="glass-panel" style="max-width:620px;width:100%;padding:18px;border:1px solid var(--c-purple);text-align:center">
-      <button type="button" class="action-btn del-btn" style="float:right" onclick="this.closest('#brg-partner-modal')?.remove()">✕</button>
-      <img src="${img(p.img)}" style="width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid var(--c-purple);margin:4px auto 12px;display:block" onerror="this.style.visibility='hidden'">
-      <h2 style="margin:0;color:#fff;font-family:var(--font-title)">${esc(p.name||'Parceria')}</h2>
-      <div style="color:#c58cff;font-weight:900;margin-top:5px">${esc(p.category||'Parceria')}</div>
-      ${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:12px;text-decoration:none" onclick="event.stopPropagation()">📸 ${esc(p.ig)}</a>`:''}
-      <p style="color:#ddd;line-height:1.6;margin:16px 0 0">${esc(p.desc||'')}</p>
-      ${loggedAdmin()?`<div style="margin-top:16px"><button type="button" class="brg-public-edit-btn" onclick="this.closest('#brg-partner-modal')?.remove();switchTab('admin');setTimeout(()=>document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'}),80)">⚙️ Editar no ADM</button></div>`:''}
+  function galleryModalPhotos(items,title,subtitle,onEdit){
+    if(!items.length)return;
+    closeModal('brg-photo-viewer-modal');
+    const modal=document.createElement('div');modal.id='brg-photo-viewer-modal';
+    modal.innerHTML=`<div class="brg-viewer-backdrop"></div><div class="brg-photo-viewer" role="dialog" aria-modal="true">
+      <button type="button" class="brg-viewer-close" aria-label="Fechar">✕</button>
+      <div class="brg-viewer-head"><div><strong>${esc(title||'Fotos')}</strong><small>${esc(subtitle||'Deslize para os lados para ver mais')}</small></div><span class="brg-viewer-counter"></span></div>
+      <div class="brg-viewer-stage"><button type="button" class="brg-viewer-arrow brg-viewer-prev" aria-label="Foto anterior">‹</button><img class="brg-viewer-img" alt=""><button type="button" class="brg-viewer-arrow brg-viewer-next" aria-label="Próxima foto">›</button></div>
+      <div class="brg-viewer-caption"></div><div class="brg-viewer-dots"></div>
+      ${loggedAdmin()&&onEdit?'<div class="brg-viewer-admin"></div>':''}
     </div>`;
     document.body.appendChild(modal);
+    const stage=modal.querySelector('.brg-viewer-stage'),photo=modal.querySelector('.brg-viewer-img'),caption=modal.querySelector('.brg-viewer-caption'),counter=modal.querySelector('.brg-viewer-counter'),dots=modal.querySelector('.brg-viewer-dots'),admin=modal.querySelector('.brg-viewer-admin');
+    let index=0,touchX=0,touchY=0;
+    dots.innerHTML=items.map((_,i)=>`<button type="button" class="brg-viewer-dot" aria-label="Ir para foto ${i+1}" data-i="${i}"></button>`).join('');
+    const paint=(dir=1)=>{
+      const x=items[index];
+      photo.classList.remove('brg-viewer-change-left','brg-viewer-change-right');
+      void photo.offsetWidth;
+      photo.classList.add(dir>=0?'brg-viewer-change-right':'brg-viewer-change-left');
+      photo.src=img(x.img);photo.alt=x.title||title||'Foto';
+      caption.innerHTML=`${x.title?`<strong>${esc(x.title)}</strong>`:''}${x.desc?`<span>${esc(x.desc)}</span>`:''}`;
+      counter.textContent=(index+1)+' / '+items.length;
+      dots.querySelectorAll('.brg-viewer-dot').forEach((d,i)=>d.classList.toggle('active',i===index));
+      if(admin) admin.innerHTML=`<button type="button" class="brg-public-edit-btn" data-edit="1">✏️ Editar esta foto</button>`;
+    };
+    const go=(delta)=>{index=(index+delta+items.length)%items.length;paint(delta>=0?1:-1);};
+    modal.querySelector('.brg-viewer-close').onclick=()=>modal.remove();
+    modal.querySelector('.brg-viewer-prev').onclick=()=>go(-1);
+    modal.querySelector('.brg-viewer-next').onclick=()=>go(1);
+    modal.querySelector('.brg-viewer-backdrop').onclick=()=>modal.remove();
+    dots.querySelectorAll('.brg-viewer-dot').forEach(d=>d.onclick=()=>{const n=Number(d.dataset.i);const delta=n-index;index=n;paint(delta>=0?1:-1);});
+    stage.addEventListener('touchstart',e=>{const t=e.changedTouches[0];touchX=t.clientX;touchY=t.clientY;},{passive:true});
+    stage.addEventListener('touchend',e=>{const t=e.changedTouches[0],dx=t.clientX-touchX,dy=t.clientY-touchY;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))go(dx<0?1:-1);},{passive:true});
+    document.addEventListener('keydown',function key(e){if(!document.getElementById('brg-photo-viewer-modal')){document.removeEventListener('keydown',key);return;}if(e.key==='Escape')modal.remove();if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+    if(admin&&onEdit) admin.querySelector('[data-edit]')?.addEventListener('click',()=>{const current=items[index];modal.remove();onEdit(current);});
+    paint(1);
+  }
+
+  window.openPartnerModal=function(id){
+    const a=ensureData(),p=a.partners.find(x=>String(x.id)===String(id));if(!p)return;
+    closeModal('brg-partner-modal');
+    const photos=partnerPhotos(p);
+    const modal=document.createElement('div');modal.id='brg-partner-modal';
+    modal.innerHTML=`<div class="brg-partner-backdrop"></div><div class="glass-panel brg-partner-modal-card">
+      <button type="button" class="brg-viewer-close" style="position:absolute;right:12px;top:12px;z-index:4">✕</button>
+      <img src="${img(p.img)}" class="brg-partner-avatar" alt="${esc(p.name||'Parceria')}" onerror="this.style.visibility='hidden'">
+      <h2>${esc(p.name||'Parceria')}</h2><div class="brg-partner-category">${esc(p.category||'Parceria')}</div>
+      ${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer">📸 ${esc(p.ig)}</a>`:''}
+      ${p.desc?`<p class="brg-partner-desc">${esc(p.desc)}</p>`:''}
+      ${photos.length?`<div class="brg-partner-event-title">📸 Fotos dos eventos</div><button type="button" class="brg-partner-photo-strip" aria-label="Abrir fotos dos eventos">${photos.slice(0,5).map(x=>`<img src="${img(x.img)}" alt="" onerror="this.style.display='none'">`).join('')}${photos.length>5?`<span>+${photos.length-5}</span>`:''}</button>`:'<div class="brg-partner-no-photos">Nenhuma foto de evento adicionada ainda.</div>'}
+      ${loggedAdmin()?`<div class="brg-partner-admin-actions"><button type="button" class="brg-public-edit-btn" data-edit-partner>⚙️ Editar parceria</button></div>`:''}
+    </div>`;
+    document.body.appendChild(modal);
+    modal.querySelector('.brg-partner-backdrop').onclick=()=>modal.remove();
+    modal.querySelector('.brg-viewer-close').onclick=()=>modal.remove();
+    modal.querySelector('.brg-partner-photo-strip')?.addEventListener('click',()=>galleryModalPhotos(photos,'Fotos de '+(p.name||'parceria'),'Deslize para os lados', loggedAdmin() ? (()=>{ modal.remove(); switchTab('admin'); setTimeout(()=>document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'}),80); }) : null));
+    modal.querySelector('[data-edit-partner]')?.addEventListener('click',()=>{modal.remove();switchTab('admin');setTimeout(()=>document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'}),80);});
   };
 
   window.openBarPhotoEditor=async function(id){
@@ -7572,22 +7662,16 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
       <input id="public-photo-title-${esc(item.id)}" class="admin-input" value="${esc(item.title||'')}" placeholder="Título">
       <input id="public-photo-ig-${esc(item.id)}" class="admin-input" value="${esc(item.ig||'')}" placeholder="Instagram / crédito">
       <textarea id="public-photo-desc-${esc(item.id)}" class="admin-textarea" rows="3" placeholder="Descrição">${esc(item.desc||'')}</textarea>
-      <div class="brg-admin-buttons">
-        <button type="button" class="action-btn" onclick="saveBarPhotoFromPublicEditor('${esc(item.id)}')">💾 Salvar</button>
-        <label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(item.id)}',this)"></label>
-        ${deletable()?`<button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(item.id)}');document.getElementById('brg-photo-editor-modal')?.remove()">🗑️ Excluir</button>`:''}
-      </div>
+      <div class="brg-admin-buttons"><button type="button" class="action-btn" onclick="saveBarPhotoFromPublicEditor('${esc(item.id)}')">💾 Salvar</button><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(item.id)}',this)"></label>${deletable()?`<button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(item.id)}');document.getElementById('brg-photo-editor-modal')?.remove()">🗑️ Excluir</button>`:''}</div>
     </div>`;
     document.body.appendChild(modal);
   };
 
   window.saveBarPhotoFromPublicEditor=async function(id){
     const a=ensureData(),item=a.barPhotos.find(x=>String(x.id)===String(id));if(!item)return;
-    const title=String(document.getElementById('public-photo-title-'+id)?.value||'').trim();
-    const ig=String(document.getElementById('public-photo-ig-'+id)?.value||'').trim();
-    const desc=String(document.getElementById('public-photo-desc-'+id)?.value||'').trim();
+    const title=String(document.getElementById('public-photo-title-'+id)?.value||'').trim(),ig=String(document.getElementById('public-photo-ig-'+id)?.value||'').trim(),desc=String(document.getElementById('public-photo-desc-'+id)?.value||'').trim();
     const old={...item};Object.assign(item,{title,ig,desc});
-    try{await persist('Fotos do Bar: edição pública da foto '+(title||id));document.getElementById('brg-photo-editor-modal')?.remove();renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto atualizada.')}
+    try{await persist('Fotos do Bar: edição pública da foto '+(title||id));document.getElementById('brg-photo-editor-modal')?.remove();renderPartnersGallery();renderPartnersGalleryAdmin();alert('✅ Foto atualizada.');}
     catch(e){Object.assign(item,old);alert('❌ Não foi possível salvar a foto.\n\n'+(e?.message||e));}
   };
 
@@ -7596,33 +7680,36 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const navP=document.getElementById('nav-parcerias'),navG=document.getElementById('nav-fotos-bar');
     const secP=document.getElementById('parcerias'),secG=document.getElementById('fotos-bar');
     const visibleP=!!a.partnersConfig.visible,visibleG=!!a.barPhotosConfig.visible;
-    if(navP)navP.style.display=visibleP?'':'none';
-    if(navG)navG.style.display=visibleG?'':'none';
-    if(secP)secP.style.display=visibleP?'':'none';
-    if(secG)secG.style.display=visibleG?'':'none';
+    if(navP)navP.style.display=visibleP?'':'none';if(navG)navG.style.display=visibleG?'':'none';
+    if(secP)secP.style.display=visibleP?'':'none';if(secG)secG.style.display=visibleG?'':'none';
+
     const pRoot=document.getElementById('public-partners-list');
     if(pRoot){
-      pRoot.innerHTML=a.partners.length?a.partners.map(p=>`<div class="glass-panel dir-card clickable-card" onclick="openPartnerModal('${esc(p.id)}')"><img src="${img(p.img)}" class="dir-img" alt="${esc(p.name)}" onerror="fallbackTeamImg(this)"><h3 class="dir-name">${esc(p.name)}</h3><p class="dir-role" style="color:var(--c-cyan);">${esc(p.category||'Parceria')}</p>${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">📸 ${esc(p.ig)}</a>`:''}<p class="dir-desc">${esc(p.desc||'')}</p></div>`).join(''):'<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma parceria publicada no momento.</div>';
-      if(loggedAdmin()) pRoot.insertAdjacentHTML('beforeend',`<div style="grid-column:1/-1;text-align:center;margin-top:8px;"><button type="button" class="brg-public-edit-btn" onclick="switchTab('admin');setTimeout(()=>{document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'});},80)">⚙️ Gerenciar parcerias</button></div>`);
+      pRoot.innerHTML=a.partners.length?a.partners.map(p=>{const pc=partnerPhotos(p);return `<article class="glass-panel dir-card clickable-card brg-partner-card" onclick="openPartnerModal('${esc(p.id)}')"><div class="brg-partner-card-photo-wrap"><img src="${img(p.img)}" class="dir-img" alt="${esc(p.name)}" onerror="fallbackTeamImg(this)">${pc.length?`<span class="brg-partner-photo-count">📸 ${pc.length}</span>`:''}</div><h3 class="dir-name">${esc(p.name)}</h3><p class="dir-role" style="color:var(--c-cyan);">${esc(p.category||'Parceria')}</p>${p.ig?`<a class="ig-button" href="${getInstagramProfileUrl(p.ig)||'#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">📸 ${esc(p.ig)}</a>`:''}<p class="dir-desc">${esc(p.desc||'')}</p>${pc.length?`<div class="brg-partner-card-hint">👆 Toque para ver as fotos dos eventos</div>`:''}</article>`}).join(''):'<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma parceria publicada no momento.</div>';
+      if(loggedAdmin())pRoot.insertAdjacentHTML('beforeend',`<div style="grid-column:1/-1;text-align:center;margin-top:8px;"><button type="button" class="brg-public-edit-btn" onclick="switchTab('admin');setTimeout(()=>{document.getElementById('adm-parcerias')?.scrollIntoView({behavior:'smooth',block:'start'});},80)">⚙️ Gerenciar parcerias</button></div>`);
     }
+
     const fRoot=document.getElementById('public-bar-gallery-featured'),gRoot=document.getElementById('public-bar-gallery-list');
     if(fRoot&&gRoot){
       const photos=a.barPhotos.filter(x=>img(x.img));
-      const featured=photos.filter(x=>x.featured);
+      const featured=photos.filter(x=>x.featured),gallery=photos.filter(x=>!x.featured);
       if(window.__brgGalleryTimer){clearInterval(window.__brgGalleryTimer);window.__brgGalleryTimer=null;}
       if(featured.length){
         let index=0;
-        const paint=()=>{
+        const paint=(dir=1)=>{
           const x=featured[index%featured.length];
-          fRoot.innerHTML=`<div class="brg-photo-carousel"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" onerror="this.style.display='none'"><div class="brg-photo-carousel-overlay"><h3>${esc(x.title||'Destaque do Bar')}</h3><p>${esc(x.desc||'')}</p>${x.ig?`<div style="margin-top:5px;color:#ff80ab;font-weight:800;">📸 ${esc(x.ig)}</div>`:''}</div>${loggedAdmin()?`<button type="button" class="brg-public-edit-btn" style="position:absolute;right:12px;top:12px;" onclick="openBarPhotoEditor('${esc(x.id)}')">✏️ Editar</button>`:''}</div>`;
-          index=(index+1)%featured.length;
+          fRoot.innerHTML=`<div class="brg-photo-carousel"><div class="brg-featured-stage"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" onerror="this.style.display='none'"><div class="brg-photo-carousel-overlay"><h3>${esc(x.title||'Destaque do Bar')}</h3><p>${esc(x.desc||'')}</p>${x.ig?`<div style="margin-top:5px;color:#ff80ab;font-weight:800;">📸 ${esc(x.ig)}</div>`:''}</div></div>${featured.length>1?`<button type="button" class="brg-featured-arrow brg-featured-prev" aria-label="Destaque anterior">‹</button><button type="button" class="brg-featured-arrow brg-featured-next" aria-label="Próximo destaque">›</button><div class="brg-featured-dots">${featured.map((_,i)=>`<button type="button" class="brg-featured-dot ${i===index?'active':''}" data-i="${i}" aria-label="Destaque ${i+1}"></button>`).join('')}</div>`:''}${loggedAdmin()?`<button type="button" class="brg-public-edit-btn" style="position:absolute;right:12px;top:12px;z-index:5" onclick="openBarPhotoEditor('${esc(x.id)}')">✏️ Editar</button>`:''}</div>`;
+          fRoot.querySelector('.brg-featured-stage')?.classList.add(dir>=0?'brg-featured-enter-right':'brg-featured-enter-left');
+          fRoot.querySelector('.brg-featured-prev')?.addEventListener('click',()=>{index=(index-1+featured.length)%featured.length;paint(-1);restart();});
+          fRoot.querySelector('.brg-featured-next')?.addEventListener('click',()=>{index=(index+1)%featured.length;paint(1);restart();});
+          fRoot.querySelectorAll('.brg-featured-dot').forEach(d=>d.addEventListener('click',()=>{const n=Number(d.dataset.i),delta=n-index;index=n;paint(delta>=0?1:-1);restart();}));
         };
-        paint();
-        if(featured.length>1)window.__brgGalleryTimer=setInterval(paint,4500);
-      }else{
-        fRoot.innerHTML='<div class="glass-panel" style="padding:22px;text-align:center;color:#8b969c;margin-bottom:16px;">Nenhuma foto em destaque ainda.</div>';
-      }
-      gRoot.innerHTML=photos.map(x=>`<article class="brg-photo-card"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" onerror="this.style.display='none'"><div class="brg-photo-card-body"><h3>${esc(x.title||'Foto do Bar')}</h3><p>${esc(x.desc||'')}</p>${x.ig?`<div style="margin-top:7px;color:#ff80ab;font-weight:800;font-size:.78rem;">📸 ${esc(x.ig)}</div>`:''}${loggedAdmin()?`<div class="brg-photo-card-actions"><button type="button" class="brg-public-edit-btn" onclick="openBarPhotoEditor('${esc(x.id)}')">✏️ Editar</button></div>`:''}</div></article>`).join('') || '<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma foto publicada ainda.</div>';
+        const restart=()=>{if(window.__brgGalleryTimer)clearInterval(window.__brgGalleryTimer);if(featured.length>1)window.__brgGalleryTimer=setInterval(()=>{index=(index+1)%featured.length;paint(1);},5200);};
+        paint(1);restart();
+      }else fRoot.innerHTML='<div class="glass-panel" style="padding:22px;text-align:center;color:#8b969c;margin-bottom:16px;">Nenhuma foto em destaque ainda.</div>';
+
+      gRoot.innerHTML=gallery.map((x,i)=>`<button type="button" class="brg-photo-thumb" data-photo-index="${i}" aria-label="Abrir ${esc(x.title||'Foto do Bar')}"><img src="${img(x.img)}" alt="${esc(x.title||'Foto do Bar')}" loading="lazy" onerror="this.style.display='none'"><span class="brg-photo-thumb-caption">${esc(x.title||'Foto do Bar')}</span></button>`).join('') || '<div class="glass-panel" style="grid-column:1/-1;text-align:center;color:#aaa;padding:24px;">Nenhuma foto adicional publicada ainda.</div>';
+      gRoot.querySelectorAll('.brg-photo-thumb').forEach(btn=>btn.addEventListener('click',()=>{const i=Number(btn.dataset.photoIndex);galleryModalPhotos(gallery,'Fotos do Bar','Deslize para os lados para ver a galeria', loggedAdmin() ? (current=>{ openBarPhotoEditor(current.id); }) : null);}));
     }
   }
 
@@ -7633,32 +7720,43 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     const bc=document.getElementById('bar-photos-visible');if(bc)bc.checked=!!a.barPhotosConfig.visible;
     const pr=document.getElementById('admin-partners-list');
     if(pr){
-      pr.innerHTML=a.partners.length?a.partners.map(p=>`<article class="brg-admin-entity">
-        <div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.name||'Sem nome')}</strong><small>🤝 ${esc(p.category||'Parceria')}</small></div></div>
-        <input id="partner-name-${esc(p.id)}" class="admin-input" value="${esc(p.name||'')}" placeholder="Nome">
-        <input id="partner-category-${esc(p.id)}" class="admin-input" value="${esc(p.category||'')}" placeholder="Categoria / segmento">
-        <input id="partner-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram">
-        <textarea id="partner-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea>
-        <div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPartnerImg('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPartner('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPartner('${esc(p.id)}')">🗑️ Excluir</button></div>
-      </article>`).join(''):'<div class="brg-admin-empty">Nenhuma parceria cadastrada.</div>';
+      pr.innerHTML=a.partners.length?a.partners.map(p=>{
+        const photos=partnerPhotos(p);
+        return `<article class="brg-admin-entity brg-admin-partner-entity">
+          <div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.name||'Sem nome')}</strong><small>🤝 ${esc(p.category||'Parceria')} · 📸 ${photos.length} foto(s) de evento</small></div></div>
+          <input id="partner-name-${esc(p.id)}" class="admin-input" value="${esc(p.name||'')}" placeholder="Nome">
+          <input id="partner-category-${esc(p.id)}" class="admin-input" value="${esc(p.category||'')}" placeholder="Categoria / segmento">
+          <input id="partner-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram">
+          <textarea id="partner-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea>
+          <div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPartnerImg('${esc(p.id)}',this)"></label><label class="file-upload-wrapper">🖼️ Adicionar fotos do evento<input type="file" accept="image/*" multiple onchange="addPartnerEventPhotos('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPartner('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPartner('${esc(p.id)}')">🗑️ Excluir</button></div>
+          ${photos.length?`<div class="brg-admin-event-photos">${photos.map((ph,i)=>`<div class="brg-admin-event-photo"><img src="${img(ph.img)}" alt="Foto do evento ${i+1}"><button type="button" class="brg-admin-event-delete" title="Excluir foto" onclick="deletePartnerEventPhoto('${esc(p.id)}','${esc(ph.id)}')">✕</button></div>`).join('')}</div>`:''}
+        </article>`;
+      }).join(''):'<div class="brg-admin-empty">Nenhuma parceria cadastrada.</div>';
     }
     const pg=document.getElementById('admin-bar-photos-list');
     if(pg){
-      pg.innerHTML=a.barPhotos.length?a.barPhotos.map(p=>`<article class="brg-admin-entity">
-        <div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.title||'Foto do Bar')}</strong><small>📸 ${p.featured?'Destaque no carrossel':'Galeria'}</small></div></div>
-        <input id="photo-title-${esc(p.id)}" class="admin-input" value="${esc(p.title||'')}" placeholder="Título">
-        <input id="photo-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram / crédito">
-        <textarea id="photo-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea>
-        <div class="brg-admin-actions"><label><input type="checkbox" ${p.featured?'checked':''} onchange="toggleBarPhotoFeatured('${esc(p.id)}',this.checked)"> ⭐ Mostrar no carrossel</label></div>
-        <div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPhoto('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(p.id)}')">🗑️ Excluir</button></div>
-      </article>`).join(''):'<div class="brg-admin-empty">Nenhuma foto cadastrada.</div>';
+      pg.innerHTML=a.barPhotos.length?a.barPhotos.map(p=>`<article class="brg-admin-entity"><div class="brg-admin-entity-head"><img src="${img(p.img)}" alt="" onerror="this.style.visibility='hidden'"><div><strong>${esc(p.title||'Foto do Bar')}</strong><small>📸 ${p.featured?'Destaque no carrossel':'Galeria em grade'}</small></div></div><input id="photo-title-${esc(p.id)}" class="admin-input" value="${esc(p.title||'')}" placeholder="Título"><input id="photo-ig-${esc(p.id)}" class="admin-input" value="${esc(p.ig||'')}" placeholder="Instagram / crédito"><textarea id="photo-desc-${esc(p.id)}" class="admin-textarea" placeholder="Descrição">${esc(p.desc||'')}</textarea><div class="brg-admin-actions"><label><input type="checkbox" ${p.featured?'checked':''} onchange="toggleBarPhotoFeatured('${esc(p.id)}',this.checked)"> ⭐ Mostrar no carrossel</label></div><div class="brg-admin-buttons"><label class="file-upload-wrapper">🔄 Substituir foto<input type="file" accept="image/*" onchange="replaceBarPhoto('${esc(p.id)}',this)"></label><button type="button" class="action-btn" onclick="saveBarPhoto('${esc(p.id)}')">💾 Salvar</button><button type="button" class="action-btn del-btn" onclick="deleteBarPhoto('${esc(p.id)}')">🗑️ Excluir</button></div></article>`).join(''):'<div class="brg-admin-empty">Nenhuma foto cadastrada.</div>';
     }
   }
 
   window.renderPartnersGallery=renderPartnersGallery;
   window.renderPartnersGalleryAdmin=renderPartnersGalleryAdmin;
+
+  const style=document.createElement('style');style.id='brg-gallery-v2-css';style.textContent=`
+    .brg-photo-carousel{position:relative;min-height:330px;border-radius:20px;overflow:hidden;border:1px solid rgba(255,235,59,.38);background:#07080a;box-shadow:0 18px 50px rgba(0,0,0,.42)}
+    .brg-featured-stage{position:relative;height:330px;overflow:hidden}.brg-featured-stage img{width:100%;height:100%;display:block;object-fit:cover}.brg-photo-carousel-overlay{position:absolute;inset:auto 0 0;padding:60px 20px 22px;background:linear-gradient(transparent,rgba(0,0,0,.92));text-align:left}.brg-photo-carousel-overlay h3{margin:0;color:#fff;font-family:var(--font-title);font-size:1.5rem}.brg-photo-carousel-overlay p{margin:6px 0 0;color:#ddd}
+    .brg-featured-enter-right{animation:brgFeaturedRight .72s cubic-bezier(.2,.75,.2,1) both}.brg-featured-enter-left{animation:brgFeaturedLeft .72s cubic-bezier(.2,.75,.2,1) both}@keyframes brgFeaturedRight{0%{opacity:0;transform:translateX(7%) scale(1.045);filter:blur(3px)}55%{opacity:1;transform:translateX(-1%) scale(1.01);filter:blur(0)}100%{opacity:1;transform:none}}@keyframes brgFeaturedLeft{0%{opacity:0;transform:translateX(-7%) scale(1.045);filter:blur(3px)}55%{opacity:1;transform:translateX(1%) scale(1.01);filter:blur(0)}100%{opacity:1;transform:none}}
+    .brg-featured-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:4;width:42px;height:42px;border-radius:50%;border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.55);color:#fff;font-size:2rem;line-height:1;cursor:pointer;backdrop-filter:blur(5px)}.brg-featured-prev{left:10px}.brg-featured-next{right:10px}.brg-featured-arrow:active{transform:translateY(-50%) scale(.9)}
+    .brg-featured-dots{position:absolute;z-index:4;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px}.brg-featured-dot{width:8px;height:8px;padding:0;border-radius:50%;border:1px solid #fff;background:rgba(255,255,255,.35);cursor:pointer}.brg-featured-dot.active{width:22px;border-radius:10px;background:#fff}
+    .brg-photo-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:18px}.brg-photo-thumb{position:relative;padding:0;border:1px solid rgba(0,229,255,.22);border-radius:14px;overflow:hidden;background:#090b0f;aspect-ratio:1/1;cursor:pointer;box-shadow:0 10px 25px rgba(0,0,0,.22);transition:transform .2s ease,border-color .2s ease}.brg-photo-thumb:hover{transform:translateY(-2px);border-color:rgba(0,229,255,.55)}.brg-photo-thumb:active{transform:scale(.97)}.brg-photo-thumb img{width:100%;height:100%;display:block;object-fit:cover}.brg-photo-thumb-caption{position:absolute;left:0;right:0;bottom:0;padding:28px 8px 8px;color:#fff;font-weight:800;font-size:.72rem;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.85));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .brg-viewer-backdrop,.brg-partner-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.9);backdrop-filter:blur(8px)}.brg-photo-viewer{position:fixed;inset:0;z-index:1000070;display:flex;flex-direction:column;justify-content:center;padding:14px;pointer-events:none}.brg-photo-viewer>*{pointer-events:auto}.brg-viewer-head{width:min(980px,100%);margin:0 auto 8px;display:flex;justify-content:space-between;align-items:center;gap:10px;color:#fff}.brg-viewer-head strong{font-family:var(--font-title);font-size:1.15rem}.brg-viewer-head small{display:block;color:#9da9ae;margin-top:2px}.brg-viewer-counter{color:#d8e2e5;font-weight:900}.brg-viewer-close{border:1px solid rgba(255,255,255,.28);background:rgba(0,0,0,.55);color:#fff;border-radius:10px;padding:8px 11px;cursor:pointer}.brg-photo-viewer>.brg-viewer-close{position:fixed;right:16px;top:16px;z-index:8}.brg-viewer-stage{position:relative;width:min(980px,100%);height:min(70vh,720px);margin:auto;display:flex;align-items:center;justify-content:center;touch-action:pan-y}.brg-viewer-img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:14px;box-shadow:0 22px 70px rgba(0,0,0,.65)}.brg-viewer-change-right{animation:brgViewerRight .38s ease both}.brg-viewer-change-left{animation:brgViewerLeft .38s ease both}@keyframes brgViewerRight{from{opacity:.25;transform:translateX(25px) scale(.97)}to{opacity:1;transform:none}}@keyframes brgViewerLeft{from{opacity:.25;transform:translateX(-25px) scale(.97)}to{opacity:1;transform:none}}.brg-viewer-arrow{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(0,0,0,.58);color:#fff;font-size:2.2rem;cursor:pointer}.brg-viewer-prev{left:4px}.brg-viewer-next{right:4px}.brg-viewer-caption{width:min(900px,100%);margin:8px auto 0;text-align:center;color:#fff}.brg-viewer-caption strong,.brg-viewer-caption span{display:block}.brg-viewer-caption span{color:#c8d0d4;margin-top:3px}.brg-viewer-dots{display:flex;justify-content:center;gap:6px;margin:10px auto 0;max-width:90%;overflow:auto;padding:2px}.brg-viewer-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;border:0;background:#69757b;padding:0}.brg-viewer-dot.active{background:#fff;transform:scale(1.35)}.brg-viewer-admin{text-align:center;margin-top:8px}
+    .brg-partner-card-photo-wrap{position:relative}.brg-partner-card-photo-wrap .dir-img{display:block}.brg-partner-photo-count{position:absolute;right:8px;bottom:8px;padding:5px 8px;border-radius:999px;background:rgba(0,0,0,.72);color:#fff;font-size:.72rem;font-weight:900}.brg-partner-card-hint{margin-top:7px;color:#9eaab0;font-size:.7rem;font-weight:700}.brg-partner-modal-card{position:fixed;z-index:1000071;left:50%;top:50%;transform:translate(-50%,-50%);width:min(700px,calc(100% - 24px));max-height:calc(100vh - 24px);overflow:auto;padding:24px;text-align:center;border:1px solid var(--c-purple)}.brg-partner-avatar{width:150px;height:150px;object-fit:cover;border-radius:50%;border:3px solid var(--c-purple);display:block;margin:0 auto 12px}.brg-partner-modal-card h2{margin:0;color:#fff;font-family:var(--font-title)}.brg-partner-category{color:#c58cff;font-weight:900;margin-top:5px}.brg-partner-desc{color:#ddd;line-height:1.6;margin:16px auto;max-width:600px}.brg-partner-event-title{font-family:var(--font-title);color:var(--c-cyan);margin:18px 0 9px;text-align:left}.brg-partner-photo-strip{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;width:100%;padding:0;border:0;background:transparent;cursor:pointer}.brg-partner-photo-strip img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.14)}.brg-partner-photo-strip span{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.78);color:#fff;padding:6px 9px;border-radius:999px;font-weight:900}.brg-partner-no-photos{color:#7f8b91;font-size:.8rem;margin-top:16px}.brg-partner-admin-actions{margin-top:18px}.brg-admin-event-photos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:10px}.brg-admin-event-photo{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:8px;background:#09090c}.brg-admin-event-photo img{width:100%;height:100%;object-fit:cover}.brg-admin-event-delete{position:absolute;right:4px;top:4px;width:26px;height:26px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(0,0,0,.75);color:#fff;cursor:pointer;font-weight:900}
+    @media(max-width:700px){.brg-featured-stage{height:280px}.brg-photo-carousel{min-height:280px}.brg-photo-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.brg-viewer-stage{height:62vh}.brg-viewer-arrow{width:40px;height:40px;font-size:1.9rem}.brg-viewer-prev{left:0}.brg-viewer-next{right:0}.brg-partner-photo-strip{grid-template-columns:repeat(3,1fr)}.brg-admin-event-photos{grid-template-columns:repeat(4,1fr)}}
+    @media(max-width:430px){.brg-featured-stage{height:260px}.brg-photo-carousel{min-height:260px}.brg-photo-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.brg-admin-event-photos{grid-template-columns:repeat(3,1fr)}.brg-partner-modal-card{padding:18px}.brg-partner-avatar{width:125px;height:125px}}
+  `;document.head.appendChild(style);
 })();
 </script>
+
 
 </body>
 </html>
