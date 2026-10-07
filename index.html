@@ -7406,6 +7406,17 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
     if(!Array.isArray(a.barPhotos)) a.barPhotos=[];
     if(!a.barPhotosConfig || typeof a.barPhotosConfig!=='object') a.barPhotosConfig={visible:true};
     if(typeof a.barPhotosConfig.visible!=='boolean') a.barPhotosConfig.visible=true;
+    // Brasões de Sangue: o conteúdo é um objeto de estado de primeiro nível e
+    // precisa sobreviver tanto ao GET público quanto ao GET administrativo.
+    // O backend agora expõe esta chave publicamente; este fallback apenas
+    // protege versões antigas/estados incompletos sem apagar dados existentes.
+    if(!a.bloodClub || typeof a.bloodClub!=='object') a.bloodClub={};
+    if(typeof a.bloodClub.visible!=='boolean') a.bloodClub.visible=true;
+    if(!a.bloodClub.name) a.bloodClub.name='☠️ Brasões de Sangue ☠️';
+    if(!a.bloodClub.category) a.bloodClub.category='Motoclube • Sede no Bargunçados';
+    if(!Array.isArray(a.bloodClub.photos)) a.bloodClub.photos=[];
+    if(!Array.isArray(a.bloodClub.members)) a.bloodClub.members=[];
+    if(!Array.isArray(a.bloodClub.shows)) a.bloodClub.shows=[];
     // Migração somente em memória: parceiros antigos continuam válidos e ganham uma lista vazia.
     a.partners.forEach(p=>{ if(!Array.isArray(p.photos)) p.photos=[]; });
     a.barPhotos.forEach(p=>{ if(!p.createdAt) p.createdAt=Date.now(); });
