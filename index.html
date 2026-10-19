@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BARGUNÇADOS ROCK BAR | Pub, Arcade & Metal</title>
-  <meta name="brg-build-version" content="2026100901">
+  <meta name="brg-build-version" content="2026101901">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -6453,23 +6453,50 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
     if(!sales.length || typeof ensurePartnersFinance!=='function') return;
     const f=ensurePartnersFinance();
     if(!Array.isArray(f.integratedBarSales)) f.integratedBarSales=[];
+    // Corrige eventual integração antiga de fiados ainda pendentes: não podem
+    // continuar aparecendo como receita recebida e devem poder sincronizar ao pagar.
+    const unpaidIds=new Set(sales.filter(s=>s?.id!=null&&s.payment_status==='pending').map(s=>String(s.id)));
+    const staleRevenue=f.revenues.filter(x=>x?.source==='bar-control'&&unpaidIds.has(String(x.saleId??'')));
+    const staleIds=f.integratedBarSales.filter(x=>unpaidIds.has(String(x)));
+    if(staleRevenue.length||staleIds.length){
+      f.revenues=f.revenues.filter(x=>!(x?.source==='bar-control'&&unpaidIds.has(String(x.saleId??''))));
+      f.integratedBarSales=f.integratedBarSales.filter(x=>!unpaidIds.has(String(x)));
+      try{await saveBinData('Controle do Bar: removeu fiados pendentes da receita recebida');}
+      catch(e){f.revenues.push(...staleRevenue);f.integratedBarSales.push(...staleIds);console.warn('[Bargunçados] Não foi possível reconciliar fiados pendentes na Central dos Sócios.',e);}
+    }
     const known=new Set(f.integratedBarSales.map(x=>String(x)));
-    const pending=sales.filter(s=>s?.id!=null && !known.has(String(s.id)));
+    // Fiados/pendências não são receita recebida. Só integrar quando pagos.
+    const pending=sales.filter(s=>s?.id!=null && s.payment_status!=='pending' && !known.has(String(s.id)));
     if(!pending.length) return;
-    const today=new Date().toISOString().slice(0,10);
+    const today=brgTodayKey();
+    const addedRevenue=[],addedExpense=[],addedIds=[];
     pending.forEach(s=>{
       const saleId=String(s.id), total=Number(s.total||0), cost=Number(s.total_cost||0);
-      const date=String(s.sold_at||'').slice(0,10)||today, month=date.slice(0,7)||today.slice(0,7);
-      f.revenues.push({id:'bar_rev_'+saleId,month,date,description:'Venda Controle do Bar #'+saleId,amount:total,source:'bar-control',saleId});
-      if(cost>0) f.expenses.push({id:'bar_cmv_'+saleId,month,date,description:'CMV Controle do Bar #'+saleId,amount:cost,type:'operating',partner:'',source:'bar-control',saleId});
-      f.integratedBarSales.push(saleId);
+      const date=brgLocalDay(s.sold_at)||today, month=date.slice(0,7)||today.slice(0,7);
+      // Evita duplicar registros caso a lista financeira já contenha uma venda
+      // cujo marcador de integração tenha ficado inconsistente.
+      if(!f.revenues.some(x=>String(x.id)==='bar_rev_'+saleId)){
+        const row={id:'bar_rev_'+saleId,month,date,description:'Venda Controle do Bar #'+saleId,amount:total,source:'bar-control',saleId};
+        f.revenues.push(row);addedRevenue.push(row);
+      }
+      if(cost>0 && !f.expenses.some(x=>String(x.id)==='bar_cmv_'+saleId)){
+        const row={id:'bar_cmv_'+saleId,month,date,description:'CMV Controle do Bar #'+saleId,amount:cost,type:'operating',partner:'',source:'bar-control',saleId};
+        f.expenses.push(row);addedExpense.push(row);
+      }
+      if(!known.has(saleId)){f.integratedBarSales.push(saleId);addedIds.push(saleId);known.add(saleId);}
     });
-    try { await saveBinData('Controle do Bar: sincronizou '+pending.length+' venda(s) com a Central dos Sócios'); }
-    catch(e){ console.warn('[Bargunçados] Venda registrada no Controle do Bar, mas a sincronização financeira ficará pendente para a próxima atualização.',e); }
+    try { await saveBinData('Controle do Bar: sincronizou '+pending.length+' venda(s) pagas com a Central dos Sócios'); }
+    catch(e){
+      // Reverte apenas as linhas criadas nesta tentativa, permitindo tentar de novo.
+      f.revenues=f.revenues.filter(x=>!addedRevenue.includes(x));
+      f.expenses=f.expenses.filter(x=>!addedExpense.includes(x));
+      f.integratedBarSales=f.integratedBarSales.filter(x=>!addedIds.includes(String(x)));
+      console.warn('[Bargunçados] Falha ao salvar integração financeira; a tentativa foi revertida em memória para permitir nova sincronização.',e);
+    }
   }
   async function loadBarControl(seed=false){
     if(!brgIsAdmin())throw new Error('Acesso administrativo necessário.');
-    if(BRG_BAR.loading)return;
+    if(BRG_BAR.loading){BRG_BAR.reloadRequested=true;return;}
     BRG_BAR.loading=true;
     const loadVersion=BRG_BAR.inventoryMutationVersion;
     try{
@@ -6493,7 +6520,18 @@ const sr=financeMonthData(month).shifts.slice().reverse().map(x=>`<tr><td>${esca
       await syncBarCustomersToRank();
       await syncBarSalesToPartnersFinance();
       if(loadVersion===BRG_BAR.inventoryMutationVersion)renderBarControl();
-    }finally{BRG_BAR.loading=false}}
+    }finally{
+      BRG_BAR.loading=false;
+      if(BRG_BAR.reloadRequested){
+        BRG_BAR.reloadRequested=false;
+        Promise.resolve().then(()=>{if(brgIsAdmin()&&document.getElementById('bar-control-overlay')?.style.display!=='none')loadBarControl(false).catch(e=>console.warn('[Controle do Bar] Atualização enfileirada falhou:',e));});
+      }
+    }}
+  // Atualiza os dados enquanto o painel estiver aberto, sem gerar vendas ou alterar estoque.
+  if(!window.__brgBarRefreshTimer)window.__brgBarRefreshTimer=setInterval(()=>{
+    const overlay=document.getElementById('bar-control-overlay');
+    if(overlay&&overlay.style.display==='block'&&brgIsAdmin()&&!BRG_BAR.loading)loadBarControl(false).catch(e=>console.warn('[Controle do Bar] Atualização automática falhou:',e));
+  },15000);
   // API pública usada pelos editores do catálogo, que vivem em outro bloco <script>.
   window.loadBarControl = loadBarControl;
   window.openBarControl=async function(){if(!brgIsAdmin()){alert('🔐 Faça login como administrador antes de abrir o Controle do Bar.');return}const o=document.getElementById('bar-control-overlay');if(!o)return;o.style.display='block';o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-control-empty">⏳ Carregando Controle do Bar…</div>';try{await loadBarControl(false)}catch(e){document.getElementById('bar-view-dashboard').innerHTML='<div class="bar-alert">Não foi possível abrir o Controle do Bar.<br><small>'+brgEsc(e.message)+'</small></div>';alert('Não foi possível abrir o Controle do Bar.\n\n'+e.message)}};
