@@ -890,7 +890,20 @@ function isCurrentMaster(){ return isAuthenticatedAdmin() && getPersistentAdminF
     body.brg-theme-halloween .section-title,body.brg-theme-halloween h2,body.brg-theme-halloween h3{ text-shadow:0 0 16px rgba(255,104,0,.12)}body.brg-theme-christmas .section-title,body.brg-theme-christmas h2,body.brg-theme-christmas h3{text-shadow:0 0 16px rgba(255,215,100,.1)}
     #brg-seasonal-decor{position:fixed;inset:0;z-index:9990;pointer-events:none;overflow:hidden;contain:layout paint;display:none}body.brg-theme-halloween #brg-seasonal-decor,body.brg-theme-christmas #brg-seasonal-decor{display:block}#brg-seasonal-decor .brg-season-float{position:absolute;opacity:.78;filter:drop-shadow(0 4px 9px rgba(0,0,0,.4));animation:brgSeasonFloat 7s ease-in-out infinite alternate;will-change:transform}#brg-seasonal-decor .a{left:2%;top:18%;font-size:clamp(22px,3vw,42px)}#brg-seasonal-decor .b{right:3%;top:36%;font-size:clamp(22px,3vw,40px);animation-delay:-2.3s}#brg-seasonal-decor .c{right:7%;bottom:12%;font-size:clamp(20px,2.5vw,34px);animation-delay:-4.1s}#brg-seasonal-decor .d{left:6%;bottom:8%;font-size:clamp(18px,2.5vw,34px);animation-delay:-1.2s}@keyframes brgSeasonFloat{0%{transform:translate3d(0,-5px,0) rotate(-5deg)}100%{transform:translate3d(0,10px,0) rotate(5deg)}}body.brg-theme-halloween #brg-seasonal-decor .brg-xmas,body.brg-theme-christmas #brg-seasonal-decor .brg-halloween{display:none}body.brg-theme-halloween #sparks-canvas{opacity:.22;filter:hue-rotate(250deg)}body.brg-theme-christmas #sparks-canvas{opacity:.2;filter:hue-rotate(90deg)}
     @media(max-width:600px){.brg-season-theme-grid{grid-template-columns:1fr}.brg-season-theme-card p{min-height:0}#brg-seasonal-decor .a{left:1%;top:15%}#brg-seasonal-decor .b{right:1%;top:28%}#brg-seasonal-decor .c{right:2%;bottom:9%}#brg-seasonal-decor .d{left:2%;bottom:5%}}
-    @media(prefers-reduced-motion:reduce){#brg-seasonal-decor .brg-season-float{animation:none!important}body.brg-theme-halloween button,body.brg-theme-christmas button{transition:none!important}}
+    /* Efeitos sazonais extra: morcegos em voo, relâmpagos atmosféricos e brilhos natalinos. */
+    #brg-seasonal-decor .brg-bat{display:none;position:absolute;left:-12vw;top:var(--bat-y,20%);font-size:clamp(22px,3vw,38px);opacity:.9;filter:drop-shadow(0 0 8px rgba(180,90,255,.7));animation:brgBatFly var(--bat-speed,16s) linear infinite;animation-delay:var(--bat-delay,0s)}
+    body.brg-theme-halloween #brg-seasonal-decor .brg-bat{display:block}
+    @keyframes brgBatFly{0%{transform:translate3d(-12vw,0,0) rotate(-8deg) scale(.75)}20%{transform:translate3d(22vw,-3vh,0) rotate(7deg) scale(1)}45%{transform:translate3d(52vw,2vh,0) rotate(-4deg) scale(.88)}70%{transform:translate3d(80vw,-2vh,0) rotate(8deg) scale(1.08)}100%{transform:translate3d(115vw,1vh,0) rotate(-5deg) scale(.8)}}
+    #brg-season-lightning{position:fixed;inset:0;z-index:9988;pointer-events:none;opacity:0;background:linear-gradient(115deg,transparent 0 36%,rgba(219,203,255,.18) 36.2%,rgba(255,255,255,.58) 36.5%,rgba(177,120,255,.15) 37%,transparent 38%),radial-gradient(ellipse at 75% 12%,rgba(190,145,255,.18),transparent 40%);mix-blend-mode:screen}
+    body.brg-theme-halloween #brg-season-lightning{animation:brgLightningFlash 13s linear infinite}
+    @keyframes brgLightningFlash{0%,5%,8%,42%,43%,100%{opacity:0}5.2%{opacity:.65}5.6%{opacity:.08}6.1%{opacity:.48}6.6%{opacity:0}42.2%{opacity:.72}42.6%{opacity:.12}43%{opacity:0}}
+    body.brg-theme-halloween .bg-watermark{background-size:cover,cover,cover!important;animation:brgHauntedGlow 8s ease-in-out infinite alternate}
+    @keyframes brgHauntedGlow{0%{filter:sepia(.5) saturate(1.3) hue-rotate(240deg) brightness(.82)}100%{filter:sepia(.6) saturate(1.8) hue-rotate(260deg) brightness(1.02)}}
+    body.brg-theme-christmas #brg-seasonal-decor .brg-season-float{filter:drop-shadow(0 0 9px rgba(255,220,110,.55));animation-duration:5s}
+    body.brg-theme-christmas #brg-seasonal-decor:after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.85) 0 1px,transparent 2px),radial-gradient(circle,rgba(255,230,150,.75) 0 1px,transparent 2px);background-size:79px 103px,131px 147px;background-position:0 0,36px 51px;opacity:.48;animation:brgSnowDrift 12s linear infinite}
+    @keyframes brgSnowDrift{to{background-position:70px 103px,-25px 147px}}
+    @media(max-width:600px){#brg-seasonal-decor .brg-bat{font-size:24px}}
+    @media(prefers-reduced-motion:reduce){#brg-seasonal-decor .brg-season-float,#brg-seasonal-decor .brg-bat,body.brg-theme-halloween .bg-watermark,body.brg-theme-christmas #brg-seasonal-decor:after,#brg-season-lightning{animation:none!important}body.brg-theme-halloween button,body.brg-theme-christmas button{transition:none!important}}
   </style>
 </head>
 <body>
@@ -7470,6 +7483,61 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 .client-menu-featured{border-color:rgba(255,235,59,.45);box-shadow:0 0 22px rgba(255,235,59,.08)}
 .client-menu-featured .drink-featured-grid{padding:12px}
 .client-menu-empty{grid-column:1/-1;padding:20px;text-align:center;color:#7e898f;border:1px dashed rgba(255,255,255,.14);border-radius:10px}
+
+
+/* BARGUNÇADOS HORROR DETAILS — sangue estilizado, sem cobrir textos, fotos ou botões */
+.product-card,.bar-product-card,.admin-card,.modal-content,.bar-detail-card,.menu-modal-description,
+.event-card,.team-card,.partner-card,.photo-card,.rank-card,.agenda-card,.gallery-card {
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(130,0,12,.24) 0%, transparent 26%),
+    radial-gradient(ellipse at 100% 100%, rgba(155,0,18,.19) 0%, transparent 24%),
+    linear-gradient(145deg, rgba(55,0,5,.10), transparent 48%);
+  background-repeat:no-repeat;
+  background-blend-mode:screen,screen,normal;
+}
+.product-card,.bar-product-card,.admin-card,.modal-content,.bar-detail-card,.menu-modal-description {
+  border-color:rgba(142,18,30,.62);
+  box-shadow:inset 0 0 0 1px rgba(110,0,10,.12), inset 0 -10px 24px rgba(90,0,8,.07);
+}
+/* Drips and spatters live in the corners, preserving the main content area. */
+.product-card::before,.bar-product-card::before,.admin-card::before,.modal-content::before,.bar-detail-card::before {
+  background-image:
+    radial-gradient(ellipse at 7% 7%, rgba(184,0,24,.88) 0 2px, transparent 3px),
+    radial-gradient(ellipse at 12% 11%, rgba(120,0,12,.78) 0 1.5px, transparent 3px),
+    radial-gradient(ellipse at 18% 5%, rgba(175,0,25,.7) 0 1px, transparent 2.5px),
+    radial-gradient(ellipse at 94% 93%, rgba(150,0,18,.76) 0 2px, transparent 3.5px),
+    radial-gradient(ellipse at 88% 97%, rgba(185,0,24,.7) 0 1.5px, transparent 3px),
+    linear-gradient(180deg, transparent 0 2%, rgba(150,0,18,.45) 2.2% 3.2%, transparent 3.6% 100%);
+  background-repeat:no-repeat;
+  opacity:.8;
+}
+.product-card:nth-child(3n)::before,.bar-product-card:nth-child(3n)::before,.admin-card:nth-child(3n)::before {
+  background-image:
+    radial-gradient(ellipse at 95% 8%, rgba(185,0,26,.8) 0 2px, transparent 3.5px),
+    radial-gradient(ellipse at 89% 13%, rgba(130,0,15,.8) 0 1.5px, transparent 3px),
+    radial-gradient(ellipse at 4% 92%, rgba(170,0,24,.75) 0 2px, transparent 3.5px),
+    linear-gradient(90deg, transparent 0 96%, rgba(140,0,15,.5) 96.5% 97.2%, transparent 98%);
+}
+.product-card:nth-child(3n+1)::before,.bar-product-card:nth-child(3n+1)::before {
+  background-image:
+    radial-gradient(ellipse at 4% 72%, rgba(185,0,26,.72) 0 1.5px, transparent 3px),
+    radial-gradient(ellipse at 8% 78%, rgba(130,0,15,.8) 0 2px, transparent 3.5px),
+    radial-gradient(ellipse at 96% 16%, rgba(170,0,24,.8) 0 1.5px, transparent 3px),
+    linear-gradient(180deg, transparent 0 95%, rgba(130,0,15,.42) 95.5% 96.5%, transparent 97%);
+}
+.modal-content::before { opacity:.72; }
+.modal-content::after { content:'✦'; }
+.product-card .product-img,.bar-product-img { position:relative; z-index:0; }
+.product-card .m-short,.product-card .menu-price,.product-card h3,.product-card p,
+.bar-product-card>* ,.admin-card>* ,.modal-content>* ,.bar-detail-card>* { position:relative; z-index:1; }
+/* Sangue discreto nas caixas de texto dos popups, sem tocar nos campos de formulário. */
+#modalTitle,#modalPrice,#modalDesc,.menu-modal-description {
+  text-shadow:0 1px 0 rgba(70,0,8,.45);
+}
+@media(prefers-reduced-motion:no-preference){
+ .product-card:hover,.bar-product-card:hover { box-shadow:inset 0 0 0 1px rgba(210,0,25,.35),0 7px 22px rgba(100,0,12,.18); }
+}
+
 </style>
 <script id="brg-admin-total-rebuild">
 (function(){
@@ -8431,7 +8499,7 @@ window.barCtlConfigureNewProduct=async function(id){try{await loadBarControl(fal
 </script>
 
 
-  <div id="brg-seasonal-decor" aria-hidden="true"><span class="brg-season-float brg-halloween a">🎃</span><span class="brg-season-float brg-halloween b">🦇</span><span class="brg-season-float brg-halloween c">👻</span><span class="brg-season-float brg-halloween d">🕸️</span><span class="brg-season-float brg-xmas a">❄️</span><span class="brg-season-float brg-xmas b">🎄</span><span class="brg-season-float brg-xmas c">⭐</span><span class="brg-season-float brg-xmas d">🎁</span></div>
+  <div id="brg-seasonal-decor" aria-hidden="true"><span class="brg-season-float brg-halloween a">🎃</span><span class="brg-season-float brg-halloween b">🦇</span><span class="brg-season-float brg-halloween c">👻</span><span class="brg-season-float brg-halloween d">🕸️</span><span class="brg-bat" style="--bat-y:14%;--bat-speed:17s;--bat-delay:-8s">🦇</span><span class="brg-bat" style="--bat-y:31%;--bat-speed:21s;--bat-delay:-14s">🦇</span><span class="brg-bat" style="--bat-y:57%;--bat-speed:19s;--bat-delay:-4s">🦇</span><span class="brg-bat" style="--bat-y:76%;--bat-speed:23s;--bat-delay:-17s">🦇</span><span class="brg-season-float brg-xmas a">❄️</span><span class="brg-season-float brg-xmas b">🎄</span><span class="brg-season-float brg-xmas c">⭐</span><span class="brg-season-float brg-xmas d">🎁</span></div><div id="brg-season-lightning" aria-hidden="true"></div>
   <script id="brg-seasonal-themes-js">
   (function(){
     'use strict';
